@@ -14,7 +14,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@SpringApplicationConfiguration(classes = {LocalAgent.class, ApplicationTestConfig.class})
+@SpringApplicationConfiguration(classes = {IfmData.class, IfmDataTestConfig.class})
 @WebAppConfiguration
 @IntegrationTest({"server.port=10000", "management.port=10001"})
 public @interface ComponentTest {

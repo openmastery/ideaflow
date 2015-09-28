@@ -1,19 +1,19 @@
 package com.ideaflow.localagent.resources
 
 import com.ideaflow.localagent.ComponentTest
-import com.ideaflow.localagent.client.ActivityClient
+import com.ideaflow.localagent.client.EventClient
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
 @ComponentTest
-class AccountResourceSpec extends Specification {
+class EventResourceSpec extends Specification {
 
-    @Autowired
-    private ActivityClient activityClient
+	@Autowired
+	private EventClient activityClient
 
 	def "startConflict should not explode"() {
 		when:
-		activityClient.startConflict("fubar")
+		activityClient.startConflict()
 
 		then:
 		notThrown(Throwable)
@@ -21,7 +21,7 @@ class AccountResourceSpec extends Specification {
 
 	def "stopConflict should not explode"() {
 		when:
-		activityClient.stopConflict("fubar")
+		activityClient.stopConflict()
 
 		then:
 		notThrown(Throwable)

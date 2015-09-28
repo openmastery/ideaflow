@@ -8,10 +8,10 @@ import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {
-        SecurityAutoConfiguration.class,
-        ManagementSecurityAutoConfiguration.class})
-public class LocalAgent {
-    public static void main(String[] args) {
-        SpringApplication.run(LocalAgent.class, args);
-    }
+		SecurityAutoConfiguration.class,
+		ManagementSecurityAutoConfiguration.class})
+public class IfmData {
+	public static void main(String[] args) {
+		SpringApplication.run(IfmData.class, args);
+	}
 }

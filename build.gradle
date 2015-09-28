@@ -1,15 +1,15 @@
 buildscript {
-    ext {
-        springBootVersion = "1.2.3.RELEASE"
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath "com.bancvue:gradle-core:1+"
-        classpath "net.jokubasdargis.buildtimer:gradle-plugin:0.1.1"
-    }
+	ext {
+		springBootVersion = "1.2.3.RELEASE"
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "com.bancvue:gradle-core:1+"
+		classpath "net.jokubasdargis.buildtimer:gradle-plugin:0.1.1"
+	}
 }
 
 apply plugin: "com.bancvue.core-oss"
@@ -17,26 +17,26 @@ apply plugin: "spring-boot"
 apply plugin: "net.jokubasdargis.build-timer"
 
 repositories {
-    mavenLocal()
-    mavenCentral()
+	mavenLocal()
+	mavenCentral()
 }
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-web"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    compile "org.springframework.boot:spring-boot-starter-jersey"
-    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0"
+	compile "org.springframework.boot:spring-boot-starter-web"
+	compile "org.springframework.boot:spring-boot-starter-actuator"
+	compile "org.springframework.boot:spring-boot-starter-jersey"
+	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0"
 
-    // Utilities
-    compile "com.google.guava:guava:18.0"
-    compile "org.projectlombok:lombok:1.16.4"
+	// Utilities
+	compile "com.google.guava:guava:18.0"
+	compile "org.projectlombok:lombok:1.16.4"
 
-    mainTestCompile "org.codehaus.groovy:groovy-all:2.4.3"
-    mainTestCompile "org.fluttercode.datafactory:datafactory:0.8"
-    testCompile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
-    testCompile ("org.spockframework:spock-spring:1.0-groovy-2.4") {
-        exclude group: "org.codehaus.groovy"
-    }
-    testCompile "org.springframework.boot:spring-boot-starter-test"
-    testCompile "commons-io:commons-io:2.4"
+	testCompile "org.codehaus.groovy:groovy-all:2.4.3"
+	testCompile "org.fluttercode.datafactory:datafactory:0.8"
+	testCompile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
+	testCompile("org.spockframework:spock-spring:1.0-groovy-2.4") {
+		exclude group: "org.codehaus.groovy"
+	}
+	testCompile "org.springframework.boot:spring-boot-starter-test"
+	testCompile "commons-io:commons-io:2.4"
 }

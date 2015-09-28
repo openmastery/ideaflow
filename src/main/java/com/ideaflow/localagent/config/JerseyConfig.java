@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 @ApplicationPath("/")
 public class JerseyConfig extends ResourceConfig {
 
-    @PostConstruct
-    public void initialize() {
-        property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
-        packages("com.ideaflow.localagent.resources");
-    }
+	@PostConstruct
+	public void initialize() {
+		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+		packages("com.ideaflow.localagent.resources");
+	}
 
 }
 
