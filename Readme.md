@@ -1,4 +1,7 @@
-This project requires Java 1.8
+This project requires 
+ - Java 1.8
+ - IntelliJ Lombok plugin installed
+ - IntelliJ annotation processing enabled
 
 ```
 git clone git@github.com:ideaflow/local-agent.git
