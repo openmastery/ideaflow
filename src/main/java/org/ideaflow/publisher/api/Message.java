@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.ifmdata.config;
+package org.ideaflow.publisher.api;
 
-import javax.annotation.PostConstruct;
-import javax.ws.rs.ApplicationPath;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.ServerProperties;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Component
-@ApplicationPath("/")
-public class JerseyConfig extends ResourceConfig {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Message {
 
-	@PostConstruct
-	public void initialize() {
-		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
-		packages("com.ideaflow.localagent.resources");
-	}
+    private String content;
 
 }
-

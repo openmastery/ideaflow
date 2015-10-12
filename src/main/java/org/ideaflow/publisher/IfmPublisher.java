@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.ifmdata;
+package org.ideaflow.publisher;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.ManagementSecurityAutoConfiguration;
@@ -25,8 +25,8 @@ import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
 @EnableAutoConfiguration(exclude = {
 		SecurityAutoConfiguration.class,
 		ManagementSecurityAutoConfiguration.class})
-public class IfmData {
+public class IfmPublisher {
 	public static void main(String[] args) {
-		SpringApplication.run(IfmData.class, args);
+		SpringApplication.run(IfmPublisher.class, args);
 	}
 }

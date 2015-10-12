@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.ifmdata;
+package org.ideaflow.publisher;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -29,7 +29,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@SpringApplicationConfiguration(classes = {IfmData.class, IfmDataTestConfig.class})
+@SpringApplicationConfiguration(classes = {IfmPublisher.class, IfmPublisherTestConfig.class})
 @WebAppConfiguration
 @IntegrationTest({"server.port=10000", "management.port=10001"})
 public @interface ComponentTest {

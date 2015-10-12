@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.ifmdata.resources
+package org.ideaflow.publisher.resources
 
-import org.ideaflow.ifmdata.ComponentTest
-import org.ideaflow.ifmdata.client.EventClient
+import org.ideaflow.publisher.ComponentTest
+import org.ideaflow.publisher.client.EventClient
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 

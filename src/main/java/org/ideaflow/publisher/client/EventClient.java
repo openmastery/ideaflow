@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.ifmdata.client;
+package org.ideaflow.publisher.client;
 
-import org.ideaflow.ifmdata.api.BandStart;
-import org.ideaflow.ifmdata.api.Message;
-import org.ideaflow.ifmdata.api.ResourcePaths;
+import org.ideaflow.publisher.api.BandStart;
+import org.ideaflow.publisher.api.Message;
+import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 

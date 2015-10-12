@@ -1,4 +1,4 @@
-package org.ideaflow.ifmdata.core
+package org.ideaflow.publisher.core
 
 import org.springframework.stereotype.Component
 

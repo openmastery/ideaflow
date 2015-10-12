@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.ifmdata;
+package org.ideaflow.publisher;
 
-import org.ideaflow.ifmdata.client.EventClient;
+import org.ideaflow.publisher.client.EventClient;
 import groovyx.net.http.RESTClient;
 import java.net.URISyntaxException;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
-public class IfmDataTestConfig {
+public class IfmPublisherTestConfig {
 
 	@Value("${test-server.base_url:http://localhost}")
 	private String serverBaseUrl;

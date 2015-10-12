@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.ifmdata.resources;
+package org.ideaflow.publisher.resources;
 
-import org.ideaflow.ifmdata.api.BandStart;
-import org.ideaflow.ifmdata.api.Message;
+import org.ideaflow.publisher.api.BandStart;
+import org.ideaflow.publisher.api.Message;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.ideaflow.ifmdata.api.ResourcePaths;
+import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.stereotype.Component;
 
 @Component

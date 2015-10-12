@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.ifmdata.api;
+package org.ideaflow.publisher.api;
 
 public class ResourcePaths {
 

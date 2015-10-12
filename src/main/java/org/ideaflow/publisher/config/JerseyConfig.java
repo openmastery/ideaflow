@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.ifmdata.api;
+package org.ideaflow.publisher.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.annotation.PostConstruct;
+import javax.ws.rs.ApplicationPath;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
+import org.springframework.stereotype.Component;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class BandStart {
+@Component
+@ApplicationPath("/")
+public class JerseyConfig extends ResourceConfig {
 
-    private String comment;
+	@PostConstruct
+	public void initialize() {
+		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+		packages("org.ideaflow.publisher.resources");
+	}
 
 }
+
