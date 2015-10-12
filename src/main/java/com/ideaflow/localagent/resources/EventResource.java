@@ -16,14 +16,15 @@
 package com.ideaflow.localagent.resources;
 
 import com.ideaflow.localagent.api.BandStart;
-import com.ideaflow.localagent.api.ConflictEnd;
-import com.ideaflow.localagent.api.ConflictStart;
 import com.ideaflow.localagent.api.Message;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import com.ideaflow.localagent.core.Timeline;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.ideaflow.localagent.api.ResourcePaths.COMMIT_PATH;
@@ -43,14 +44,14 @@ public class EventResource {
 
 	@POST
 	@Path(CONFLICT_PATH + START_PATH)
-	public void startConflict(@PathParam("taskName") String taskName, ConflictStart conflictStart) {
-		System.out.println("Start Conflict: " + taskName + ", " + conflictStart);
+	public void startConflict(@PathParam("taskName") String taskName, String question) {
+		System.out.println("Start Conflict: " + taskName + ", " + question);
 	}
 
 	@POST
 	@Path(CONFLICT_PATH + STOP_PATH)
-	public void stopConflict(@PathParam("taskName") String taskName, ConflictEnd conflictEnd) {
-		System.out.println("Stop Conflict: " + taskName + ", " + conflictEnd);
+	public void stopConflict(@PathParam("taskName") String taskName, String resolution) {
+		System.out.println("Stop Conflict: " + taskName + ", " + resolution);
 	}
 
     @POST

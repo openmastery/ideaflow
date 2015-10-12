@@ -16,8 +16,6 @@
 package com.ideaflow.localagent.client;
 
 import com.ideaflow.localagent.api.BandStart;
-import com.ideaflow.localagent.api.ConflictEnd;
-import com.ideaflow.localagent.api.ConflictStart;
 import com.ideaflow.localagent.api.Message;
 import com.ideaflow.localagent.api.ResourcePaths;
 import org.springframework.web.client.DefaultResponseErrorHandler;
@@ -40,14 +38,12 @@ public class EventClient {
 
 	public void startConflict(String taskName, String question) {
 		String path = getResourcePath(taskName) + ResourcePaths.CONFLICT_PATH + ResourcePaths.START_PATH;
-        ConflictStart conflictStart = new ConflictStart(question);
-        restTemplate.postForLocation(path, conflictStart);
+        restTemplate.postForLocation(path, question);
 	}
 
 	public void stopConflict(String taskName, String resolution) {
 		String path = getResourcePath(taskName) + ResourcePaths.CONFLICT_PATH + ResourcePaths.STOP_PATH;
-        ConflictEnd conflictEnd = new ConflictEnd(resolution);
-        restTemplate.postForLocation(path, conflictEnd);
+        restTemplate.postForLocation(path, resolution);
 	}
 
     public void startLearning(String taskName, String comment) {
