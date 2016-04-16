@@ -15,7 +15,6 @@
  */
 package org.ideaflow.publisher.client;
 
-import org.ideaflow.publisher.api.BandStart;
 import org.ideaflow.publisher.api.Message;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.web.client.DefaultResponseErrorHandler;
@@ -56,8 +55,7 @@ public class EventClient {
 
 	private void startBand(String taskId, String comment, String bandPath) {
 		String path = getResourcePath(taskId) + bandPath + ResourcePaths.START_PATH;
-		BandStart bandStart = new BandStart(comment);
-		restTemplate.postForLocation(path, bandStart);
+		restTemplate.postForLocation(path, comment);
 	}
 
 	private void stopBand(String taskId, String bandPath) {

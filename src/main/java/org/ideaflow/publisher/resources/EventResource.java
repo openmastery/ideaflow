@@ -20,7 +20,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.ideaflow.publisher.api.BandStart;
 import org.ideaflow.publisher.api.Message;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.stereotype.Component;
@@ -44,8 +43,8 @@ public class EventResource {
 
 	@POST
 	@Path(ResourcePaths.LEARNING_PATH + ResourcePaths.START_PATH)
-	public void startLearning(@PathParam("taskId") String taskId, BandStart bandStart) {
-		System.out.println("Start Learning: " + taskId + ", " + bandStart);
+	public void startLearning(@PathParam("taskId") String taskId, String comment) {
+		System.out.println("Start Learning: " + taskId + ", " + comment);
 	}
 
 	@POST
@@ -56,8 +55,8 @@ public class EventResource {
 
 	@POST
 	@Path(ResourcePaths.REWORK_PATH + ResourcePaths.START_PATH)
-	public void startRework(@PathParam("taskId") String taskId, BandStart bandStart) {
-		System.out.println("Start Rework: " + taskId + ", " + bandStart);
+	public void startRework(@PathParam("taskId") String taskId, String comment) {
+		System.out.println("Start Rework: " + taskId + ", " + comment);
 	}
 
 	@POST
