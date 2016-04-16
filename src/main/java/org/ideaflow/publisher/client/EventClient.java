@@ -32,57 +32,57 @@ public class EventClient {
 		restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
 	}
 
-    private String getResourcePath(String taskName) {
-        return resourceUri + "/" + taskName + ResourcePaths.EVENT_PATH;
+    private String getResourcePath(String taskId) {
+        return resourceUri + "/" + taskId + ResourcePaths.EVENT_PATH;
     }
 
-	public void startConflict(String taskName, String question) {
-		String path = getResourcePath(taskName) + ResourcePaths.CONFLICT_PATH + ResourcePaths.START_PATH;
+	public void startConflict(String taskId, String question) {
+		String path = getResourcePath(taskId) + ResourcePaths.CONFLICT_PATH + ResourcePaths.START_PATH;
         restTemplate.postForLocation(path, question);
 	}
 
-	public void stopConflict(String taskName, String resolution) {
-		String path = getResourcePath(taskName) + ResourcePaths.CONFLICT_PATH + ResourcePaths.STOP_PATH;
+	public void stopConflict(String taskId, String resolution) {
+		String path = getResourcePath(taskId) + ResourcePaths.CONFLICT_PATH + ResourcePaths.STOP_PATH;
         restTemplate.postForLocation(path, resolution);
 	}
 
-    public void startLearning(String taskName, String comment) {
-        startBand(taskName, comment, ResourcePaths.LEARNING_PATH);
+    public void startLearning(String taskId, String comment) {
+        startBand(taskId, comment, ResourcePaths.LEARNING_PATH);
     }
 
-    public void stopLearning(String taskName) {
-        stopBand(taskName, ResourcePaths.LEARNING_PATH);
+    public void stopLearning(String taskId) {
+        stopBand(taskId, ResourcePaths.LEARNING_PATH);
     }
 
-    private void startBand(String taskName, String comment, String bandPath) {
-        String path = getResourcePath(taskName) + bandPath + ResourcePaths.START_PATH;
+    private void startBand(String taskId, String comment, String bandPath) {
+        String path = getResourcePath(taskId) + bandPath + ResourcePaths.START_PATH;
         BandStart bandStart = new BandStart(comment);
         restTemplate.postForLocation(path, bandStart);
     }
 
-    private void stopBand(String taskName, String bandPath) {
-        String path = getResourcePath(taskName) + bandPath + ResourcePaths.STOP_PATH;
+    private void stopBand(String taskId, String bandPath) {
+        String path = getResourcePath(taskId) + bandPath + ResourcePaths.STOP_PATH;
         restTemplate.postForLocation(path, null);
     }
 
-    public void startRework(String taskName, String comment) {
-        startBand(taskName, comment, ResourcePaths.REWORK_PATH);
+    public void startRework(String taskId, String comment) {
+        startBand(taskId, comment, ResourcePaths.REWORK_PATH);
     }
 
-    public void stopRework(String taskName) {
-        stopBand(taskName, ResourcePaths.REWORK_PATH);
+    public void stopRework(String taskId) {
+        stopBand(taskId, ResourcePaths.REWORK_PATH);
     }
 
-    public void addNote(String taskName, String note) {
-        addMessage(taskName, ResourcePaths.NOTE_PATH, note);
+    public void addNote(String taskId, String note) {
+        addMessage(taskId, ResourcePaths.NOTE_PATH, note);
     }
 
-    public void addCommit(String taskName, String message) {
-        addMessage(taskName, ResourcePaths.COMMIT_PATH, message);
+    public void addCommit(String taskId, String message) {
+        addMessage(taskId, ResourcePaths.COMMIT_PATH, message);
     }
 
-    private void addMessage(String taskName, String messagePath, String content) {
-        String path = getResourcePath(taskName) + messagePath;
+    private void addMessage(String taskId, String messagePath, String content) {
+        String path = getResourcePath(taskId) + messagePath;
         Message message = new Message(content);
         restTemplate.postForLocation(path, message);
     }

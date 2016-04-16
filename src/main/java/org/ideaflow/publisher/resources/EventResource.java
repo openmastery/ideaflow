@@ -27,56 +27,56 @@ import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path(ResourcePaths.TASK_PATH + "/{taskName}" + ResourcePaths.EVENT_PATH)
+@Path(ResourcePaths.TASK_PATH + "/{taskId}" + ResourcePaths.EVENT_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class EventResource {
 
 	@POST
 	@Path(ResourcePaths.CONFLICT_PATH + ResourcePaths.START_PATH)
-	public void startConflict(@PathParam("taskName") String taskName, String question) {
-		System.out.println("Start Conflict: " + taskName + ", " + question);
+	public void startConflict(@PathParam("taskId") String taskId, String question) {
+		System.out.println("Start Conflict: " + taskId + ", " + question);
 	}
 
 	@POST
 	@Path(ResourcePaths.CONFLICT_PATH + ResourcePaths.STOP_PATH)
-	public void stopConflict(@PathParam("taskName") String taskName, String resolution) {
-		System.out.println("Stop Conflict: " + taskName + ", " + resolution);
+	public void stopConflict(@PathParam("taskId") String taskId, String resolution) {
+		System.out.println("Stop Conflict: " + taskId + ", " + resolution);
 	}
 
     @POST
     @Path(ResourcePaths.LEARNING_PATH + ResourcePaths.START_PATH)
-    public void startLearning(@PathParam("taskName") String taskName, BandStart bandStart) {
-        System.out.println("Start Learning: " + taskName + ", " + bandStart);
+    public void startLearning(@PathParam("taskId") String taskId, BandStart bandStart) {
+        System.out.println("Start Learning: " + taskId + ", " + bandStart);
     }
 
     @POST
     @Path(ResourcePaths.LEARNING_PATH + ResourcePaths.STOP_PATH)
-    public void stopLearning(@PathParam("taskName") String taskName) {
-        System.out.println("Stop Learning: " + taskName);
+    public void stopLearning(@PathParam("taskId") String taskId) {
+        System.out.println("Stop Learning: " + taskId);
     }
 
     @POST
     @Path(ResourcePaths.REWORK_PATH + ResourcePaths.START_PATH)
-    public void startRework(@PathParam("taskName") String taskName, BandStart bandStart) {
-        System.out.println("Start Rework: " + taskName + ", " + bandStart);
+    public void startRework(@PathParam("taskId") String taskId, BandStart bandStart) {
+        System.out.println("Start Rework: " + taskId + ", " + bandStart);
     }
 
     @POST
     @Path(ResourcePaths.REWORK_PATH + ResourcePaths.STOP_PATH)
-    public void stopRework(@PathParam("taskName") String taskName) {
-        System.out.println("Stop Rework: " + taskName);
+    public void stopRework(@PathParam("taskId") String taskId) {
+        System.out.println("Stop Rework: " + taskId);
     }
 
     @POST
     @Path(ResourcePaths.NOTE_PATH)
-    public void addNote(@PathParam("taskName") String taskName, Message message) {
-        System.out.println("Add Note: " + taskName + ", " + message);
+    public void addNote(@PathParam("taskId") String taskId, Message message) {
+        System.out.println("Add Note: " + taskId + ", " + message);
     }
 
     @POST
     @Path(ResourcePaths.COMMIT_PATH)
-    public void addCommit(@PathParam("taskName") String taskName, Message message) {
-        System.out.println("Add Commit: " + taskName + ", " + message);
+    public void addCommit(@PathParam("taskId") String taskId, Message message) {
+        System.out.println("Add Commit: " + taskId + ", " + message);
     }
 
 }
