@@ -16,8 +16,8 @@
 package org.ideaflow.publisher.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.ideaflow.publisher.ComponentTest
 import java.time.LocalDate
+import org.ideaflow.publisher.ComponentTest
 import spock.lang.Specification
 
 @ComponentTest
