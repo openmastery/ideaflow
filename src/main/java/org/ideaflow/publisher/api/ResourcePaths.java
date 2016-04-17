@@ -35,4 +35,11 @@ public class ResourcePaths {
 	public static final String NOTE_PATH = "/note";
 	public static final String EDITOR_PATH = "/editor";
 	public static final String IDLE_PATH = "/idle";
+
+	// timeline paths
+	public static final String TIMELINE_PATH = "/timeline";
+	public static final String DAY_PATH = "/day";
+	public static final String USER_PATH = "/user";
+	public static final String RECENT_PATH = "/recent";
+	public static final String PROJECT_PATH = "/project";
 }
