@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.resources;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -11,20 +12,25 @@ import org.ideaflow.publisher.api.Task;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path(ResourcePaths.TASK_PATH + "/{taskId}")
+@Path(ResourcePaths.TASK_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class TaskResource {
 
 	@PUT
-	@Path(ResourcePaths.ACTIVATE_PATH)
+	@Path("/{taskId}" + ResourcePaths.ACTIVATE_PATH)
 	public void activate(@PathParam("taskId") String taskId) {
 		System.out.println("Activate task: " + taskId);
 	}
 
 	@POST
-	public void create(@PathParam("taskId") String taskId, Task task) {
-		task.setTaskId(taskId);
+	public void create(Task task) {
 		System.out.println("Create task: " + task);
+	}
+
+	@GET
+	public Task active() {
+		System.out.println("Get active");
+		return new Task();
 	}
 
 }
