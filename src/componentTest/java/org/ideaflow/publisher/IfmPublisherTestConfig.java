@@ -17,7 +17,7 @@ package org.ideaflow.publisher;
 
 import groovyx.net.http.RESTClient;
 import java.net.URISyntaxException;
-import org.ideaflow.publisher.client.EventClient;
+import org.ideaflow.publisher.client.IdeaFlowClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,8 +32,8 @@ public class IfmPublisherTestConfig {
 	private String hostUri;
 
 	@Bean
-	public EventClient eventClient() {
-		return new EventClient(hostUri);
+	public IdeaFlowClient eventClient() {
+		return new IdeaFlowClient(hostUri);
 	}
 
 	@Bean

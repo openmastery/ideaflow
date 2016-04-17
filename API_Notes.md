@@ -16,6 +16,7 @@ IdeaFlowStateMachine {
 
 	toProgress()
 
+    // TODO: needs to look more like EventResource API
 }
 
 IdeaFlowState {
@@ -33,6 +34,32 @@ IdeaFlowState {
 
 IdeaFlowStateType {
 	List<IdeaFlowStateType> allowedTransitions
+}
+
+	
+ExecutionActivity {
+    String executionTarget
+    Long duration
+}
+
+EditorActivity {
+	String fileName
+	String folderPath
+	boolean isModified
+	String navigateFromLink (Did the developer decide to "zoom in" from the previous file?)
+	Long duration
+}
+
+IdleActivity {
+    Duration duration
+}
+
+TaskActivationEvent {
+    String taskId
+}
+
+UserEvent {
+    String comment
 }
 
 ### ALL LEGAL TRANSITIONS
@@ -86,21 +113,8 @@ EditorActivityStream extends ActivityStream {
     List<EditorActivity> editorActivities
 }
 
-EditorActivity {
-	String fileName
-	String folderPath
-	boolean isModified
-	String navigateFromLink (Did the developer decide to "zoom in" from the previous file?)
-	Long duration
-}
-
 ExecutionActivityStream extends ActivityStream {
     List<ExecutionActivity> executionActivities
-}
-
-ExecutionActivity {
-    String executionTarget
-    Long duration
 }
 
 BrowserActivityStream extends ActivityStream {
@@ -124,6 +138,7 @@ UserEventStream extends ActivityStream {
 
 TaskActivationEventStream extends ActivityStream {
 	List<TaskActivationEvent> taskActivationEvents (taskId)
+}	
 
 # OTHER STUFF
 

@@ -15,19 +15,21 @@
  */
 package org.ideaflow.publisher.resources;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.ideaflow.publisher.api.IdeaFlowState;
 import org.ideaflow.publisher.api.Message;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path(ResourcePaths.TASK_PATH + "/{taskId}" + ResourcePaths.EVENT_PATH)
+@Path(ResourcePaths.TASK_PATH + "/{taskId}" + ResourcePaths.IDEAFLOW_PATH)
 @Produces(MediaType.APPLICATION_JSON)
-public class EventResource {
+public class IdeaFlowResource {
 
 	@POST
 	@Path(ResourcePaths.CONFLICT_PATH + ResourcePaths.START_PATH)
@@ -67,14 +69,16 @@ public class EventResource {
 
 	@POST
 	@Path(ResourcePaths.NOTE_PATH)
-	public void addNote(@PathParam("taskId") String taskId, Message message) {
+	public void addUserNote(@PathParam("taskId") String taskId, Message message) {
 		System.out.println("Add Note: " + taskId + ", " + message);
 	}
 
-	@POST
-	@Path(ResourcePaths.COMMIT_PATH)
-	public void addCommit(@PathParam("taskId") String taskId, Message message) {
-		System.out.println("Add Commit: " + taskId + ", " + message);
+	@GET
+	@Path(ResourcePaths.ACTIVE_STATE_PATH)
+	public IdeaFlowState activeState(@PathParam("taskId") String taskId) {
+		System.out.println("Get Active State: " + taskId);
+		return null;
 	}
+
 
 }

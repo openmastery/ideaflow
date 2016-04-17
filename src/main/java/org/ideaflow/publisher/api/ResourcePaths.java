@@ -21,14 +21,16 @@ public class ResourcePaths {
 	public static final String TASK_PATH = "/task";
 	public static final String ACTIVATE_PATH = "/activate";
 
-	// event paths
-	public static final String EVENT_PATH = "/event";
-	public static final String START_PATH = "/start";
-	public static final String STOP_PATH = "/stop";
+	// ideaflow paths
+	public static final String IDEAFLOW_PATH = "/ideaflow";
 	public static final String CONFLICT_PATH = "/conflict";
 	public static final String LEARNING_PATH = "/learning";
 	public static final String REWORK_PATH = "/rework";
+	public static final String START_PATH = "/start";
+	public static final String STOP_PATH = "/stop";
+	public static final String ACTIVE_STATE_PATH = "/activeState";
+
+	// activity paths
 	public static final String NOTE_PATH = "/note";
-	public static final String COMMIT_PATH = "/commit";
 
 }

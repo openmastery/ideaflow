@@ -1,0 +1,207 @@
+# Idea Flow Tool Design
+
+Model considerations
+
+Handling time...
+
+Treat each user's Idea Flow as a single stream of time that can be attributed to working on different tasks, i.e. there is no multi-tasking, only task-switching.
+
+Task blocked... able to annotate a task as blocked.
+
+StoryId is an annotation on Idea Flow activity.  Nevermind have stateful local agent.  The posts to the server will be stateless.
+
+REST Service design:
+
+activity/editor
+activity/browser
+activity/execution
+{
+	duration
+}
+activity/idle  (turn any activity into an idle activity.  mark the original activity with idle)
+
+activity/note {
+	"time":
+	"note": "hello!"
+}
+
+ideaflow/conflict/start
+{
+	"startTime":
+	"question":
+}
+
+
+ideaflow/conflict/end
+{
+	"endTime":
+	"resolution":
+}
+
+The current state should be represented within the last published activity.
+
+For example, with nested conflicts, should be something like:
+
+ideaflow/conflict/start
+{
+	"startTime":
+	"question":
+	"containingBand": "learning"
+}
+
+ideaflow/conflict/end
+{
+	"endTime":
+	"resolution":
+	"containingBand": "learning"
+}
+
+For the unnesting operation, rather than edit history, the containing band will reference the fact that it's an unnest operation (prior start was nested conflict, new state is conflict)
+
+ideaflow/rework/end
+{
+	"startTime":
+	"unnesting": "true" (could also be an attribute of ideaflow/learning/end)
+}
+
+Give me the active state for task?
+
+task/taskId GET
+returns 
+{
+	taskId: 
+	project:
+	buttonState:
+	activeBand: information so conflict would have the question (ends could be correlated to starts for conflicts)
+	isLearning:
+	isRework:
+}
+
+In addition to what buttons are pressed, we need to be able to retrieve the conflict question when the user wants to resolve the conflict.  State initialization is based on recent active state.  In most cases, I can read in the last button activity to derive the active button state.  In the case of unnesting, I have to read the last two button activities, since the conflict state will be one state prior to the unnesting operation.
+
+To start a new task, user would create a new task in app and specify:
+taskId : maps to storyId in task management application
+project : per codebase scope, create new project
+author : the id of the specific developer.  Can find all tasks per developer.  Configured on local-agent?
+
+# Task Activate/Switch
+
+task/taskId/activate (used for task switch no payload, PUT)
+
+when you activate, takes the delta between the last activity and the activation time, and records it to the task as a task-switch with duration delta.
+
+task (used on create, POST)
+{
+	name: "us-1234"
+	project: "project"
+}
+
+return a 409 if the task already exists on resume, post to activate instead on failure.
+
+## A task switch is idle time relative to the task
+
+Active task is the task I'm trying to view or modify.  By activating.
+Inactive tasks are all other tasks.
+So if any segment of an inactive task (a task can have multiple segments) falls between the start and end of an active task, the segments are considered idle time in the active task.  I can calculate idle time by using the absence of activity during this time and assume that means the task is idle.  
+
+timeline generates the bands 
+
+
+## Editing Use Cases (server side REST API for IFM viewing and editing)
+
+List the tasks for this author:
+
+
+
+task/taskId GET
+{
+	name:
+	project:
+}
+
+author/authorId/task/taskId/timeline -- bands are reported with relative time and the eventList and idle/task-switch activity are subtracted from the absolute times to calculate the relative times for the timeline visualization.  Returns all  timeline segments for the task + idle & task switch activity as part of the band list.
+
+timeline/author/authorId/task/taskId GET  
+{
+	taskId:
+	project:
+	author:
+	taskStart
+	taskEnd
+	bandList
+}
+
+timeline/author/mlueders?start=friday&end=sunday
+{
+	list of timeline segments (list of timeline objects), each can have a different taskId. 
+	list of links to the task timeline for your specific segment
+}
+
+timeline/author/mlueders
+{
+	list of task timelines
+}
+
+What if same taskId across multiple authors.
+
+activity/author/mlueders?start=friday&end=sunday
+
+list of activity segment detail data all mixed in order cross multiple 
+
+activiity/author/mlueders/task/taskId?type=editor
+
+detail data all mixed in order for a task
+
+# Editing Use Cases
+
+chunk of activity is idle.  From here to here is idle.  Create an idle band from start to end time based on the selection of activity that we want to mark as idle.  From here to here is another taskId.  
+
+annotation/idle POST
+{
+	author: name
+	start:
+	end:
+}
+
+annotation/task POST
+{
+	taskId:
+	authorId:
+	start:
+	end:
+}
+
+annotation/event/eventId POST
+attach annotation to eventId.  could be band start, task start, could be subtask start event.
+
+
+annotation/annotationId DELETE
+{
+	anno
+}
+
+
+
+
+
+
+
+
+
+
+
+Slave applications (browser) will publish activity without taskId and the latest task will be assumed.
+
+
+
+
+Visualizing the timeline...
+
+One page that shows available IFM task...
+
+Tasks, author, project
+
+So let's think about editing...
+
+
+

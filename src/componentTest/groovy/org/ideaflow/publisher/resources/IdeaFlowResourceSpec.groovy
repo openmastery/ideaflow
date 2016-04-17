@@ -16,15 +16,15 @@
 package org.ideaflow.publisher.resources
 
 import org.ideaflow.publisher.ComponentTest
-import org.ideaflow.publisher.client.EventClient
+import org.ideaflow.publisher.client.IdeaFlowClient
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
 @ComponentTest
-class EventResourceSpec extends Specification {
+class IdeaFlowResourceSpec extends Specification {
 
 	@Autowired
-	private EventClient eventClient
+	private IdeaFlowClient eventClient
 
 	def "event methods should not explode"() {
 		when:
@@ -35,7 +35,6 @@ class EventResourceSpec extends Specification {
 		eventClient.startRework("task", "rework comment")
 		eventClient.stopRework("task")
 		eventClient.addNote("task", "my note")
-		eventClient.addCommit("task", "my message")
 
 		then:
 		notThrown(Throwable)

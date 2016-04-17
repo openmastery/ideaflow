@@ -20,19 +20,19 @@ import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-public class EventClient {
+public class IdeaFlowClient {
 
 	private String resourceUri;
 	private RestTemplate restTemplate;
 
-	public EventClient(String hostUri) {
+	public IdeaFlowClient(String hostUri) {
 		resourceUri = hostUri + ResourcePaths.TASK_PATH;
 		restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
 	}
 
 	private String getResourcePath(String taskId) {
-		return resourceUri + "/" + taskId + ResourcePaths.EVENT_PATH;
+		return resourceUri + "/" + taskId + ResourcePaths.IDEAFLOW_PATH;
 	}
 
 	public void startConflict(String taskId, String question) {
@@ -73,10 +73,6 @@ public class EventClient {
 
 	public void addNote(String taskId, String note) {
 		addMessage(taskId, ResourcePaths.NOTE_PATH, note);
-	}
-
-	public void addCommit(String taskId, String message) {
-		addMessage(taskId, ResourcePaths.COMMIT_PATH, message);
 	}
 
 	private void addMessage(String taskId, String messagePath, String content) {
