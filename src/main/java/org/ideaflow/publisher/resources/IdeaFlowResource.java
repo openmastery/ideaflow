@@ -22,7 +22,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.ideaflow.publisher.api.IdeaFlowState;
-import org.ideaflow.publisher.api.Message;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.stereotype.Component;
 
@@ -65,12 +64,6 @@ public class IdeaFlowResource {
 	@Path(ResourcePaths.REWORK_PATH + ResourcePaths.STOP_PATH)
 	public void stopRework(@PathParam("taskId") String taskId) {
 		System.out.println("Stop Rework: " + taskId);
-	}
-
-	@POST
-	@Path(ResourcePaths.NOTE_PATH)
-	public void addUserNote(@PathParam("taskId") String taskId, Message message) {
-		System.out.println("Add Note: " + taskId + ", " + message);
 	}
 
 	@GET

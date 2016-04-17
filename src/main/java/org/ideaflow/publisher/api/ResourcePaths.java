@@ -31,6 +31,8 @@ public class ResourcePaths {
 	public static final String ACTIVE_STATE_PATH = "/activeState";
 
 	// activity paths
+	public static final String ACTIVITY_PATH = "/activity";
 	public static final String NOTE_PATH = "/note";
-
+	public static final String EDITOR_PATH = "/editor";
+	public static final String IDLE_PATH = "/idle";
 }

@@ -15,7 +15,6 @@
  */
 package org.ideaflow.publisher.client;
 
-import org.ideaflow.publisher.api.Message;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
@@ -69,16 +68,6 @@ public class IdeaFlowClient {
 
 	public void stopRework(String taskId) {
 		stopBand(taskId, ResourcePaths.REWORK_PATH);
-	}
-
-	public void addNote(String taskId, String note) {
-		addMessage(taskId, ResourcePaths.NOTE_PATH, note);
-	}
-
-	private void addMessage(String taskId, String messagePath, String content) {
-		String path = getResourcePath(taskId) + messagePath;
-		Message message = new Message(content);
-		restTemplate.postForLocation(path, message);
 	}
 
 }

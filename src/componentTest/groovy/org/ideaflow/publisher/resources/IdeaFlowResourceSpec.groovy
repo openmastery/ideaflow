@@ -34,7 +34,6 @@ class IdeaFlowResourceSpec extends Specification {
 		eventClient.stopLearning("task")
 		eventClient.startRework("task", "rework comment")
 		eventClient.stopRework("task")
-		eventClient.addNote("task", "my note")
 
 		then:
 		notThrown(Throwable)
