@@ -65,15 +65,22 @@ And a list of requirement specifications for testing.
 
 ## ACCESSING THE DATA
 
-AnnotatedTimelineStream is an iterable stream that will be able to block and receive streaming timeline data so that a UI
-can display live updates in Idea Flow, or enable active Idea Flow dashboards at the aggregate level.  In the short-term,
+AnnotatedTimelineStream is an iterable composite stream that will be able to block and receive streaming timeline data so that a UI
+can display live updates in Idea Flow Maps, or enable streaming Idea Flow dashboards at the aggregate level.  In the short-term,
 we won't be using streams but will be designing an iterable resource to make it easy to move this direction later.
 
 AnnotatedTimelineStream implements Iterable {
-	List<IdeaFlowState> ideaFlowStateTransitions
+	IdeaFlowActivityStream ideaFlowActivityStream
+	IdleActivityStream idleActivityStream
+	TaskActivationEventStream taskActivationEventStream
+	UserEventStream userEventStream
 }
 
 ActivityStream is an iterable stream of activity that occurs in parallel of the IdeaFlowStateMachine.  Example implementations:
+
+IdeaFlowActivityStream extends ActivityStream {
+	List<IdeaFlowState> ideaFlowActivities
+}
 
 EditorActivityStream extends ActivityStream {
     List<EditorActivity> editorActivities
@@ -105,8 +112,7 @@ IdleActivityStream extends ActivityStream {
 }
 
 "Activities" are different from "Events" in that one has duration, and another is a moment of time,
-but events are really just a special kind of activity, that can be streamed like anything else.
-
+but events are really just a special kind of activity, that can be streamed like anything ActivityStream.
 
 GitEventStream extends ActivityStream {
 	List<GitEvent> gitEvents (commit, branch, push, etc)
@@ -116,10 +122,16 @@ UserEventStream extends ActivityStream {
 	List<UserEvent> userEvents (comment, subtask)
 }
 
-TaskActivationEvent extends ActivityStream {
+TaskActivationEventStream extends ActivityStream {
 	List<TaskActivationEvent> taskActivationEvents (taskId)
 
 # OTHER STUFF
+
+The plugin will need to be able to work in "offline mode" whenever it gets disconnected from the internet.  The messages
+should spool to a file, then send a batch of updates with local timestamps to the servers to catch up.  We may need to have
+a time-adjustment algorithm to translate local time into server time when we write the batch records.
+
+When the timeline thumbnail is rendered, we will need the AnnotatedTimelineStream for display.
 
 
 ## How does a developer know when they are doing lots of task-switching?
