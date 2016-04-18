@@ -11,31 +11,31 @@ class TimelineGeneratorSpec extends Specification {
 
     }
 
-    def "Timelines SHOULD include a list of non-nested bands with their relative time band positions"() {
+    def "Timeline SHOULD include a list of non-nested bands with their relative time band positions"() {
 
     }
 
-    def "Timelines SHOULD include a list of nested bands with their relative time band positions"() {
+    def "Timeline SHOULD include a list of nested bands with their relative time band positions"() {
 
     }
 
-    def "Timelines SHOULD collapse idle activity so that relative time calculations ignore idle time."() {
+    def "Timeline SHOULD collapse idle activity so that relative time calculations ignore idle time."() {
 
     }
 
-    def "Timelines SHOULD include a list of UserNotes for annotating the timeline data with events."() {
+    def "Timeline SHOULD include a list of UserNotes for annotating the timeline data with events."() {
 
     }
 
-    def "TaskTimelines SHOULD include a list of generated DayStart events for annotating the timeline to show when days begin."() {
+    def "TaskTimeline SHOULD include a list of generated DayStart events for annotating the timeline to show when days begin."() {
 
     }
 
-    def "Timelines SHOULD include a list of generated Disruption events when task-switching occurs during the timeline."() {
+    def "Timeline SHOULD include a list of generated Disruption events when task-switching occurs during the timeline."() {
 
     }
 
-    def "Timelines SHOULD include a list of IdleActivities that show relative position + duration during the timeline."() {
+    def "Timeline SHOULD include a list of IdleActivities that show relative position + duration in the timeline."() {
 
     }
 
@@ -46,7 +46,7 @@ class TimelineGeneratorSpec extends Specification {
 
     }
 
-    def "DayTimelines SHOULD include a timeline composite with multiple tasks WHEN there are multiple tasks within a day."() {
+    def "DayTimeline SHOULD include a timeline composite with multiple tasks WHEN there are multiple tasks within a day."() {
 
     }
 

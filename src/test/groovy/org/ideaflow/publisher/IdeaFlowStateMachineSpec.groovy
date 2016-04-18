@@ -50,27 +50,27 @@ class IdeaFlowStateMachineSpec extends Specification {
 
     }
 
-    def "WHEN LearningNestedConflict then stop Conflict SHOULD transition to Learning."() {
+    def "WHEN LearningNestedConflict then stop Conflict SHOULD transition to prior Learning state."() {
 
     }
 
-    def "WHEN ReworkNestedConflict then stop Conflict SHOULD transition to Rework."() {
+    def "WHEN ReworkNestedConflict then stop Conflict SHOULD transition to prior Rework state."() {
 
     }
 
-    def "WHEN LearningNestedConflict then stop Learning SHOULD transition to Conflict (unnested) state."() {
+    def "WHEN LearningNestedConflict then stop Learning SHOULD unnest the Conflict (same conflict)."() {
 
     }
 
-    def "WHEN ReworkNestedConflict then stop Rework SHOULD transition to Conflict (unnested) state."() {
+    def "WHEN ReworkNestedConflict then stop Rework SHOULD unnest the Conflict (same conflict)."() {
 
     }
 
-    def "WHEN LearningNestedConflict SHOULD NOT allow start Rework."() {
+    def "WHEN LearningNestedConflict SHOULD NOT allow start Rework (disabled)."() {
 
     }
 
-    def "WHEN ReworkNestedConflict SHOULD NOT allow start Learning."() {
+    def "WHEN ReworkNestedConflict SHOULD NOT allow start Learning (disabled)."() {
 
     }
 }
