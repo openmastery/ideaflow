@@ -22,4 +22,27 @@ public class IdeaFlowState {
 	private String startingComment;
 	private String endingComment;
 
+	private boolean isLinkedToPrevious;
+	private boolean isNested;
+
+	public boolean isOfType(IdeaFlowStateType ... typesToCheck) {
+		for (IdeaFlowStateType typeToCheck : typesToCheck) {
+			if (typeToCheck == type) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static IdeaFlowStateBuilder from(IdeaFlowState state) {
+		return builder().type(state.getType())
+				.start(state.getStart())
+				.end(state.getEnd())
+				.startingComment(state.getStartingComment())
+				.endingComment(state.getEndingComment())
+				.isLinkedToPrevious(state.isLinkedToPrevious())
+				.isNested(state.isNested())
+				.taskId(state.getTaskId());
+	}
+
 }
