@@ -4,11 +4,23 @@ import org.ideaflow.publisher.api.IdeaFlowState
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import spock.lang.Specification
 
-import static org.ideaflow.publisher.api.IdeaFlowStateType.*;
+import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
+import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
+import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
+import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK;
 
 class IdeaFlowStateMachineSpec extends Specification {
 
-	IdeaFlowStateMachine stateMachine = new IdeaFlowStateMachine()
+	class TestIdeaFlowStateMachine extends IdeaFlowStateMachine implements GroovyInterceptable {
+		def invokeMethod(String name, args) {
+			// the tests rely on ordering based on start time - put in a sleep so that all start times are
+			// different by at least one
+			Thread.sleep(1)
+			return metaClass.getMetaMethod(name, args).invoke(this, args)
+		}
+	}
+
+	IdeaFlowStateMachine stateMachine = new TestIdeaFlowStateMachine()
 	IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
 
 	def setup() {
@@ -35,10 +47,10 @@ class IdeaFlowStateMachineSpec extends Specification {
 		}
 	}
 
-	private void assertExpectedStates(IdeaFlowStateType ... expectedTypes) {
+	private void assertExpectedStates(IdeaFlowStateType... expectedTypes) {
 		List<IdeaFlowState> states = getPersistedStatesOrderdByStartTime()
 		for (int i = 0; i < expectedTypes.length; i++) {
-			assert states.size() > i : "Expected types=${expectedTypes}, actual states=${states}"
+			assert states.size() > i: "Expected types=${expectedTypes}, actual states=${states}"
 			assert states[i].type == expectedTypes[i]
 			assert states[i].end != null
 		}

@@ -18,7 +18,7 @@ import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK;
 public class IdeaFlowStateMachine {
 
 	@Inject
-	private IdeaFlowPersistenceService ideaFlowPersistenceService;
+	protected IdeaFlowPersistenceService ideaFlowPersistenceService;
 
 	private IdeaFlowState getActiveState() {
 		IdeaFlowState state = ideaFlowPersistenceService.getActiveState();
@@ -112,10 +112,16 @@ public class IdeaFlowStateMachine {
 		IdeaFlowState oldActiveState = getActiveState();
 		IdeaFlowState newActiveState = createStartState(type, comment);
 
+		if (getContainingState() != null) {
+			// TODO: log warning
+			throw new InvalidTransitionException();
+		}
+
+		IdeaFlowStateType otherNonConflictType = type == LEARNING ? REWORK : LEARNING;
 		if (oldActiveState.isOfType(PROGRESS)) {
 			IdeaFlowState stateToSave = createEndProgress(oldActiveState);
 			ideaFlowPersistenceService.saveTransition(stateToSave, newActiveState);
-		} else if (oldActiveState.isOfType(CONFLICT, LEARNING, REWORK))	{
+		} else if (oldActiveState.isOfType(CONFLICT, otherNonConflictType)) {
 			IdeaFlowState previousState = createEndState(oldActiveState, comment);
 			newActiveState.setLinkedToPrevious(true);
 			ideaFlowPersistenceService.saveTransition(previousState, newActiveState);
@@ -135,7 +141,7 @@ public class IdeaFlowStateMachine {
 			IdeaFlowState containingState = getContainingState();
 			if (containingState != null) {
 				IdeaFlowState stateToSave = createEndState(containingState, resolution);
-//				oldActiveState.setNested(false);
+				oldActiveState.setNested(false);
 				ideaFlowPersistenceService.saveTransition(stateToSave, oldActiveState);
 			} else {
 				// TODO: log warning
