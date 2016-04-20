@@ -32,4 +32,8 @@ public class ActivityResource {
 		System.out.println("Add Note: " + taskId + ", " + message);
 	}
 
+	//Developers have been creating "note types" manually using [Subtask] and [Prediction] as prefixes in their comments.
+	//Subtask events in particular I'm using to derive a "Subtask band" and collapse all the details of events/bands
+	// that happen within a subtask, so you can "drill in" on one subtask at a time ford a complex IFM.
+
 }

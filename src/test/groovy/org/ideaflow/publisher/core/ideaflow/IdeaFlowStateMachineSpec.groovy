@@ -67,21 +67,45 @@ class IdeaFlowStateMachineSpec extends Specification {
 		assertExpectedStates(PROGRESS, LEARNING)
 		assertActiveState(REWORK)
 		assert persistenceService.activeState.isLinkedToPrevious()
+		assert getPersistedState(LEARNING).endingComment == "rework" //TODO is this what we really want to do?
 	}
 
 	def "WHEN Rework then start Learning SHOULD link Learning state to previous Rework state"() {
-		expect:
-		false
+		when:
+		stateMachine.startTask()
+		stateMachine.startRework("rework")
+		stateMachine.startLearning("learning")
+		stateMachine.stopLearning("learning")
+
+		then:
+		assertExpectedStates(PROGRESS, REWORK, LEARNING)
+		assertActiveState(PROGRESS)
+		assert getPersistedState(LEARNING).isLinkedToPrevious()
 	}
 
 	def "WHEN Conflict then start Learning SHOULD link Learning state to previous Conflict state"() {
-		expect:
-		false
+		when:
+		stateMachine.startTask()
+		stateMachine.startConflict("conflict")
+		stateMachine.startLearning("learning")
+		stateMachine.stopLearning("learning")
+
+		then:
+		assertExpectedStates(PROGRESS, CONFLICT, LEARNING)
+		assert getPersistedState(LEARNING).isLinkedToPrevious()
+		assert getPersistedState(CONFLICT).endingComment == "learning" //TODO is this what we want? conflict resolution is learning comment
 	}
 
 	def "WHEN Conflict then start Rework SHOULD link Rework state to previous Conflict state"() {
-		expect:
-		false
+		when:
+		stateMachine.startTask()
+		stateMachine.startConflict("conflict")
+		stateMachine.startRework("rework")
+		stateMachine.stopRework("rework")
+
+		then:
+		assertExpectedStates(PROGRESS, CONFLICT, REWORK)
+		assert getPersistedState(REWORK).isLinkedToPrevious()
 	}
 
 	def "WHEN Learning then start Conflict SHOULD transition to a LearningNestedConflict state"() {
@@ -106,8 +130,29 @@ class IdeaFlowStateMachineSpec extends Specification {
 	}
 
 	def "WHEN Rework then start Conflict SHOULD transition to a ReworkNestedConflict state"() {
-		expect:
-		false
+		when:
+		stateMachine.startTask()
+		stateMachine.startRework("rework")
+		stateMachine.startConflict("conflict")
+		stateMachine.stopConflict("conflict")
+
+		then:
+		assertExpectedStates(PROGRESS, CONFLICT)
+		assertActiveState(REWORK)
+		assert getPersistedState(CONFLICT).isNested()
+
+		when:
+		stateMachine.startConflict("conflict")
+		stateMachine.stopConflict("conflict")
+		stateMachine.stopRework("rework")
+
+		then:
+		//TODO failing intermittently in sequence PROGRESS, CONFLICT, REWORK, CONFLICT
+//[IdeaFlowState(type=PROGRESS, taskId=null, start=2016-04-19T18:39:48.819, end=2016-04-19T18:39:48.819, startingComment=null, endingComment=null, isLinkedToPrevious=false, isNested=false), IdeaFlowState(type=CONFLICT, taskId=null, start=2016-04-19T18:39:48.819, end=2016-04-19T18:39:48.819, startingComment=conflict, endingComment=conflict, isLinkedToPrevious=false, isNested=true), IdeaFlowState(type=REWORK, taskId=null, start=2016-04-19T18:39:48.819, end=2016-04-19T18:39:48.820, startingComment=rework, endingComment=rework, isLinkedToPrevious=false, isNested=false), IdeaFlowState(type=CONFLICT, taskId=null, start=2016-04-19T18:39:48.820, end=2016-04-19T18:39:48.820, startingComment=conflict, endingComment=conflict, isLinkedToPrevious=false, isNested=true)]
+
+		assertExpectedStates(PROGRESS, REWORK, CONFLICT, CONFLICT)
+		assertActiveState(PROGRESS)
+		assertContainingState(null)
 	}
 
 	/* Explicitly ending states */
@@ -137,28 +182,80 @@ class IdeaFlowStateMachineSpec extends Specification {
 	}
 
 	def "WHEN Conflict then stop Conflict SHOULD transition to Progress"() {
-		expect:
-		false
+		when:
+		stateMachine.startTask()
+		stateMachine.startConflict("conflict")
+		stateMachine.stopConflict("conflict")
+
+		then:
+		assertExpectedStates(PROGRESS, CONFLICT)
+		assertActiveState(PROGRESS)
 	}
 
 	def "WHEN LearningNestedConflict then stop Conflict SHOULD transition to prior Learning state"() {
-		expect:
-		false
+		when:
+		stateMachine.startTask()
+		stateMachine.startLearning("learning")
+		stateMachine.startConflict("conflict")
+		stateMachine.stopConflict("conflict")
+
+		then:
+		assertExpectedStates(PROGRESS, CONFLICT)
+		assertActiveState(LEARNING)
 	}
 
 	def "WHEN ReworkNestedConflict then stop Conflict SHOULD transition to prior Rework state"() {
-		expect:
-		false
+		when:
+		stateMachine.startTask()
+		stateMachine.startRework("rework")
+		stateMachine.startConflict("conflict")
+		stateMachine.stopConflict("conflict")
+
+		then:
+		assertExpectedStates(PROGRESS, CONFLICT)
+		assertActiveState(REWORK)
 	}
 
 	def "WHEN LearningNestedConflict then stop Learning SHOULD unnest the Conflict (same conflict)"() {
-		expect:
-		false
+		when:
+		stateMachine.startTask()
+		stateMachine.startLearning("learning")
+		stateMachine.startConflict("conflict")
+
+		then:
+		assertContainingState(LEARNING)
+		assertActiveState(CONFLICT)
+		assert persistenceService.activeState.isNested()
+
+		when:
+		stateMachine.stopLearning("learning")
+
+		then:
+		assertExpectedStates(PROGRESS, LEARNING)
+		assertActiveState(CONFLICT)
+		assertContainingState(null);
+		assert persistenceService.activeState.isNested() == false
 	}
 
 	def "WHEN ReworkNestedConflict then stop Rework SHOULD unnest the Conflict (same conflict)"() {
-		expect:
-		false
+		when:
+		stateMachine.startTask()
+		stateMachine.startRework("rework")
+		stateMachine.startConflict("conflict")
+
+		then:
+		assertContainingState(REWORK)
+		assertActiveState(CONFLICT)
+		assert persistenceService.activeState.isNested()
+
+		when:
+		stateMachine.stopRework("rework")
+
+		then:
+		assertExpectedStates(PROGRESS, REWORK)
+		assertActiveState(CONFLICT)
+		assertContainingState(null);
+		assert persistenceService.activeState.isNested() == false
 	}
 
 	def "WHEN LearningNestedConflict SHOULD NOT allow start Rework (disabled)"() {
