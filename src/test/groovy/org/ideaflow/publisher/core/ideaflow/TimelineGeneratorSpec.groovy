@@ -17,18 +17,61 @@ import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
 
 class TimelineGeneratorSpec extends Specification {
 
-    IdeaFlowStateMachine stateMachine = new IdeaFlowStateMachine()
+    static class TimelineStateMachine {
+
+        private IdeaFlowStateMachine delegate
+        private MockTimeService timeService
+
+        TimelineStateMachine(IdeaFlowPersistenceService persistenceService, MockTimeService timeService) {
+            this.delegate = new IdeaFlowStateMachine()
+            delegate.timeService = timeService
+            delegate.ideaFlowPersistenceService = persistenceService
+            this.timeService = timeService
+        }
+
+        void startTaskAndAdvanceHours(int hours) {
+            delegate.startTask()
+            timeService.plusHours(hours)
+        }
+
+        void startBandAndAdvanceHours(IdeaFlowStateType type, int hours) {
+            if (type == LEARNING) {
+                delegate.startLearning("")
+            } else if (type == REWORK) {
+                delegate.startRework("")
+            } else if (type == CONFLICT) {
+                delegate.startConflict("")
+            } else {
+                throw new RuntimeException("Unknown type: ${type}")
+            }
+            timeService.plusHours(hours)
+        }
+
+        void endBandAndAdvanceHours(IdeaFlowStateType type, int hours) {
+            if (type == LEARNING) {
+                delegate.stopLearning("")
+            } else if (type == REWORK) {
+                delegate.stopRework("")
+            } else if (type == CONFLICT) {
+                delegate.stopConflict("")
+            } else {
+                throw new RuntimeException("Unknown type: ${type}")
+            }
+            timeService.plusHours(hours)
+        }
+
+    }
+
     IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
     MockTimeService timeService = new MockTimeService()
     TimelineGenerator generator = new TimelineGenerator()
+    TimelineStateMachine stateMachine
     LocalDateTime startTime
 
     def setup() {
-        stateMachine.timeService = timeService
-        stateMachine.ideaFlowPersistenceService = persistenceService
-
         startTime = LocalDateTime.from(timeService.now())
-        stateMachine.startTask()
+        stateMachine = new TimelineStateMachine(persistenceService, timeService)
+        stateMachine.startTaskAndAdvanceHours(1)
     }
 
     private List<IdeaFlowState> getStateListWithActiveCompleted() {
@@ -66,11 +109,8 @@ class TimelineGeneratorSpec extends Specification {
 
     def "SHOULD calculate duration for all TimeBands"() {
         given:
-        timeService.plusHour()
-        stateMachine.startRework("")
-        timeService.plusHours(2)
-        stateMachine.stopRework("")
-        timeService.plusMinutes(30)
+        stateMachine.startBandAndAdvanceHours(REWORK, 2)
+        stateMachine.endBandAndAdvanceHours(REWORK, 1)
 
         when:
         List<TimelineSegment> segmentList = generateTimelineSegments()
@@ -80,25 +120,19 @@ class TimelineGeneratorSpec extends Specification {
         assertTimeBands(segment.timeBands,
                         [PROGRESS, Duration.ofHours(1)],
                         [REWORK, Duration.ofHours(2)],
-                        [PROGRESS, Duration.ofMinutes(30)])
-        assert segment.duration == Duration.parse("PT3h30m")
+                        [PROGRESS, Duration.ofHours(1)])
+        assert segment.duration == Duration.ofHours(4)
         assert segmentList.size() == 1
         assert segment.timeBandGroups.isEmpty()
     }
 
     def "WHEN IdeaFlowStates are nested SHOULD create nested TimeBands"() {
         given:
-        timeService.plusHour()
-        stateMachine.startRework("")
-        timeService.plusHour()
-        stateMachine.startConflict("")
-        timeService.plusMinutes(30)
-        stateMachine.stopConflict("")
-        timeService.plusHour()
-        stateMachine.startConflict("")
-        timeService.plusMinutes(45)
-        stateMachine.stopConflict("")
-        timeService.plusHour()
+        stateMachine.startBandAndAdvanceHours(REWORK, 1)
+        stateMachine.startBandAndAdvanceHours(CONFLICT, 2)
+        stateMachine.endBandAndAdvanceHours(CONFLICT, 1)
+        stateMachine.startBandAndAdvanceHours(CONFLICT, 3)
+        stateMachine.endBandAndAdvanceHours(CONFLICT, 1)
 
         when:
         List<TimelineSegment> segmentList = generateTimelineSegments()
@@ -107,24 +141,20 @@ class TimelineGeneratorSpec extends Specification {
         TimelineSegment segment = segmentList[0]
         assertTimeBands(segment.timeBands,
                         [PROGRESS, Duration.ofHours(1)],
-                        [REWORK, Duration.parse("PT4h15m")])
+                        [REWORK, Duration.ofHours(8)])
         assertTimeBands(segment.timeBands[1].nestedBands,
-                        [CONFLICT, Duration.ofMinutes(30)],
-                        [CONFLICT, Duration.ofMinutes(45)])
-        assert segment.duration == Duration.parse("PT5h15m")
+                        [CONFLICT, Duration.ofHours(2)],
+                        [CONFLICT, Duration.ofHours(3)])
+        assert segment.duration == Duration.ofHours(9)
         assert segmentList.size() == 1
         assert segment.timeBandGroups.isEmpty()
     }
 
     def "WHEN IdeaFlowStates are linked SHOULD group bands into a TimeBandGroup"() {
         given:
-        timeService.plusHour()
-        stateMachine.startConflict("")
-        timeService.plusHour()
-        stateMachine.startLearning("")
-        timeService.plusHours(3)
-        stateMachine.startRework("")
-        timeService.plusHours(2)
+        stateMachine.startBandAndAdvanceHours(CONFLICT, 1)
+        stateMachine.startBandAndAdvanceHours(LEARNING, 3)
+        stateMachine.startBandAndAdvanceHours(REWORK, 2)
 
         when:
         List<TimelineSegment> segmentList = generateTimelineSegments()
@@ -143,15 +173,10 @@ class TimelineGeneratorSpec extends Specification {
 
     def "WHEN IdeaFlowStates are linked AND first state has nested conflicts SHOULD create TimeBandGroup including all bands"() {
         given:
-        timeService.plusHour()
-        stateMachine.startRework("")
-        timeService.plusHours(2)
-        stateMachine.startConflict("")
-        timeService.plusHour()
-        stateMachine.stopConflict("")
-        timeService.plusHours(3)
-        stateMachine.startLearning("")
-        timeService.plusHours(4)
+        stateMachine.startBandAndAdvanceHours(REWORK, 2)
+        stateMachine.startBandAndAdvanceHours(CONFLICT, 1)
+        stateMachine.endBandAndAdvanceHours(CONFLICT, 3)
+        stateMachine.startBandAndAdvanceHours(LEARNING, 4)
 
         when:
         List<TimelineSegment> segmentList = generateTimelineSegments()
@@ -173,21 +198,13 @@ class TimelineGeneratorSpec extends Specification {
         given:
 
         //conflict <- learning <-rework <- unnested conflict (rework ends after conflict start) <- learning
-		timeService.plusHour()
-		stateMachine.startConflict("")
-        timeService.plusHour()
-        stateMachine.startLearning("")
-        timeService.plusHours(2)
-        stateMachine.startRework("")
-        timeService.plusHour()
-        stateMachine.startConflict("") //nested
-        timeService.plusHours(3)
-        stateMachine.stopRework("") //unnest the conflict so it's linkable
-        timeService.plusHours(4)
-        stateMachine.startLearning("")
-        timeService.plusHours(5)
-        stateMachine.stopLearning("") //finish the group
-        timeService.plusHours(2)
+        stateMachine.startBandAndAdvanceHours(CONFLICT, 1)
+        stateMachine.startBandAndAdvanceHours(LEARNING, 2)
+        stateMachine.startBandAndAdvanceHours(REWORK, 1)
+        stateMachine.startBandAndAdvanceHours(CONFLICT, 3) //nested
+        stateMachine.endBandAndAdvanceHours(REWORK, 4) //unnest the conflict so it's linkable
+        stateMachine.startBandAndAdvanceHours(LEARNING, 5)
+        stateMachine.endBandAndAdvanceHours(LEARNING, 2) //finish the group
 
         when:
         List<TimelineSegment> segmentList = generateTimelineSegments()
@@ -195,33 +212,33 @@ class TimelineGeneratorSpec extends Specification {
         then:
         TimelineSegment segment = segmentList[0]
         assertTimeBands(segment.timeBands,
-                [PROGRESS, Duration.ofHours(1)],
-                [PROGRESS, Duration.ofHours(2)]
+                        [PROGRESS, Duration.ofHours(1)],
+                        [PROGRESS, Duration.ofHours(2)]
         )
         assertTimeBands(segment.timeBandGroups[0].linkedTimeBands,
-				[CONFLICT, Duration.ofHours(1)],
-				[LEARNING, Duration.ofHours(2)],
-                [REWORK, Duration.ofHours(1)],
-				[CONFLICT, Duration.ofHours(7)],
-				[LEARNING, Duration.ofHours(5)]
-		)
+                        [CONFLICT, Duration.ofHours(1)],
+                        [LEARNING, Duration.ofHours(2)],
+                        [REWORK, Duration.ofHours(1)],
+                        [CONFLICT, Duration.ofHours(7)],
+                        [LEARNING, Duration.ofHours(5)]
+        )
 
-		assert segment.timeBands.size() == 2
+        assert segment.timeBands.size() == 2
         assert segment.timeBandGroups.size() == 1
         assert segmentList.size() == 1
     }
 
-	def "WHEN idle time is within a Timeband SHOULD subtract relative time from band"() {
-		expect:
-		assert false
-	}
+    def "WHEN idle time is within a Timeband SHOULD subtract relative time from band"() {
+        expect:
+        assert false
+    }
 
-	def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {
-		expect:
-		assert false
-	}
+    def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {
+        expect:
+        assert false
+    }
 
-	def "SHOULD split timeline into multiple TimelineSegments by subtask"() {
+    def "SHOULD split timeline into multiple TimelineSegments by subtask"() {
         expect:
         assert false
     }
@@ -235,8 +252,6 @@ class TimelineGeneratorSpec extends Specification {
         expect:
         assert false
     }
-
-
 
 
 }
