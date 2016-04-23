@@ -1,30 +1,38 @@
 package org.ideaflow.publisher.core.ideaflow
 
+import java.time.LocalDateTime
 import org.ideaflow.publisher.api.IdeaFlowState
 import org.ideaflow.publisher.api.IdeaFlowStateType
+import org.ideaflow.publisher.core.TimeService
 import spock.lang.Specification
 
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
 import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
 import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
-import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK;
+import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
 
 class IdeaFlowStateMachineSpec extends Specification {
 
-	class TestIdeaFlowStateMachine extends IdeaFlowStateMachine implements GroovyInterceptable {
-		def invokeMethod(String name, args) {
+	static class TestTimeService implements TimeService {
+		@Override
+		LocalDateTime now() {
 			// the tests rely on ordering based on start time - put in a sleep so that all start times are
 			// different by at least one
 			Thread.sleep(1)
-			return metaClass.getMetaMethod(name, args).invoke(this, args)
+			LocalDateTime.now()
 		}
 	}
 
-	IdeaFlowStateMachine stateMachine = new TestIdeaFlowStateMachine()
-	IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
+
+	IdeaFlowStateMachine stateMachine = new IdeaFlowStateMachine()
 
 	def setup() {
-		stateMachine.ideaFlowPersistenceService = persistenceService;
+		stateMachine.timeService = new TestTimeService()
+		stateMachine.ideaFlowPersistenceService = new IdeaFlowInMemoryPersistenceService()
+	}
+
+	private IdeaFlowInMemoryPersistenceService getPersistenceService() {
+		stateMachine.ideaFlowPersistenceService
 	}
 
 	private IdeaFlowState getPersistedState(IdeaFlowStateType type) {

@@ -1,9 +1,9 @@
 package org.ideaflow.publisher.core.ideaflow;
 
-import java.time.LocalDateTime;
 import javax.inject.Inject;
 import org.ideaflow.publisher.api.IdeaFlowState;
 import org.ideaflow.publisher.api.IdeaFlowStateType;
+import org.ideaflow.publisher.core.TimeService;
 import org.springframework.stereotype.Component;
 
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT;
@@ -18,7 +18,9 @@ import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK;
 public class IdeaFlowStateMachine {
 
 	@Inject
-	protected IdeaFlowPersistenceService ideaFlowPersistenceService;
+	private TimeService timeService;
+	@Inject
+	private IdeaFlowPersistenceService ideaFlowPersistenceService;
 
 	private IdeaFlowState getActiveState() {
 		IdeaFlowState state = ideaFlowPersistenceService.getActiveState();
@@ -35,7 +37,7 @@ public class IdeaFlowStateMachine {
 	private IdeaFlowState createStartProgress() {
 		return IdeaFlowState.builder()
 				.type(PROGRESS)
-				.start(LocalDateTime.now())
+				.start(timeService.now())
 				.build();
 	}
 
@@ -47,13 +49,13 @@ public class IdeaFlowStateMachine {
 		return IdeaFlowState.builder()
 				.type(type)
 				.startingComment(startingComment)
-				.start(LocalDateTime.now())
+				.start(timeService.now())
 				.build();
 	}
 
 	private IdeaFlowState createEndState(IdeaFlowState startState, String endingComment) {
 		return IdeaFlowState.from(startState)
-				.end(LocalDateTime.now())
+				.end(timeService.now())
 				.endingComment(endingComment)
 				.build();
 	}
