@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.api;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

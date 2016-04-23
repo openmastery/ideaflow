@@ -23,7 +23,6 @@ public class TimelineGenerator {
                     .type(state.type)
                     .start(state.start)
                     .end(state.end)
-                    .duration(Duration.between(state.start, state.end))
                     .nestedBands(new ArrayList<TimeBand>())
                     .build()
 

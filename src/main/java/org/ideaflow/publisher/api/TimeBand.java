@@ -21,14 +21,16 @@ public class TimeBand {
     private LocalDateTime start;
     private LocalDateTime end;
 
-    private Duration duration;
-
     private IdeaFlowStateType type;
 
     private List<TimeBand> nestedBands;
 
     public void addNestedBand(TimeBand timeBand) {
         nestedBands.add(timeBand);
+    }
+
+    public Duration getDuration() {
+        return Duration.between(start, end);
     }
 
     public static Duration sumDuration(List<TimeBand> timeBands) {
