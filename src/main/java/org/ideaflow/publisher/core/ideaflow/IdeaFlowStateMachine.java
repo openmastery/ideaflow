@@ -95,22 +95,22 @@ public class IdeaFlowStateMachine {
 	}
 
 	public void startLearning(String comment) {
-		startNonConflict(LEARNING, comment);
+		startLearningOrRework(LEARNING, comment);
 	}
 
 	public void startRework(String comment) {
-		startNonConflict(REWORK, comment);
+		startLearningOrRework(REWORK, comment);
 	}
 
 	public void stopLearning(String resolution) {
-		stopNonConflict(LEARNING, resolution);
+		stopLearningOrRework(LEARNING, resolution);
 	}
 
 	public void stopRework(String resolution) {
-		stopNonConflict(REWORK, resolution);
+		stopLearningOrRework(REWORK, resolution);
 	}
 
-	private void startNonConflict(IdeaFlowStateType type, String comment) {
+	private void startLearningOrRework(IdeaFlowStateType type, String comment) {
 		IdeaFlowState oldActiveState = getActiveState();
 		IdeaFlowState newActiveState = createStartState(type, comment);
 
@@ -133,7 +133,7 @@ public class IdeaFlowStateMachine {
 		}
 	}
 
-	private void stopNonConflict(IdeaFlowStateType type, String resolution) {
+	private void stopLearningOrRework(IdeaFlowStateType type, String resolution) {
 		IdeaFlowState oldActiveState = getActiveState();
 
 		if (oldActiveState.isOfType(type)) {
