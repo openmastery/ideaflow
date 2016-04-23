@@ -1,10 +1,10 @@
 package org.ideaflow.publisher.api;
 
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class TimelineSegment {
+
+class TimeBand {
 
     private long id;
 
@@ -14,6 +14,9 @@ public class TimelineSegment {
     private int relativeStart;
     private int relativeEnd;
 
-    List<TimeBand> timeBands;
-    List<TimeBandGroup> timeBandGroups;
+    private IdeaFlowStateType type;
+
+    private List<TimeBand> nestedBands;
 }
+
+
