@@ -1,22 +1,44 @@
 package org.ideaflow.publisher.api;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 
-class TimeBand {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class TimeBand {
 
     private long id;
 
     private LocalDateTime start;
     private LocalDateTime end;
 
-    private int relativeStart;
-    private int relativeEnd;
+    private Duration duration;
 
     private IdeaFlowStateType type;
 
     private List<TimeBand> nestedBands;
+
+    public void addNestedBand(TimeBand timeBand) {
+        nestedBands.add(timeBand);
+    }
+
+    public static Duration sumDuration(List<TimeBand> timeBands) {
+        Duration duration = Duration.ZERO;
+        for (TimeBand timeBand : timeBands) {
+            duration = duration.plus(timeBand.getDuration());
+        }
+        return duration;
+    }
+
 }
 
 

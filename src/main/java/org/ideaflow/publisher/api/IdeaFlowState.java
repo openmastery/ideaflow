@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowState {
+public class IdeaFlowState implements Comparable<IdeaFlowState> {
 
 	private IdeaFlowStateType type;
 
@@ -43,6 +43,11 @@ public class IdeaFlowState {
 				.isLinkedToPrevious(state.isLinkedToPrevious())
 				.isNested(state.isNested())
 				.taskId(state.getTaskId());
+	}
+
+	@Override
+	public int compareTo(IdeaFlowState o) {
+		return start.compareTo(o.start);
 	}
 
 }

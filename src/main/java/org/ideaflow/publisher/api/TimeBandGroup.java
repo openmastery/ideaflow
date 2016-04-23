@@ -1,19 +1,48 @@
 package org.ideaflow.publisher.api;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TimeBandGroup {
 
     private long id;
 
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private List<TimeBand> linkedTimeBands;
 
-    private int relativeStart;
-    private int relativeEnd;
+    public void addLinkedTimeBand(TimeBand linkedTimeBand) {
+        linkedTimeBands.add(linkedTimeBand);
+    }
 
-    List<TimeBand> linkedTimeBands;
+    public LocalDateTime getStart() {
+        return linkedTimeBands.get(0).getStart();
+    }
+
+    public LocalDateTime getEnd() {
+        return linkedTimeBands.get(linkedTimeBands.size() - 1).getEnd();
+    }
+
+    public Duration getDuration() {
+        return TimeBand.sumDuration(linkedTimeBands);
+    }
+
+    public static Duration sumDuration(List<TimeBandGroup> timeBandGroups) {
+        Duration duration = Duration.ZERO;
+        for (TimeBandGroup timeBand : timeBandGroups) {
+            duration = duration.plus(timeBand.getDuration());
+        }
+        return duration;
+    }
+
 }
 
 //conflict <- rework | nested conflict | nested conflict | end rework
