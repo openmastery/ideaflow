@@ -8,9 +8,9 @@ import org.ideaflow.publisher.api.TimelineSegment
 import java.time.Duration
 import java.time.LocalDateTime
 
-class TimelineGenerator {
+public class TimelineGenerator {
 
-    List<TimelineSegment> createTimelineSegments(List<IdeaFlowState> ideaFlowStates) {
+    public List<TimelineSegment> createTimelineSegments(List<IdeaFlowState> ideaFlowStates) {
         ideaFlowStates = new ArrayList<>(ideaFlowStates);
         Collections.sort(ideaFlowStates)
 
@@ -46,6 +46,13 @@ class TimelineGenerator {
                     activeTimeBandGroup = null
                     timeBands.add(timeBand)
                 }
+
+                if (previousBand != null) {
+                    if (previousBand.end.isAfter(timeBand.start)) {
+                        previousBand.end = timeBand.start
+                    }
+                }
+
                 previousBand = timeBand
             }
         }
