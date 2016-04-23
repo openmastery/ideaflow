@@ -144,6 +144,7 @@ public class IdeaFlowStateMachine {
 			if (containingState != null) {
 				IdeaFlowState stateToSave = createEndState(containingState, resolution);
 				oldActiveState.setNested(false);
+				oldActiveState.setLinkedToPrevious(true);
 				ideaFlowPersistenceService.saveTransition(stateToSave, oldActiveState);
 			} else {
 				// TODO: log warning

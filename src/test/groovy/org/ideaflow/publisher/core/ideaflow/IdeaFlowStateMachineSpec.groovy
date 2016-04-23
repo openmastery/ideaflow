@@ -255,6 +255,8 @@ class IdeaFlowStateMachineSpec extends Specification {
 		assertActiveState(CONFLICT)
 		assertContainingState(null);
 		assert persistenceService.activeState.isNested() == false
+		assert persistenceService.activeState.isLinkedToPrevious() == true
+
 	}
 
 	def "WHEN ReworkNestedConflict then stop Rework SHOULD unnest the Conflict (same conflict)"() {
@@ -276,6 +278,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		assertActiveState(CONFLICT)
 		assertContainingState(null);
 		assert persistenceService.activeState.isNested() == false
+		assert persistenceService.activeState.isLinkedToPrevious() == true
 	}
 
 	def "WHEN LearningNestedConflict SHOULD NOT allow start Rework (disabled)"() {
