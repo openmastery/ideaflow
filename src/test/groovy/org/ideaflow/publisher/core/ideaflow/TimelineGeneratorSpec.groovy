@@ -169,11 +169,59 @@ class TimelineGeneratorSpec extends Specification {
         assert segmentList.size() == 1
     }
 
-    def "WHEN conflict is unnested should be considered linked AND shouldn't fuck up durations"() {
+    def "WHEN conflict is unnested SHOULD be considered linked AND previous duration should be reduced by the band overlap"() {
+        given:
+
         //conflict <- learning <-rework <- unnested conflict (rework ends after conflict start) <- learning
+		timeService.plusHour()
+		stateMachine.startConflict("")
+        timeService.plusHour()
+        stateMachine.startLearning("")
+        timeService.plusHours(2)
+        stateMachine.startRework("")
+        timeService.plusHour()
+        stateMachine.startConflict("") //nested
+        timeService.plusHours(3)
+        stateMachine.stopRework("") //unnest the conflict so it's linkable
+        timeService.plusHours(4)
+        stateMachine.startLearning("")
+        timeService.plusHours(5)
+        stateMachine.stopLearning("") //finish the group
+        timeService.plusHours(2)
+
+        when:
+        List<TimelineSegment> segmentList = generateTimelineSegments()
+
+        then:
+        TimelineSegment segment = segmentList[0]
+        assertTimeBands(segment.timeBands,
+                [PROGRESS, Duration.ofHours(1)],
+                [PROGRESS, Duration.ofHours(2)]
+        )
+        assertTimeBands(segment.timeBandGroups[0].linkedTimeBands,
+				[CONFLICT, Duration.ofHours(1)],
+				[LEARNING, Duration.ofHours(2)],
+                [REWORK, Duration.ofHours(1)],
+				[CONFLICT, Duration.ofHours(7)],
+				[LEARNING, Duration.ofHours(5)]
+		)
+
+		assert segment.timeBands.size() == 2
+        assert segment.timeBandGroups.size() == 1
+        assert segmentList.size() == 1
     }
 
-    def "SHOULD split timeline into multiple TimelineSegments by subtask"() {
+	def "WHEN idle time is within a Timeband SHOULD subtract relative time from band"() {
+		expect:
+		assert false
+	}
+
+	def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {
+		expect:
+		assert false
+	}
+
+	def "SHOULD split timeline into multiple TimelineSegments by subtask"() {
         expect:
         assert false
     }
@@ -189,15 +237,6 @@ class TimelineGeneratorSpec extends Specification {
     }
 
 
-    def "WHEN idle time is within a Timeband SHOULD subtract relative time from band"() {
-        expect:
-        assert false
-    }
-
-    def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {
-        expect:
-        assert false
-    }
 
 
 }
