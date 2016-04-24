@@ -3,6 +3,7 @@ package org.ideaflow.publisher.core.ideaflow
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.core.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleActivityEntity
+import org.ideaflow.publisher.core.event.EventEntity
 
 import java.time.LocalDateTime
 
@@ -37,6 +38,10 @@ class TimelineTestSupport {
 		persistenceService.getIdleActivityList()
 	}
 
+	List<EventEntity> getEventList() {
+		persistenceService.getEventList()
+	}
+
 	private void completeAndAddStateIfNotNull(List<IdeaFlowStateEntity> stateList, IdeaFlowStateEntity state) {
 		if (state) {
 			stateList << IdeaFlowStateEntity.from(state)
@@ -48,6 +53,15 @@ class TimelineTestSupport {
 
 	void startTaskAndAdvanceHours(int hours) {
 		stateMachine.startTask()
+		timeService.plusHours(hours)
+	}
+
+	void startSubtaskAndAdvanceHours(int hours) {
+		EventEntity event = EventEntity.builder()
+				.eventType(EventEntity.Type.SUBTASK)
+				.position(timeService.now())
+				.build()
+		persistenceService.saveEvent(event)
 		timeService.plusHours(hours)
 	}
 
@@ -64,7 +78,7 @@ class TimelineTestSupport {
 		persistenceService.saveIdleActivity(idleActivity)
 	}
 
-	void startBandAndAdvanceHours(IdeaFlowStateType type, int hours) {
+	void startBand(IdeaFlowStateType type) {
 		if (type == LEARNING) {
 			stateMachine.startLearning("")
 		} else if (type == REWORK) {
@@ -74,10 +88,14 @@ class TimelineTestSupport {
 		} else {
 			throw new RuntimeException("Unknown type: ${type}")
 		}
+	}
+
+	void startBandAndAdvanceHours(IdeaFlowStateType type, int hours) {
+		startBand(type)
 		timeService.plusHours(hours)
 	}
 
-	void endBandAndAdvanceHours(IdeaFlowStateType type, int hours) {
+	void endBand(IdeaFlowStateType type) {
 		if (type == LEARNING) {
 			stateMachine.stopLearning("")
 		} else if (type == REWORK) {
@@ -87,6 +105,10 @@ class TimelineTestSupport {
 		} else {
 			throw new RuntimeException("Unknown type: ${type}")
 		}
+	}
+
+	void endBandAndAdvanceHours(IdeaFlowStateType type, int hours) {
+		endBand(type)
 		timeService.plusHours(hours)
 	}
 

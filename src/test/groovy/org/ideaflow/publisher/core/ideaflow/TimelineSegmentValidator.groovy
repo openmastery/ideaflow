@@ -35,13 +35,14 @@ class TimelineSegmentValidator {
 	}
 
 	void assertValidationComplete(TimelineSegment segment) {
-		assertValidationComplete([segment])
+		assertValidationComplete([segment], 1)
 	}
 
-	void assertValidationComplete(List<TimelineSegment> segments) {
+	void assertValidationComplete(List<TimelineSegment> segments, int expectedSegmentCount) {
 		assert expectedTimeBandCount == (segments.sum { it.ideaFlowBands.size() } as int)
 		assert expectedLinkedTimeBandCount == (segments.sum { countLinkedTimeBands(it) } as int)
 		assert expectedNestedTimeBandCount == (segments.sum { countNestedBands(it) } as int)
+		assert expectedSegmentCount == segments.size()
 	}
 
 	private int countLinkedTimeBands(TimelineSegment segment) {

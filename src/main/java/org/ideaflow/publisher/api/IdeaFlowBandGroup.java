@@ -3,7 +3,9 @@ package org.ideaflow.publisher.api;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.ideaflow.publisher.core.event.EventEntity;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -13,7 +15,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowBandGroup {
+@EqualsAndHashCode(callSuper = false)
+public class IdeaFlowBandGroup extends TimeBand {
 
 	private long id;
 
@@ -33,6 +36,16 @@ public class IdeaFlowBandGroup {
 
 	public Duration getDuration() {
 		return IdeaFlowBand.sumDuration(linkedIdeaFlowBands);
+	}
+
+	@Override
+	public TimeBand splitAndReturnLeftSide(LocalDateTime position) {
+		return null;
+	}
+
+	@Override
+	public TimeBand splitAndReturnRightSide(LocalDateTime position) {
+		return null;
 	}
 
 	public static Duration sumDuration(List<IdeaFlowBandGroup> ideaFlowBandGroups) {

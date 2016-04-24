@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,6 +16,8 @@ public class EventEntity {
 
 	private long id;
 	private long taskId;
+
+	private LocalDateTime position;
 
 	private String message;
 	private Type eventType;
