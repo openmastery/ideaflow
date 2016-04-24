@@ -1,5 +1,7 @@
 package org.ideaflow.publisher.core.ideaflow;
 
+import org.ideaflow.publisher.core.activity.IdleActivityEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	private IdeaFlowStateEntity activeState;
 	private IdeaFlowStateEntity containingState;
 	private List<IdeaFlowStateEntity> stateList = new ArrayList<>();
+	private List<IdleActivityEntity> idleActivityList = new ArrayList<>();
 
 	@Override
 	public IdeaFlowStateEntity getActiveState() {
@@ -21,6 +24,10 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 
 	public List<IdeaFlowStateEntity> getStateList() {
 		return stateList;
+	}
+
+	public List<IdleActivityEntity> getIdleActivityList() {
+		return idleActivityList;
 	}
 
 	@Override
@@ -38,6 +45,11 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	public void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowStateEntity activeState) {
 		stateList.add(stateToSave);
 		saveActiveState(activeState);
+	}
+
+	@Override
+	public void saveIdleActivity(IdleActivityEntity idleActivity) {
+		idleActivityList.add(idleActivity);
 	}
 
 }
