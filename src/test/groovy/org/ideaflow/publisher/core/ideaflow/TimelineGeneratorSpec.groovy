@@ -3,6 +3,7 @@ package org.ideaflow.publisher.core.ideaflow
 import org.ideaflow.publisher.api.IdeaFlowState
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.api.TimeBand
+import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleActivityEntity
@@ -75,9 +76,64 @@ class TimelineGeneratorSpec extends Specification {
 
 	}
 
+	private static class TimelineSegmentValidator {
+
+		private int expectedTimeBandCount = 0
+		private int expectedNestedTimeBandCount = 0
+		private int expectedLinkedTimeBandCount = 0
+
+		private void assertExpectedValues(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+			assert timeBands[index].type == expectedType
+			assert timeBands[index].duration == expectedDuration
+		}
+
+		void assertTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+			assertExpectedValues(timeBands, index, expectedType, expectedDuration)
+			expectedTimeBandCount++
+		}
+
+		void assertNestedTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+			assertExpectedValues(timeBands, index, expectedType, expectedDuration)
+			expectedNestedTimeBandCount++
+		}
+
+		void assertLinkedTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+			assertExpectedValues(timeBands, index, expectedType, expectedDuration)
+			expectedLinkedTimeBandCount++
+		}
+
+		void assertValidationComplete(TimelineSegment segment) {
+			assert expectedTimeBandCount == segment.timeBands.size()
+			assert expectedLinkedTimeBandCount == countLinkedTimeBands(segment)
+			assert expectedNestedTimeBandCount == countNestedBands(segment)
+		}
+
+		private int countLinkedTimeBands(TimelineSegment segment) {
+			int linkedTimeBandCount = 0
+			segment.timeBandGroups.each {  TimeBandGroup group ->
+				linkedTimeBandCount += group.linkedTimeBands.size()
+			}
+			linkedTimeBandCount
+		}
+
+		private int countNestedBands(TimelineSegment segment) {
+			int nestedBandCount = sumNestedTimeBands(segment.timeBands)
+			segment.timeBandGroups.each { TimeBandGroup group ->
+				nestedBandCount += sumNestedTimeBands(group.linkedTimeBands)
+			}
+			nestedBandCount
+		}
+
+		private int sumNestedTimeBands(List<TimeBand> timeBands) {
+			timeBands.sum { TimeBand timeBand -> timeBand.nestedBands.size() } as int
+		}
+
+	}
+
 	IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
 	MockTimeService timeService = new MockTimeService()
 	TimelineGenerator generator = new TimelineGenerator()
+	TimelineSegmentValidator validator = new TimelineSegmentValidator()
 	TimelineStateMachine stateMachine
 	LocalDateTime startTime
 
@@ -108,18 +164,6 @@ class TimelineGeneratorSpec extends Specification {
 		generator.createPrimaryTimeline(stateList)
 	}
 
-	private void assertTimeBands(List<TimeBand> timeBands, List... expectedStateAndDuration) {
-		for (int i = 0; i < expectedStateAndDuration.length; i++) {
-			IdeaFlowStateType expectedType = expectedStateAndDuration[i][0]
-			Duration expectedDuration = expectedStateAndDuration[i][1]
-
-			assert timeBands.size() > i
-			assert timeBands[i].type == expectedType
-			assert timeBands[i].duration == expectedDuration
-		}
-		assert timeBands.size() == expectedStateAndDuration.length
-	}
-
 	def "SHOULD calculate duration for all TimeBands"() {
 		given:
 		stateMachine.startBandAndAdvanceHours(REWORK, 2)
@@ -129,12 +173,11 @@ class TimelineGeneratorSpec extends Specification {
 		TimelineSegment segment = generatePrimaryTimeline()
 
 		then:
-		assertTimeBands(segment.timeBands,
-		                [PROGRESS, Duration.ofHours(1)],
-		                [REWORK, Duration.ofHours(2)],
-		                [PROGRESS, Duration.ofHours(1)])
+		validator.assertTimeBand(segment.timeBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.timeBands, 1, REWORK, Duration.ofHours(2))
+		validator.assertTimeBand(segment.timeBands, 2, PROGRESS, Duration.ofHours(1))
+		validator.assertValidationComplete(segment)
 		assert segment.duration == Duration.ofHours(4)
-		assert segment.timeBandGroups.isEmpty()
 	}
 
 	def "WHEN IdeaFlowStates are nested SHOULD create nested TimeBands"() {
@@ -150,14 +193,13 @@ class TimelineGeneratorSpec extends Specification {
 
 
 		then:
-		assertTimeBands(segment.timeBands,
-		                [PROGRESS, Duration.ofHours(1)],
-		                [REWORK, Duration.ofHours(8)])
-		assertTimeBands(segment.timeBands[1].nestedBands,
-		                [CONFLICT, Duration.ofHours(2)],
-		                [CONFLICT, Duration.ofHours(3)])
+		validator.assertTimeBand(segment.timeBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.timeBands, 1, REWORK, Duration.ofHours(8))
+		List<TimeBand> nestedBands = segment.timeBands[1].nestedBands
+		validator.assertNestedTimeBand(nestedBands, 0, CONFLICT, Duration.ofHours(2))
+		validator.assertNestedTimeBand(nestedBands, 1, CONFLICT, Duration.ofHours(3))
+		validator.assertValidationComplete(segment)
 		assert segment.duration == Duration.ofHours(9)
-		assert segment.timeBandGroups.isEmpty()
 	}
 
 	def "WHEN IdeaFlowStates are linked SHOULD group bands into a TimeBandGroup"() {
@@ -170,13 +212,13 @@ class TimelineGeneratorSpec extends Specification {
 		TimelineSegment segment = generatePrimaryTimeline()
 
 		then:
-		assertTimeBands(segment.timeBands, [PROGRESS, Duration.ofHours(1)])
-		assertTimeBands(segment.timeBandGroups[0].linkedTimeBands,
-		                [CONFLICT, Duration.ofHours(1)],
-		                [LEARNING, Duration.ofHours(3)],
-		                [REWORK, Duration.ofHours(2)])
-		assert segment.timeBands.size() == 1
-		assert segment.timeBandGroups.size() == 1
+		validator.assertTimeBand(segment.timeBands, 0, PROGRESS, Duration.ofHours(1))
+		List groupedTimeBands = segment.timeBandGroups[0].linkedTimeBands
+		validator.assertLinkedTimeBand(groupedTimeBands, 0, CONFLICT, Duration.ofHours(1))
+		validator.assertLinkedTimeBand(groupedTimeBands, 1, LEARNING, Duration.ofHours(3))
+		validator.assertLinkedTimeBand(groupedTimeBands, 2, REWORK, Duration.ofHours(2))
+		validator.assertValidationComplete(segment)
+		assert segment.duration == Duration.ofHours(7)
 	}
 
 	def "WHEN IdeaFlowStates are linked AND first state has nested conflicts SHOULD create TimeBandGroup including all bands"() {
@@ -190,14 +232,14 @@ class TimelineGeneratorSpec extends Specification {
 		TimelineSegment segment = generatePrimaryTimeline()
 
 		then:
-		assertTimeBands(segment.timeBands, [PROGRESS, Duration.ofHours(1)])
-		assertTimeBands(segment.timeBandGroups[0].linkedTimeBands,
-		                [REWORK, Duration.ofHours(6)],
-		                [LEARNING, Duration.ofHours(4)])
-		assertTimeBands(segment.timeBandGroups[0].linkedTimeBands[0].nestedBands,
-		                [CONFLICT, Duration.ofHours(1)])
-		assert segment.timeBands.size() == 1
-		assert segment.timeBandGroups.size() == 1
+		validator.assertTimeBand(segment.timeBands, 0, PROGRESS, Duration.ofHours(1))
+		List linkedTimeBands = segment.timeBandGroups[0].linkedTimeBands
+		validator.assertLinkedTimeBand(linkedTimeBands, 0, REWORK, Duration.ofHours(6))
+		validator.assertLinkedTimeBand(linkedTimeBands, 1, LEARNING, Duration.ofHours(4))
+		List nestedTimeBands = segment.timeBandGroups[0].linkedTimeBands[0].nestedBands
+		validator.assertNestedTimeBand(nestedTimeBands, 0, CONFLICT, Duration.ofHours(1))
+		validator.assertValidationComplete(segment)
+		assert segment.duration == Duration.ofHours(11)
 	}
 
 	def "WHEN conflict is unnested SHOULD be considered linked AND previous duration should be reduced by the band overlap"() {
@@ -216,20 +258,14 @@ class TimelineGeneratorSpec extends Specification {
 		TimelineSegment segment = generatePrimaryTimeline()
 
 		then:
-		assertTimeBands(segment.timeBands,
-		                [PROGRESS, Duration.ofHours(1)],
-		                [PROGRESS, Duration.ofHours(2)]
-		)
-		assertTimeBands(segment.timeBandGroups[0].linkedTimeBands,
-		                [CONFLICT, Duration.ofHours(1)],
-		                [LEARNING, Duration.ofHours(2)],
-		                [REWORK, Duration.ofHours(1)],
-		                [CONFLICT, Duration.ofHours(7)],
-		                [LEARNING, Duration.ofHours(5)]
-		)
-
-		assert segment.timeBands.size() == 2
-		assert segment.timeBandGroups.size() == 1
+		validator.assertTimeBand(segment.timeBands, 0, PROGRESS, Duration.ofHours(1))
+		List linkedTimeBands = segment.timeBandGroups[0].linkedTimeBands
+		validator.assertLinkedTimeBand(linkedTimeBands, 0, CONFLICT, Duration.ofHours(1))
+		validator.assertLinkedTimeBand(linkedTimeBands, 1, LEARNING, Duration.ofHours(2))
+		validator.assertLinkedTimeBand(linkedTimeBands, 2, REWORK, Duration.ofHours(1))
+		validator.assertLinkedTimeBand(linkedTimeBands, 3, CONFLICT, Duration.ofHours(7))
+		validator.assertLinkedTimeBand(linkedTimeBands, 4, LEARNING, Duration.ofHours(5))
+		assert segment.duration == Duration.ofHours(19)
 	}
 
 	def "WHEN idle time is within a Timeband SHOULD subtract relative time from band"() {
@@ -245,12 +281,12 @@ class TimelineGeneratorSpec extends Specification {
 		generator.collapseIdleTime(segment, [idleActivity])
 
 		then:
-		assertTimeBands(segment.timeBands,
-		                [PROGRESS, Duration.ofHours(1)],
-		                [CONFLICT, Duration.ofHours(1)],
-		                [PROGRESS, Duration.ofHours(2)],
-		                [LEARNING, Duration.ofHours(2)]
-		)
+		validator.assertTimeBand(segment.timeBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.timeBands, 1, CONFLICT, Duration.ofHours(1))
+		validator.assertTimeBand(segment.timeBands, 2, PROGRESS, Duration.ofHours(2))
+		validator.assertTimeBand(segment.timeBands, 3, LEARNING, Duration.ofHours(2))
+		validator.assertValidationComplete(segment)
+		assert segment.duration == Duration.ofHours(6)
 	}
 
 	def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {
@@ -265,11 +301,12 @@ class TimelineGeneratorSpec extends Specification {
 		generator.collapseIdleTime(segment, [idleActivity])
 
 		then:
-		assertTimeBands(segment.timeBands,
-		                [PROGRESS, Duration.ofHours(1)],
-		                [LEARNING, Duration.ofHours(4)])
-		assertTimeBands(segment.timeBands[1].nestedBands,
-		                [CONFLICT, Duration.ofHours(3)])
+		validator.assertTimeBand(segment.timeBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.timeBands, 1, LEARNING, Duration.ofHours(4))
+		List nestedBands = segment.timeBands[1].nestedBands
+		validator.assertNestedTimeBand(nestedBands, 0, CONFLICT, Duration.ofHours(3))
+		validator.assertValidationComplete(segment)
+		assert segment.duration == Duration.ofHours(5)
 	}
 
 	def "SHOULD split timeline into multiple TimelineSegments by subtask"() {
