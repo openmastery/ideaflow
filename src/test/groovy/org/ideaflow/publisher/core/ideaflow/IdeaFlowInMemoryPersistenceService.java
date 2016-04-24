@@ -1,8 +1,9 @@
 package org.ideaflow.publisher.core.ideaflow;
 
+import org.ideaflow.publisher.api.IdeaFlowState;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.ideaflow.publisher.api.IdeaFlowState;
 
 public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceService {
 

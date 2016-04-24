@@ -16,30 +16,30 @@ import java.util.List;
 @AllArgsConstructor
 public class TimeBand {
 
-    private long id;
+	private long id;
 
-    private LocalDateTime start;
-    private LocalDateTime end;
+	private LocalDateTime start;
+	private LocalDateTime end;
 
-    private IdeaFlowStateType type;
+	private IdeaFlowStateType type;
 
-    private List<TimeBand> nestedBands;
+	private List<TimeBand> nestedBands;
 
-    public void addNestedBand(TimeBand timeBand) {
-        nestedBands.add(timeBand);
-    }
+	public void addNestedBand(TimeBand timeBand) {
+		nestedBands.add(timeBand);
+	}
 
-    public Duration getDuration() {
-        return Duration.between(start, end);
-    }
+	public Duration getDuration() {
+		return Duration.between(start, end);
+	}
 
-    public static Duration sumDuration(List<TimeBand> timeBands) {
-        Duration duration = Duration.ZERO;
-        for (TimeBand timeBand : timeBands) {
-            duration = duration.plus(timeBand.getDuration());
-        }
-        return duration;
-    }
+	public static Duration sumDuration(List<TimeBand> timeBands) {
+		Duration duration = Duration.ZERO;
+		for (TimeBand timeBand : timeBands) {
+			duration = duration.plus(timeBand.getDuration());
+		}
+		return duration;
+	}
 
 }
 

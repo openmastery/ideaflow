@@ -1,10 +1,11 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import java.time.LocalDateTime
 import org.ideaflow.publisher.api.IdeaFlowState
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.core.TimeService
 import spock.lang.Specification
+
+import java.time.LocalDateTime
 
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
 import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING

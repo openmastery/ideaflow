@@ -15,33 +15,33 @@ import java.util.List;
 @AllArgsConstructor
 public class TimeBandGroup {
 
-    private long id;
+	private long id;
 
-    private List<TimeBand> linkedTimeBands;
+	private List<TimeBand> linkedTimeBands;
 
-    public void addLinkedTimeBand(TimeBand linkedTimeBand) {
-        linkedTimeBands.add(linkedTimeBand);
-    }
+	public void addLinkedTimeBand(TimeBand linkedTimeBand) {
+		linkedTimeBands.add(linkedTimeBand);
+	}
 
-    public LocalDateTime getStart() {
-        return linkedTimeBands.get(0).getStart();
-    }
+	public LocalDateTime getStart() {
+		return linkedTimeBands.get(0).getStart();
+	}
 
-    public LocalDateTime getEnd() {
-        return linkedTimeBands.get(linkedTimeBands.size() - 1).getEnd();
-    }
+	public LocalDateTime getEnd() {
+		return linkedTimeBands.get(linkedTimeBands.size() - 1).getEnd();
+	}
 
-    public Duration getDuration() {
-        return TimeBand.sumDuration(linkedTimeBands);
-    }
+	public Duration getDuration() {
+		return TimeBand.sumDuration(linkedTimeBands);
+	}
 
-    public static Duration sumDuration(List<TimeBandGroup> timeBandGroups) {
-        Duration duration = Duration.ZERO;
-        for (TimeBandGroup timeBand : timeBandGroups) {
-            duration = duration.plus(timeBand.getDuration());
-        }
-        return duration;
-    }
+	public static Duration sumDuration(List<TimeBandGroup> timeBandGroups) {
+		Duration duration = Duration.ZERO;
+		for (TimeBandGroup timeBand : timeBandGroups) {
+			duration = duration.plus(timeBand.getDuration());
+		}
+		return duration;
+	}
 
 }
 

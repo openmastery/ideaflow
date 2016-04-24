@@ -1,17 +1,18 @@
 package org.ideaflow.publisher.resources;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
+import org.ideaflow.publisher.api.ResourcePaths;
+import org.ideaflow.publisher.api.Timeline;
+import org.springframework.stereotype.Component;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import org.ideaflow.publisher.api.ResourcePaths;
-import org.ideaflow.publisher.api.Timeline;
-import org.springframework.stereotype.Component;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 @Path(ResourcePaths.TIMELINE_PATH)

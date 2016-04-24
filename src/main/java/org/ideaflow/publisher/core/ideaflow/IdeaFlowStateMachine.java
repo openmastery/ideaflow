@@ -1,10 +1,11 @@
 package org.ideaflow.publisher.core.ideaflow;
 
-import javax.inject.Inject;
 import org.ideaflow.publisher.api.IdeaFlowState;
 import org.ideaflow.publisher.api.IdeaFlowStateType;
 import org.ideaflow.publisher.core.TimeService;
 import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT;
 import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING;
@@ -158,7 +159,8 @@ public class IdeaFlowStateMachine {
 
 
 	public static class InvalidTransitionException extends RuntimeException {
-		public InvalidTransitionException() {}
+		public InvalidTransitionException() {
+		}
 	}
 
 }
