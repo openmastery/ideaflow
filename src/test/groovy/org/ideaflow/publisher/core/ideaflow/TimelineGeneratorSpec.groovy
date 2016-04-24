@@ -1,26 +1,16 @@
 package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowState
-import org.ideaflow.publisher.api.IdeaFlowState
-import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.api.TimeBand
-import org.ideaflow.publisher.api.TimeBand
-import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.MockTimeService
-import org.ideaflow.publisher.core.MockTimeService
-import org.ideaflow.publisher.core.activity.IdleActivity
-import org.ideaflow.publisher.core.activity.IdleActivity
-import spock.lang.Specification
+import org.ideaflow.publisher.core.activity.IdleActivityEntity
 import spock.lang.Specification
 
 import java.time.Duration
-import java.time.Duration
-import java.time.LocalDateTime
 import java.time.LocalDateTime
 
-import static org.ideaflow.publisher.api.IdeaFlowStateType.*
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
 import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
 import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
@@ -43,6 +33,18 @@ class TimelineGeneratorSpec extends Specification {
 		void startTaskAndAdvanceHours(int hours) {
 			delegate.startTask()
 			timeService.plusHours(hours)
+		}
+
+		void advanceHours(int hours) {
+			timeService.plusHours(hours)
+		}
+
+		IdleActivityEntity idle(int hours) {
+			LocalDateTime start = timeService.now()
+			timeService.plusHours(hours)
+			IdleActivityEntity.builder()
+					.start(start)
+					.end(timeService.now()).build()
 		}
 
 		void startBandAndAdvanceHours(IdeaFlowStateType type, int hours) {
@@ -234,16 +236,13 @@ class TimelineGeneratorSpec extends Specification {
 		given:
 		stateMachine.startBandAndAdvanceHours(CONFLICT, 1)
 		stateMachine.endBandAndAdvanceHours(CONFLICT, 2)
-		LocalDateTime idleStart = timeService.now()
-		stateMachine.startBandAndAdvanceHours(LEARNING, 5)
-
-		IdleActivity idleActivity = IdleActivity.builder()
-				.start(idleStart)
-				.end(idleStart.plusHours(3)).build()
+		stateMachine.startBandAndAdvanceHours(LEARNING, 1)
+		IdleActivityEntity idleActivity = stateMachine.idle(3)
+		stateMachine.advanceHours(1)
 
 		when:
 		TimelineSegment segment = generatePrimaryTimeline()
-		segment = generator.collapseIdleTime(segment, [idleActivity])
+		generator.collapseIdleTime(segment, [idleActivity])
 
 		then:
 		assertTimeBands(segment.timeBands,
@@ -252,12 +251,25 @@ class TimelineGeneratorSpec extends Specification {
 		                [PROGRESS, Duration.ofHours(2)],
 		                [LEARNING, Duration.ofHours(2)]
 		)
-
 	}
 
 	def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {
-		expect:
-		assert false
+		given:
+		stateMachine.startBandAndAdvanceHours(LEARNING, 1)
+		stateMachine.startBandAndAdvanceHours(CONFLICT, 2)
+		IdleActivityEntity idleActivity = stateMachine.idle(4)
+		stateMachine.advanceHours(1)
+
+		when:
+		TimelineSegment segment = generatePrimaryTimeline()
+		generator.collapseIdleTime(segment, [idleActivity])
+
+		then:
+		assertTimeBands(segment.timeBands,
+		                [PROGRESS, Duration.ofHours(1)],
+		                [LEARNING, Duration.ofHours(4)])
+		assertTimeBands(segment.timeBands[1].nestedBands,
+		                [CONFLICT, Duration.ofHours(3)])
 	}
 
 	def "SHOULD split timeline into multiple TimelineSegments by subtask"() {

@@ -23,6 +23,8 @@ public class TimeBand {
 
 	private IdeaFlowStateType type;
 
+	private Duration idle;
+
 	private List<TimeBand> nestedBands;
 
 	public void addNestedBand(TimeBand timeBand) {
@@ -30,7 +32,7 @@ public class TimeBand {
 	}
 
 	public Duration getDuration() {
-		return Duration.between(start, end);
+		return Duration.between(start, end).minus(idle);
 	}
 
 	public static Duration sumDuration(List<TimeBand> timeBands) {
