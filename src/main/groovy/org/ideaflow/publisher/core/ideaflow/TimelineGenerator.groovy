@@ -1,6 +1,5 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.api.IdeaFlowState
 import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
@@ -26,7 +25,7 @@ public class TimelineGenerator {
 //		new Timeline()
 //    }
 
-	public TimelineSegment createPrimaryTimeline(List<IdeaFlowState> ideaFlowStates) {
+	public TimelineSegment createPrimaryTimeline(List<IdeaFlowStateEntity> ideaFlowStates) {
 		ideaFlowStates = new ArrayList<>(ideaFlowStates);
 		Collections.sort(ideaFlowStates)
 
@@ -34,7 +33,7 @@ public class TimelineGenerator {
 		TimeBandGroup activeTimeBandGroup = null;
 		ArrayList<TimeBand> timeBands = new ArrayList<>();
 		ArrayList<TimeBandGroup> timeBandGroups = new ArrayList<>();
-		for (IdeaFlowState state : ideaFlowStates) {
+		for (IdeaFlowStateEntity state : ideaFlowStates) {
 			TimeBand timeBand = TimeBand.builder()
 					.type(state.type)
 					.start(state.start)

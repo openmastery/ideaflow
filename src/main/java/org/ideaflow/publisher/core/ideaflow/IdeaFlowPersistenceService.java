@@ -1,17 +1,15 @@
 package org.ideaflow.publisher.core.ideaflow;
 
-import org.ideaflow.publisher.api.IdeaFlowState;
-
 public interface IdeaFlowPersistenceService {
 
-	IdeaFlowState getActiveState();
+	IdeaFlowStateEntity getActiveState();
 
-	IdeaFlowState getContainingState();
+	IdeaFlowStateEntity getContainingState();
 
-	void saveActiveState(IdeaFlowState activeState);
+	void saveActiveState(IdeaFlowStateEntity activeState);
 
-	void saveActiveState(IdeaFlowState activeState, IdeaFlowState containingState);
+	void saveActiveState(IdeaFlowStateEntity activeState, IdeaFlowStateEntity containingState);
 
-	void saveTransition(IdeaFlowState stateToSave, IdeaFlowState activeState);
+	void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowStateEntity activeState);
 
 }

@@ -150,9 +150,9 @@ class TimelineGeneratorSpec extends Specification {
 		stateList
 	}
 
-	private void completeAndAddStateIfNotNull(List<IdeaFlowState> stateList, IdeaFlowState state) {
+	private void completeAndAddStateIfNotNull(List<IdeaFlowStateEntity> stateList, IdeaFlowStateEntity state) {
 		if (state) {
-			stateList << IdeaFlowState.from(state)
+			stateList << IdeaFlowStateEntity.from(state)
 					.end(timeService.now())
 					.endingComment("")
 					.build();

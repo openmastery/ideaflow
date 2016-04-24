@@ -36,11 +36,11 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.ideaFlowPersistenceService
 	}
 
-	private IdeaFlowState getPersistedState(IdeaFlowStateType type) {
+	private IdeaFlowStateEntity getPersistedState(IdeaFlowStateType type) {
 		persistenceService.stateList.find { it.type == type }
 	}
 
-	private List<IdeaFlowState> getPersistedStatesOrderdByStartTime() {
+	private List<IdeaFlowStateEntity> getPersistedStatesOrderdByStartTime() {
 		persistenceService.stateList.sort { it.start }
 	}
 
@@ -57,7 +57,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 	}
 
 	private void assertExpectedStates(IdeaFlowStateType... expectedTypes) {
-		List<IdeaFlowState> states = getPersistedStatesOrderdByStartTime()
+		List states = getPersistedStatesOrderdByStartTime()
 		for (int i = 0; i < expectedTypes.length; i++) {
 			assert states.size() > i: "Expected types=${expectedTypes}, actual states=${states}"
 			assert states[i].type == expectedTypes[i]
@@ -168,9 +168,6 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.stopRework("rework")
 
 		then:
-		//TODO failing intermittently in sequence PROGRESS, CONFLICT, REWORK, CONFLICT
-//[IdeaFlowState(type=PROGRESS, taskId=null, start=2016-04-19T18:39:48.819, end=2016-04-19T18:39:48.819, startingComment=null, endingComment=null, isLinkedToPrevious=false, isNested=false), IdeaFlowState(type=CONFLICT, taskId=null, start=2016-04-19T18:39:48.819, end=2016-04-19T18:39:48.819, startingComment=conflict, endingComment=conflict, isLinkedToPrevious=false, isNested=true), IdeaFlowState(type=REWORK, taskId=null, start=2016-04-19T18:39:48.819, end=2016-04-19T18:39:48.820, startingComment=rework, endingComment=rework, isLinkedToPrevious=false, isNested=false), IdeaFlowState(type=CONFLICT, taskId=null, start=2016-04-19T18:39:48.820, end=2016-04-19T18:39:48.820, startingComment=conflict, endingComment=conflict, isLinkedToPrevious=false, isNested=true)]
-
 		assertExpectedStates(PROGRESS, REWORK, CONFLICT, CONFLICT)
 		assertActiveState(PROGRESS)
 		assertContainingState(null)
