@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.api.TimeBand
-import org.ideaflow.publisher.api.TimeBandGroup
+import org.ideaflow.publisher.api.IdeaFlowBand
+import org.ideaflow.publisher.api.IdeaFlowBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
 
 import java.time.Duration
@@ -16,37 +16,37 @@ class TimelineSegmentFactory {
 		ideaFlowStates = new ArrayList<>(ideaFlowStates);
 		Collections.sort(ideaFlowStates)
 
-		TimeBand previousBand = null;
-		TimeBandGroup activeTimeBandGroup = null;
-		ArrayList<TimeBand> timeBands = new ArrayList<>();
-		ArrayList<TimeBandGroup> timeBandGroups = new ArrayList<>();
+		IdeaFlowBand previousBand = null;
+		IdeaFlowBandGroup activeTimeBandGroup = null;
+		ArrayList<IdeaFlowBand> ideaFlowBands = new ArrayList<>();
+		ArrayList<IdeaFlowBandGroup> ideaFlowBandGroups = new ArrayList<>();
 		for (IdeaFlowStateEntity state : ideaFlowStates) {
-			TimeBand timeBand = TimeBand.builder()
+			IdeaFlowBand timeBand = IdeaFlowBand.builder()
 					.type(state.type)
 					.start(state.start)
 					.end(state.end)
 					.idle(Duration.ZERO)
-					.nestedBands(new ArrayList<TimeBand>())
+					.nestedBands(new ArrayList<IdeaFlowBand>())
 					.build()
 
 			if (state.isNested()) {
 				previousBand.addNestedBand(timeBand)
 			} else {
-				if (state.isLinkedToPrevious() && (timeBands.isEmpty() == false)) {
+				if (state.isLinkedToPrevious() && (ideaFlowBands.isEmpty() == false)) {
 					if (activeTimeBandGroup == null) {
-						activeTimeBandGroup = TimeBandGroup.builder()
-								.linkedTimeBands(new ArrayList<TimeBand>())
+						activeTimeBandGroup = IdeaFlowBandGroup.builder()
+								.linkedIdeaFlowBands(new ArrayList<IdeaFlowBand>())
 								.build()
 
-						TimeBand firstBandInGroup = timeBands.remove(timeBands.size() - 1)
+						IdeaFlowBand firstBandInGroup = ideaFlowBands.remove(ideaFlowBands.size() - 1)
 						activeTimeBandGroup.addLinkedTimeBand(firstBandInGroup)
-						timeBandGroups.add(activeTimeBandGroup)
+						ideaFlowBandGroups.add(activeTimeBandGroup)
 					}
 
 					activeTimeBandGroup.addLinkedTimeBand(timeBand)
 				} else {
 					activeTimeBandGroup = null
-					timeBands.add(timeBand)
+					ideaFlowBands.add(timeBand)
 				}
 
 				if (previousBand != null) {
@@ -65,8 +65,8 @@ class TimelineSegmentFactory {
 		TimelineSegment segment = TimelineSegment.builder()
 				.start(segmentStart)
 				.end(segmentEnd)
-				.timeBands(timeBands)
-				.timeBandGroups(timeBandGroups)
+				.ideaFlowBands(ideaFlowBands)
+				.ideaFlowBandGroups(ideaFlowBandGroups)
 				.build();
 
 		return segment;

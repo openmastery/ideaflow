@@ -13,31 +13,31 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimeBandGroup {
+public class IdeaFlowBandGroup {
 
 	private long id;
 
-	private List<TimeBand> linkedTimeBands;
+	private List<IdeaFlowBand> linkedIdeaFlowBands;
 
-	public void addLinkedTimeBand(TimeBand linkedTimeBand) {
-		linkedTimeBands.add(linkedTimeBand);
+	public void addLinkedTimeBand(IdeaFlowBand linkedIdeaFlowBand) {
+		linkedIdeaFlowBands.add(linkedIdeaFlowBand);
 	}
 
 	public LocalDateTime getStart() {
-		return linkedTimeBands.get(0).getStart();
+		return linkedIdeaFlowBands.get(0).getStart();
 	}
 
 	public LocalDateTime getEnd() {
-		return linkedTimeBands.get(linkedTimeBands.size() - 1).getEnd();
+		return linkedIdeaFlowBands.get(linkedIdeaFlowBands.size() - 1).getEnd();
 	}
 
 	public Duration getDuration() {
-		return TimeBand.sumDuration(linkedTimeBands);
+		return IdeaFlowBand.sumDuration(linkedIdeaFlowBands);
 	}
 
-	public static Duration sumDuration(List<TimeBandGroup> timeBandGroups) {
+	public static Duration sumDuration(List<IdeaFlowBandGroup> ideaFlowBandGroups) {
 		Duration duration = Duration.ZERO;
-		for (TimeBandGroup timeBand : timeBandGroups) {
+		for (IdeaFlowBandGroup timeBand : ideaFlowBandGroups) {
 			duration = duration.plus(timeBand.getDuration());
 		}
 		return duration;

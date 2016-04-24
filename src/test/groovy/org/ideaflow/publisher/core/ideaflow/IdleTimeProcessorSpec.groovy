@@ -41,10 +41,10 @@ class IdleTimeProcessorSpec extends Specification {
 		TimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
-		validator.assertTimeBand(segment.timeBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.timeBands, 1, CONFLICT, Duration.ofHours(1))
-		validator.assertTimeBand(segment.timeBands, 2, PROGRESS, Duration.ofHours(2))
-		validator.assertTimeBand(segment.timeBands, 3, LEARNING, Duration.ofHours(2))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, CONFLICT, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 2, PROGRESS, Duration.ofHours(2))
+		validator.assertTimeBand(segment.ideaFlowBands, 3, LEARNING, Duration.ofHours(2))
 		validator.assertValidationComplete(segment)
 		assert segment.duration == Duration.ofHours(6)
 	}
@@ -60,9 +60,9 @@ class IdleTimeProcessorSpec extends Specification {
 		TimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
-		validator.assertTimeBand(segment.timeBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.timeBands, 1, LEARNING, Duration.ofHours(4))
-		List nestedBands = segment.timeBands[1].nestedBands
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.ofHours(4))
+		List nestedBands = segment.ideaFlowBands[1].nestedBands
 		validator.assertNestedTimeBand(nestedBands, 0, CONFLICT, Duration.ofHours(3))
 		validator.assertValidationComplete(segment)
 		assert segment.duration == Duration.ofHours(5)

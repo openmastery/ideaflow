@@ -1,8 +1,8 @@
 package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowStateType
-import org.ideaflow.publisher.api.TimeBand
-import org.ideaflow.publisher.api.TimeBandGroup
+import org.ideaflow.publisher.api.IdeaFlowBand
+import org.ideaflow.publisher.api.IdeaFlowBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
 
 import java.time.Duration
@@ -14,50 +14,54 @@ class TimelineSegmentValidator {
 	private int expectedNestedTimeBandCount = 0
 	private int expectedLinkedTimeBandCount = 0
 
-	private void assertExpectedValues(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+	private void assertExpectedValues(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assert timeBands[index].type == expectedType
 		assert timeBands[index].duration == expectedDuration
 	}
 
-	void assertTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+	void assertTimeBand(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assertExpectedValues(timeBands, index, expectedType, expectedDuration)
 		expectedTimeBandCount++
 	}
 
-	void assertNestedTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+	void assertNestedTimeBand(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assertExpectedValues(timeBands, index, expectedType, expectedDuration)
 		expectedNestedTimeBandCount++
 	}
 
-	void assertLinkedTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+	void assertLinkedTimeBand(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assertExpectedValues(timeBands, index, expectedType, expectedDuration)
 		expectedLinkedTimeBandCount++
 	}
 
 	void assertValidationComplete(TimelineSegment segment) {
-		assert expectedTimeBandCount == segment.timeBands.size()
-		assert expectedLinkedTimeBandCount == countLinkedTimeBands(segment)
-		assert expectedNestedTimeBandCount == countNestedBands(segment)
+		assertValidationComplete([segment])
+	}
+
+	void assertValidationComplete(List<TimelineSegment> segments) {
+		assert expectedTimeBandCount == (segments.sum { it.ideaFlowBands.size() } as int)
+		assert expectedLinkedTimeBandCount == (segments.sum { countLinkedTimeBands(it) } as int)
+		assert expectedNestedTimeBandCount == (segments.sum { countNestedBands(it) } as int)
 	}
 
 	private int countLinkedTimeBands(TimelineSegment segment) {
 		int linkedTimeBandCount = 0
-		segment.timeBandGroups.each { TimeBandGroup group ->
-			linkedTimeBandCount += group.linkedTimeBands.size()
+		segment.ideaFlowBandGroups.each { IdeaFlowBandGroup group ->
+			linkedTimeBandCount += group.linkedIdeaFlowBands.size()
 		}
 		linkedTimeBandCount
 	}
 
 	private int countNestedBands(TimelineSegment segment) {
-		int nestedBandCount = sumNestedTimeBands(segment.timeBands)
-		segment.timeBandGroups.each { TimeBandGroup group ->
-			nestedBandCount += sumNestedTimeBands(group.linkedTimeBands)
+		int nestedBandCount = sumNestedTimeBands(segment.ideaFlowBands)
+		segment.ideaFlowBandGroups.each { IdeaFlowBandGroup group ->
+			nestedBandCount += sumNestedTimeBands(group.linkedIdeaFlowBands)
 		}
 		nestedBandCount
 	}
 
-	private int sumNestedTimeBands(List<TimeBand> timeBands) {
-		timeBands.sum { TimeBand timeBand -> timeBand.nestedBands.size() } as int
+	private int sumNestedTimeBands(List<IdeaFlowBand> timeBands) {
+		timeBands.sum { IdeaFlowBand timeBand -> timeBand.nestedBands.size() } as int
 	}
 
 }

@@ -1,6 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.api.TimeBand
+import org.ideaflow.publisher.api.IdeaFlowBand
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.activity.IdleActivityEntity
 
@@ -10,12 +10,12 @@ class IdleTimeProcessor {
 
 	public void collapseIdleTime(TimelineSegment timelineSegment, List<IdleActivityEntity> idleActivities) {
 		for (IdleActivityEntity idle : idleActivities) {
-			addIdleDuration(timelineSegment.timeBands, idle)
+			addIdleDuration(timelineSegment.ideaFlowBands, idle)
 		}
 	}
 
-	private void addIdleDuration(List<TimeBand> timeBands, IdleActivityEntity idle) {
-		for (TimeBand timeBand : timeBands) {
+	private void addIdleDuration(List<IdeaFlowBand> timeBands, IdleActivityEntity idle) {
+		for (IdeaFlowBand timeBand : timeBands) {
 			Duration idleDuration = getIdleDurationForTimeBand(timeBand, idle)
 			timeBand.idle = timeBand.idle.plus(idleDuration)
 			addIdleDuration(timeBand.nestedBands, idle)
@@ -24,7 +24,7 @@ class IdleTimeProcessor {
 
 	// TODO: extract this to a class and add unit tests
 
-	private Duration getIdleDurationForTimeBand(TimeBand timeBand, IdleActivityEntity idle) {
+	private Duration getIdleDurationForTimeBand(IdeaFlowBand timeBand, IdleActivityEntity idle) {
 		Duration duration = Duration.ZERO
 		if (isIdleStartAfterOrEqualToTimeBandStart(timeBand, idle)) {
 			if (isIdleEndBeforeOrEqualToTimeBandEnd(timeBand, idle)) {
@@ -41,11 +41,11 @@ class IdleTimeProcessor {
 		duration
 	}
 
-	private boolean isIdleStartAfterOrEqualToTimeBandStart(TimeBand timeBand, IdleActivityEntity idle) {
+	private boolean isIdleStartAfterOrEqualToTimeBandStart(IdeaFlowBand timeBand, IdleActivityEntity idle) {
 		idle.start.isAfter(timeBand.start) || idle.start == timeBand.start
 	}
 
-	private boolean isIdleEndBeforeOrEqualToTimeBandEnd(TimeBand timeBand, IdleActivityEntity idle) {
+	private boolean isIdleEndBeforeOrEqualToTimeBandEnd(IdeaFlowBand timeBand, IdleActivityEntity idle) {
 		idle.end.isBefore(timeBand.end) || idle.end == timeBand.end
 	}
 

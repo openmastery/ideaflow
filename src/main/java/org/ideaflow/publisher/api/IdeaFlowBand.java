@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimeBand {
+public class IdeaFlowBand {
 
 	private long id;
 
@@ -25,20 +25,20 @@ public class TimeBand {
 
 	private Duration idle;
 
-	private List<TimeBand> nestedBands;
+	private List<IdeaFlowBand> nestedBands;
 
-	public void addNestedBand(TimeBand timeBand) {
-		nestedBands.add(timeBand);
+	public void addNestedBand(IdeaFlowBand ideaFlowBand) {
+		nestedBands.add(ideaFlowBand);
 	}
 
 	public Duration getDuration() {
 		return Duration.between(start, end).minus(idle);
 	}
 
-	public static Duration sumDuration(List<TimeBand> timeBands) {
+	public static Duration sumDuration(List<IdeaFlowBand> ideaFlowBands) {
 		Duration duration = Duration.ZERO;
-		for (TimeBand timeBand : timeBands) {
-			duration = duration.plus(timeBand.getDuration());
+		for (IdeaFlowBand ideaFlowBand : ideaFlowBands) {
+			duration = duration.plus(ideaFlowBand.getDuration());
 		}
 		return duration;
 	}

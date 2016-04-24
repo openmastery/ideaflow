@@ -19,12 +19,12 @@ public class TimelineSegment {
 	private LocalDateTime start;
 	private LocalDateTime end;
 
-	private List<TimeBand> timeBands;
-	private List<TimeBandGroup> timeBandGroups;
+	private List<IdeaFlowBand> ideaFlowBands;
+	private List<IdeaFlowBandGroup> ideaFlowBandGroups;
 
 	public Duration getDuration() {
-		Duration duration = TimeBand.sumDuration(timeBands);
-		return duration.plus(TimeBandGroup.sumDuration(timeBandGroups));
+		Duration duration = IdeaFlowBand.sumDuration(ideaFlowBands);
+		return duration.plus(IdeaFlowBandGroup.sumDuration(ideaFlowBandGroups));
 	}
 
 }
