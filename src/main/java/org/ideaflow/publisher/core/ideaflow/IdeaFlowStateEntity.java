@@ -1,9 +1,10 @@
-package org.ideaflow.publisher.api;
+package org.ideaflow.publisher.core.ideaflow;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ideaflow.publisher.api.IdeaFlowStateType;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,10 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowState implements Comparable<IdeaFlowState> {
+public class IdeaFlowStateEntity implements Comparable<IdeaFlowStateEntity> {
+
+	private long id;
+	private long taskId;
 
 	private IdeaFlowStateType type;
 
@@ -33,18 +37,19 @@ public class IdeaFlowState implements Comparable<IdeaFlowState> {
 		return false;
 	}
 
-	public static IdeaFlowStateBuilder from(IdeaFlowState state) {
+	public static IdeaFlowStateEntity.IdeaFlowStateEntityBuilder from(IdeaFlowStateEntity state) {
 		return builder().type(state.getType())
 				.start(state.getStart())
 				.end(state.getEnd())
 				.startingComment(state.getStartingComment())
 				.endingComment(state.getEndingComment())
 				.isLinkedToPrevious(state.isLinkedToPrevious())
-				.isNested(state.isNested());
+				.isNested(state.isNested())
+				.taskId(state.getTaskId());
 	}
 
 	@Override
-	public int compareTo(IdeaFlowState o) {
+	public int compareTo(IdeaFlowStateEntity o) {
 		return start.compareTo(o.start);
 	}
 

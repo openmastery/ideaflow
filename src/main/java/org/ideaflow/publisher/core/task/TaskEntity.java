@@ -1,4 +1,5 @@
-package org.ideaflow.publisher.api;
+package org.ideaflow.publisher.core.task;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class TaskEntity {
 
-	private String taskName;
-	private String projectName;
+	long id;
+	long taskId;
 
+	String taskName;
+	String projectName;
+	String author;
 }

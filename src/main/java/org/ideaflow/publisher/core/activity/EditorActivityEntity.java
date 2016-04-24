@@ -1,4 +1,4 @@
-package org.ideaflow.publisher.api;
+package org.ideaflow.publisher.core.activity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,16 +7,22 @@ import lombok.NoArgsConstructor;
 
 import java.io.File;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EditorActivity {
+public class EditorActivityEntity {
+
+	private long id;
+	private long taskId;
+
+	private LocalDateTime start;
+	private Duration duration;
 
 	private String filePath;
 	private boolean isModified;
-	private Duration duration;
 
 	public String getFileName() {
 		return new File(filePath).getName();

@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class IdleActivityEntity {
 
 	private long id;
+	private long taskId;
 
 	private LocalDateTime start;
 	private LocalDateTime end;

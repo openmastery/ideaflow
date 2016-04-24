@@ -32,9 +32,13 @@ public class ResourcePaths {
 
 	// activity paths
 	public static final String ACTIVITY_PATH = "/activity";
-	public static final String NOTE_PATH = "/note";
 	public static final String EDITOR_PATH = "/editor";
 	public static final String IDLE_PATH = "/idle";
+
+	// event paths
+	public static final String EVENT_PATH = "/event";
+	public static final String NOTE_PATH = "/note";
+	public static final String SUBTASK_PATH = "/subtask";
 
 	// timeline paths
 	public static final String TIMELINE_PATH = "/timeline";

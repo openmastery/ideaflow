@@ -23,6 +23,7 @@ public class TaskResource {
 		System.out.println("Activate task: " + taskId);
 	}
 
+
 	@POST
 	public void create(Task task) {
 		System.out.println("Create task: " + task);

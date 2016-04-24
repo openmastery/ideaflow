@@ -39,7 +39,7 @@ public class IdeaFlowResource {
 
 	@POST
 	@Path(ResourcePaths.CONFLICT_PATH + ResourcePaths.STOP_PATH)
-	public void stopConflict(@PathParam("taskId") String taskId, String resolution) {
+	public void endConflict(@PathParam("taskId") String taskId, String resolution) {
 		System.out.println("Stop Conflict: " + taskId + ", " + resolution);
 	}
 
@@ -51,7 +51,7 @@ public class IdeaFlowResource {
 
 	@POST
 	@Path(ResourcePaths.LEARNING_PATH + ResourcePaths.STOP_PATH)
-	public void stopLearning(@PathParam("taskId") String taskId) {
+	public void endLearning(@PathParam("taskId") String taskId) {
 		System.out.println("Stop Learning: " + taskId);
 	}
 
@@ -63,7 +63,7 @@ public class IdeaFlowResource {
 
 	@POST
 	@Path(ResourcePaths.REWORK_PATH + ResourcePaths.STOP_PATH)
-	public void stopRework(@PathParam("taskId") String taskId) {
+	public void endRework(@PathParam("taskId") String taskId) {
 		System.out.println("Stop Rework: " + taskId);
 	}
 

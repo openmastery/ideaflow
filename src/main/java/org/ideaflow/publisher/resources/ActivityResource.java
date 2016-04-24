@@ -1,6 +1,7 @@
 package org.ideaflow.publisher.resources;
 
 import org.ideaflow.publisher.api.EditorActivity;
+import org.ideaflow.publisher.api.IdleActivity;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.stereotype.Component;
 
@@ -23,18 +24,8 @@ public class ActivityResource {
 
 	@POST
 	@Path(ResourcePaths.IDLE_PATH)
-	public void addIdleActivity(@PathParam("taskId") String taskId, String duration) {
+	public void addIdleActivity(@PathParam("taskId") String taskId, IdleActivity idleActivity) {
 
 	}
-
-	@POST
-	@Path(ResourcePaths.NOTE_PATH)
-	public void addUserNote(@PathParam("taskId") String taskId, String message) {
-		System.out.println("Add Note: " + taskId + ", " + message);
-	}
-
-	//Developers have been creating "note types" manually using [Subtask] and [Prediction] as prefixes in their comments.
-	//Subtask events in particular I'm using to derive a "Subtask band" and collapse all the details of events/bands
-	// that happen within a subtask, so you can "drill in" on one subtask at a time ford a complex IFM.
 
 }

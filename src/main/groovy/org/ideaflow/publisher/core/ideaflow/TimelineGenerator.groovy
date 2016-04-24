@@ -13,7 +13,7 @@ public class TimelineGenerator {
 
 //    public Timeline generateTimeline(String taskId) {
 //        //query for ideaflow, activities, events, task details
-//		List<IdeaFlowState> ideaFlowStates = []
+//		List<IdeaFlowStateEntity> ideaFlowStates = []
 //		List<IdleActivity> idleActivities = []
 //
 //
