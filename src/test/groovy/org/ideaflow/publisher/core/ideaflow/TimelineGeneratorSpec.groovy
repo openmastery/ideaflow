@@ -10,10 +10,7 @@ import spock.lang.Specification
 import java.time.Duration
 import java.time.LocalDateTime
 
-import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
-import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
-import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
-import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
+import static org.ideaflow.publisher.api.IdeaFlowStateType.*
 
 class TimelineGeneratorSpec extends Specification {
 
@@ -90,9 +87,9 @@ class TimelineGeneratorSpec extends Specification {
         }
     }
 
-    private List<TimelineSegment> generateTimelineSegments() {
+    private TimelineSegment generateTimelineSegments() {
         List<IdeaFlowState> stateList = getStateListWithActiveCompleted()
-        generator.createTimelineSegments(stateList)
+        generator.createPrimaryTimeline(stateList)
     }
 
     private void assertTimeBands(List<TimeBand> timeBands, List... expectedStateAndDuration) {
@@ -113,16 +110,14 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.endBandAndAdvanceHours(REWORK, 1)
 
         when:
-        List<TimelineSegment> segmentList = generateTimelineSegments()
+        TimelineSegment segment = generateTimelineSegments()
 
         then:
-        TimelineSegment segment = segmentList[0]
         assertTimeBands(segment.timeBands,
                         [PROGRESS, Duration.ofHours(1)],
                         [REWORK, Duration.ofHours(2)],
                         [PROGRESS, Duration.ofHours(1)])
         assert segment.duration == Duration.ofHours(4)
-        assert segmentList.size() == 1
         assert segment.timeBandGroups.isEmpty()
     }
 
@@ -135,10 +130,10 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.endBandAndAdvanceHours(CONFLICT, 1)
 
         when:
-        List<TimelineSegment> segmentList = generateTimelineSegments()
+		TimelineSegment segment = generateTimelineSegments()
 
-        then:
-        TimelineSegment segment = segmentList[0]
+
+		then:
         assertTimeBands(segment.timeBands,
                         [PROGRESS, Duration.ofHours(1)],
                         [REWORK, Duration.ofHours(8)])
@@ -146,7 +141,6 @@ class TimelineGeneratorSpec extends Specification {
                         [CONFLICT, Duration.ofHours(2)],
                         [CONFLICT, Duration.ofHours(3)])
         assert segment.duration == Duration.ofHours(9)
-        assert segmentList.size() == 1
         assert segment.timeBandGroups.isEmpty()
     }
 
@@ -157,10 +151,9 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.startBandAndAdvanceHours(REWORK, 2)
 
         when:
-        List<TimelineSegment> segmentList = generateTimelineSegments()
+		TimelineSegment segment = generateTimelineSegments()
 
-        then:
-        TimelineSegment segment = segmentList[0]
+		then:
         assertTimeBands(segment.timeBands, [PROGRESS, Duration.ofHours(1)])
         assertTimeBands(segment.timeBandGroups[0].linkedTimeBands,
                         [CONFLICT, Duration.ofHours(1)],
@@ -168,7 +161,6 @@ class TimelineGeneratorSpec extends Specification {
                         [REWORK, Duration.ofHours(2)])
         assert segment.timeBands.size() == 1
         assert segment.timeBandGroups.size() == 1
-        assert segmentList.size() == 1
     }
 
     def "WHEN IdeaFlowStates are linked AND first state has nested conflicts SHOULD create TimeBandGroup including all bands"() {
@@ -179,10 +171,9 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.startBandAndAdvanceHours(LEARNING, 4)
 
         when:
-        List<TimelineSegment> segmentList = generateTimelineSegments()
+		TimelineSegment segment = generateTimelineSegments()
 
-        then:
-        TimelineSegment segment = segmentList[0]
+		then:
         assertTimeBands(segment.timeBands, [PROGRESS, Duration.ofHours(1)])
         assertTimeBands(segment.timeBandGroups[0].linkedTimeBands,
                         [REWORK, Duration.ofHours(6)],
@@ -191,7 +182,6 @@ class TimelineGeneratorSpec extends Specification {
                         [CONFLICT, Duration.ofHours(1)])
         assert segment.timeBands.size() == 1
         assert segment.timeBandGroups.size() == 1
-        assert segmentList.size() == 1
     }
 
     def "WHEN conflict is unnested SHOULD be considered linked AND previous duration should be reduced by the band overlap"() {
@@ -207,10 +197,9 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.endBandAndAdvanceHours(LEARNING, 2) //finish the group
 
         when:
-        List<TimelineSegment> segmentList = generateTimelineSegments()
+		TimelineSegment segment = generateTimelineSegments()
 
-        then:
-        TimelineSegment segment = segmentList[0]
+		then:
         assertTimeBands(segment.timeBands,
                         [PROGRESS, Duration.ofHours(1)],
                         [PROGRESS, Duration.ofHours(2)]
@@ -225,7 +214,6 @@ class TimelineGeneratorSpec extends Specification {
 
         assert segment.timeBands.size() == 2
         assert segment.timeBandGroups.size() == 1
-        assert segmentList.size() == 1
     }
 
     def "WHEN idle time is within a Timeband SHOULD subtract relative time from band"() {

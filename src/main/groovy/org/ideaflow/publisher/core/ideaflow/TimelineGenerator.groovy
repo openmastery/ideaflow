@@ -3,14 +3,19 @@ package org.ideaflow.publisher.core.ideaflow
 import org.ideaflow.publisher.api.IdeaFlowState
 import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimeBandGroup
+import org.ideaflow.publisher.api.Timeline
 import org.ideaflow.publisher.api.TimelineSegment
 
-import java.time.Duration
 import java.time.LocalDateTime
 
 public class TimelineGenerator {
 
-    public List<TimelineSegment> createTimelineSegments(List<IdeaFlowState> ideaFlowStates) {
+    public Timeline generateTimeline(String taskId) {
+       // createPrimaryTimeline(List<IdeaFlowState> idea)
+    }
+
+
+    public TimelineSegment createPrimaryTimeline(List<IdeaFlowState> ideaFlowStates) {
         ideaFlowStates = new ArrayList<>(ideaFlowStates);
         Collections.sort(ideaFlowStates)
 
@@ -66,9 +71,9 @@ public class TimelineGenerator {
                 .timeBandGroups(timeBandGroups)
                 .build();
 
-        ArrayList<TimelineSegment> segmentList = new ArrayList<>()
-        segmentList.add(segment)
-        return segmentList;
+        return segment;
     }
+
+
 
 }
