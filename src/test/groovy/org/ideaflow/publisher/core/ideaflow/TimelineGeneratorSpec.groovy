@@ -2,9 +2,11 @@ package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowState
 import org.ideaflow.publisher.api.IdeaFlowStateType
+
 import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.MockTimeService
+import org.ideaflow.publisher.core.activity.IdleActivity
 import spock.lang.Specification
 
 import java.time.Duration
@@ -87,7 +89,7 @@ class TimelineGeneratorSpec extends Specification {
         }
     }
 
-    private TimelineSegment generateTimelineSegments() {
+    private TimelineSegment generatePrimaryTimeline() {
         List<IdeaFlowState> stateList = getStateListWithActiveCompleted()
         generator.createPrimaryTimeline(stateList)
     }
@@ -110,7 +112,7 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.endBandAndAdvanceHours(REWORK, 1)
 
         when:
-        TimelineSegment segment = generateTimelineSegments()
+        TimelineSegment segment = generatePrimaryTimeline()
 
         then:
         assertTimeBands(segment.timeBands,
@@ -130,7 +132,7 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.endBandAndAdvanceHours(CONFLICT, 1)
 
         when:
-		TimelineSegment segment = generateTimelineSegments()
+		TimelineSegment segment = generatePrimaryTimeline()
 
 
 		then:
@@ -151,7 +153,7 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.startBandAndAdvanceHours(REWORK, 2)
 
         when:
-		TimelineSegment segment = generateTimelineSegments()
+		TimelineSegment segment = generatePrimaryTimeline()
 
 		then:
         assertTimeBands(segment.timeBands, [PROGRESS, Duration.ofHours(1)])
@@ -171,7 +173,7 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.startBandAndAdvanceHours(LEARNING, 4)
 
         when:
-		TimelineSegment segment = generateTimelineSegments()
+		TimelineSegment segment = generatePrimaryTimeline()
 
 		then:
         assertTimeBands(segment.timeBands, [PROGRESS, Duration.ofHours(1)])
@@ -197,7 +199,7 @@ class TimelineGeneratorSpec extends Specification {
         stateMachine.endBandAndAdvanceHours(LEARNING, 2) //finish the group
 
         when:
-		TimelineSegment segment = generateTimelineSegments()
+		TimelineSegment segment = generatePrimaryTimeline()
 
 		then:
         assertTimeBands(segment.timeBands,
@@ -217,8 +219,28 @@ class TimelineGeneratorSpec extends Specification {
     }
 
     def "WHEN idle time is within a Timeband SHOULD subtract relative time from band"() {
-        expect:
-        assert false
+		given:
+		stateMachine.startBandAndAdvanceHours(CONFLICT, 1)
+		stateMachine.endBandAndAdvanceHours(CONFLICT, 2)
+		LocalDateTime idleStart = timeService.now()
+		stateMachine.startBandAndAdvanceHours(LEARNING, 5)
+
+		IdleActivity idleActivity = IdleActivity.builder()
+										.start(idleStart)
+										.end(idleStart.plusHours(3)).build()
+
+		when:
+		TimelineSegment segment = generatePrimaryTimeline()
+		segment = generator.collapseIdleTime(segment, [idleActivity])
+
+		then:
+		assertTimeBands(segment.timeBands,
+				[PROGRESS, Duration.ofHours(1)],
+				[CONFLICT, Duration.ofHours(1)],
+				[PROGRESS, Duration.ofHours(2)],
+				[LEARNING, Duration.ofHours(2)]
+		)
+
     }
 
     def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {

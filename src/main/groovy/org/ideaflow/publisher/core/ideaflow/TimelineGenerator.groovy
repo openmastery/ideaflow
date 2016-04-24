@@ -1,19 +1,31 @@
 package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowState
+
 import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.Timeline
 import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.core.activity.IdleActivity
 
 import java.time.LocalDateTime
 
 public class TimelineGenerator {
 
-    public Timeline generateTimeline(String taskId) {
-       // createPrimaryTimeline(List<IdeaFlowState> idea)
-    }
-
+//    public Timeline generateTimeline(String taskId) {
+//        //query for ideaflow, activities, events, task details
+//		List<IdeaFlowState> ideaFlowStates = []
+//		List<IdleActivity> idleActivities = []
+//
+//
+//		TimelineSegment primarySegment = createPrimaryTimeline([])
+//		primarySegment = collapseIdleTime(primarySegment, idleActivities)
+//
+//		//add events
+//		//slice up into multiple segments
+//		//add task details to main timeline
+//		new Timeline()
+//    }
 
     public TimelineSegment createPrimaryTimeline(List<IdeaFlowState> ideaFlowStates) {
         ideaFlowStates = new ArrayList<>(ideaFlowStates);
@@ -74,6 +86,9 @@ public class TimelineGenerator {
         return segment;
     }
 
+	public TimelineSegment collapseIdleTime(TimelineSegment timelineSegment, List<IdleActivity> idleActivities) {
+		return timelineSegment
+	}
 
 
 }
