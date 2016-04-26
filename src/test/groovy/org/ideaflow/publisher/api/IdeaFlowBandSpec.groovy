@@ -5,7 +5,7 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-public class TimeBandGroupTest extends Specification {
+public class IdeaFlowBandSpec extends Specification {
 
 	private MockTimeService timeService = new MockTimeService()
 	private LocalDateTime hourZero = timeService.now()
@@ -16,7 +16,7 @@ public class TimeBandGroupTest extends Specification {
 	private LocalDateTime hourFive = timeService.plusHour().now()
 	private LocalDateTime hourSix = timeService.plusHour().now()
 
-	private IdeaFlowBand createBand(LocalDateTime start, LocalDateTime end) {
+	private IdeaFlowBand create(LocalDateTime start, LocalDateTime end) {
 		IdeaFlowBand.builder()
 				.start(start)
 				.end(end)
@@ -24,24 +24,14 @@ public class TimeBandGroupTest extends Specification {
 				.build()
 	}
 
-	private TimeBandGroup createGroup(LocalDateTime start, LocalDateTime end) {
-		createGroup(createBand(start, end))
-	}
-
-	private TimeBandGroup createGroup(IdeaFlowBand... bands) {
-		TimeBandGroup.builder()
-				.linkedTimeBands(bands as List)
-				.build()
-	}
-
-	private void assertStartAndEnd(TimeBand band, LocalDateTime expectedStart, LocalDateTime expectedEnd) {
+	private void assertStartAndEnd(IdeaFlowBand band, LocalDateTime expectedStart, LocalDateTime expectedEnd) {
 		assert band.start == expectedStart
 		assert band.end == expectedEnd
 	}
 
 	def "splitAndReturn should return null if position is on or outside timeband range AND exclusive direction"() {
 		given:
-		TimeBandGroup band = createGroup(hourOne, hourTwo)
+		IdeaFlowBand band = create(hourOne, hourTwo)
 
 		expect:
 		assert band.splitAndReturnLeftSide(hourZero) == null
@@ -54,7 +44,7 @@ public class TimeBandGroupTest extends Specification {
 
 	def "splitAndReturn should return self WHEN position is on or outside timeband range AND inclusive direction"() {
 		given:
-		TimeBandGroup band = createGroup(hourOne, hourTwo)
+		IdeaFlowBand band = create(hourOne, hourTwo)
 
 		expect:
 		assert band.splitAndReturnLeftSide(hourTwo).is(band)
@@ -67,45 +57,45 @@ public class TimeBandGroupTest extends Specification {
 
 	def "spiltAndReturn should split timeband WHEN position is within timeband range"() {
 		given:
-		TimeBandGroup band = createGroup(hourOne, hourThree)
+		IdeaFlowBand band = create(hourOne, hourThree)
 
 		when:
-		TimeBandGroup leftSide = band.splitAndReturnLeftSide(hourTwo)
+		IdeaFlowBand leftSide = band.splitAndReturnLeftSide(hourTwo)
 
 		then:
 		assertStartAndEnd(leftSide, hourOne, hourTwo)
 
 		when:
-		TimeBandGroup rightSide = band.splitAndReturnRightSide(hourTwo)
+		IdeaFlowBand rightSide = band.splitAndReturnRightSide(hourTwo)
 
 		then:
 		assertStartAndEnd(rightSide, hourTwo, hourThree)
 	}
 
-	def "splitAndReturn should split linked bands"() {
+	def "splitAndReturn should split nested bands"() {
 		given:
-		TimeBandGroup outerBand = createGroup(
-				createBand(hourTwo, hourThree),
-				createBand(hourFour, hourFive),
-				createBand(hourFive, hourSix)
-		)
+		IdeaFlowBand outerBand = create(hourOne, hourSix)
+		IdeaFlowBand nestedBand1 = create(hourTwo, hourThree)
+		IdeaFlowBand nestedBand2 = create(hourFour, hourFive)
+		IdeaFlowBand nestedBand3 = create(hourFive, hourSix)
+		outerBand.nestedBands = [nestedBand1, nestedBand2, nestedBand3]
 		LocalDateTime hourFourOneHalf = hourFour.plusMinutes(30)
 
 		when:
-		TimeBandGroup leftSide = outerBand.splitAndReturnLeftSide(hourFourOneHalf)
+		IdeaFlowBand leftSide = outerBand.splitAndReturnLeftSide(hourFourOneHalf)
 
 		then:
-		assertStartAndEnd(leftSide, hourTwo, hourFourOneHalf)
-		assertStartAndEnd(leftSide.linkedTimeBands[0], hourTwo, hourThree)
-		assertStartAndEnd(leftSide.linkedTimeBands[1], hourFour, hourFourOneHalf)
+		assertStartAndEnd(leftSide, hourOne, hourFourOneHalf)
+		assertStartAndEnd(leftSide.nestedBands[0], hourTwo, hourThree)
+		assertStartAndEnd(leftSide.nestedBands[1], hourFour, hourFourOneHalf)
 
 		when:
-		TimeBandGroup rightSide = outerBand.splitAndReturnRightSide(hourFour.plusMinutes(30))
+		IdeaFlowBand rightSide = outerBand.splitAndReturnRightSide(hourFour.plusMinutes(30))
 
 		then:
 		assertStartAndEnd(rightSide, hourFourOneHalf, hourSix)
-		assertStartAndEnd(rightSide.linkedTimeBands[0], hourFourOneHalf, hourFive)
-		assertStartAndEnd(rightSide.linkedTimeBands[1], hourFive, hourSix)
+		assertStartAndEnd(rightSide.nestedBands[0], hourFourOneHalf, hourFive)
+		assertStartAndEnd(rightSide.nestedBands[1], hourFive, hourSix)
 	}
 
 }
