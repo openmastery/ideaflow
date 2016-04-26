@@ -1,5 +1,7 @@
 package org.ideaflow.publisher.core
 
+import org.apache.tomcat.jni.Local
+
 import java.time.LocalDateTime
 
 
@@ -14,6 +16,10 @@ class MockTimeService implements TimeService {
 	@Override
 	LocalDateTime now() {
 		return now
+	}
+
+	LocalDateTime inFuture(int hours) {
+		now.plusHours(hours)
 	}
 
 	MockTimeService plusHour() {
@@ -35,5 +41,7 @@ class MockTimeService implements TimeService {
 		now = now.plusMinutes(minutes)
 		this
 	}
+
+
 
 }

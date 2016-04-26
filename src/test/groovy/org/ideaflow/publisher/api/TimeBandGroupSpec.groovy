@@ -5,9 +5,10 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-public class TimeBandGroupSpec extends Specification {
+public class TimeBandGroupSpec extends Specification implements TimeBandTestSupport {
 
 	private MockTimeService timeService = new MockTimeService()
+
 	private LocalDateTime hourZero = timeService.now()
 	private LocalDateTime hourOne = timeService.plusHour().now()
 	private LocalDateTime hourTwo = timeService.plusHour().now()
@@ -16,28 +17,6 @@ public class TimeBandGroupSpec extends Specification {
 	private LocalDateTime hourFive = timeService.plusHour().now()
 	private LocalDateTime hourSix = timeService.plusHour().now()
 
-	private IdeaFlowBand createBand(LocalDateTime start, LocalDateTime end) {
-		IdeaFlowBand.builder()
-				.start(start)
-				.end(end)
-				.nestedBands([])
-				.build()
-	}
-
-	private TimeBandGroup createGroup(LocalDateTime start, LocalDateTime end) {
-		createGroup(createBand(start, end))
-	}
-
-	private TimeBandGroup createGroup(IdeaFlowBand... bands) {
-		TimeBandGroup.builder()
-				.linkedTimeBands(bands as List)
-				.build()
-	}
-
-	private void assertStartAndEnd(TimeBand band, LocalDateTime expectedStart, LocalDateTime expectedEnd) {
-		assert band.start == expectedStart
-		assert band.end == expectedEnd
-	}
 
 	def "splitAndReturn should return null if position is on or outside timeband range AND exclusive direction"() {
 		given:

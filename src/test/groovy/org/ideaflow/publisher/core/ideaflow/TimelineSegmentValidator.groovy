@@ -20,8 +20,20 @@ class TimelineSegmentValidator {
 		assert timeBands[index].duration == expectedDuration
 	}
 
+	private void assertExpectedValues(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration, Duration expectedIdle) {
+		assert timeBands[index].type == expectedType
+		assert timeBands[index].duration == expectedDuration
+		assert timeBands[index].idle == expectedIdle
+
+	}
+
 	void assertTimeBand(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assertExpectedValues(timeBands, index, expectedType, expectedDuration)
+		expectedTimeBandCount++
+	}
+
+	void assertTimeBand(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration, Duration expectedIdle) {
+		assertExpectedValues(timeBands, index, expectedType, expectedDuration, expectedIdle)
 		expectedTimeBandCount++
 	}
 
