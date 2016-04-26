@@ -115,4 +115,22 @@ class TimelineSplitterSpec extends Specification {
 		validator.assertValidationComplete(segments, 2)
 	}
 
+	def "groups!"() {
+		expect:
+		false
+	}
+
+	def "idle!"() {
+		expect:
+		false
+	}
+
+	def "subtask event should be the first event in the timeline segment"() {
+		expect:
+		false
+	}
+
+	// actual persistence
+	// dozer
+
 }

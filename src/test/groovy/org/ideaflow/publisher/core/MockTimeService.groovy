@@ -16,20 +16,24 @@ class MockTimeService implements TimeService {
 		return now
 	}
 
-	void plusHour() {
+	MockTimeService plusHour() {
 		plusHours(1)
+		this
 	}
 
-	void plusHours(int hours) {
+	MockTimeService plusHours(int hours) {
 		now = now.plusHours(hours)
+		this
 	}
 
-	void plusMinute() {
+	MockTimeService plusMinute() {
 		plusMinutes(1)
+		this
 	}
 
-	void plusMinutes(int minutes) {
+	MockTimeService plusMinutes(int minutes) {
 		now = now.plusMinutes(minutes)
+		this
 	}
 
 }

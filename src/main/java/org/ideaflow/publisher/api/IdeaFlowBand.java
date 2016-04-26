@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class IdeaFlowBand extends TimeBand {
+public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 
 	private long id;
 
@@ -39,7 +39,7 @@ public class IdeaFlowBand extends TimeBand {
 	}
 
 	@Override
-	public TimeBand splitAndReturnLeftSide(LocalDateTime position) {
+	public IdeaFlowBand splitAndReturnLeftSide(LocalDateTime position) {
 		if (startsOnOrAfter(position)) {
 			return null;
 		} else if (endsOnOrBefore(position)) {
@@ -47,7 +47,7 @@ public class IdeaFlowBand extends TimeBand {
 		} else {
 			List<IdeaFlowBand> splitNestedBands = new ArrayList<>();
 			for (IdeaFlowBand nestedBand : nestedBands) {
-				IdeaFlowBand splitNestedBand = (IdeaFlowBand) nestedBand.splitAndReturnLeftSide(position);
+				IdeaFlowBand splitNestedBand = nestedBand.splitAndReturnLeftSide(position);
 				if (splitNestedBand != null) {
 					splitNestedBands.add(splitNestedBand);
 				}
@@ -62,7 +62,7 @@ public class IdeaFlowBand extends TimeBand {
 	}
 
 	@Override
-	public TimeBand splitAndReturnRightSide(LocalDateTime position) {
+	public IdeaFlowBand splitAndReturnRightSide(LocalDateTime position) {
 		if (endsOnOrBefore(position)) {
 			return null;
 		} else if (startsOnOrAfter(position)) {
@@ -70,7 +70,7 @@ public class IdeaFlowBand extends TimeBand {
 		} else {
 			List<IdeaFlowBand> splitNestedBands = new ArrayList<>();
 			for (IdeaFlowBand nestedBand : nestedBands) {
-				IdeaFlowBand splitNestedBand = (IdeaFlowBand) nestedBand.splitAndReturnRightSide(position);
+				IdeaFlowBand splitNestedBand = nestedBand.splitAndReturnRightSide(position);
 				if (splitNestedBand != null) {
 					splitNestedBands.add(splitNestedBand);
 				}

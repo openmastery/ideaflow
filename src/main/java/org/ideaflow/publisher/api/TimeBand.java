@@ -3,7 +3,7 @@ package org.ideaflow.publisher.api;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public abstract class TimeBand {
+public abstract class TimeBand<T extends TimeBand> {
 
 	public abstract LocalDateTime getStart();
 
@@ -24,8 +24,8 @@ public abstract class TimeBand {
 		return getEnd().equals(position) || getEnd().isBefore(position);
 	}
 
-	public abstract TimeBand splitAndReturnLeftSide(LocalDateTime position);
+	public abstract T splitAndReturnLeftSide(LocalDateTime position);
 
-	public abstract TimeBand splitAndReturnRightSide(LocalDateTime position);
+	public abstract T splitAndReturnRightSide(LocalDateTime position);
 
 }
