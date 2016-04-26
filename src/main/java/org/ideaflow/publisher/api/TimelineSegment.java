@@ -21,18 +21,18 @@ public class TimelineSegment {
 	private LocalDateTime end;
 
 	private List<IdeaFlowBand> ideaFlowBands = new ArrayList<>();
-	private List<IdeaFlowBandGroup> ideaFlowBandGroups = new ArrayList<>();
+	private List<TimeBandGroup> timeBandGroups = new ArrayList<>();
 
 	public Duration getDuration() {
-		Duration duration = IdeaFlowBand.sumDuration(ideaFlowBands);
-		return duration.plus(IdeaFlowBandGroup.sumDuration(ideaFlowBandGroups));
+		Duration duration = TimeBand.sumDuration(ideaFlowBands);
+		return duration.plus(TimeBand.sumDuration(timeBandGroups));
 	}
 
 	public void addTimeBand(TimeBand timeBand) {
 		if (timeBand instanceof IdeaFlowBand) {
 			ideaFlowBands.add((IdeaFlowBand) timeBand);
-		} else if (timeBand instanceof IdeaFlowBandGroup) {
-			ideaFlowBandGroups.add((IdeaFlowBandGroup) timeBand);
+		} else if (timeBand instanceof TimeBandGroup) {
+			timeBandGroups.add((TimeBandGroup) timeBand);
 		} else {
 			throw new RuntimeException("Unexpected time band=" + timeBand);
 		}

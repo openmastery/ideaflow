@@ -2,6 +2,7 @@ package org.ideaflow.publisher.api;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public abstract class TimeBand<T extends TimeBand> {
 
@@ -27,5 +28,14 @@ public abstract class TimeBand<T extends TimeBand> {
 	public abstract T splitAndReturnLeftSide(LocalDateTime position);
 
 	public abstract T splitAndReturnRightSide(LocalDateTime position);
+
+
+	public static Duration sumDuration(List<? extends TimeBand> ideaFlowBands) {
+		Duration duration = Duration.ZERO;
+		for (TimeBand ideaFlowBand : ideaFlowBands) {
+			duration = duration.plus(ideaFlowBand.getDuration());
+		}
+		return duration;
+	}
 
 }

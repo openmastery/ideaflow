@@ -84,14 +84,6 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 		}
 	}
 
-	public static Duration sumDuration(List<IdeaFlowBand> ideaFlowBands) {
-		Duration duration = Duration.ZERO;
-		for (IdeaFlowBand ideaFlowBand : ideaFlowBands) {
-			duration = duration.plus(ideaFlowBand.getDuration());
-		}
-		return duration;
-	}
-
 	public static IdeaFlowBand.IdeaFlowBandBuilder from(IdeaFlowBand band) {
 		return builder().id(band.id)
 				.type(band.getType())

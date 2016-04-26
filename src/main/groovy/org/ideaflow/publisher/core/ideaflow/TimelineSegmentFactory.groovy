@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowBand
-import org.ideaflow.publisher.api.IdeaFlowBandGroup
+import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
 
 import java.time.Duration
@@ -17,9 +17,9 @@ class TimelineSegmentFactory {
 		Collections.sort(ideaFlowStates)
 
 		IdeaFlowBand previousBand = null;
-		IdeaFlowBandGroup activeTimeBandGroup = null;
+		TimeBandGroup activeTimeBandGroup = null;
 		ArrayList<IdeaFlowBand> ideaFlowBands = new ArrayList<>();
-		ArrayList<IdeaFlowBandGroup> ideaFlowBandGroups = new ArrayList<>();
+		ArrayList<TimeBandGroup> ideaFlowBandGroups = new ArrayList<>();
 		for (IdeaFlowStateEntity state : ideaFlowStates) {
 			IdeaFlowBand timeBand = IdeaFlowBand.builder()
 					.type(state.type)
@@ -34,8 +34,8 @@ class TimelineSegmentFactory {
 			} else {
 				if (state.isLinkedToPrevious() && (ideaFlowBands.isEmpty() == false)) {
 					if (activeTimeBandGroup == null) {
-						activeTimeBandGroup = IdeaFlowBandGroup.builder()
-								.linkedIdeaFlowBands(new ArrayList<IdeaFlowBand>())
+						activeTimeBandGroup = TimeBandGroup.builder()
+								.linkedTimeBands(new ArrayList<IdeaFlowBand>())
 								.build()
 
 						IdeaFlowBand firstBandInGroup = ideaFlowBands.remove(ideaFlowBands.size() - 1)
@@ -66,7 +66,7 @@ class TimelineSegmentFactory {
 				.start(segmentStart)
 				.end(segmentEnd)
 				.ideaFlowBands(ideaFlowBands)
-				.ideaFlowBandGroups(ideaFlowBandGroups)
+				.timeBandGroups(ideaFlowBandGroups)
 				.build();
 
 		return segment;

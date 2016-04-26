@@ -2,7 +2,7 @@ package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.api.IdeaFlowBand
-import org.ideaflow.publisher.api.IdeaFlowBandGroup
+import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
 
 import java.time.Duration
@@ -47,16 +47,16 @@ class TimelineSegmentValidator {
 
 	private int countLinkedTimeBands(TimelineSegment segment) {
 		int linkedTimeBandCount = 0
-		segment.ideaFlowBandGroups.each { IdeaFlowBandGroup group ->
-			linkedTimeBandCount += group.linkedIdeaFlowBands.size()
+		segment.timeBandGroups.each { TimeBandGroup group ->
+			linkedTimeBandCount += group.linkedTimeBands.size()
 		}
 		linkedTimeBandCount
 	}
 
 	private int countNestedBands(TimelineSegment segment) {
 		int nestedBandCount = sumNestedTimeBands(segment.ideaFlowBands)
-		segment.ideaFlowBandGroups.each { IdeaFlowBandGroup group ->
-			nestedBandCount += sumNestedTimeBands(group.linkedIdeaFlowBands)
+		segment.timeBandGroups.each { TimeBandGroup group ->
+			nestedBandCount += sumNestedTimeBands(group.linkedTimeBands)
 		}
 		nestedBandCount
 	}

@@ -75,7 +75,7 @@ class TimelineSegmentFactorySpec extends Specification {
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		List groupedIdeaFlowBands = segment.ideaFlowBandGroups[0].linkedIdeaFlowBands
+		List groupedIdeaFlowBands = segment.timeBandGroups[0].linkedTimeBands
 		validator.assertLinkedTimeBand(groupedIdeaFlowBands, 0, CONFLICT, Duration.ofHours(1))
 		validator.assertLinkedTimeBand(groupedIdeaFlowBands, 1, LEARNING, Duration.ofHours(3))
 		validator.assertLinkedTimeBand(groupedIdeaFlowBands, 2, REWORK, Duration.ofHours(2))
@@ -95,10 +95,10 @@ class TimelineSegmentFactorySpec extends Specification {
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		List linkedIdeaFlowBands = segment.ideaFlowBandGroups[0].linkedIdeaFlowBands
+		List linkedIdeaFlowBands = segment.timeBandGroups[0].linkedTimeBands
 		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 0, REWORK, Duration.ofHours(6))
 		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 1, LEARNING, Duration.ofHours(4))
-		List nestedIdeaFlowBands = segment.ideaFlowBandGroups[0].linkedIdeaFlowBands[0].nestedBands
+		List nestedIdeaFlowBands = segment.timeBandGroups[0].linkedTimeBands[0].nestedBands
 		validator.assertNestedTimeBand(nestedIdeaFlowBands, 0, CONFLICT, Duration.ofHours(1))
 		validator.assertValidationComplete(segment)
 		assert segment.duration == Duration.ofHours(11)
@@ -121,7 +121,7 @@ class TimelineSegmentFactorySpec extends Specification {
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		List linkedIdeaFlowBands = segment.ideaFlowBandGroups[0].linkedIdeaFlowBands
+		List linkedIdeaFlowBands = segment.timeBandGroups[0].linkedTimeBands
 		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 0, CONFLICT, Duration.ofHours(1))
 		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 1, LEARNING, Duration.ofHours(2))
 		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 2, REWORK, Duration.ofHours(1))

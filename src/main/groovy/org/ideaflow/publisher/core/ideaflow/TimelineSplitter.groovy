@@ -14,7 +14,7 @@ class TimelineSplitter {
 		subtaskEvents = subtaskEvents.sort { EventEntity event -> event.position }
 
 		List ideaFlowBands = segment.ideaFlowBands
-		List ideaFlowBandGroups = segment.ideaFlowBandGroups
+		List ideaFlowBandGroups = segment.timeBandGroups
 		List<TimelineSegment> splitSegments = []
 		TimelineSegment activeSegment = new TimelineSegment()
 
@@ -40,7 +40,7 @@ class TimelineSplitter {
 			List activeIdeaFlowBandGroups = []
 			// TODO: band groups
 
-			if (activeSegment.ideaFlowBands || activeSegment.ideaFlowBandGroups) {
+			if (activeSegment.ideaFlowBands || activeSegment.timeBandGroups) {
 				splitSegments << activeSegment
 				activeSegment = new TimelineSegment()
 			}
@@ -49,7 +49,7 @@ class TimelineSplitter {
 		if (ideaFlowBands || ideaFlowBandGroups) {
 			splitSegments << TimelineSegment.builder()
 					.ideaFlowBands(ideaFlowBands)
-					.ideaFlowBandGroups(ideaFlowBandGroups)
+					.timeBandGroups(ideaFlowBandGroups)
 					.build()
 		}
 

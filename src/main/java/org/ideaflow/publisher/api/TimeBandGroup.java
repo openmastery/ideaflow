@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.ideaflow.publisher.core.event.EventEntity;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -16,26 +15,26 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class IdeaFlowBandGroup extends TimeBand {
+public class TimeBandGroup extends TimeBand {
 
 	private long id;
 
-	private List<IdeaFlowBand> linkedIdeaFlowBands;
+	private List<TimeBand> linkedTimeBands;
 
 	public void addLinkedTimeBand(IdeaFlowBand linkedIdeaFlowBand) {
-		linkedIdeaFlowBands.add(linkedIdeaFlowBand);
+		linkedTimeBands.add(linkedIdeaFlowBand);
 	}
 
 	public LocalDateTime getStart() {
-		return linkedIdeaFlowBands.get(0).getStart();
+		return linkedTimeBands.get(0).getStart();
 	}
 
 	public LocalDateTime getEnd() {
-		return linkedIdeaFlowBands.get(linkedIdeaFlowBands.size() - 1).getEnd();
+		return linkedTimeBands.get(linkedTimeBands.size() - 1).getEnd();
 	}
 
 	public Duration getDuration() {
-		return IdeaFlowBand.sumDuration(linkedIdeaFlowBands);
+		return TimeBand.sumDuration(linkedTimeBands);
 	}
 
 	@Override
@@ -46,14 +45,6 @@ public class IdeaFlowBandGroup extends TimeBand {
 	@Override
 	public TimeBand splitAndReturnRightSide(LocalDateTime position) {
 		return null;
-	}
-
-	public static Duration sumDuration(List<IdeaFlowBandGroup> ideaFlowBandGroups) {
-		Duration duration = Duration.ZERO;
-		for (IdeaFlowBandGroup timeBand : ideaFlowBandGroups) {
-			duration = duration.plus(timeBand.getDuration());
-		}
-		return duration;
 	}
 
 }
