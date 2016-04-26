@@ -1,6 +1,5 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.api.IdeaFlowBand
 import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.event.EventEntity

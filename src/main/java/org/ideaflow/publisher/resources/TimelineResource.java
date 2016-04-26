@@ -2,8 +2,11 @@ package org.ideaflow.publisher.resources;
 
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.ideaflow.publisher.api.Timeline;
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService;
+import org.ideaflow.publisher.core.ideaflow.TimelineGenerator;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -19,11 +22,16 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class TimelineResource {
 
+	@Inject
+	private IdeaFlowInMemoryPersistenceService persistenceService;
+
 	@GET
 	@Path(ResourcePaths.TASK_PATH + "/{taskId}")
 	public Timeline getTimelineForTask(@PathParam("taskId") String taskId, @QueryParam("userId") String userId) {
-		// TODO: fill me in
-		return new Timeline();
+		TimelineGenerator generator = new TimelineGenerator();
+		return generator.createTimeline(persistenceService.getStateList(),
+		                                persistenceService.getIdleActivityList(),
+		                                persistenceService.getEventList());
 	}
 
 	@GET

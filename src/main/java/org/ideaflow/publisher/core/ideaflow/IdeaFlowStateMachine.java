@@ -17,10 +17,11 @@ import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK;
 @Component
 public class IdeaFlowStateMachine {
 
+	// TODO: make private once we have actual persistence (currently used by IfmPublisher)
 	@Inject
-	private TimeService timeService;
+	public TimeService timeService;
 	@Inject
-	private IdeaFlowPersistenceService ideaFlowPersistenceService;
+	public IdeaFlowPersistenceService ideaFlowPersistenceService;
 
 	private IdeaFlowStateEntity getActiveState() {
 		IdeaFlowStateEntity state = ideaFlowPersistenceService.getActiveState();
