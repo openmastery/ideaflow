@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow
 
+import org.ideaflow.publisher.api.IdeaFlowBand
 import org.ideaflow.publisher.api.TimelineSegment
 import spock.lang.Specification
 
@@ -8,6 +9,7 @@ import java.time.Duration
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
 import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
 import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
+import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
 
 class TimelineSplitterSpec extends Specification {
 
@@ -115,12 +117,27 @@ class TimelineSplitterSpec extends Specification {
 		validator.assertValidationComplete(segments, 2)
 	}
 
-	def "groups!"() {
-		expect:
-		false
+	def "WHEN subtask splits linked bands SHOULD split across TimelineSegments"() {
+		given:
+		testSupport.startBandAndAdvanceHours(LEARNING, 2)
+		testSupport.startBandAndAdvanceHours(REWORK, 3)
+		testSupport.startSubtaskAndAdvanceHours(4)
+		testSupport.startBandAndAdvanceHours(LEARNING, 5)
+
+		when:
+		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+
+		then:
+		println segments
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(2))
+		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 1, REWORK, Duration.ofHours(3))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, REWORK, Duration.ofHours(4))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, LEARNING, Duration.ofHours(5))
+		validator.assertValidationComplete(segments, 2)
 	}
 
-	def "idle!"() {
+	def "idle"() {
 		expect:
 		false
 	}
@@ -130,7 +147,14 @@ class TimelineSplitterSpec extends Specification {
 		false
 	}
 
-	// actual persistence
-	// dozer
+	def "persistence"() {
+		expect:
+		false
+	}
+
+	def "dozer"() {
+		expect:
+		false
+	}
 
 }

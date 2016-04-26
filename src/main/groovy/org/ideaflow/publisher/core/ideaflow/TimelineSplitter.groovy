@@ -1,6 +1,7 @@
 package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowBand
+import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.event.EventEntity
 
@@ -13,32 +14,28 @@ class TimelineSplitter {
 
 		subtaskEvents = subtaskEvents.sort { EventEntity event -> event.position }
 
-		List ideaFlowBands = segment.ideaFlowBands
-		List ideaFlowBandGroups = segment.timeBandGroups
+		List timeBands = segment.ideaFlowBands + segment.timeBandGroups
 		List<TimelineSegment> splitSegments = []
 		TimelineSegment activeSegment = new TimelineSegment()
 
 		subtaskEvents.each { EventEntity subtask ->
-			while (ideaFlowBands.isEmpty() == false) {
-				IdeaFlowBand ideaFlowBand = ideaFlowBands.remove(0)
-				if (ideaFlowBand.endsOnOrBefore(subtask.position)) {
-					activeSegment.addTimeBand(ideaFlowBand)
+			while (timeBands.isEmpty() == false) {
+				TimeBand timeBand = timeBands.remove(0)
+				if (timeBand.endsOnOrBefore(subtask.position)) {
+					activeSegment.addTimeBand(timeBand)
 				} else {
-					if (ideaFlowBand.start == subtask.position) {
+					if (timeBand.start == subtask.position) {
 						// pop the band back on the stack for processing by the next event
-						ideaFlowBands.add(0, ideaFlowBand)
+						timeBands.add(0, timeBand)
 					} else {
-						IdeaFlowBand leftBand = ideaFlowBand.splitAndReturnLeftSide(subtask.position)
-						IdeaFlowBand rightBand = ideaFlowBand.splitAndReturnRightSide(subtask.position)
+						TimeBand leftBand = timeBand.splitAndReturnLeftSide(subtask.position)
+						TimeBand rightBand = timeBand.splitAndReturnRightSide(subtask.position)
 						activeSegment.addTimeBand(leftBand)
-						ideaFlowBands.add(0, rightBand)
+						timeBands.add(0, rightBand)
 					}
 					break
 				}
 			}
-
-			List activeIdeaFlowBandGroups = []
-			// TODO: band groups
 
 			if (activeSegment.ideaFlowBands || activeSegment.timeBandGroups) {
 				splitSegments << activeSegment
@@ -46,11 +43,12 @@ class TimelineSplitter {
 			}
 		}
 
-		if (ideaFlowBands || ideaFlowBandGroups) {
-			splitSegments << TimelineSegment.builder()
-					.ideaFlowBands(ideaFlowBands)
-					.timeBandGroups(ideaFlowBandGroups)
-					.build()
+		if (timeBands) {
+			activeSegment = new TimelineSegment()
+			timeBands.each { TimeBand timeBand ->
+				activeSegment.addTimeBand(timeBand)
+			}
+			splitSegments << activeSegment
 		}
 
 		splitSegments

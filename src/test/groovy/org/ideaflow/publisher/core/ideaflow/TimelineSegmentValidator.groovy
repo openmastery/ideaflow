@@ -2,6 +2,7 @@ package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.api.IdeaFlowBand
+import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
 
@@ -62,7 +63,7 @@ class TimelineSegmentValidator {
 	}
 
 	private int sumNestedTimeBands(List<IdeaFlowBand> timeBands) {
-		timeBands.sum { IdeaFlowBand timeBand -> timeBand.nestedBands.size() } as int
+		timeBands.size() == 0 ? 0 : timeBands.sum { IdeaFlowBand timeBand -> timeBand.nestedBands.size() } as int
 	}
 
 }
