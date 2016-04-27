@@ -29,6 +29,7 @@ public class JerseyConfig extends ResourceConfig {
 	@PostConstruct
 	public void initialize() {
 		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+		packages("org.ideaflow.publisher.config");
 		packages("org.ideaflow.publisher.resources");
 	}
 

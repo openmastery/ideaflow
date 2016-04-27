@@ -25,7 +25,7 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-web"
 	compile "org.springframework.boot:spring-boot-starter-actuator"
 	compile "org.springframework.boot:spring-boot-starter-jersey"
-	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0"
+	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.3"
 	compile "org.codehaus.groovy:groovy-all:2.4.3"
 
 	// Utilities

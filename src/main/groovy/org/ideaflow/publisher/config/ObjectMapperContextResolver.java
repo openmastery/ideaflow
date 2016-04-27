@@ -18,10 +18,12 @@ package org.ideaflow.publisher.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Provider
 public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
@@ -29,13 +31,23 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
 
 	static {
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-		mapper.registerModule(new JSR310Module());
+		mapper.registerModule(createJavaTimeModule());
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+	}
+
+	private static JavaTimeModule createJavaTimeModule() {
+		JavaTimeModule timeModule = new JavaTimeModule();
+		timeModule.addSerializer(Duration.class, TimeSerializationSupport.DURATION_SERIALIZER);
+		timeModule.addDeserializer(Duration.class, TimeSerializationSupport.DURATION_DESERIALIZER);
+		timeModule.addKeyDeserializer(Duration.class, TimeSerializationSupport.DURATION_KEY_DESERIALIZER);
+		timeModule.addSerializer(LocalDateTime.class, TimeSerializationSupport.LOCAL_DATE_TIME_SERIALIZER);
+		return timeModule;
 	}
 
 	@Override
 	public ObjectMapper getContext(Class<?> type) {
 		return mapper;
 	}
+
 
 }
