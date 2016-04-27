@@ -2,6 +2,7 @@ package org.ideaflow.publisher.api;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TimeBand<T extends TimeBand> {
@@ -25,10 +26,51 @@ public abstract class TimeBand<T extends TimeBand> {
 		return getEnd().equals(position) || getEnd().isBefore(position);
 	}
 
-	public abstract T splitAndReturnLeftSide(LocalDateTime position);
+	public final T splitAndReturnLeftSide(LocalDateTime position) {
+		if (startsOnOrAfter(position)) {
+			return null;
+		} else if (endsOnOrBefore(position)) {
+			return (T) this;
+		} else {
+			return internalSplitAndReturnLeftSide(position);
+		}
+	}
 
-	public abstract T splitAndReturnRightSide(LocalDateTime position);
+	public final T splitAndReturnRightSide(LocalDateTime position) {
+		if (endsOnOrBefore(position)) {
+			return null;
+		} else if (startsOnOrAfter(position)) {
+			return (T) this;
+		} else {
+			return internalSplitAndReturnRightSide(position);
+		}
+	}
 
+	protected abstract T internalSplitAndReturnLeftSide(LocalDateTime position);
+
+	protected abstract T internalSplitAndReturnRightSide(LocalDateTime position);
+
+	public static <TB extends TimeBand> List<TB> splitAndReturnLeftSide(List<TB> timeBands, LocalDateTime position) {
+		List<TB> splitTimeBands = new ArrayList<>();
+		for (TB timeBand : timeBands) {
+			TB splitTimeBand = (TB) timeBand.splitAndReturnLeftSide(position);
+			if (splitTimeBand != null) {
+				splitTimeBands.add(splitTimeBand);
+			}
+		}
+		return splitTimeBands;
+	}
+
+	public static <TB extends TimeBand> List<TB> splitAndReturnRightSide(List<TB> timeBands, LocalDateTime position) {
+		List<TB> splitTimeBands = new ArrayList<>();
+		for (TB timeBand : timeBands) {
+			TB splitTimeBand = (TB) timeBand.splitAndReturnRightSide(position);
+			if (splitTimeBand != null) {
+				splitTimeBands.add(splitTimeBand);
+			}
+		}
+		return splitTimeBands;
+	}
 
 	public static Duration sumDuration(List<? extends TimeBand> ideaFlowBands) {
 		Duration duration = Duration.ZERO;

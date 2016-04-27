@@ -39,47 +39,21 @@ public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 	}
 
 	@Override
-	public TimeBandGroup splitAndReturnLeftSide(LocalDateTime position) {
-		if (startsOnOrAfter(position)) {
-			return null;
-		} else if (endsOnOrBefore(position)) {
-			return this;
-		} else {
-			List<TimeBand> splitLinkedBands = new ArrayList<>();
-			for (TimeBand linkedBand : linkedTimeBands) {
-				TimeBand splitLinkedBand = linkedBand.splitAndReturnLeftSide(position);
-				if (splitLinkedBand != null) {
-					splitLinkedBands.add(splitLinkedBand);
-				}
-			}
-
-			return TimeBandGroup.builder()
-					.id(id)
-					.linkedTimeBands(splitLinkedBands)
-					.build();
-		}
+	protected TimeBandGroup internalSplitAndReturnLeftSide(LocalDateTime position) {
+		List<TimeBand> splitLinkedBands = TimeBand.splitAndReturnLeftSide(linkedTimeBands, position);
+		return TimeBandGroup.builder()
+				.id(id)
+				.linkedTimeBands(splitLinkedBands)
+				.build();
 	}
 
 	@Override
-	public TimeBandGroup splitAndReturnRightSide(LocalDateTime position) {
-		if (endsOnOrBefore(position)) {
-			return null;
-		} else if (startsOnOrAfter(position)) {
-			return this;
-		} else {
-			List<TimeBand> splitLinkedBands = new ArrayList<>();
-			for (TimeBand linkedBand : linkedTimeBands) {
-				TimeBand splitLinkedBand = linkedBand.splitAndReturnRightSide(position);
-				if (splitLinkedBand != null) {
-					splitLinkedBands.add(splitLinkedBand);
-				}
-			}
-
-			return TimeBandGroup.builder()
-					.id(id)
-					.linkedTimeBands(splitLinkedBands)
-					.build();
-		}
+	protected TimeBandGroup internalSplitAndReturnRightSide(LocalDateTime position) {
+		List<TimeBand> splitLinkedBands = TimeBand.splitAndReturnRightSide(linkedTimeBands, position);
+		return TimeBandGroup.builder()
+				.id(id)
+				.linkedTimeBands(splitLinkedBands)
+				.build();
 	}
 
 }

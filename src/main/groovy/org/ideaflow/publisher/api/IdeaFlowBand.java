@@ -39,49 +39,23 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 	}
 
 	@Override
-	public IdeaFlowBand splitAndReturnLeftSide(LocalDateTime position) {
-		if (startsOnOrAfter(position)) {
-			return null;
-		} else if (endsOnOrBefore(position)) {
-			return this;
-		} else {
-			List<IdeaFlowBand> splitNestedBands = new ArrayList<>();
-			for (IdeaFlowBand nestedBand : nestedBands) {
-				IdeaFlowBand splitNestedBand = nestedBand.splitAndReturnLeftSide(position);
-				if (splitNestedBand != null) {
-					splitNestedBands.add(splitNestedBand);
-				}
-			}
-
-			IdeaFlowBand leftBand = IdeaFlowBand.from(this)
-					.end(position)
-					.nestedBands(splitNestedBands)
-					.build();
-			return leftBand;
-		}
+	protected IdeaFlowBand internalSplitAndReturnLeftSide(LocalDateTime position) {
+		List<IdeaFlowBand> splitNestedBands = TimeBand.splitAndReturnLeftSide(nestedBands, position);
+		IdeaFlowBand leftBand = IdeaFlowBand.from(this)
+				.end(position)
+				.nestedBands(splitNestedBands)
+				.build();
+		return leftBand;
 	}
 
 	@Override
-	public IdeaFlowBand splitAndReturnRightSide(LocalDateTime position) {
-		if (endsOnOrBefore(position)) {
-			return null;
-		} else if (startsOnOrAfter(position)) {
-			return this;
-		} else {
-			List<IdeaFlowBand> splitNestedBands = new ArrayList<>();
-			for (IdeaFlowBand nestedBand : nestedBands) {
-				IdeaFlowBand splitNestedBand = nestedBand.splitAndReturnRightSide(position);
-				if (splitNestedBand != null) {
-					splitNestedBands.add(splitNestedBand);
-				}
-			}
-
-			IdeaFlowBand rightBand = IdeaFlowBand.from(this)
-					.start(position)
-					.nestedBands(splitNestedBands)
-					.build();
-			return rightBand;
-		}
+	protected IdeaFlowBand internalSplitAndReturnRightSide(LocalDateTime position) {
+		List<IdeaFlowBand> splitNestedBands = TimeBand.splitAndReturnRightSide(nestedBands, position);
+		IdeaFlowBand rightBand = IdeaFlowBand.from(this)
+				.start(position)
+				.nestedBands(splitNestedBands)
+				.build();
+		return rightBand;
 	}
 
 	public static IdeaFlowBand.IdeaFlowBandBuilder from(IdeaFlowBand band) {
