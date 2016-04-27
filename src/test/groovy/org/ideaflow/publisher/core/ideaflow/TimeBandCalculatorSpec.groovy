@@ -13,7 +13,6 @@ class TimeBandCalculatorSpec extends Specification implements TimeBandTestSuppor
 
 	def time = new MockTimeService()
 
-
 	def "getIdleDurationForTimeBand SHOULD include entire duration if idle is within band"() {
 		given:
 		IdeaFlowBand band =
@@ -22,11 +21,8 @@ class TimeBandCalculatorSpec extends Specification implements TimeBandTestSuppor
 		IdleActivityEntity idle =
 				createIdle(time.inFuture(1), time.inFuture(3))
 
-		when:
-		Duration duration = TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
-
-		then:
-		assert duration == Duration.ofHours(2)
+		expect:
+		assert Duration.ofHours(2) == TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
 	}
 
 	def "getIdleDurationForTimeBand SHOULD ignore idle time before the band"() {
@@ -37,11 +33,8 @@ class TimeBandCalculatorSpec extends Specification implements TimeBandTestSuppor
 		IdleActivityEntity idle =
 				createIdle(time.now(), time.inFuture(3))
 
-		when:
-		Duration duration = TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
-
-		then:
-		assert duration == Duration.ofHours(1)
+		expect:
+		assert Duration.ofHours(1) == TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
 	}
 
 	def "getIdleDurationForTimeBand SHOULD ignore idle time after the band"() {
@@ -52,11 +45,8 @@ class TimeBandCalculatorSpec extends Specification implements TimeBandTestSuppor
 		IdleActivityEntity idle =
 				createIdle(time.inFuture(2), time.inFuture(6))
 
-		when:
-		Duration duration = TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
-
-		then:
-		assert duration == Duration.ofHours(3)
+		expect:
+		assert Duration.ofHours(3) == TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
 	}
 
 	def "getIdleDurationForTimeBand SHOULD ignore idle time that falls before AND after the band"() {
@@ -68,11 +58,8 @@ class TimeBandCalculatorSpec extends Specification implements TimeBandTestSuppor
 		IdleActivityEntity idle =
 				createIdle(time.now(), time.inFuture(6))
 
-		when:
-		Duration duration = TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
-
-		then:
-		assert duration == Duration.ofHours(4)
+		expect:
+		assert Duration.ofHours(4) == TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
 	}
 
 	def "getIdleDurationForTimeBand SHOULD provide total idle duration when multiple idles within band"() {
@@ -84,10 +71,7 @@ class TimeBandCalculatorSpec extends Specification implements TimeBandTestSuppor
 		IdleActivityEntity idle =
 				createIdle(time.inFuture(1), time.inFuture(2))
 
-		when:
-		Duration duration = TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
-
-		then:
-		assert duration == Duration.ofHours(4)
+		expect:
+		assert Duration.ofHours(4) == TimeBandCalculator.getIdleDurationForTimeBand(band, idle)
 	}
 }
