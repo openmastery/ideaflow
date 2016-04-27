@@ -1,10 +1,8 @@
 package org.ideaflow.publisher.api
 
-import groovy.transform.Trait
-import org.ideaflow.publisher.core.MockTimeService
-import org.ideaflow.publisher.core.activity.IdleActivityEntity
+import org.ideaflow.publisher.core.activity.IdleTimeBand
 
-import java.lang.annotation.Annotation
+import java.time.Duration
 import java.time.LocalDateTime
 
 
@@ -14,12 +12,13 @@ trait TimeBandTestSupport {
 		IdeaFlowBand.builder()
 				.start(start)
 				.end(end)
+				.idle(Duration.ZERO)
 				.nestedBands([])
 				.build()
 	}
 
-	IdleActivityEntity createIdle(LocalDateTime start, LocalDateTime end) {
-		IdleActivityEntity.builder()
+	IdleTimeBand createIdle(LocalDateTime start, LocalDateTime end) {
+		IdleTimeBand.builder()
 				.start(start)
 				.end(end)
 				.build()

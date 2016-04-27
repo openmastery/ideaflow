@@ -64,7 +64,7 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 				.idle(band.getIdle())
 				.start(band.getStart())
 				.end(band.getEnd())
-				.nestedBands(band.getNestedBands());
+				.nestedBands(new ArrayList<>(band.getNestedBands()));
 	}
 
 }

@@ -19,6 +19,7 @@ import java.util.List;
 public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 
 	private long id;
+	private long taskId;
 
 	private List<TimeBand> linkedTimeBands;
 
@@ -41,8 +42,7 @@ public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 	@Override
 	protected TimeBandGroup internalSplitAndReturnLeftSide(LocalDateTime position) {
 		List<TimeBand> splitLinkedBands = TimeBand.splitAndReturnLeftSide(linkedTimeBands, position);
-		return TimeBandGroup.builder()
-				.id(id)
+		return from(this)
 				.linkedTimeBands(splitLinkedBands)
 				.build();
 	}
@@ -50,10 +50,15 @@ public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 	@Override
 	protected TimeBandGroup internalSplitAndReturnRightSide(LocalDateTime position) {
 		List<TimeBand> splitLinkedBands = TimeBand.splitAndReturnRightSide(linkedTimeBands, position);
-		return TimeBandGroup.builder()
-				.id(id)
+		return from(this)
 				.linkedTimeBands(splitLinkedBands)
 				.build();
+	}
+
+	public static TimeBandGroup.TimeBandGroupBuilder from(TimeBandGroup group) {
+		return builder().id(group.id)
+				.taskId(group.taskId)
+				.linkedTimeBands(new ArrayList<>(group.getLinkedTimeBands()));
 	}
 
 }

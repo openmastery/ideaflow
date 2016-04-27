@@ -2,7 +2,7 @@ package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.Timeline
 import org.ideaflow.publisher.api.TimelineSegment
-import org.ideaflow.publisher.core.activity.IdleActivityEntity
+import org.ideaflow.publisher.core.activity.IdleTimeBand
 import org.ideaflow.publisher.core.event.EventEntity
 
 public class TimelineGenerator {
@@ -11,7 +11,7 @@ public class TimelineGenerator {
 	private IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 	private TimelineSplitter timelineSplitter = new TimelineSplitter()
 
-	public Timeline createTimeline(List<IdeaFlowStateEntity> ideaFlowStates, List<IdleActivityEntity> idleActivities,
+	public Timeline createTimeline(List<IdeaFlowStateEntity> ideaFlowStates, List<IdleTimeBand> idleActivities,
 	                               List<EventEntity> eventList) {
 		List<EventEntity> subtaskEventList = eventList.findAll { it.eventType == EventEntity.Type.SUBTASK }
 		TimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates)
