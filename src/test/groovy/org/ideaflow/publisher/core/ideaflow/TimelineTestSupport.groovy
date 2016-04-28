@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow
 
+import org.ideaflow.publisher.api.IdeaFlowBand
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.core.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBand
@@ -56,6 +57,19 @@ class TimelineTestSupport {
 		timeService.plusHours(hours)
 	}
 
+	void startTask() {
+		stateMachine.startTask()
+	}
+
+	void startSubtask(String comment) {
+		EventEntity event = EventEntity.builder()
+				.eventType(EventEntity.Type.SUBTASK)
+				.position(timeService.now())
+				.message(comment)
+				.build()
+		persistenceService.saveEvent(event)
+	}
+
 	void startSubtaskAndAdvanceHours(int hours) {
 		EventEntity event = EventEntity.builder()
 				.eventType(EventEntity.Type.SUBTASK)
@@ -69,6 +83,12 @@ class TimelineTestSupport {
 		timeService.plusHours(hours)
 	}
 
+	void advanceTime(int hours, int minutes, int seconds) {
+		timeService.plusHours(hours)
+		timeService.plusMinutes(minutes)
+		timeService.plusSeconds(seconds)
+	}
+
 	void idle(int hours) {
 		LocalDateTime start = timeService.now()
 		timeService.plusHours(hours)
@@ -78,16 +98,20 @@ class TimelineTestSupport {
 		persistenceService.saveIdleActivity(idleActivity)
 	}
 
-	void startBand(IdeaFlowStateType type) {
+	void startBand(IdeaFlowStateType type, String comment) {
 		if (type == LEARNING) {
-			stateMachine.startLearning("")
+			stateMachine.startLearning(comment)
 		} else if (type == REWORK) {
-			stateMachine.startRework("")
+			stateMachine.startRework(comment)
 		} else if (type == CONFLICT) {
-			stateMachine.startConflict("")
+			stateMachine.startConflict(comment)
 		} else {
 			throw new RuntimeException("Unknown type: ${type}")
 		}
+	}
+
+	void startBand(IdeaFlowStateType type) {
+		startBand(type, "")
 	}
 
 	void startBandAndAdvanceHours(IdeaFlowStateType type, int hours) {
@@ -96,16 +120,21 @@ class TimelineTestSupport {
 	}
 
 	void endBand(IdeaFlowStateType type) {
+		endBand(type, "")
+	}
+
+	void endBand(IdeaFlowStateType type, String comment) {
 		if (type == LEARNING) {
-			stateMachine.stopLearning("")
+			stateMachine.stopLearning(comment)
 		} else if (type == REWORK) {
-			stateMachine.stopRework("")
+			stateMachine.stopRework(comment)
 		} else if (type == CONFLICT) {
-			stateMachine.stopConflict("")
+			stateMachine.stopConflict(comment)
 		} else {
 			throw new RuntimeException("Unknown type: ${type}")
 		}
 	}
+
 
 	void endBandAndAdvanceHours(IdeaFlowStateType type, int hours) {
 		endBand(type)

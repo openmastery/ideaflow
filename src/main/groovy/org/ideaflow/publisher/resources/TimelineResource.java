@@ -33,29 +33,29 @@ public class TimelineResource {
 		                                persistenceService.getIdleActivityList(),
 		                                persistenceService.getEventList());
 	}
-
-	@GET
-	@Path(ResourcePaths.DAY_PATH)
-	public Timeline getTimelineForDay(@QueryParam("day") LocalDate day, @QueryParam("userId") String userId) {
-		return new Timeline();
-	}
-
-	@GET
-	@Path(ResourcePaths.DAY_PATH + ResourcePaths.RECENT_PATH)
-	public List<Timeline> getRecentTimelinesForDays(@QueryParam("days") int days, @QueryParam("userId") String userId) {
-		return Collections.emptyList();
-	}
-
-	@GET
-	@Path(ResourcePaths.USER_PATH + ResourcePaths.RECENT_PATH)
-	public List<Timeline> getRecentTimelinesForUser(@QueryParam("userId") String userId) {
-		return Collections.emptyList();
-	}
-
-	@GET
-	@Path(ResourcePaths.PROJECT_PATH + ResourcePaths.RECENT_PATH)
-	public List<Timeline> getRecentTimelinesForProject(@QueryParam("projectId") String projectId) {
-		return Collections.emptyList();
-	}
+//
+//	@GET
+//	@Path(ResourcePaths.DAY_PATH)
+//	public Timeline getTimelineForDay(@QueryParam("day") LocalDate day, @QueryParam("userId") String userId) {
+//		return new Timeline();
+//	}
+//
+//	@GET
+//	@Path(ResourcePaths.DAY_PATH + ResourcePaths.RECENT_PATH)
+//	public List<Timeline> getRecentTimelinesForDays(@QueryParam("days") int days, @QueryParam("userId") String userId) {
+//		return Collections.emptyList();
+//	}
+//
+//	@GET
+//	@Path(ResourcePaths.USER_PATH + ResourcePaths.RECENT_PATH)
+//	public List<Timeline> getRecentTimelinesForUser(@QueryParam("userId") String userId) {
+//		return Collections.emptyList();
+//	}
+//
+//	@GET
+//	@Path(ResourcePaths.PROJECT_PATH + ResourcePaths.RECENT_PATH)
+//	public List<Timeline> getRecentTimelinesForProject(@QueryParam("projectId") String projectId) {
+//		return Collections.emptyList();
+//	}
 
 }

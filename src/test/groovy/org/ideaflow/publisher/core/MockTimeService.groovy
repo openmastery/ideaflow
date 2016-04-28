@@ -42,6 +42,11 @@ class MockTimeService implements TimeService {
 		this
 	}
 
+	MockTimeService plusSeconds(int seconds) {
+		now = now.plusSeconds(seconds)
+		this
+	}
+
 
 
 }
