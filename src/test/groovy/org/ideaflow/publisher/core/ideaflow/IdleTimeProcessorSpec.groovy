@@ -68,4 +68,20 @@ class IdleTimeProcessorSpec extends Specification {
 		assert segment.duration == Duration.ofHours(5)
 	}
 
+	def "getIdleDurationForTimeBand SHOULD provide total idle duration when multiple idles within band"() {
+		given:
+		testSupport.startBandAndAdvanceHours(LEARNING, 1)
+		testSupport.idle(2)
+		testSupport.advanceHours(3)
+		testSupport.idle(4)
+
+		when:
+		TimelineSegment segment = createTimelineSegmentAndParseIdleTime()
+
+		then:
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.ofHours(4))
+		validator.assertValidationComplete(segment)
+	}
+
 }
