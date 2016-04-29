@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow
 
+import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.Timeline
 import org.ideaflow.publisher.api.TimelineSegment
 import spock.lang.Specification
@@ -8,6 +9,7 @@ import java.time.Duration
 
 import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
 import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
+import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
 
 class TimelineGeneratorSpec extends Specification {
 
@@ -42,6 +44,27 @@ class TimelineGeneratorSpec extends Specification {
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(2), Duration.ofHours(3))
 		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(1), Duration.ofHours(2))
+		validator.assertTimeBand(segments[1].ideaFlowBands, 1, PROGRESS, Duration.ZERO)
+		validator.assertValidationComplete(segments, 2)
+	}
+
+	def "WHEN subtask splits linked bands SHOULD include idle"() {
+		given:
+		testSupport.startBandAndAdvanceHours(LEARNING, 2)
+		testSupport.idle(1)
+		testSupport.startSubtaskAndAdvanceHours(1)
+		testSupport.startBandAndAdvanceHours(REWORK, 3)
+		testSupport.idle(2)
+
+		when:
+		Timeline timeline = createTimeline()
+
+		then:
+		List<TimelineSegment> segments = timeline.timelineSegments
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(2), Duration.ofHours(1))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(1))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, REWORK, Duration.ofHours(3), Duration.ofHours(2))
 	}
 
 }

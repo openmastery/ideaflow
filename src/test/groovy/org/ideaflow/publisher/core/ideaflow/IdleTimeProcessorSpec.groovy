@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow
 
+import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimelineSegment
 import spock.lang.Specification
 
@@ -8,6 +9,7 @@ import java.time.Duration
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
 import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
 import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
+import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
 
 class IdleTimeProcessorSpec extends Specification {
 
@@ -44,7 +46,7 @@ class IdleTimeProcessorSpec extends Specification {
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertTimeBand(segment.ideaFlowBands, 1, CONFLICT, Duration.ofHours(1))
 		validator.assertTimeBand(segment.ideaFlowBands, 2, PROGRESS, Duration.ofHours(2))
-		validator.assertTimeBand(segment.ideaFlowBands, 3, LEARNING, Duration.ofHours(2))
+		validator.assertTimeBand(segment.ideaFlowBands, 3, LEARNING, Duration.ofHours(2), Duration.ofHours(3))
 		validator.assertValidationComplete(segment)
 		assert segment.duration == Duration.ofHours(6)
 	}
@@ -61,14 +63,14 @@ class IdleTimeProcessorSpec extends Specification {
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.ofHours(4))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.ofHours(4), Duration.ofHours(4))
 		List nestedBands = segment.ideaFlowBands[1].nestedBands
-		validator.assertNestedTimeBand(nestedBands, 0, CONFLICT, Duration.ofHours(3))
+		validator.assertNestedTimeBand(nestedBands, 0, CONFLICT, Duration.ofHours(3), Duration.ofHours(4))
 		validator.assertValidationComplete(segment)
 		assert segment.duration == Duration.ofHours(5)
 	}
 
-	def "getIdleDurationForTimeBand SHOULD provide total idle duration when multiple idles within band"() {
+	def "WHEN multiple idles within band SHOULD provide total idle duration"() {
 		given:
 		testSupport.startBandAndAdvanceHours(LEARNING, 1)
 		testSupport.idle(2)
@@ -80,7 +82,27 @@ class IdleTimeProcessorSpec extends Specification {
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.ofHours(4))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.ofHours(4), Duration.ofHours(6))
+		validator.assertValidationComplete(segment)
+	}
+
+	def "WHEN idle part of group SHOULD split idle among linked time bands"() {
+		given:
+		testSupport.startBandAndAdvanceHours(LEARNING, 2)
+		testSupport.idle(2)
+		testSupport.advanceHours(2)
+		testSupport.startBandAndAdvanceHours(REWORK, 3)
+		testSupport.advanceHours(3)
+		testSupport.idle(3)
+
+		when:
+		TimelineSegment segment = createTimelineSegmentAndParseIdleTime()
+
+		then:
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		List<TimeBand> linkedTimeBands = segment.timeBandGroups[0].linkedTimeBands
+		validator.assertLinkedTimeBand(linkedTimeBands, 0, LEARNING, Duration.ofHours(4), Duration.ofHours(2))
+		validator.assertLinkedTimeBand(linkedTimeBands, 1, REWORK, Duration.ofHours(6), Duration.ofHours(3))
 		validator.assertValidationComplete(segment)
 	}
 

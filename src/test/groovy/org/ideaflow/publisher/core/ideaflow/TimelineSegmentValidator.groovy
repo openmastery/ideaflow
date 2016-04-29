@@ -2,6 +2,7 @@ package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.api.IdeaFlowBand
+import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
 
@@ -14,35 +15,46 @@ class TimelineSegmentValidator {
 	private int expectedNestedTimeBandCount = 0
 	private int expectedLinkedTimeBandCount = 0
 
-	private void assertExpectedValues(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
-		assert timeBands[index].type == expectedType
+	private void assertExpectedValues(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+		assertExpectedValues(timeBands, index, expectedType, expectedDuration, Duration.ZERO)
+	}
+
+	private void assertExpectedValues(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration, Duration expectedIdle) {
+		assert timeBands[index] != null
+		if (timeBands[index] instanceof IdeaFlowBand) {
+			assert ((IdeaFlowBand) timeBands[index]).type == expectedType
+			assert ((IdeaFlowBand) timeBands[index]).idleDuration == expectedIdle
+		}
 		assert timeBands[index].duration == expectedDuration
 	}
 
-	private void assertExpectedValues(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration, Duration expectedIdle) {
-		assert timeBands[index].type == expectedType
-		assert timeBands[index].duration == expectedDuration
-		assert timeBands[index].idleDuration == expectedIdle
-
-	}
-
-	void assertTimeBand(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+	void assertTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assertExpectedValues(timeBands, index, expectedType, expectedDuration)
 		expectedTimeBandCount++
 	}
 
-	void assertTimeBand(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration, Duration expectedIdle) {
+	void assertTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration, Duration expectedIdle) {
 		assertExpectedValues(timeBands, index, expectedType, expectedDuration, expectedIdle)
 		expectedTimeBandCount++
 	}
 
-	void assertNestedTimeBand(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+	void assertNestedTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assertExpectedValues(timeBands, index, expectedType, expectedDuration)
 		expectedNestedTimeBandCount++
 	}
 
-	void assertLinkedTimeBand(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
+	void assertNestedTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration, Duration expectedIdle) {
+		assertExpectedValues(timeBands, index, expectedType, expectedDuration, expectedIdle)
+		expectedNestedTimeBandCount++
+	}
+
+	void assertLinkedTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assertExpectedValues(timeBands, index, expectedType, expectedDuration)
+		expectedLinkedTimeBandCount++
+	}
+
+	void assertLinkedTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration, Duration expectedIdle) {
+		assertExpectedValues(timeBands, index, expectedType, expectedDuration, expectedIdle)
 		expectedLinkedTimeBandCount++
 	}
 
