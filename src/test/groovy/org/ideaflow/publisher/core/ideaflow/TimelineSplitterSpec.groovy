@@ -1,8 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.api.IdeaFlowBand
 import org.ideaflow.publisher.api.TimelineSegment
-import org.ideaflow.publisher.core.activity.IdleActivityEntity
 import spock.lang.Specification
 
 import java.time.Duration
@@ -135,30 +133,6 @@ class TimelineSplitterSpec extends Specification {
 		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, REWORK, Duration.ofHours(4))
 		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, LEARNING, Duration.ofHours(5))
 		validator.assertValidationComplete(segments, 2)
-	}
-
-	def "WHEN subtask splits between idle bands SHOULD split idle time between the time segments"() {
-		given:
-		testSupport.startBandAndAdvanceHours(LEARNING, 2)
-		testSupport.idle(3)
-		testSupport.startSubtaskAndAdvanceHours(1)
-		testSupport.idle(2)
-		testSupport.endBand(LEARNING)
-
-		when:
-		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
-
-		then:
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(2), Duration.ofHours(3))
-
-		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(1), Duration.ofHours(2))
-	}
-
-
-	def "idle"() {
-		expect:
-		false
 	}
 
 	def "subtask event should be the first event in the timeline segment"() {

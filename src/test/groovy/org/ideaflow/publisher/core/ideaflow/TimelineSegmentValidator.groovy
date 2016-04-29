@@ -2,7 +2,6 @@ package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.api.IdeaFlowBand
-import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
 
@@ -23,7 +22,7 @@ class TimelineSegmentValidator {
 	private void assertExpectedValues(List<IdeaFlowBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration, Duration expectedIdle) {
 		assert timeBands[index].type == expectedType
 		assert timeBands[index].duration == expectedDuration
-		assert timeBands[index].idle == expectedIdle
+		assert timeBands[index].idleDuration == expectedIdle
 
 	}
 

@@ -3,8 +3,8 @@ package org.ideaflow.publisher.core.ideaflow
 import org.ideaflow.publisher.api.IdeaFlowBand
 import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.core.activity.IdleTimeBand
 
-import java.time.Duration
 import java.time.LocalDateTime
 
 
@@ -25,7 +25,7 @@ class TimelineSegmentFactory {
 					.type(state.type)
 					.start(state.start)
 					.end(state.end)
-					.idle(Duration.ZERO)
+					.idleBands(new ArrayList<IdleTimeBand>())
 					.nestedBands(new ArrayList<IdeaFlowBand>())
 					.build()
 

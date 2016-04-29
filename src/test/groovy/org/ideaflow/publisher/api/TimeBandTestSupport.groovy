@@ -2,7 +2,6 @@ package org.ideaflow.publisher.api
 
 import org.ideaflow.publisher.core.activity.IdleTimeBand
 
-import java.time.Duration
 import java.time.LocalDateTime
 
 
@@ -12,7 +11,7 @@ trait TimeBandTestSupport {
 		IdeaFlowBand.builder()
 				.start(start)
 				.end(end)
-				.idle(Duration.ZERO)
+				.idleBands([])
 				.nestedBands([])
 				.build()
 	}

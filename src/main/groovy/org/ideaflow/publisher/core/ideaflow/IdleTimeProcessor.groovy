@@ -18,7 +18,7 @@ class IdleTimeProcessor {
 		for (IdeaFlowBand timeBand : timeBands) {
 			IdleTimeBand splitIdle = timeBandCalculator.getIdleForTimeBandOrNull(timeBand, idle)
 			if (splitIdle != null) {
-				timeBand.idle = timeBand.idle.plus(splitIdle.getDuration())
+				timeBand.addIdleBand(splitIdle)
 				addIdleDuration(timeBand.nestedBands, idle)
 			}
 		}
