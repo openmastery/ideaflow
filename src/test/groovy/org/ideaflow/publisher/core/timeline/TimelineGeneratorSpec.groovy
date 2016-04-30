@@ -1,4 +1,4 @@
-package org.ideaflow.publisher.core.ideaflow
+package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.Timeline
 import org.ideaflow.publisher.api.TimelineSegment

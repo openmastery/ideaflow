@@ -2,7 +2,7 @@ package org.ideaflow.publisher.api
 
 import org.ideaflow.publisher.core.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBand
-import org.ideaflow.publisher.core.ideaflow.IdleTimeProcessor
+import org.ideaflow.publisher.core.timeline.IdleTimeProcessor
 
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
 

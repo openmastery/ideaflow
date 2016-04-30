@@ -1,9 +1,10 @@
-package org.ideaflow.publisher.core.ideaflow
+package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.Timeline
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.activity.IdleTimeBand
 import org.ideaflow.publisher.core.event.EventEntity
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 
 public class TimelineGenerator {
 

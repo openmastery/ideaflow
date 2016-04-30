@@ -2,6 +2,10 @@ package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.core.timeline.TimelineSegmentValidator
+import org.ideaflow.publisher.core.timeline.TimelineTestSupport
+import org.ideaflow.publisher.core.timeline.IdleTimeProcessor
+import org.ideaflow.publisher.core.timeline.TimelineSegmentFactory
 import spock.lang.Specification
 
 import java.time.Duration

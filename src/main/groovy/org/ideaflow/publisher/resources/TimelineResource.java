@@ -3,7 +3,7 @@ package org.ideaflow.publisher.resources;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.ideaflow.publisher.api.Timeline;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService;
-import org.ideaflow.publisher.core.ideaflow.TimelineGenerator;
+import org.ideaflow.publisher.core.timeline.TimelineGenerator;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -13,9 +13,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 
 @Component
 @Path(ResourcePaths.TIMELINE_PATH)

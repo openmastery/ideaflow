@@ -1,9 +1,10 @@
-package org.ideaflow.publisher.core.ideaflow
+package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.IdeaFlowBand
 import org.ideaflow.publisher.api.TimeBandTestSupport
 import org.ideaflow.publisher.core.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBand
+import org.ideaflow.publisher.core.timeline.TimeBandIdleCalculator
 import spock.lang.Specification
 
 import java.time.LocalDateTime

@@ -1,6 +1,7 @@
-package org.ideaflow.publisher.core.ideaflow
+package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
 
 import java.time.Duration

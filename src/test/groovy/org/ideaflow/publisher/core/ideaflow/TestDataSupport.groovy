@@ -1,5 +1,7 @@
 package org.ideaflow.publisher.core.ideaflow
 
+import org.ideaflow.publisher.core.timeline.TimelineTestSupport
+
 import static org.ideaflow.publisher.api.IdeaFlowStateType.*
 
 class TestDataSupport {

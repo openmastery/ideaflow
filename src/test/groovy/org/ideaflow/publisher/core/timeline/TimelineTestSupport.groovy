@@ -1,9 +1,12 @@
-package org.ideaflow.publisher.core.ideaflow
+package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.core.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBand
 import org.ideaflow.publisher.core.event.EventEntity
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine
 
 import java.time.LocalDateTime
 
