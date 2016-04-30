@@ -14,7 +14,7 @@ import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK;
 /**
  * TOOD: investigate http://projects.spring.io/spring-statemachine/
  */
-@Component
+//@Component
 public class IdeaFlowStateMachine {
 
 	// TODO: make private once we have actual persistence (currently used by IfmPublisher)

@@ -6,9 +6,6 @@ import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 
-import java.time.LocalDateTime
-
-
 class TimelineSegmentFactory {
 
 	// TODO: refactor... AAHHHHH!!!!!
@@ -26,6 +23,8 @@ class TimelineSegmentFactory {
 					.type(state.type)
 					.start(state.start)
 					.end(state.end)
+					.startingComment(state.startingComment)
+					.endingComent(state.endingComment)
 					.idleBands(new ArrayList<IdleTimeBand>())
 					.nestedBands(new ArrayList<IdeaFlowBand>())
 					.build()
@@ -60,12 +59,7 @@ class TimelineSegmentFactory {
 			}
 		}
 
-		LocalDateTime segmentStart = ideaFlowStates.first().start
-		LocalDateTime segmentEnd = ideaFlowStates.last().end
-
 		TimelineSegment segment = TimelineSegment.builder()
-				.start(segmentStart)
-				.end(segmentEnd)
 				.ideaFlowBands(ideaFlowBands)
 				.timeBandGroups(ideaFlowBandGroups)
 				.build();

@@ -1,9 +1,6 @@
 package org.ideaflow.publisher.core
 
-import org.apache.tomcat.jni.Local
-
 import java.time.LocalDateTime
-
 
 class MockTimeService implements TimeService {
 
@@ -32,21 +29,9 @@ class MockTimeService implements TimeService {
 		this
 	}
 
-	MockTimeService plusMinute() {
-		plusMinutes(1)
-		this
-	}
-
-	MockTimeService plusMinutes(int minutes) {
-		now = now.plusMinutes(minutes)
-		this
-	}
-
 	MockTimeService plusSeconds(int seconds) {
 		now = now.plusSeconds(seconds)
 		this
 	}
-
-
 
 }

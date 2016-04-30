@@ -19,17 +19,37 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class TimelineResource {
 
-	@Inject
-	private IdeaFlowInMemoryPersistenceService persistenceService;
-
 	@GET
 	@Path(ResourcePaths.TASK_PATH + "/{taskId}")
 	public Timeline getTimelineForTask(@PathParam("taskId") String taskId, @QueryParam("userId") String userId) {
-		TimelineGenerator generator = new TimelineGenerator();
-		return generator.createTimeline(persistenceService.getStateList(),
-		                                persistenceService.getIdleTimeBandList(),
-		                                persistenceService.getEventList());
+		TestDataSupport support = new TestDataSupport();
+
+		switch(taskId) {
+			case "trial":
+				return support.createTrialAndErrorMap();
+			case "learning":
+				return support.createLearningNestedConflictMap();
+			case "detailed":
+				return support.createDetailedConflictMap();
+			case "basic":
+			default:
+				return support.createBasicTimelineWithAllBandTypes();
+		}
 	}
+
+
+//	private IdeaFlowInMemoryPersistenceService persistenceService;
+//
+//	@GET
+//	@Path(ResourcePaths.TASK_PATH + "/{taskId}")
+//	public Timeline getTimelineForTask(@PathParam("taskId") String taskId, @QueryParam("userId") String userId) {
+//		TimelineGenerator generator = new TimelineGenerator();
+//		return generator.createTimeline(persistenceService.getStateList(),
+//		                                persistenceService.getIdleTimeBandList(),
+//		                                persistenceService.getEventList());
+//	}
+
+
 //
 //	@GET
 //	@Path(ResourcePaths.DAY_PATH)

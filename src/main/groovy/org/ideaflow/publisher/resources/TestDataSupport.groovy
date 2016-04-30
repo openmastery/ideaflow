@@ -1,15 +1,26 @@
-package org.ideaflow.publisher.core.ideaflow
+package org.ideaflow.publisher.resources
 
-import org.ideaflow.publisher.core.timeline.TimelineTestSupport
+import org.ideaflow.publisher.api.IdeaFlowStateType
+import org.ideaflow.publisher.api.Timeline
+import org.ideaflow.publisher.core.TimeService
+import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
+import org.ideaflow.publisher.core.event.EventEntity
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine
+import org.ideaflow.publisher.core.timeline.TimelineGenerator
 
-import static org.ideaflow.publisher.api.IdeaFlowStateType.*
+import java.time.LocalDateTime
+
+import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
+import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
+import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
 
 class TestDataSupport {
 
-	TimelineTestSupport testSupport = new TimelineTestSupport()
+	Timeline createBasicTimelineWithAllBandTypes() {
+		TimelineTestSupport testSupport = new TimelineTestSupport()
 
-
-	void createBasicMapWithAllBandTypes() {
 		testSupport.startTask()
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How should I break down this task?")
@@ -34,9 +45,13 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 10, 43)
 		testSupport.endBand(CONFLICT, "jqPlot parameters were wrong.  Passing in [] instead of [[]]")
 		testSupport.advanceTime(0, 5, 4)
+
+		testSupport.createTimeline()
 	}
 
-	void createTrialAndErrorMap() {
+	Timeline createTrialAndErrorMap() {
+		TimelineTestSupport testSupport = new TimelineTestSupport()
+
 		testSupport.startTask()
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How does the existing QueryBuilder work?")
@@ -81,11 +96,15 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 0, 10)
 		testSupport.startBand(CONFLICT, "Why isn't the dropdown populating?")
 		testSupport.advanceTime(0, 30, 43)
-		testSupport.startBand(CONFLICT, "Bunch of little bugs.")
+		testSupport.endBand(CONFLICT, "Bunch of little bugs.")
 		testSupport.advanceTime(0, 0, 10)
+
+		testSupport.createTimeline()
 	}
 
-	void createLearningNestedConflictMap() {
+	Timeline createLearningNestedConflictMap() {
+		TimelineTestSupport testSupport = new TimelineTestSupport()
+
 		testSupport.startTask()
 		testSupport.advanceTime(0, 1, 30)
 		testSupport.startBand(LEARNING, "Where do I need to change the ReportingEngine code? #LackOfFamiliarity")
@@ -102,9 +121,13 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 15, 30)
 		testSupport.startSubtask("Final Validation")
 		testSupport.advanceTime(0, 32, 3)
+
+		testSupport.createTimeline()
 	}
 
-	void createDetailedConflictMap() {
+	Timeline createDetailedConflictMap() {
+		TimelineTestSupport testSupport = new TimelineTestSupport()
+
 		testSupport.startTask()
 		testSupport.advanceTime(0, 5, 10)
 		testSupport.startBand(LEARNING, "What's the plan?")
@@ -137,7 +160,141 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 15, 43)
 		testSupport.endBand(CONFLICT, "Flipped if/else condition. #TranspositionMistake")
 		testSupport.advanceTime(0, 30, 3)
+
+		testSupport.createTimeline()
 	}
 
+
+	static class MockTimeService implements TimeService {
+
+		private LocalDateTime now
+
+		MockTimeService() {
+			now = LocalDateTime.of(2016, 1, 1, 0, 0)
+		}
+
+		@Override
+		LocalDateTime now() {
+			return now
+		}
+
+		MockTimeService plusHours(int hours) {
+			now = now.plusHours(hours)
+			this
+		}
+
+		MockTimeService plusMinutes(int minutes) {
+			now = now.plusMinutes(minutes)
+			this
+		}
+
+		MockTimeService plusSeconds(int seconds) {
+			now = now.plusSeconds(seconds)
+			this
+		}
+
+	}
+
+	static class TimelineTestSupport {
+
+		private IdeaFlowStateMachine stateMachine
+		private MockTimeService timeService = new MockTimeService()
+		private IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
+
+		TimelineTestSupport() {
+			this.stateMachine = new IdeaFlowStateMachine()
+			stateMachine.timeService = timeService
+			stateMachine.ideaFlowPersistenceService = persistenceService
+		}
+
+		LocalDateTime now() {
+			timeService.now()
+		}
+
+		List<IdeaFlowStateEntity> getStateListWithActiveCompleted() {
+			List<IdeaFlowStateEntity> stateList = new ArrayList(persistenceService.getStateList())
+			completeAndAddStateIfNotNull(stateList, persistenceService.activeState)
+			completeAndAddStateIfNotNull(stateList, persistenceService.containingState)
+			stateList
+		}
+
+		List<IdleTimeBandEntity> getIdleActivityList() {
+			persistenceService.getIdleTimeBandList()
+		}
+
+		List<EventEntity> getEventList() {
+			persistenceService.getEventList()
+		}
+
+		private void completeAndAddStateIfNotNull(List<IdeaFlowStateEntity> stateList, IdeaFlowStateEntity state) {
+			if (state) {
+				stateList << IdeaFlowStateEntity.from(state)
+						.end(timeService.now())
+						.endingComment("")
+						.build();
+			}
+		}
+
+		void startTask() {
+			stateMachine.startTask()
+		}
+
+		void startSubtask(String comment) {
+			EventEntity event = EventEntity.builder()
+					.eventType(EventEntity.Type.SUBTASK)
+					.position(timeService.now())
+					.comment(comment)
+					.build()
+			persistenceService.saveEvent(event)
+		}
+
+		void advanceTime(int hours, int minutes, int seconds) {
+			timeService.plusHours(hours)
+			timeService.plusMinutes(minutes)
+			timeService.plusSeconds(seconds)
+		}
+
+		void idle(int hours) {
+			LocalDateTime start = timeService.now()
+			timeService.plusHours(hours)
+			IdleTimeBandEntity idleActivity = IdleTimeBandEntity.builder()
+					.start(start)
+					.end(timeService.now()).build()
+			persistenceService.saveIdleActivity(idleActivity)
+		}
+
+		void startBand(IdeaFlowStateType type, String comment) {
+			if (type == LEARNING) {
+				stateMachine.startLearning(comment)
+			} else if (type == REWORK) {
+				stateMachine.startRework(comment)
+			} else if (type == CONFLICT) {
+				stateMachine.startConflict(comment)
+			} else {
+				throw new RuntimeException("Unknown type: ${type}")
+			}
+		}
+
+		void endBand(IdeaFlowStateType type) {
+			endBand(type, "")
+		}
+
+		void endBand(IdeaFlowStateType type, String comment) {
+			if (type == LEARNING) {
+				stateMachine.stopLearning(comment)
+			} else if (type == REWORK) {
+				stateMachine.stopRework(comment)
+			} else if (type == CONFLICT) {
+				stateMachine.stopConflict(comment)
+			} else {
+				throw new RuntimeException("Unknown type: ${type}")
+			}
+		}
+
+		Timeline createTimeline() {
+			TimelineGenerator generator = new TimelineGenerator()
+			generator.createTimeline(persistenceService.stateList, persistenceService.idleTimeBandList, persistenceService.eventList)
+		}
+	}
 
 }

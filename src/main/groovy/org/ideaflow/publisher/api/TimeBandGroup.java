@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,6 +42,7 @@ public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 	}
 
 	@Override
+	@JsonIgnore
 	public List<TimeBand> getContainedBands() {
 		return getLinkedTimeBands();
 	}

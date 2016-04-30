@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,8 +25,12 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 	private LocalDateTime start;
 	private LocalDateTime end;
 
+	private String startingComment;
+	private String endingComent;
+
 	private IdeaFlowStateType type;
 
+	@JsonIgnore
 	private List<IdleTimeBand> idleBands = new ArrayList<>();
 	private List<IdeaFlowBand> nestedBands = new ArrayList<>();
 
@@ -37,6 +42,7 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 		idleBands.add(idleTimeBand);
 	}
 
+	@JsonIgnore
 	public Duration getIdleDuration() {
 		return TimeBand.sumDuration(idleBands);
 	}
@@ -47,6 +53,7 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 	}
 
 	@Override
+	@JsonIgnore
 	public List<TimeBand> getContainedBands() {
 		ArrayList<TimeBand> containedBands = new ArrayList<>(nestedBands);
 		containedBands.addAll(idleBands);
