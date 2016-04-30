@@ -19,7 +19,7 @@ public class EventEntity {
 
 	private LocalDateTime position;
 
-	private String message;
+	private String comment;
 	private Type eventType;
 
 

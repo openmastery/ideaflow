@@ -64,7 +64,7 @@ class TimelineTestSupport {
 		EventEntity event = EventEntity.builder()
 				.eventType(EventEntity.Type.SUBTASK)
 				.position(timeService.now())
-				.message(comment)
+				.comment(comment)
 				.build()
 		persistenceService.saveEvent(event)
 	}
