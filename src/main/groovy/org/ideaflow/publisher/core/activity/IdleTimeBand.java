@@ -10,6 +10,8 @@ import org.ideaflow.publisher.api.TimeBand;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -28,8 +30,14 @@ public class IdleTimeBand extends TimeBand<IdleTimeBand> {
 
 	private boolean auto;
 
+	@Override
 	public Duration getDuration() {
 		return Duration.between(start, end);
+	}
+
+	@Override
+	public List<TimeBand> getContainedBands() {
+		return Collections.EMPTY_LIST;
 	}
 
 	@Override

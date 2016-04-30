@@ -42,8 +42,16 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 		return TimeBand.sumDuration(idleBands);
 	}
 
+	@Override
 	public Duration getDuration() {
 		return Duration.between(start, end).minus(getIdleDuration());
+	}
+
+	@Override
+	public List<TimeBand> getContainedBands() {
+		ArrayList<TimeBand> containedBands = new ArrayList<>(nestedBands);
+		containedBands.addAll(idleBands);
+		return containedBands;
 	}
 
 	@Override

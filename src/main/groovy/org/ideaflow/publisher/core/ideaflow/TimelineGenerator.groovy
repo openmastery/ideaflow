@@ -10,6 +10,7 @@ public class TimelineGenerator {
 	private TimelineSegmentFactory segmentFactory = new TimelineSegmentFactory()
 	private IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 	private TimelineSplitter timelineSplitter = new TimelineSplitter()
+	private RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 
 	public Timeline createTimeline(List<IdeaFlowStateEntity> ideaFlowStates, List<IdleTimeBand> idleActivities,
 	                               List<EventEntity> eventList) {
@@ -17,9 +18,11 @@ public class TimelineGenerator {
 		TimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates)
 		idleTimeProcessor.collapseIdleTime(segment, idleActivities)
 		List<TimelineSegment> segments = timelineSplitter.splitTimelineSegment(segment, subtaskEventList)
-		return Timeline.builder()
+		Timeline timeline = Timeline.builder()
 				.timelineSegments(segments)
 				.build()
+		relativeTimeProcessor.setRelativeTime(timeline)
+		timeline
 	}
 
 }

@@ -1,12 +1,12 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.Timeline
 import org.ideaflow.publisher.api.TimelineSegment
 import spock.lang.Specification
 
 import java.time.Duration
 
+import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
 import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
 import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
 import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
@@ -41,10 +41,10 @@ class TimelineGeneratorSpec extends Specification {
 
 		then:
 		List<TimelineSegment> segments = timeline.timelineSegments
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(2), Duration.ofHours(3))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(1), Duration.ofHours(2))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 1, PROGRESS, Duration.ZERO)
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
+		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(2), Duration.ofHours(3), Duration.ofHours(1).seconds)
+		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(1), Duration.ofHours(2), Duration.ofHours(3).seconds)
+		validator.assertTimeBand(segments[1].ideaFlowBands, 1, PROGRESS, Duration.ZERO, Duration.ofHours(4).seconds)
 		validator.assertValidationComplete(segments, 2)
 	}
 
@@ -61,10 +61,36 @@ class TimelineGeneratorSpec extends Specification {
 
 		then:
 		List<TimelineSegment> segments = timeline.timelineSegments
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(2), Duration.ofHours(1))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(1))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, REWORK, Duration.ofHours(3), Duration.ofHours(2))
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
+		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(2), Duration.ofHours(1), Duration.ofHours(1).seconds)
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(1), Duration.ofHours(3).seconds)
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, REWORK, Duration.ofHours(3), Duration.ofHours(2), Duration.ofHours(4).seconds)
+		validator.assertValidationComplete(segments, 2)
+	}
+
+	def "SHOULD handle nested bands within linked bands"() {
+		given:
+		testSupport.startBandAndAdvanceHours(CONFLICT, 1)
+		testSupport.idle(1)
+		testSupport.startBandAndAdvanceHours(LEARNING, 2)
+		testSupport.idle(2)
+		testSupport.advanceHours(1)
+		testSupport.startBandAndAdvanceHours(CONFLICT, 1)
+		testSupport.idle(1)
+		testSupport.startSubtaskAndAdvanceHours(2)
+
+		when:
+		Timeline timeline = createTimeline()
+
+		then:
+		List<TimelineSegment> segments = timeline.timelineSegments
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
+		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, CONFLICT, Duration.ofHours(1), Duration.ofHours(1), Duration.ofHours(1).seconds)
+		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 1, LEARNING, Duration.ofHours(4), Duration.ofHours(3), Duration.ofHours(2).seconds)
+		validator.assertNestedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands[1].nestedBands, 0, CONFLICT, Duration.ofHours(1), Duration.ofHours(1), Duration.ofHours(5).seconds)
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(2), Duration.ofHours(6).seconds)
+		validator.assertNestedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands[0].nestedBands, 0, CONFLICT, Duration.ofHours(2), Duration.ofHours(6).seconds)
+		validator.assertValidationComplete(segments, 2)
 	}
 
 }

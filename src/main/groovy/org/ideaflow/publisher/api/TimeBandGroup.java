@@ -35,8 +35,14 @@ public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 		return linkedTimeBands.get(linkedTimeBands.size() - 1).getEnd();
 	}
 
+	@Override
 	public Duration getDuration() {
 		return TimeBand.sumDuration(linkedTimeBands);
+	}
+
+	@Override
+	public List<TimeBand> getContainedBands() {
+		return getLinkedTimeBands();
 	}
 
 	@Override

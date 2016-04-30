@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -22,6 +23,12 @@ public class TimelineSegment {
 
 	private List<IdeaFlowBand> ideaFlowBands = new ArrayList<>();
 	private List<TimeBandGroup> timeBandGroups = new ArrayList<>();
+
+	public List<TimeBand> getAllTimeBands() {
+		List<TimeBand> allTimeBands = new ArrayList<>(ideaFlowBands);
+		allTimeBands.addAll(timeBandGroups);
+		return allTimeBands;
+	}
 
 	public Duration getDuration() {
 		Duration duration = TimeBand.sumDuration(ideaFlowBands);

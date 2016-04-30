@@ -1,6 +1,7 @@
 package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.TimeBand
+import org.ideaflow.publisher.api.TimeBandComparator
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.event.EventEntity
 
@@ -13,7 +14,8 @@ class TimelineSplitter {
 
 		subtaskEvents = subtaskEvents.sort { EventEntity event -> event.position }
 
-		List timeBands = segment.ideaFlowBands + segment.timeBandGroups
+		List timeBands = segment.getAllTimeBands()
+		Collections.sort(timeBands, TimeBandComparator.INSTANCE);
 		List<TimelineSegment> splitSegments = []
 		TimelineSegment activeSegment = new TimelineSegment()
 

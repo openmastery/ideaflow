@@ -1,6 +1,5 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.api.IdeaFlowBand
 import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.core.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBand

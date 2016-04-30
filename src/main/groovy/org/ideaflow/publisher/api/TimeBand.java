@@ -7,11 +7,23 @@ import java.util.List;
 
 public abstract class TimeBand<T extends TimeBand> {
 
+	private long relativeStart;
+
+	public long getRelativeStart() {
+		return relativeStart;
+	}
+
+	public void setRelativeStart(long relativeStart) {
+		this.relativeStart = relativeStart;
+	}
+
 	public abstract LocalDateTime getStart();
 
 	public abstract LocalDateTime getEnd();
 
 	public abstract Duration getDuration();
+
+	public abstract List<TimeBand> getContainedBands();
 
 	public boolean contains(LocalDateTime position) {
 			return (position.isAfter(getStart()) && position.isBefore(getEnd()))
