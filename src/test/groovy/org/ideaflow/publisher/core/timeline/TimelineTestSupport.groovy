@@ -1,8 +1,9 @@
 package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.IdeaFlowStateType
+import org.ideaflow.publisher.api.IdleTimeBand
 import org.ideaflow.publisher.core.MockTimeService
-import org.ideaflow.publisher.core.activity.IdleTimeBand
+import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
@@ -37,8 +38,8 @@ class TimelineTestSupport {
 		stateList
 	}
 
-	List<IdleTimeBand> getIdleActivityList() {
-		persistenceService.getIdleActivityList()
+	List<IdleTimeBandEntity> getIdleActivityList() {
+		persistenceService.getIdleTimeBandList()
 	}
 
 	List<EventEntity> getEventList() {
@@ -94,7 +95,7 @@ class TimelineTestSupport {
 	void idle(int hours) {
 		LocalDateTime start = timeService.now()
 		timeService.plusHours(hours)
-		IdleTimeBand idleActivity = IdleTimeBand.builder()
+		IdleTimeBandEntity idleActivity = IdleTimeBandEntity.builder()
 				.start(start)
 				.end(timeService.now()).build()
 		persistenceService.saveIdleActivity(idleActivity)

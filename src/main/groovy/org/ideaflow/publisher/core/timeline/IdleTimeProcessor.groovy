@@ -1,18 +1,18 @@
 package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.IdeaFlowBand
+import org.ideaflow.publisher.api.IdleTimeBand
 import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
-import org.ideaflow.publisher.core.activity.IdleTimeBand
-import org.ideaflow.publisher.core.timeline.TimeBandIdleCalculator
+import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 
 class IdleTimeProcessor {
 
 	private TimeBandIdleCalculator timeBandCalculator = new TimeBandIdleCalculator()
 
-	public void collapseIdleTime(TimelineSegment timelineSegment, List<IdleTimeBand> idleActivities) {
-		for (IdleTimeBand idle : idleActivities) {
+	public void collapseIdleTime(TimelineSegment timelineSegment, List<IdleTimeBandEntity> idleActivities) {
+		for (IdleTimeBandEntity idle : idleActivities) {
 			addIdleDuration(timelineSegment.ideaFlowBands, idle)
 
 			for (TimeBandGroup group : timelineSegment.timeBandGroups) {
@@ -21,16 +21,29 @@ class IdleTimeProcessor {
 		}
 	}
 
-	private void addIdleDuration(List<TimeBand> timeBands, IdleTimeBand idle) {
+	private void addIdleDuration(List<TimeBand> timeBands, IdleTimeBandEntity idleEntity) {
 		for (TimeBand timeBand : timeBands) {
 			if (timeBand instanceof IdeaFlowBand) {
+				IdleTimeBand idle = toIdleTimeBand(idleEntity)
 				IdleTimeBand splitIdle = timeBandCalculator.getIdleForTimeBandOrNull(timeBand, idle)
 				if (splitIdle != null) {
 					timeBand.addIdleBand(splitIdle)
-					addIdleDuration(timeBand.nestedBands, idle)
+					addIdleDuration(timeBand.nestedBands, idleEntity)
 				}
 			}
 		}
+	}
+
+	private IdleTimeBand toIdleTimeBand(IdleTimeBandEntity entity) {
+		// TODO: use dozer
+		IdleTimeBand.builder()
+				.id(entity.id)
+				.taskId(entity.taskId)
+				.start(entity.start)
+				.end(entity.end)
+				.comment(entity.comment)
+				.auto(entity.auto)
+				.build()
 	}
 
 }

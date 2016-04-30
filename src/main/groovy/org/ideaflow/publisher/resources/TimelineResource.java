@@ -27,7 +27,7 @@ public class TimelineResource {
 	public Timeline getTimelineForTask(@PathParam("taskId") String taskId, @QueryParam("userId") String userId) {
 		TimelineGenerator generator = new TimelineGenerator();
 		return generator.createTimeline(persistenceService.getStateList(),
-		                                persistenceService.getIdleActivityList(),
+		                                persistenceService.getIdleTimeBandList(),
 		                                persistenceService.getEventList());
 	}
 //

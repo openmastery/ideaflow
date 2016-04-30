@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.api
 
 import org.ideaflow.publisher.core.MockTimeService
-import org.ideaflow.publisher.core.activity.IdleTimeBand
+import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.timeline.IdleTimeProcessor
 
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
@@ -12,7 +12,7 @@ class TestTimelineSegmentBuilder {
 	private TimeBandGroup activeTimeBandGroup = null
 	private List<IdeaFlowBand> ideaFlowBands = []
 	private List<TimeBandGroup> timeBandGroups = []
-	private List<IdleTimeBand> idleTimeBands = []
+	private List<IdleTimeBandEntity> idleTimeBands = []
 	private MockTimeService timeService
 
 	TestTimelineSegmentBuilder() {
@@ -74,7 +74,7 @@ class TestTimelineSegmentBuilder {
 	}
 
 	TestTimelineSegmentBuilder idle(int startHour, int endHour) {
-		idleTimeBands << IdleTimeBand.builder()
+		idleTimeBands << IdleTimeBandEntity.builder()
 				.start(timeService.inFuture(startHour))
 				.end(timeService.inFuture(endHour))
 				.build()

@@ -1,6 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.core.activity.IdleTimeBand
+import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 
 public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceService {
@@ -8,7 +8,7 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	private IdeaFlowStateEntity activeState
 	private IdeaFlowStateEntity containingState
 	private List<IdeaFlowStateEntity> stateList = []
-	private List<IdleTimeBand> idleActivityList = []
+	private List<IdleTimeBandEntity> idleTimeBandList = []
 	private List<EventEntity> eventList = []
 
 	@Override
@@ -25,8 +25,8 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 		stateList
 	}
 
-	public List<IdleTimeBand> getIdleActivityList() {
-		idleActivityList
+	public List<IdleTimeBandEntity> getIdleTimeBandList() {
+		idleTimeBandList
 	}
 
 	public List<EventEntity> getEventList() {
@@ -51,8 +51,8 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
-	public void saveIdleActivity(IdleTimeBand idleActivity) {
-		idleActivityList.add(idleActivity)
+	public void saveIdleActivity(IdleTimeBandEntity idleActivity) {
+		idleTimeBandList.add(idleActivity)
 	}
 
 	@Override

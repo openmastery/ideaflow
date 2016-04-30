@@ -1,7 +1,5 @@
 package org.ideaflow.publisher.api
 
-import org.ideaflow.publisher.core.activity.IdleTimeBand
-
 import java.time.LocalDateTime
 
 

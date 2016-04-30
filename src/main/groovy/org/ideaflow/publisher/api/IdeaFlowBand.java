@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.ideaflow.publisher.core.activity.IdleTimeBand;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

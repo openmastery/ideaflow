@@ -1,6 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow;
 
-import org.ideaflow.publisher.core.activity.IdleTimeBand;
+import org.ideaflow.publisher.core.activity.IdleTimeBandEntity;
 import org.ideaflow.publisher.core.event.EventEntity;
 
 public interface IdeaFlowPersistenceService {
@@ -16,7 +16,7 @@ public interface IdeaFlowPersistenceService {
 	void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowStateEntity activeState);
 
 
-	void saveIdleActivity(IdleTimeBand idleActivity);
+	void saveIdleActivity(IdleTimeBandEntity idleActivity);
 
 	void saveEvent(EventEntity event);
 
