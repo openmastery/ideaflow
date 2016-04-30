@@ -17,6 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+// TODO: rename > IdleTimeBandEntity
 public class IdleTimeBand extends TimeBand<IdleTimeBand> {
 
 	private long id;

@@ -6,6 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,9 +20,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class IdeaFlowStateEntity implements Comparable<IdeaFlowStateEntity> {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "idea_flow_state_seq_gen")
+	@SequenceGenerator(name = "idea_flow_state_seq_gen", sequenceName = "idea_flow_state_seq")
 	private long id;
+
 	private long taskId;
 
+	@Enumerated(EnumType.STRING)
 	private IdeaFlowStateType type;
 
 	private LocalDateTime start;

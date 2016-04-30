@@ -1,0 +1,13 @@
+databaseChangeLog:
+
+  - include:
+      file: db/create_idea_flow_state.sql
+
+  - include:
+      file: db/create_idle_time_band.sql
+
+  - include:
+      file: db/create_event.sql
+
+  - include:
+      file: db/create_editor_activity.sql
