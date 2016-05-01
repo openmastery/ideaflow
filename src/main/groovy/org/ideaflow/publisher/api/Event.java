@@ -1,11 +1,10 @@
-package org.ideaflow.publisher.core.event;
+package org.ideaflow.publisher.api;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ideaflow.publisher.api.EventType;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventEntity {
+public class Event {
 
 	private long id;
 	private long taskId;

@@ -24,7 +24,7 @@ class TimelineSegmentFactorySpec extends Specification {
 
 	private TimelineSegment generatePrimaryTimeline() {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
-		factory.createTimelineSegment(stateList)
+		factory.createTimelineSegment(stateList, testSupport.getEventList())
 	}
 
 	def "SHOULD calculate duration for all TimeBands"() {

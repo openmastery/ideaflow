@@ -15,10 +15,9 @@ public class TimelineGenerator {
 
 	public Timeline createTimeline(List<IdeaFlowStateEntity> ideaFlowStates, List<IdleTimeBandEntity> idleActivities,
 	                               List<EventEntity> eventList) {
-		List<EventEntity> subtaskEventList = eventList.findAll { it.eventType == EventEntity.Type.SUBTASK }
-		TimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates)
+		TimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates, eventList)
 		idleTimeProcessor.collapseIdleTime(segment, idleActivities)
-		List<TimelineSegment> segments = timelineSplitter.splitTimelineSegment(segment, subtaskEventList)
+		List<TimelineSegment> segments = timelineSplitter.splitTimelineSegment(segment)
 		Timeline timeline = Timeline.builder()
 				.timelineSegments(segments)
 				.build()

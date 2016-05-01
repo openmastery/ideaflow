@@ -1,10 +1,12 @@
 package org.ideaflow.publisher.core.timeline
 
+import org.ideaflow.publisher.api.EventType
 import org.ideaflow.publisher.api.TimelineSegment
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
 
 import java.time.Duration
+import java.time.LocalDateTime
 
 import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
 import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
@@ -15,8 +17,10 @@ class TimelineSplitterSpec extends Specification {
 
 	TimelineSegmentValidator validator = new TimelineSegmentValidator()
 	TimelineTestSupport testSupport = new TimelineTestSupport()
+	LocalDateTime start
 
 	def setup() {
+		start = testSupport.now()
 		testSupport.startTaskAndAdvanceHours(1)
 	}
 
@@ -24,10 +28,10 @@ class TimelineSplitterSpec extends Specification {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
 
 		TimelineSegmentFactory segmentFactory = new TimelineSegmentFactory()
-		TimelineSegment segment = segmentFactory.createTimelineSegment(stateList)
+		TimelineSegment segment = segmentFactory.createTimelineSegment(stateList, testSupport.getEventList())
 
 		TimelineSplitter splitter = new TimelineSplitter()
-		splitter.splitTimelineSegment(segment, testSupport.getEventList())
+		splitter.splitTimelineSegment(segment)
 	}
 
 	def "WHEN subtask start is within Timeband SHOULD split timeband across TimelineSegments"() {
@@ -41,6 +45,7 @@ class TimelineSplitterSpec extends Specification {
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(2))
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(3))
 		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(3))
 		validator.assertValidationComplete(segments, 2)
 	}
@@ -57,7 +62,9 @@ class TimelineSplitterSpec extends Specification {
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(2))
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(3))
 		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(3))
+		validator.assertEvent(segments[2], 0, EventType.SUBTASK, start.plusHours(6))
 		validator.assertTimeBand(segments[2].ideaFlowBands, 0, LEARNING, Duration.ofHours(4))
 		validator.assertValidationComplete(segments, 3)
 	}
@@ -72,6 +79,7 @@ class TimelineSplitterSpec extends Specification {
 
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(1))
 		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(2))
 		validator.assertValidationComplete(segments, 2)
 	}
@@ -92,6 +100,7 @@ class TimelineSplitterSpec extends Specification {
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(6))
 		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, CONFLICT, Duration.ofHours(1))
 		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 1, CONFLICT, Duration.ofHours(2))
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(7))
 		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(1))
 		validator.assertNestedTimeBand(segments[1].ideaFlowBands[0].nestedBands, 0, CONFLICT, Duration.ofHours(1))
 		validator.assertValidationComplete(segments, 2)
@@ -112,6 +121,7 @@ class TimelineSplitterSpec extends Specification {
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(4))
 		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, CONFLICT, Duration.ofHours(1))
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(5))
 		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(3))
 		validator.assertNestedTimeBand(segments[1].ideaFlowBands[0].nestedBands, 0, CONFLICT, Duration.ofHours(2))
 		validator.assertValidationComplete(segments, 2)
@@ -131,22 +141,37 @@ class TimelineSplitterSpec extends Specification {
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(2))
 		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 1, REWORK, Duration.ofHours(3))
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(6))
 		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, REWORK, Duration.ofHours(4))
 		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, LEARNING, Duration.ofHours(5))
 		validator.assertValidationComplete(segments, 2)
 	}
 
-	def "subtask event should be the first event in the timeline segment"() {
-		expect:
-		false
+	def "WHEN non subtask events are present SHOULD split across TimelineSegments"() {
+		given:
+		testSupport.startBandAndAdvanceHours(LEARNING, 1)
+		testSupport.note()
+		testSupport.advanceHours(1)
+		testSupport.startSubtaskAndAdvanceHours(0)
+		testSupport.note()
+		testSupport.advanceHours(1)
+		testSupport.note()
+
+		when:
+		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+
+		then:
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(2))
+		validator.assertEvent(segments[0], 0, EventType.NOTE, start.plusHours(2))
+		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(1))
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(3))
+		validator.assertEvent(segments[1], 1, EventType.NOTE, start.plusHours(3))
+		validator.assertEvent(segments[1], 2, EventType.NOTE, start.plusHours(4))
+		validator.assertValidationComplete(segments, 2)
 	}
 
-	def "persistence"() {
-		expect:
-		false
-	}
-
-	def "dozer"() {
+	def "timeline segment description should be subtask comment"() {
 		expect:
 		false
 	}

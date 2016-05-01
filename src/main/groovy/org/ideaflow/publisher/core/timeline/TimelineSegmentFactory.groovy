@@ -1,16 +1,18 @@
 package org.ideaflow.publisher.core.timeline
 
+import org.ideaflow.publisher.api.Event
 import org.ideaflow.publisher.api.IdeaFlowBand
 import org.ideaflow.publisher.api.IdleTimeBand
 import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 
 class TimelineSegmentFactory {
 
 	// TODO: refactor... AAHHHHH!!!!!
 
-	public TimelineSegment createTimelineSegment(List<IdeaFlowStateEntity> ideaFlowStates) {
+	public TimelineSegment createTimelineSegment(List<IdeaFlowStateEntity> ideaFlowStates, List<EventEntity> events) {
 		ideaFlowStates = new ArrayList<>(ideaFlowStates);
 		Collections.sort(ideaFlowStates)
 
@@ -62,9 +64,28 @@ class TimelineSegmentFactory {
 		TimelineSegment segment = TimelineSegment.builder()
 				.ideaFlowBands(ideaFlowBands)
 				.timeBandGroups(ideaFlowBandGroups)
+				.events(toEventList(events))
 				.build();
 
 		return segment;
 	}
+
+	private List<Event> toEventList(List<EventEntity> eventEntityList) {
+		eventEntityList.collect { EventEntity eventEntity ->
+			toEvent(eventEntity)
+		}
+	}
+
+	private Event toEvent(EventEntity subtask) {
+		Event subtaskEvent = Event.builder()
+				.id(subtask.id)
+				.taskId(subtask.taskId)
+				.position(subtask.position)
+				.comment(subtask.comment)
+				.eventType(subtask.eventType)
+				.build()
+		subtaskEvent
+	}
+
 
 }

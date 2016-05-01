@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.core.timeline
 
+import org.ideaflow.publisher.api.EventType
 import org.ideaflow.publisher.api.IdeaFlowStateType
-import org.ideaflow.publisher.api.IdleTimeBand
 import org.ideaflow.publisher.core.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
@@ -64,18 +64,9 @@ class TimelineTestSupport {
 		stateMachine.startTask()
 	}
 
-	void startSubtask(String comment) {
-		EventEntity event = EventEntity.builder()
-				.eventType(EventEntity.Type.SUBTASK)
-				.position(timeService.now())
-				.comment(comment)
-				.build()
-		persistenceService.saveEvent(event)
-	}
-
 	void startSubtaskAndAdvanceHours(int hours) {
 		EventEntity event = EventEntity.builder()
-				.eventType(EventEntity.Type.SUBTASK)
+				.eventType(EventType.SUBTASK)
 				.position(timeService.now())
 				.build()
 		persistenceService.saveEvent(event)
@@ -86,12 +77,6 @@ class TimelineTestSupport {
 		timeService.plusHours(hours)
 	}
 
-	void advanceTime(int hours, int minutes, int seconds) {
-		timeService.plusHours(hours)
-		timeService.plusMinutes(minutes)
-		timeService.plusSeconds(seconds)
-	}
-
 	void idle(int hours) {
 		LocalDateTime start = timeService.now()
 		timeService.plusHours(hours)
@@ -99,6 +84,15 @@ class TimelineTestSupport {
 				.start(start)
 				.end(timeService.now()).build()
 		persistenceService.saveIdleActivity(idleActivity)
+	}
+
+	void note() {
+		EventEntity event = EventEntity.builder()
+				.comment("")
+				.position(now())
+				.eventType(EventType.NOTE)
+				.build()
+		persistenceService.saveEvent(event)
 	}
 
 	void startBand(IdeaFlowStateType type, String comment) {

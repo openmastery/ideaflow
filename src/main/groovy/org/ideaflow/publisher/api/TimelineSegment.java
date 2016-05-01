@@ -22,6 +22,7 @@ public class TimelineSegment {
 
 	private List<IdeaFlowBand> ideaFlowBands = new ArrayList<>();
 	private List<TimeBandGroup> timeBandGroups = new ArrayList<>();
+	private List<Event> events = new ArrayList<>();
 
 	@JsonIgnore
 	public List<TimeBand> getAllTimeBands() {
@@ -69,6 +70,10 @@ public class TimelineSegment {
 		} else {
 			throw new RuntimeException("Unexpected time band=" + timeBand);
 		}
+	}
+
+	public void addEvent(Event event) {
+		events.add(event);
 	}
 
 }

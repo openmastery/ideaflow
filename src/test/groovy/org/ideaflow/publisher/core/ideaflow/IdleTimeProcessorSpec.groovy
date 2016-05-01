@@ -28,7 +28,7 @@ class IdleTimeProcessorSpec extends Specification {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
 
 		TimelineSegmentFactory segmentFactory = new TimelineSegmentFactory()
-		TimelineSegment segment = segmentFactory.createTimelineSegment(stateList)
+		TimelineSegment segment = segmentFactory.createTimelineSegment(stateList, testSupport.getEventList())
 
 		IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 		idleTimeProcessor.collapseIdleTime(segment, testSupport.getIdleActivityList())

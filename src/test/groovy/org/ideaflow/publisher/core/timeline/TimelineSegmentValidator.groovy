@@ -1,7 +1,8 @@
 package org.ideaflow.publisher.core.timeline
 
-import org.ideaflow.publisher.api.IdeaFlowStateType
+import org.ideaflow.publisher.api.EventType
 import org.ideaflow.publisher.api.IdeaFlowBand
+import org.ideaflow.publisher.api.IdeaFlowStateType
 import org.ideaflow.publisher.api.TimeBand
 import org.ideaflow.publisher.api.TimeBandGroup
 import org.ideaflow.publisher.api.TimelineSegment
@@ -9,12 +10,12 @@ import org.ideaflow.publisher.api.TimelineSegment
 import java.time.Duration
 import java.time.LocalDateTime
 
-
 class TimelineSegmentValidator {
 
 	private int expectedTimeBandCount = 0
 	private int expectedNestedTimeBandCount = 0
 	private int expectedLinkedTimeBandCount = 0
+	private int expectedEventCount = 0
 
 	private void assertExpectedValues(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType,
 	                                  Duration expectedDuration, Long expectedRelativeStart) {
@@ -32,6 +33,13 @@ class TimelineSegmentValidator {
 		if (expectedRelativeStart != null) {
 			assert timeBands[index].relativeStart == expectedRelativeStart
 		}
+	}
+
+	void assertEvent(TimelineSegment segment, int index, EventType expectedType, LocalDateTime expectedPosition) {
+		assert segment.events[index] != null
+		assert segment.events[index].eventType == expectedType
+		assert segment.events[index].position == expectedPosition
+		expectedEventCount++
 	}
 
 	void assertTimeBand(List<TimeBand> timeBands, int index, IdeaFlowStateType expectedType, Duration expectedDuration,
@@ -78,6 +86,7 @@ class TimelineSegmentValidator {
 		assert expectedTimeBandCount == (segments.sum { it.ideaFlowBands.size() } as int)
 		assert expectedLinkedTimeBandCount == (segments.sum { countLinkedTimeBands(it) } as int)
 		assert expectedNestedTimeBandCount == (segments.sum { countNestedBands(it) } as int)
+		assert expectedEventCount == (segments.sum { it.events.size() } as int)
 		assert expectedSegmentCount == segments.size()
 	}
 
