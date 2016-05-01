@@ -17,6 +17,7 @@ class TimelineSplitterSpec extends Specification {
 
 	TimelineSegmentValidator validator = new TimelineSegmentValidator()
 	TimelineTestSupport testSupport = new TimelineTestSupport()
+	TimelineSegment inputSegment
 	LocalDateTime start
 
 	def setup() {
@@ -28,10 +29,24 @@ class TimelineSplitterSpec extends Specification {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
 
 		TimelineSegmentFactory segmentFactory = new TimelineSegmentFactory()
-		TimelineSegment segment = segmentFactory.createTimelineSegment(stateList, testSupport.getEventList())
+		inputSegment = segmentFactory.createTimelineSegment(stateList, testSupport.getEventList())
+		inputSegment.description = "initial segment"
 
 		TimelineSplitter splitter = new TimelineSplitter()
-		splitter.splitTimelineSegment(segment)
+		splitter.splitTimelineSegment(inputSegment)
+	}
+
+	def "WHEN not split SHOULD return input segment"() {
+		given:
+		testSupport.startBandAndAdvanceHours(LEARNING, 2)
+		testSupport.startBandAndAdvanceHours(REWORK, 1)
+
+		when:
+		List<TimelineSegment> actualSegments = createTimelineSegmentAndSplit()
+
+		then:
+		assert inputSegment.is(actualSegments[0])
+		assert actualSegments.size() == 1
 	}
 
 	def "WHEN subtask start is within Timeband SHOULD split timeband across TimelineSegments"() {
@@ -171,9 +186,18 @@ class TimelineSplitterSpec extends Specification {
 		validator.assertValidationComplete(segments, 2)
 	}
 
-	def "timeline segment description should be subtask comment"() {
-		expect:
-		false
+	def "WHEN split first segment SHOULD retain description of input segment AND subsequent segments should set description to subtask description"() {
+		given:
+		testSupport.startBandAndAdvanceHours(LEARNING, 1)
+		testSupport.note()
+		testSupport.startSubtaskAndAdvanceHours("subtask comment", 1)
+
+		when:
+		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+
+		then:
+		assert segments[0].description == inputSegment.description
+		assert segments[1].description == "subtask comment"
 	}
 
 }

@@ -65,9 +65,14 @@ class TimelineTestSupport {
 	}
 
 	void startSubtaskAndAdvanceHours(int hours) {
+		startSubtaskAndAdvanceHours(null, hours)
+	}
+
+	void startSubtaskAndAdvanceHours(String comment, int hours) {
 		EventEntity event = EventEntity.builder()
 				.eventType(EventType.SUBTASK)
 				.position(timeService.now())
+				.comment(comment)
 				.build()
 		persistenceService.saveEvent(event)
 		timeService.plusHours(hours)

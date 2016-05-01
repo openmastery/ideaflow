@@ -20,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TimelineSegment {
 
+	private String description;
 	private List<IdeaFlowBand> ideaFlowBands = new ArrayList<>();
 	private List<TimeBandGroup> timeBandGroups = new ArrayList<>();
 	private List<Event> events = new ArrayList<>();
