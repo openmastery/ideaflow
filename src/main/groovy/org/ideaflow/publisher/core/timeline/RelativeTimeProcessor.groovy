@@ -11,7 +11,7 @@ import java.time.Duration
 class RelativeTimeProcessor {
 
 	public void setRelativeTime(Timeline timeline) {
-		List<TimeBand> allTimeBands = getFlattenedSortedTimeBandList(timeline);
+		Set<TimeBand> allTimeBands = getFlattenedSortedTimeBandSet(timeline);
 		TimeBand previousTimeBand = null
 		long relativeTime = 0
 
@@ -35,13 +35,14 @@ class RelativeTimeProcessor {
 		}
 	}
 
-	private List<TimeBand> getFlattenedSortedTimeBandList(Timeline timeline) {
+	private Set<TimeBand> getFlattenedSortedTimeBandSet(Timeline timeline) {
 		ArrayList<TimeBand> allTimeBands = new ArrayList<>();
 		for (TimelineSegment segment : timeline.timelineSegments) {
 			addTimeBands(allTimeBands, segment.getAllTimeBands());
 		}
 		Collections.sort(allTimeBands, TimeBandComparator.INSTANCE);
-		return allTimeBands;
+		// convert to a set b/c we could have duplicate idle bands (e.g. if idle is w/in nested conflict)
+		return allTimeBands as Set;
 	}
 
 	private void addTimeBands(List<TimeBand> targetList, List<TimeBand> bandsToAdd) {
