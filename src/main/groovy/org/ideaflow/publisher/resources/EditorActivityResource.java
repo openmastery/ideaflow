@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 @Component
 @Path(ResourcePaths.TASK_PATH + "/{taskId}" + ResourcePaths.ACTIVITY_PATH)
 @Produces(MediaType.APPLICATION_JSON)
-public class ActivityResource {
+public class EditorActivityResource {
 
 	@POST
 	@Path(ResourcePaths.EDITOR_PATH)

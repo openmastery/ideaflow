@@ -25,6 +25,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
 
 @Component
 @Path(ResourcePaths.TASK_PATH + "/{taskId}" + ResourcePaths.IDEAFLOW_PATH)
@@ -71,8 +72,12 @@ public class IdeaFlowResource {
 	@Path(ResourcePaths.ACTIVE_STATE_PATH)
 	public IdeaFlowState activeState(@PathParam("taskId") String taskId) {
 		System.out.println("Get Active State: " + taskId);
-		return null;
+		return IdeaFlowState.builder()
+				.start(LocalDateTime.now())
+				.end(LocalDateTime.now())
+				.startingComment("starting")
+				.endingComment("ending")
+				.build();
 	}
-
 
 }

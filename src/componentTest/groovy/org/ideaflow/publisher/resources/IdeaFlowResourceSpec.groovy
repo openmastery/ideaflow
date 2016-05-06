@@ -29,11 +29,12 @@ class IdeaFlowResourceSpec extends Specification {
 	def "event methods should not explode"() {
 		when:
 		eventClient.startConflict("task", "my question")
-		eventClient.stopConflict("task", "my resolution")
+		eventClient.endConflict("task", "my resolution")
 		eventClient.startLearning("task", "learning comment")
-		eventClient.stopLearning("task")
+		eventClient.endLearning("task")
 		eventClient.startRework("task", "rework comment")
-		eventClient.stopRework("task")
+		eventClient.endRework("task")
+		eventClient.getActiveState("task")
 
 		then:
 		notThrown(Throwable)

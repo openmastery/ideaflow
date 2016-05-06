@@ -17,12 +17,25 @@ package org.ideaflow.publisher.client;
 
 import org.ideaflow.common.rest.client.CrudClient;
 import org.ideaflow.common.rest.client.CrudClientRequest;
+import org.ideaflow.publisher.api.IdeaFlowState;
 import org.ideaflow.publisher.api.ResourcePaths;
 
-public class IdeaFlowClient extends CrudClient<Object, IdeaFlowClient> {
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+public class IdeaFlowClient extends CrudClient<String, IdeaFlowClient> {
 
 	public IdeaFlowClient(String hostUri) {
-		super(hostUri, ResourcePaths.TASK_PATH, Object.class);
+		super(hostUri, ResourcePaths.TASK_PATH, String.class);
+	}
+
+	public IdeaFlowState getActiveState(String taskId) {
+		return (IdeaFlowState) getUntypedCrudClientRequest().path(taskId)
+				.path(ResourcePaths.IDEAFLOW_PATH)
+				.path(ResourcePaths.ACTIVE_STATE_PATH)
+				.entity(IdeaFlowState.class)
+				.find();
 	}
 
 	public void startConflict(String taskId, String question) {
@@ -33,7 +46,7 @@ public class IdeaFlowClient extends CrudClient<Object, IdeaFlowClient> {
 				.createWithPost(question);
 	}
 
-	public void stopConflict(String taskId, String resolution) {
+	public void endConflict(String taskId, String resolution) {
 		crudClientRequest.path(taskId)
 				.path(ResourcePaths.IDEAFLOW_PATH)
 				.path(ResourcePaths.CONFLICT_PATH)
@@ -45,8 +58,8 @@ public class IdeaFlowClient extends CrudClient<Object, IdeaFlowClient> {
 		startBand(taskId, comment, ResourcePaths.LEARNING_PATH);
 	}
 
-	public void stopLearning(String taskId) {
-		stopBand(taskId, ResourcePaths.LEARNING_PATH);
+	public void endLearning(String taskId) {
+		endBand(taskId, ResourcePaths.LEARNING_PATH);
 	}
 
 	private void startBand(String taskId, String comment, String bandPath) {
@@ -57,7 +70,7 @@ public class IdeaFlowClient extends CrudClient<Object, IdeaFlowClient> {
 				.createWithPost(comment);
 	}
 
-	private void stopBand(String taskId, String bandPath) {
+	private void endBand(String taskId, String bandPath) {
 		crudClientRequest.path(taskId)
 				.path(ResourcePaths.IDEAFLOW_PATH)
 				.path(bandPath)
@@ -69,8 +82,8 @@ public class IdeaFlowClient extends CrudClient<Object, IdeaFlowClient> {
 		startBand(taskId, comment, ResourcePaths.REWORK_PATH);
 	}
 
-	public void stopRework(String taskId) {
-		stopBand(taskId, ResourcePaths.REWORK_PATH);
+	public void endRework(String taskId) {
+		endBand(taskId, ResourcePaths.REWORK_PATH);
 	}
 
 }
