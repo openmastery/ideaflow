@@ -15,33 +15,30 @@
  */
 package org.ideaflow.publisher.client;
 
+import org.ideaflow.common.rest.client.CrudClient;
+import org.ideaflow.common.rest.client.CrudClientRequest;
 import org.ideaflow.publisher.api.ResourcePaths;
-import org.springframework.web.client.DefaultResponseErrorHandler;
-import org.springframework.web.client.RestTemplate;
 
-public class IdeaFlowClient {
-
-	private String resourceUri;
-	private RestTemplate restTemplate;
+public class IdeaFlowClient extends CrudClient<Object, IdeaFlowClient> {
 
 	public IdeaFlowClient(String hostUri) {
-		resourceUri = hostUri + ResourcePaths.TASK_PATH;
-		restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
-	}
-
-	private String getResourcePath(String taskId) {
-		return resourceUri + "/" + taskId + ResourcePaths.IDEAFLOW_PATH;
+		super(hostUri, ResourcePaths.TASK_PATH, Object.class);
 	}
 
 	public void startConflict(String taskId, String question) {
-		String path = getResourcePath(taskId) + ResourcePaths.CONFLICT_PATH + ResourcePaths.START_PATH;
-		restTemplate.postForLocation(path, question);
+		crudClientRequest.path(taskId)
+				.path(ResourcePaths.IDEAFLOW_PATH)
+				.path(ResourcePaths.CONFLICT_PATH)
+				.path(ResourcePaths.START_PATH)
+				.createWithPost(question);
 	}
 
 	public void stopConflict(String taskId, String resolution) {
-		String path = getResourcePath(taskId) + ResourcePaths.CONFLICT_PATH + ResourcePaths.STOP_PATH;
-		restTemplate.postForLocation(path, resolution);
+		crudClientRequest.path(taskId)
+				.path(ResourcePaths.IDEAFLOW_PATH)
+				.path(ResourcePaths.CONFLICT_PATH)
+				.path(ResourcePaths.STOP_PATH)
+				.createWithPost(resolution);
 	}
 
 	public void startLearning(String taskId, String comment) {
@@ -53,13 +50,19 @@ public class IdeaFlowClient {
 	}
 
 	private void startBand(String taskId, String comment, String bandPath) {
-		String path = getResourcePath(taskId) + bandPath + ResourcePaths.START_PATH;
-		restTemplate.postForLocation(path, comment);
+		crudClientRequest.path(taskId)
+				.path(ResourcePaths.IDEAFLOW_PATH)
+				.path(bandPath)
+				.path(ResourcePaths.START_PATH)
+				.createWithPost(comment);
 	}
 
 	private void stopBand(String taskId, String bandPath) {
-		String path = getResourcePath(taskId) + bandPath + ResourcePaths.STOP_PATH;
-		restTemplate.postForLocation(path, null);
+		crudClientRequest.path(taskId)
+				.path(ResourcePaths.IDEAFLOW_PATH)
+				.path(bandPath)
+				.path(ResourcePaths.STOP_PATH)
+				.createWithPost(null);
 	}
 
 	public void startRework(String taskId, String comment) {
