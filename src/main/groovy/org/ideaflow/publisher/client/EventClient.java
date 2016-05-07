@@ -1,26 +1,32 @@
 package org.ideaflow.publisher.client;
 
 import org.ideaflow.common.rest.client.CrudClient;
+import org.ideaflow.publisher.api.NewEvent;
 import org.ideaflow.publisher.api.ResourcePaths;
 
-public class EventClient extends CrudClient<String, EventClient> {
+public class EventClient extends CrudClient<NewEvent, EventClient> {
 
 	public EventClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.TASK_PATH, String.class);
+		super(baseUrl, ResourcePaths.EDITOR_PATH, NewEvent.class);
 	}
 
-	public void addUserNote(String taskId, String message) {
-		crudClientRequest.path(taskId)
-				.path(ResourcePaths.EDITOR_PATH)
-				.path(ResourcePaths.NOTE_PATH)
-				.createWithPost(message);
+	private NewEvent createNewEvent(Long taskId, String message) {
+		return NewEvent.builder()
+					.taskId(taskId)
+					.comment(message)
+					.build();
 	}
 
-	public void addSubtask(String taskId, String message) {
-		crudClientRequest.path(taskId)
-				.path(ResourcePaths.EDITOR_PATH)
-				.path(ResourcePaths.SUBTASK_PATH)
-				.createWithPost(message);
+	public void addUserNote(Long taskId, String message) {
+		NewEvent event = createNewEvent(taskId, message);
+		crudClientRequest.path(ResourcePaths.NOTE_PATH)
+				.createWithPost(event);
+	}
+
+	public void addSubtask(Long taskId, String message) {
+		NewEvent event = createNewEvent(taskId, message);
+		crudClientRequest.path(ResourcePaths.SUBTASK_PATH)
+				.createWithPost(event);
 	}
 
 }

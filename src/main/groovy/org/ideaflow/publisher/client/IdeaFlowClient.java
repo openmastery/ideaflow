@@ -18,72 +18,71 @@ package org.ideaflow.publisher.client;
 import org.ideaflow.common.rest.client.CrudClient;
 import org.ideaflow.common.rest.client.CrudClientRequest;
 import org.ideaflow.publisher.api.IdeaFlowState;
+import org.ideaflow.publisher.api.IdeaFlowStateTransition;
 import org.ideaflow.publisher.api.ResourcePaths;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-public class IdeaFlowClient extends CrudClient<String, IdeaFlowClient> {
+public class IdeaFlowClient extends CrudClient<IdeaFlowStateTransition, IdeaFlowClient> {
 
 	public IdeaFlowClient(String hostUri) {
-		super(hostUri, ResourcePaths.TASK_PATH, String.class);
+		super(hostUri, ResourcePaths.IDEAFLOW_PATH, IdeaFlowStateTransition.class);
 	}
 
-	public IdeaFlowState getActiveState(String taskId) {
-		return (IdeaFlowState) getUntypedCrudClientRequest().path(taskId)
-				.path(ResourcePaths.IDEAFLOW_PATH)
+	public IdeaFlowState getActiveState(Long taskId) {
+		return (IdeaFlowState) getUntypedCrudClientRequest()
 				.path(ResourcePaths.ACTIVE_STATE_PATH)
+				.path(taskId)
 				.entity(IdeaFlowState.class)
 				.find();
 	}
 
-	public void startConflict(String taskId, String question) {
-		crudClientRequest.path(taskId)
-				.path(ResourcePaths.IDEAFLOW_PATH)
-				.path(ResourcePaths.CONFLICT_PATH)
+	private void startBand(Long taskId, String startingComment, String bandPath) {
+		IdeaFlowStateTransition transition = IdeaFlowStateTransition.builder()
+				.taskId(taskId)
+				.comment(startingComment)
+		        .build();
+
+		crudClientRequest.path(bandPath)
 				.path(ResourcePaths.START_PATH)
-				.createWithPost(question);
+				.createWithPost(transition);
 	}
 
-	public void endConflict(String taskId, String resolution) {
-		crudClientRequest.path(taskId)
-				.path(ResourcePaths.IDEAFLOW_PATH)
-				.path(ResourcePaths.CONFLICT_PATH)
+	private void endBand(Long taskId, String endingComment, String bandPath) {
+		IdeaFlowStateTransition transition = IdeaFlowStateTransition.builder()
+				.taskId(taskId)
+				.comment(endingComment)
+		        .build();
+
+		crudClientRequest.path(bandPath)
 				.path(ResourcePaths.STOP_PATH)
-				.createWithPost(resolution);
+				.createWithPost(transition);
 	}
 
-	public void startLearning(String taskId, String comment) {
+	public void startConflict(Long taskId, String question) {
+		startBand(taskId, question, ResourcePaths.CONFLICT_PATH);
+	}
+
+	public void endConflict(Long taskId, String resolution) {
+		endBand(taskId, resolution, ResourcePaths.CONFLICT_PATH);
+	}
+
+	public void startLearning(Long taskId, String comment) {
 		startBand(taskId, comment, ResourcePaths.LEARNING_PATH);
 	}
 
-	public void endLearning(String taskId) {
-		endBand(taskId, ResourcePaths.LEARNING_PATH);
+	public void endLearning(Long taskId, String comment) {
+		endBand(taskId, comment, ResourcePaths.LEARNING_PATH);
 	}
 
-	private void startBand(String taskId, String comment, String bandPath) {
-		crudClientRequest.path(taskId)
-				.path(ResourcePaths.IDEAFLOW_PATH)
-				.path(bandPath)
-				.path(ResourcePaths.START_PATH)
-				.createWithPost(comment);
-	}
-
-	private void endBand(String taskId, String bandPath) {
-		crudClientRequest.path(taskId)
-				.path(ResourcePaths.IDEAFLOW_PATH)
-				.path(bandPath)
-				.path(ResourcePaths.STOP_PATH)
-				.createWithPost(null);
-	}
-
-	public void startRework(String taskId, String comment) {
+	public void startRework(Long taskId, String comment) {
 		startBand(taskId, comment, ResourcePaths.REWORK_PATH);
 	}
 
-	public void endRework(String taskId) {
-		endBand(taskId, ResourcePaths.REWORK_PATH);
+	public void endRework(Long taskId, String comment) {
+		endBand(taskId, comment, ResourcePaths.REWORK_PATH);
 	}
 
 }

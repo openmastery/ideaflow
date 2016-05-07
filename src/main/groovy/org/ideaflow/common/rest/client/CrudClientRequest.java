@@ -170,7 +170,7 @@ public class CrudClientRequest<T> {
     /**
      * Invokes HTTP POST method for the current request and the input entity.
      */
-    public T createWithPost(T entity) {
+    public T createWithPost(Object entity) {
         CreateResponse response = clientRequest.createWithPost(entity);
         setClientResponse(response);
         return response.getValidatedResponse(this.entity);
@@ -180,14 +180,14 @@ public class CrudClientRequest<T> {
      * Invokes HTTP POST method for the given input entity, modifying the request
      * path with the input path.
      */
-    public T createWithPost(Object path, T entity) {
+    public T createWithPost(Object path, Object entity) {
         return path(path).createWithPost(entity);
     }
 
     /**
      * Invokes HTTP PUT method for the current request and the input entity.
      */
-    public T updateWithPut(T entity) {
+    public T updateWithPut(Object entity) {
         UpdateResponse response = clientRequest.updateWithPut(entity);
         setClientResponse(response);
         return response.getValidatedResponse(this.entity);
@@ -197,7 +197,7 @@ public class CrudClientRequest<T> {
      * Invokes HTTP PUT method for the given input entity, modifying the request
      * path with the input path.
      */
-    public T updateWithPut(Object path, T entity) {
+    public T updateWithPut(Object path, Object entity) {
         return path(path).updateWithPut(entity);
     }
 

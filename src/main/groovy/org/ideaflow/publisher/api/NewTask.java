@@ -5,17 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdleActivity {
+public class NewTask {
 
-	private Long taskId;
-	private Duration duration;
-	private String comment;
-	private boolean auto;
+	private String taskName;
+	private String projectName;
 
 }

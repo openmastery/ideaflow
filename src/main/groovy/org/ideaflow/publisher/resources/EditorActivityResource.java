@@ -12,19 +12,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Component
-@Path(ResourcePaths.TASK_PATH + "/{taskId}" + ResourcePaths.ACTIVITY_PATH)
+@Path(ResourcePaths.ACTIVITY_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class EditorActivityResource {
 
 	@POST
 	@Path(ResourcePaths.EDITOR_PATH)
-	public void addEditorActivity(@PathParam("taskId") String taskId, EditorActivity editorActivity) {
+	public void addEditorActivity(EditorActivity editorActivity) {
 
 	}
 
 	@POST
 	@Path(ResourcePaths.IDLE_PATH)
-	public void addIdleActivity(@PathParam("taskId") String taskId, IdleActivity idleActivity) {
+	public void addIdleActivity(IdleActivity idleActivity) {
 
 	}
 

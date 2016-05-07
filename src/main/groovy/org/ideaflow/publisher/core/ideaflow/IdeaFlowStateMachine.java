@@ -2,6 +2,8 @@ package org.ideaflow.publisher.core.ideaflow;
 
 import org.ideaflow.publisher.api.IdeaFlowStateType;
 import org.ideaflow.publisher.core.TimeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -17,11 +19,10 @@ import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK;
 //@Component
 public class IdeaFlowStateMachine {
 
-	// TODO: make private once we have actual persistence (currently used by IfmPublisher)
-	@Inject
-	public TimeService timeService;
-	@Inject
-	public IdeaFlowPersistenceService ideaFlowPersistenceService;
+	@Autowired
+	private TimeService timeService;
+	@Autowired
+	private IdeaFlowPersistenceService ideaFlowPersistenceService;
 
 	private IdeaFlowStateEntity getActiveState() {
 		IdeaFlowStateEntity state = ideaFlowPersistenceService.getActiveState();

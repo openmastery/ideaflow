@@ -1,6 +1,7 @@
 package org.ideaflow.publisher.client;
 
 import org.ideaflow.common.rest.client.CrudClient;
+import org.ideaflow.publisher.api.NewTask;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.ideaflow.publisher.api.Task;
 
@@ -10,13 +11,13 @@ public class TaskClient extends CrudClient<Task, TaskClient> {
 		super(baseUrl, ResourcePaths.TASK_PATH, Task.class);
 	}
 
-	public void activateTask(String taskId) {
-		crudClientRequest.path(taskId)
-				.updateWithPut(null);
-	}
-
-	public void createTask(Task task) {
-		crudClientRequest.createWithPost(task);
+	@SuppressWarnings("unchecked")
+	public Task createTask(String taskName, String projectName) {
+		NewTask task = NewTask.builder()
+				.taskName(taskName)
+				.projectName(projectName)
+				.build();
+		return crudClientRequest.createWithPost(task);
 	}
 
 	public Task getActiveTask() {

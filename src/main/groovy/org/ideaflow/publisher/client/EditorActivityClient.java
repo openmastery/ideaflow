@@ -4,24 +4,33 @@ import org.ideaflow.common.rest.client.CrudClient;
 import org.ideaflow.publisher.api.EditorActivity;
 import org.ideaflow.publisher.api.ResourcePaths;
 
+import java.time.Duration;
+
 public class EditorActivityClient extends CrudClient<EditorActivity, EditorActivityClient> {
 
 	public EditorActivityClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.TASK_PATH, EditorActivity.class);
+		super(baseUrl, ResourcePaths.ACTIVITY_PATH, EditorActivity.class);
 	}
 
-	public void addEditorActivity(String taskId, EditorActivity editorActivity) {
-		crudClientRequest.path(taskId)
-				.path(ResourcePaths.ACTIVITY_PATH)
-				.path(ResourcePaths.EDITOR_PATH)
-				.createWithPost(editorActivity);
+	private EditorActivity createEditorActivity(Long taskId, String filePath, boolean isModified, Duration duration) {
+		return EditorActivity.builder()
+					.taskId(taskId)
+					.filePath(filePath)
+					.isModified(isModified)
+					.duration(duration)
+					.build();
 	}
 
-	public void addIdleActivity(String taskId, EditorActivity editorActivity) {
-		crudClientRequest.path(taskId)
-				.path(ResourcePaths.ACTIVITY_PATH)
-				.path(ResourcePaths.IDLE_PATH)
-				.createWithPost(editorActivity);
+	public void addEditorActivity(Long taskId, String filePath, boolean isModified, Duration duration) {
+		EditorActivity activity = createEditorActivity(taskId, filePath, isModified, duration);
+		crudClientRequest.path(ResourcePaths.EDITOR_PATH)
+				.createWithPost(activity);
+	}
+
+	public void addIdleActivity(Long taskId, String filePath, boolean isModified, Duration duration) {
+		EditorActivity activity = createEditorActivity(taskId, filePath, isModified, duration);
+		crudClientRequest.path(ResourcePaths.IDLE_PATH)
+				.createWithPost(activity);
 	}
 
 }

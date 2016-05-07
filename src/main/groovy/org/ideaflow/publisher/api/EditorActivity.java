@@ -14,6 +14,7 @@ import java.time.Duration;
 @AllArgsConstructor
 public class EditorActivity {
 
+	private Long taskId;
 	private String filePath;
 	private boolean isModified;
 	private Duration duration;
