@@ -1,17 +1,14 @@
 package org.ideaflow.publisher.core.ideaflow;
 
-import org.ideaflow.publisher.api.IdeaFlowStateType;
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType;
 import org.ideaflow.publisher.core.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-
-import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT;
-import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING;
-import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS;
-import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK;
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT;
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING;
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS;
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.REWORK;
 
 /**
  * TOOD: investigate http://projects.spring.io/spring-statemachine/

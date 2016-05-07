@@ -1,4 +1,4 @@
-package org.ideaflow.publisher.api;
+package org.ideaflow.publisher.api.ideaflow;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,10 +1,10 @@
 package org.ideaflow.publisher.core.timeline
 
-import org.ideaflow.publisher.api.Event
-import org.ideaflow.publisher.api.EventType
-import org.ideaflow.publisher.api.TimeBand
-import org.ideaflow.publisher.api.TimeBandComparator
-import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.api.event.Event
+import org.ideaflow.publisher.api.event.EventType
+import org.ideaflow.publisher.api.timeline.TimeBand
+import org.ideaflow.publisher.api.timeline.TimeBandComparator
+import org.ideaflow.publisher.api.timeline.TimelineSegment
 
 class TimelineSplitter {
 

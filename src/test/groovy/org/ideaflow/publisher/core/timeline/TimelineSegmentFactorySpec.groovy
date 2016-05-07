@@ -1,16 +1,16 @@
 package org.ideaflow.publisher.core.timeline
 
-import org.ideaflow.publisher.api.IdeaFlowBand
-import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
+import org.ideaflow.publisher.api.timeline.TimelineSegment
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
 
 import java.time.Duration
 
-import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
-import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
-import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
-import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
 class TimelineSegmentFactorySpec extends Specification {
 

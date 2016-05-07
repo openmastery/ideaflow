@@ -1,17 +1,18 @@
-package org.ideaflow.publisher.api;
+package org.ideaflow.publisher.api.task;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Timeline {
+public class Task {
 
-	private List<TimelineSegment> timelineSegments;
+	private Long taskId;
+	private String taskName;
+	private String projectName;
+
 }

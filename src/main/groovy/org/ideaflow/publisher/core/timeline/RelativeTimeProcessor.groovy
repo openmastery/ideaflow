@@ -1,10 +1,10 @@
 package org.ideaflow.publisher.core.timeline
 
-import org.ideaflow.publisher.api.IdleTimeBand
-import org.ideaflow.publisher.api.TimeBand
-import org.ideaflow.publisher.api.TimeBandComparator
-import org.ideaflow.publisher.api.Timeline
-import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.api.timeline.IdleTimeBand
+import org.ideaflow.publisher.api.timeline.TimeBand
+import org.ideaflow.publisher.api.timeline.TimeBandComparator
+import org.ideaflow.publisher.api.timeline.Timeline
+import org.ideaflow.publisher.api.timeline.TimelineSegment
 
 import java.time.Duration
 

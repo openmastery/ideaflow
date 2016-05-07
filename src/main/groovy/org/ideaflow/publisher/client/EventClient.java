@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.client;
 
 import org.ideaflow.common.rest.client.CrudClient;
-import org.ideaflow.publisher.api.NewEvent;
+import org.ideaflow.publisher.api.event.NewEvent;
 import org.ideaflow.publisher.api.ResourcePaths;
 
 public class EventClient extends CrudClient<NewEvent, EventClient> {

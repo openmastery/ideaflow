@@ -1,4 +1,4 @@
-package org.ideaflow.publisher.api;
+package org.ideaflow.publisher.api.ideaflow;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.ideaflow.publisher.api.timeline.IdleTimeBand;
+import org.ideaflow.publisher.api.timeline.TimeBand;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

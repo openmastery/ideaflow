@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.resources;
 
-import org.ideaflow.publisher.api.NewEvent;
-import org.ideaflow.publisher.api.EventType;
+import org.ideaflow.publisher.api.event.NewEvent;
+import org.ideaflow.publisher.api.event.EventType;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.stereotype.Component;
 

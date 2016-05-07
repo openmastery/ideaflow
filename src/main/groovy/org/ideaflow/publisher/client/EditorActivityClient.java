@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.client;
 
 import org.ideaflow.common.rest.client.CrudClient;
-import org.ideaflow.publisher.api.EditorActivity;
+import org.ideaflow.publisher.api.activity.EditorActivity;
 import org.ideaflow.publisher.api.ResourcePaths;
 
 import java.time.Duration;

@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.resources
 
-import org.ideaflow.publisher.api.IdeaFlowStateType
-import org.ideaflow.publisher.api.Timeline
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
+import org.ideaflow.publisher.api.timeline.Timeline
 import org.ideaflow.publisher.core.TimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
@@ -12,9 +12,9 @@ import org.ideaflow.publisher.core.timeline.TimelineGenerator
 
 import java.time.LocalDateTime
 
-import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
-import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
-import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
+import static IdeaFlowStateType.CONFLICT
+import static IdeaFlowStateType.LEARNING
+import static IdeaFlowStateType.REWORK
 
 class TestDataSupport {
 

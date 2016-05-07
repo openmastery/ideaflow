@@ -1,10 +1,10 @@
 package org.ideaflow.publisher.core.timeline
 
-import org.ideaflow.publisher.api.IdeaFlowBand
-import org.ideaflow.publisher.api.IdleTimeBand
-import org.ideaflow.publisher.api.TimeBand
-import org.ideaflow.publisher.api.TimeBandGroup
-import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
+import org.ideaflow.publisher.api.timeline.IdleTimeBand
+import org.ideaflow.publisher.api.timeline.TimeBand
+import org.ideaflow.publisher.api.timeline.TimeBandGroup
+import org.ideaflow.publisher.api.timeline.TimelineSegment
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 
 class IdleTimeProcessor {

@@ -15,8 +15,8 @@
  */
 package org.ideaflow.publisher.resources;
 
-import org.ideaflow.publisher.api.IdeaFlowState;
-import org.ideaflow.publisher.api.IdeaFlowStateTransition;
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowState;
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateTransition;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.springframework.stereotype.Component;
 

@@ -1,16 +1,15 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.api.IdeaFlowState
-import org.ideaflow.publisher.api.IdeaFlowStateType
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
 import org.ideaflow.publisher.core.TimeService
 import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
-import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
-import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
-import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
+import static IdeaFlowStateType.CONFLICT
+import static IdeaFlowStateType.LEARNING
+import static IdeaFlowStateType.PROGRESS
+import static IdeaFlowStateType.REWORK
 
 class IdeaFlowStateMachineSpec extends Specification {
 

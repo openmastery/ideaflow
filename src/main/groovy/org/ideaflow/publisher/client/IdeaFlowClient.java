@@ -16,14 +16,9 @@
 package org.ideaflow.publisher.client;
 
 import org.ideaflow.common.rest.client.CrudClient;
-import org.ideaflow.common.rest.client.CrudClientRequest;
-import org.ideaflow.publisher.api.IdeaFlowState;
-import org.ideaflow.publisher.api.IdeaFlowStateTransition;
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowState;
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateTransition;
 import org.ideaflow.publisher.api.ResourcePaths;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 
 public class IdeaFlowClient extends CrudClient<IdeaFlowStateTransition, IdeaFlowClient> {
 

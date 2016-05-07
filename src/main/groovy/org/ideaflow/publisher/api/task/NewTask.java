@@ -1,4 +1,4 @@
-package org.ideaflow.publisher.api;
+package org.ideaflow.publisher.api.task;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowStateTransition {
+public class NewTask {
 
-	private Long taskId;
-	private String comment;
+	private String taskName;
+	private String projectName;
 
 }

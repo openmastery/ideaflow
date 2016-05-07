@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.core.ideaflow
 
-import org.ideaflow.publisher.api.TimeBand
-import org.ideaflow.publisher.api.TimelineSegment
+import org.ideaflow.publisher.api.timeline.TimeBand
+import org.ideaflow.publisher.api.timeline.TimelineSegment
 import org.ideaflow.publisher.core.timeline.TimelineSegmentValidator
 import org.ideaflow.publisher.core.timeline.TimelineTestSupport
 import org.ideaflow.publisher.core.timeline.IdleTimeProcessor
@@ -10,10 +10,10 @@ import spock.lang.Specification
 
 import java.time.Duration
 
-import static org.ideaflow.publisher.api.IdeaFlowStateType.CONFLICT
-import static org.ideaflow.publisher.api.IdeaFlowStateType.LEARNING
-import static org.ideaflow.publisher.api.IdeaFlowStateType.PROGRESS
-import static org.ideaflow.publisher.api.IdeaFlowStateType.REWORK
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
 class IdleTimeProcessorSpec extends Specification {
 

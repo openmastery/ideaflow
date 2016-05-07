@@ -1,5 +1,10 @@
 package org.ideaflow.publisher.api
 
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
+import org.ideaflow.publisher.api.timeline.IdleTimeBand
+import org.ideaflow.publisher.api.timeline.TimeBand
+import org.ideaflow.publisher.api.timeline.TimeBandGroup
+
 import java.time.LocalDateTime
 
 

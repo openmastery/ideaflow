@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.api
 
+import org.ideaflow.publisher.api.timeline.TimeBandGroup
 import org.ideaflow.publisher.core.MockTimeService
 import spock.lang.Specification
 

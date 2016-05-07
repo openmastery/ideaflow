@@ -1,4 +1,4 @@
-package org.ideaflow.publisher.api;
+package org.ideaflow.publisher.api.timeline;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

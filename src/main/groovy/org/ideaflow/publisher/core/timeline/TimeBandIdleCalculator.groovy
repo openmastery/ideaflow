@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.core.timeline
 
-import org.ideaflow.publisher.api.IdleTimeBand
-import org.ideaflow.publisher.api.TimeBand
+import org.ideaflow.publisher.api.timeline.IdleTimeBand
+import org.ideaflow.publisher.api.timeline.TimeBand
 
 import java.time.LocalDateTime
 

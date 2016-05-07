@@ -1,12 +1,9 @@
 package org.ideaflow.publisher.resources;
 
 import org.ideaflow.publisher.api.ResourcePaths;
-import org.ideaflow.publisher.api.Timeline;
-import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService;
-import org.ideaflow.publisher.core.timeline.TimelineGenerator;
+import org.ideaflow.publisher.api.timeline.Timeline;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
