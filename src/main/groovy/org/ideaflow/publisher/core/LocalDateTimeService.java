@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class RealTimeService implements TimeService {
+public class LocalDateTimeService implements TimeService {
 
 	@Override
 	public LocalDateTime now() {
