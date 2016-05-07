@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class IdeaFlowState implements Comparable<IdeaFlowState> {
 
+	private Long taskId;
+
 	private IdeaFlowStateType type;
 
 	private LocalDateTime start;

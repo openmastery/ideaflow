@@ -24,15 +24,12 @@ class IdeaFlowStateMachineSpec extends Specification {
 	}
 
 
-	IdeaFlowStateMachine stateMachine = new IdeaFlowStateMachine()
+	IdeaFlowStateMachine stateMachine
+	IdeaFlowInMemoryPersistenceService persistenceService
 
 	def setup() {
-		stateMachine.timeService = new TestTimeService()
-		stateMachine.ideaFlowPersistenceService = new IdeaFlowInMemoryPersistenceService()
-	}
-
-	private IdeaFlowInMemoryPersistenceService getPersistenceService() {
-		stateMachine.ideaFlowPersistenceService
+		persistenceService = new IdeaFlowInMemoryPersistenceService()
+		stateMachine = new IdeaFlowStateMachine(123L, new TestTimeService(), persistenceService)
 	}
 
 	private IdeaFlowStateEntity getPersistedState(IdeaFlowStateType type) {

@@ -12,24 +12,27 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	private List<EventEntity> eventList = []
 
 	@Override
-	public IdeaFlowStateEntity getActiveState() {
+	public IdeaFlowStateEntity getActiveState(long taskId) {
 		activeState
 	}
 
 	@Override
-	public IdeaFlowStateEntity getContainingState() {
+	public IdeaFlowStateEntity getContainingState(long taskId) {
 		containingState
 	}
 
-	public List<IdeaFlowStateEntity> getStateList() {
+	@Override
+	public List<IdeaFlowStateEntity> getStateList(long taskId) {
 		stateList
 	}
 
-	public List<IdleTimeBandEntity> getIdleTimeBandList() {
+	@Override
+	public List<IdleTimeBandEntity> getIdleTimeBandList(long taskId) {
 		idleTimeBandList
 	}
 
-	public List<EventEntity> getEventList() {
+	@Override
+	public List<EventEntity> getEventList(long taskId) {
 		eventList
 	}
 

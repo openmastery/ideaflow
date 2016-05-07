@@ -27,7 +27,11 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-jersey"
 	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.3"
 	compile "org.codehaus.groovy:groovy-all:2.4.3"
-        compile "com.bancvue:common-rest:2.+"
+	compile "com.bancvue:common-rest:2.+"
+
+	compile("net.sf.dozer:dozer:5.5.1") {
+		exclude group: "org.slf4j"
+	}
 
 	// Utilities
 	compile "com.google.guava:guava:18.0"

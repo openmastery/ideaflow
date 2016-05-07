@@ -15,8 +15,13 @@
  */
 package org.ideaflow.publisher.resources
 
+import org.ideaflow.common.BeanCompare
 import org.ideaflow.publisher.ComponentTest
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowState
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
 import org.ideaflow.publisher.client.IdeaFlowClient
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
@@ -24,21 +29,92 @@ import spock.lang.Specification
 class IdeaFlowResourceSpec extends Specification {
 
 	@Autowired
-	private IdeaFlowClient eventClient
+	private IdeaFlowClient ideaFlowClient
+	@Autowired
+	private IdeaFlowPersistenceService persistenceService
+	private BeanCompare ifmStateComparator = new BeanCompare().excludeFields("start", "end")
+	private long taskId = 123
 
-	def "event methods should not explode"() {
+	private void assertActiveState(IdeaFlowStateType expectedType, String expectedStartingComment) {
+		IdeaFlowState expectedState = IdeaFlowState.builder()
+				.taskId(taskId)
+				.startingComment(expectedStartingComment)
+				.type(expectedType)
+				.build()
+
+		IdeaFlowState actualState = ideaFlowClient.getActiveState(taskId)
+		ifmStateComparator.assertEquals(expectedState, actualState)
+		assert actualState.start != null
+		assert actualState.end == null
+		assert actualState.endingComment == null
+	}
+
+	private void assertStateTransition(IdeaFlowStateType expectedType, String expectedStartingComment, String expectedEndingComment) {
+		IdeaFlowStateEntity expectedState = IdeaFlowStateEntity.builder()
+				.taskId(taskId)
+				.startingComment(expectedStartingComment)
+				.endingComment(expectedEndingComment)
+				.type(expectedType)
+				.build()
+
+		IdeaFlowStateEntity actualState = persistenceService.getStateList(taskId).last()
+		ifmStateComparator.assertEquals(expectedState, actualState)
+		assert actualState.start != null
+		assert actualState.end != null
+	}
+
+	def "SHOULD start and end conflict"() {
+		String question = "my question"
+		String answer = "the answer"
+
 		when:
-		long taskId = 123
-		eventClient.startConflict(taskId, "my question")
-		eventClient.endConflict(taskId, "my resolution")
-		eventClient.startLearning(taskId, "learning comment")
-		eventClient.endLearning(taskId, "i'm learned!")
-		eventClient.startRework(taskId, "rework comment")
-		eventClient.endRework(taskId, "rework successful")
-		eventClient.getActiveState(taskId)
+		ideaFlowClient.startConflict(taskId, question)
 
 		then:
-		notThrown(Throwable)
+		assertActiveState(IdeaFlowStateType.CONFLICT, question)
+
+		when:
+		ideaFlowClient.endConflict(taskId, answer)
+
+		then:
+		assertStateTransition(IdeaFlowStateType.CONFLICT, question, answer)
+		assertActiveState(IdeaFlowStateType.PROGRESS, null)
+	}
+
+	def "SHOULD start and end learning"() {
+		String startingComment = "start learning"
+		String endingComment = "end learning"
+
+		when:
+		ideaFlowClient.startLearning(taskId, startingComment)
+
+		then:
+		assertActiveState(IdeaFlowStateType.LEARNING, startingComment)
+
+		when:
+		ideaFlowClient.endLearning(taskId, endingComment)
+
+		then:
+		assertStateTransition(IdeaFlowStateType.LEARNING, startingComment, endingComment)
+		assertActiveState(IdeaFlowStateType.PROGRESS, null)
+	}
+
+	def "SHOULD start and end rework"() {
+		String startingComment = "start rework"
+		String endingComment = "end rework"
+
+		when:
+		ideaFlowClient.startRework(taskId, startingComment)
+
+		then:
+		assertActiveState(IdeaFlowStateType.REWORK, startingComment)
+
+		when:
+		ideaFlowClient.endRework(taskId, endingComment)
+
+		then:
+		assertStateTransition(IdeaFlowStateType.REWORK, startingComment, endingComment)
+		assertActiveState(IdeaFlowStateType.PROGRESS, null)
 	}
 
 }

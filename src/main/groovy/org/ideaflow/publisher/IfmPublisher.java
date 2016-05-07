@@ -28,7 +28,7 @@ import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
 public class IfmPublisher {
 
 	public static void main(String[] args) {
-		SpringApplication.run(IfmPublisher.class, args);
+		SpringApplication.run(IfmPublisherConfig.class, args);
 	}
 
 }

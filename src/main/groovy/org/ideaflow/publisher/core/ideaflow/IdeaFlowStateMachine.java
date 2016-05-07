@@ -2,7 +2,6 @@ package org.ideaflow.publisher.core.ideaflow;
 
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType;
 import org.ideaflow.publisher.core.TimeService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT;
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING;
@@ -12,16 +11,20 @@ import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.REWORK;
 /**
  * TOOD: investigate http://projects.spring.io/spring-statemachine/
  */
-//@Component
 public class IdeaFlowStateMachine {
 
-	@Autowired
+	private Long taskId;
 	private TimeService timeService;
-	@Autowired
 	private IdeaFlowPersistenceService ideaFlowPersistenceService;
 
+	public IdeaFlowStateMachine(Long taskId, TimeService timeService, IdeaFlowPersistenceService ideaFlowPersistenceService) {
+		this.taskId = taskId;
+		this.timeService = timeService;
+		this.ideaFlowPersistenceService = ideaFlowPersistenceService;
+	}
+
 	private IdeaFlowStateEntity getActiveState() {
-		IdeaFlowStateEntity state = ideaFlowPersistenceService.getActiveState();
+		IdeaFlowStateEntity state = ideaFlowPersistenceService.getActiveState(taskId);
 		if (state == null) {
 			state = createStartProgress();
 		}
@@ -29,11 +32,12 @@ public class IdeaFlowStateMachine {
 	}
 
 	private IdeaFlowStateEntity getContainingState() {
-		return ideaFlowPersistenceService.getContainingState();
+		return ideaFlowPersistenceService.getContainingState(taskId);
 	}
 
 	private IdeaFlowStateEntity createStartProgress() {
 		return IdeaFlowStateEntity.builder()
+				.taskId(taskId)
 				.type(PROGRESS)
 				.start(timeService.now())
 				.build();
@@ -45,6 +49,7 @@ public class IdeaFlowStateMachine {
 
 	private IdeaFlowStateEntity createStartState(IdeaFlowStateType type, String startingComment) {
 		return IdeaFlowStateEntity.builder()
+				.taskId(taskId)
 				.type(type)
 				.startingComment(startingComment)
 				.start(timeService.now())
@@ -53,6 +58,7 @@ public class IdeaFlowStateMachine {
 
 	private IdeaFlowStateEntity createEndState(IdeaFlowStateEntity startState, String endingComment) {
 		return IdeaFlowStateEntity.from(startState)
+				.taskId(startState.getTaskId())
 				.end(timeService.now())
 				.endingComment(endingComment)
 				.build();

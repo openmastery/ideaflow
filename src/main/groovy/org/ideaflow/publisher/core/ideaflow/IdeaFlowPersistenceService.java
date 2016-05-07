@@ -3,11 +3,19 @@ package org.ideaflow.publisher.core.ideaflow;
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity;
 import org.ideaflow.publisher.core.event.EventEntity;
 
+import java.util.List;
+
 public interface IdeaFlowPersistenceService {
 
-	IdeaFlowStateEntity getActiveState();
+	IdeaFlowStateEntity getActiveState(long taskId);
 
-	IdeaFlowStateEntity getContainingState();
+	IdeaFlowStateEntity getContainingState(long taskId);
+
+	List<IdeaFlowStateEntity> getStateList(long taskId);
+
+	List<IdleTimeBandEntity> getIdleTimeBandList(long taskId);
+
+	List<EventEntity> getEventList(long taskId);
 
 	void saveActiveState(IdeaFlowStateEntity activeState);
 

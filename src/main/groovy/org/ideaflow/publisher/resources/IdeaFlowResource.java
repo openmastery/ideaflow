@@ -15,9 +15,15 @@
  */
 package org.ideaflow.publisher.resources;
 
+import org.ideaflow.common.EntityMapper;
+import org.ideaflow.publisher.api.ResourcePaths;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowState;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateTransition;
-import org.ideaflow.publisher.api.ResourcePaths;
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService;
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity;
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine;
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -26,59 +32,63 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDateTime;
 
 @Component
 @Path(ResourcePaths.IDEAFLOW_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class IdeaFlowResource {
 
+	@Autowired
+	private IdeaFlowStateMachineFactory stateMachineFactory;
+	@Autowired
+	private IdeaFlowPersistenceService persistenceService;
+	private EntityMapper entityMapper = new EntityMapper();
+
+	private IdeaFlowStateMachine createStateMachine(IdeaFlowStateTransition transition) {
+		return stateMachineFactory.createStateMachine(transition.getTaskId());
+	}
+
 	@POST
 	@Path(ResourcePaths.CONFLICT_PATH + ResourcePaths.START_PATH)
 	public void startConflict(IdeaFlowStateTransition transition) {
-		System.out.println("Start Conflict: " + transition.getTaskId() + ", " + transition.getComment());
+		createStateMachine(transition).startConflict(transition.getComment());
 	}
 
 	@POST
 	@Path(ResourcePaths.CONFLICT_PATH + ResourcePaths.STOP_PATH)
 	public void endConflict(IdeaFlowStateTransition transition) {
-		System.out.println("Stop Conflict: " + transition.getTaskId() + ", " + transition.getComment());
+		createStateMachine(transition).endConflict(transition.getComment());
 	}
 
 	@POST
 	@Path(ResourcePaths.LEARNING_PATH + ResourcePaths.START_PATH)
 	public void startLearning(IdeaFlowStateTransition transition) {
-		System.out.println("Start Learning: " + transition.getTaskId() + ", " + transition.getComment());
+		createStateMachine(transition).startLearning(transition.getComment());
 	}
 
 	@POST
 	@Path(ResourcePaths.LEARNING_PATH + ResourcePaths.STOP_PATH)
 	public void endLearning(IdeaFlowStateTransition transition) {
-		System.out.println("Stop Learning: " + transition.getTaskId() + ", " + transition.getComment());
+		createStateMachine(transition).endLearning(transition.getComment());
 	}
 
 	@POST
 	@Path(ResourcePaths.REWORK_PATH + ResourcePaths.START_PATH)
 	public void startRework(IdeaFlowStateTransition transition) {
-		System.out.println("Start Rework: " + transition.getTaskId() + ", " + transition.getComment());
+		createStateMachine(transition).startRework(transition.getComment());
 	}
 
 	@POST
 	@Path(ResourcePaths.REWORK_PATH + ResourcePaths.STOP_PATH)
-	public void endRework(@PathParam("taskId") String taskId) {
-		System.out.println("Stop Rework: " + taskId);
+	public void endRework(IdeaFlowStateTransition transition) {
+		createStateMachine(transition).endRework(transition.getComment());
 	}
 
 	@GET
 	@Path(ResourcePaths.ACTIVE_STATE_PATH + "/{taskId}")
-	public IdeaFlowState activeState(@PathParam("taskId") String taskId) {
-		System.out.println("Get Active State: " + taskId);
-		return IdeaFlowState.builder()
-				.start(LocalDateTime.now())
-				.end(LocalDateTime.now())
-				.startingComment("starting")
-				.endingComment("ending")
-				.build();
+	public IdeaFlowState activeState(@PathParam("taskId") Long taskId) {
+		IdeaFlowStateEntity entity = persistenceService.getActiveState(taskId);
+		return entityMapper.mapIfNotNull(entity, IdeaFlowState.class);
 	}
 
 }
