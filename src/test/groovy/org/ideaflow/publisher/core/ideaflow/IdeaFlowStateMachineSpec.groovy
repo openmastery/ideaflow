@@ -71,7 +71,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		when:
 		stateMachine.startTask()
 		stateMachine.startConflict("question")
-		stateMachine.stopConflict("resolution")
+		stateMachine.endConflict("resolution")
 
 		then:
 		assertExpectedStates(PROGRESS, CONFLICT)
@@ -95,7 +95,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.startTask()
 		stateMachine.startRework("rework")
 		stateMachine.startLearning("learning")
-		stateMachine.stopLearning("learning")
+		stateMachine.endLearning("learning")
 
 		then:
 		assertExpectedStates(PROGRESS, REWORK, LEARNING)
@@ -108,7 +108,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.startTask()
 		stateMachine.startConflict("conflict")
 		stateMachine.startLearning("learning")
-		stateMachine.stopLearning("learning")
+		stateMachine.endLearning("learning")
 
 		then:
 		assertExpectedStates(PROGRESS, CONFLICT, LEARNING)
@@ -121,7 +121,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.startTask()
 		stateMachine.startConflict("conflict")
 		stateMachine.startRework("rework")
-		stateMachine.stopRework("rework")
+		stateMachine.endRework("rework")
 
 		then:
 		assertExpectedStates(PROGRESS, CONFLICT, REWORK)
@@ -140,7 +140,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		assertContainingState(LEARNING)
 
 		when:
-		stateMachine.stopConflict("conflict stop")
+		stateMachine.endConflict("conflict stop")
 
 		then:
 		assertExpectedStates(PROGRESS, CONFLICT)
@@ -154,7 +154,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.startTask()
 		stateMachine.startRework("rework")
 		stateMachine.startConflict("conflict")
-		stateMachine.stopConflict("conflict")
+		stateMachine.endConflict("conflict")
 
 		then:
 		assertExpectedStates(PROGRESS, CONFLICT)
@@ -163,8 +163,8 @@ class IdeaFlowStateMachineSpec extends Specification {
 
 		when:
 		stateMachine.startConflict("conflict")
-		stateMachine.stopConflict("conflict")
-		stateMachine.stopRework("rework")
+		stateMachine.endConflict("conflict")
+		stateMachine.endRework("rework")
 
 		then:
 		assertExpectedStates(PROGRESS, REWORK, CONFLICT, CONFLICT)
@@ -178,7 +178,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		when:
 		stateMachine.startTask()
 		stateMachine.startLearning("learning start")
-		stateMachine.stopLearning("learning stop")
+		stateMachine.endLearning("learning stop")
 
 		then:
 		assertExpectedStates(PROGRESS, LEARNING)
@@ -190,7 +190,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		when:
 		stateMachine.startTask()
 		stateMachine.startRework("rework start")
-		stateMachine.stopRework("rework stop")
+		stateMachine.endRework("rework stop")
 
 		then:
 		assertExpectedStates(PROGRESS, REWORK)
@@ -202,7 +202,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		when:
 		stateMachine.startTask()
 		stateMachine.startConflict("conflict")
-		stateMachine.stopConflict("conflict")
+		stateMachine.endConflict("conflict")
 
 		then:
 		assertExpectedStates(PROGRESS, CONFLICT)
@@ -214,7 +214,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.startTask()
 		stateMachine.startLearning("learning")
 		stateMachine.startConflict("conflict")
-		stateMachine.stopConflict("conflict")
+		stateMachine.endConflict("conflict")
 
 		then:
 		assertExpectedStates(PROGRESS, CONFLICT)
@@ -226,7 +226,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.startTask()
 		stateMachine.startRework("rework")
 		stateMachine.startConflict("conflict")
-		stateMachine.stopConflict("conflict")
+		stateMachine.endConflict("conflict")
 
 		then:
 		assertExpectedStates(PROGRESS, CONFLICT)
@@ -245,7 +245,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		assert persistenceService.activeState.isNested()
 
 		when:
-		stateMachine.stopLearning("learning")
+		stateMachine.endLearning("learning")
 
 		then:
 		assertExpectedStates(PROGRESS, LEARNING)
@@ -268,7 +268,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		assert persistenceService.activeState.isNested()
 
 		when:
-		stateMachine.stopRework("rework")
+		stateMachine.endRework("rework")
 
 		then:
 		assertExpectedStates(PROGRESS, REWORK)

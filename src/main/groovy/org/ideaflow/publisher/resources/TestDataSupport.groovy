@@ -281,11 +281,11 @@ class TestDataSupport {
 
 		void endBand(IdeaFlowStateType type, String comment) {
 			if (type == LEARNING) {
-				stateMachine.stopLearning(comment)
+				stateMachine.endLearning(comment)
 			} else if (type == REWORK) {
-				stateMachine.stopRework(comment)
+				stateMachine.endRework(comment)
 			} else if (type == CONFLICT) {
-				stateMachine.stopConflict(comment)
+				stateMachine.endConflict(comment)
 			} else {
 				throw new RuntimeException("Unknown type: ${type}")
 			}

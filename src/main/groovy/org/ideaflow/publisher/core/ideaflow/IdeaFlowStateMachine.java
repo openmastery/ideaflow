@@ -3,7 +3,6 @@ package org.ideaflow.publisher.core.ideaflow;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType;
 import org.ideaflow.publisher.core.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT;
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING;
@@ -79,7 +78,7 @@ public class IdeaFlowStateMachine {
 		}
 	}
 
-	public void stopConflict(String resolution) {
+	public void endConflict(String resolution) {
 		IdeaFlowStateEntity oldActiveState = getActiveState();
 
 		if (oldActiveState.isOfType(CONFLICT)) {
@@ -101,12 +100,12 @@ public class IdeaFlowStateMachine {
 		startLearningOrRework(REWORK, comment);
 	}
 
-	public void stopLearning(String resolution) {
-		stopLearningOrRework(LEARNING, resolution);
+	public void endLearning(String resolution) {
+		endLearningOrRework(LEARNING, resolution);
 	}
 
-	public void stopRework(String resolution) {
-		stopLearningOrRework(REWORK, resolution);
+	public void endRework(String resolution) {
+		endLearningOrRework(REWORK, resolution);
 	}
 
 	private void startLearningOrRework(IdeaFlowStateType type, String comment) {
@@ -132,7 +131,7 @@ public class IdeaFlowStateMachine {
 		}
 	}
 
-	private void stopLearningOrRework(IdeaFlowStateType type, String resolution) {
+	private void endLearningOrRework(IdeaFlowStateType type, String resolution) {
 		IdeaFlowStateEntity oldActiveState = getActiveState();
 
 		if (oldActiveState.isOfType(type)) {
