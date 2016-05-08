@@ -3,6 +3,7 @@ package org.ideaflow.publisher.core.ideaflow;
 import org.ideaflow.publisher.core.activity.EditorActivityEntity;
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity;
 import org.ideaflow.publisher.core.event.EventEntity;
+import org.ideaflow.publisher.core.task.TaskEntity;
 
 import java.util.List;
 
@@ -27,10 +28,14 @@ public interface IdeaFlowPersistenceService {
 	void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowStateEntity activeState);
 
 
-	void saveIdleActivity(IdleTimeBandEntity idleActivity);
+	IdleTimeBandEntity saveIdleActivity(IdleTimeBandEntity idleActivity);
 
-	void saveEvent(EventEntity event);
+	EventEntity saveEvent(EventEntity event);
 
-	void saveEditorActivity(EditorActivityEntity activity);
+	EditorActivityEntity saveEditorActivity(EditorActivityEntity activity);
+
+	TaskEntity saveTask(TaskEntity task);
+
+	TaskEntity findTaskWithName(String taskName);
 
 }

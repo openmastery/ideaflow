@@ -11,17 +11,16 @@ public class TaskClient extends CrudClient<Task, TaskClient> {
 		super(baseUrl, ResourcePaths.TASK_PATH, Task.class);
 	}
 
-	@SuppressWarnings("unchecked")
-	public Task createTask(String taskName, String projectName) {
+	public Task createTask(String taskName, String description) {
 		NewTask task = NewTask.builder()
-				.taskName(taskName)
-				.projectName(projectName)
+				.name(taskName)
+				.description(description)
 				.build();
 		return crudClientRequest.createWithPost(task);
 	}
 
-	public Task getActiveTask() {
-		return crudClientRequest.find();
+	public Task findTaskWithName(String taskName) {
+		return crudClientRequest.queryParam("taskName", taskName).find();
 	}
 
 }

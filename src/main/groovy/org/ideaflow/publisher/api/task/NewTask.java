@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NewTask {
 
-	private String taskName;
-	private String projectName;
+	private String name;
+	private String description;
 
 }

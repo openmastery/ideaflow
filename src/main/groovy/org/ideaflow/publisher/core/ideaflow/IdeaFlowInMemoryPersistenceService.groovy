@@ -3,6 +3,7 @@ package org.ideaflow.publisher.core.ideaflow
 import org.ideaflow.publisher.core.activity.EditorActivityEntity
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
+import org.ideaflow.publisher.core.task.TaskEntity
 
 public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceService {
 
@@ -13,6 +14,7 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	private List<IdleTimeBandEntity> idleTimeBandList = []
 	private List<EventEntity> eventList = []
 	private List<EditorActivityEntity> editorActivityList = []
+	private List<TaskEntity> taskList = []
 
 	@Override
 	public IdeaFlowStateEntity getActiveState(long taskId) {
@@ -63,21 +65,38 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
-	public void saveIdleActivity(IdleTimeBandEntity idleActivity) {
+	public IdleTimeBandEntity saveIdleActivity(IdleTimeBandEntity idleActivity) {
 		idleActivity.id = id++
 		idleTimeBandList.add(idleActivity)
+		idleActivity
 	}
 
 	@Override
-	public void saveEvent(EventEntity event) {
+	public EventEntity saveEvent(EventEntity event) {
 		event.id = id++
 		eventList.add(event)
+		event
 	}
 
 	@Override
-	void saveEditorActivity(EditorActivityEntity activity) {
+	public EditorActivityEntity saveEditorActivity(EditorActivityEntity activity) {
 		activity.id = id++
 		editorActivityList.add(activity)
+		activity
+	}
+
+	@Override
+	TaskEntity saveTask(TaskEntity task) {
+		task.id = id++
+		taskList.add(task)
+		task
+	}
+
+	@Override
+	TaskEntity findTaskWithName(String taskName) {
+		taskList.find {
+			it.name == taskName
+		}
 	}
 
 }

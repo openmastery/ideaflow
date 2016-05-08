@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@SpringApplicationConfiguration(classes = {IfmPublisher.class, IfmPublisherTestConfig.class})
+@SpringApplicationConfiguration(classes = {IfmPublisherConfig.class, IfmPublisherTestConfig.class})
 @WebAppConfiguration
 @IntegrationTest({"server.port=10000", "management.port=10001"})
 public @interface ComponentTest {
