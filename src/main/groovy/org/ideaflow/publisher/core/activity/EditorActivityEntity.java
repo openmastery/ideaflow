@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EditorActivityEntity {
 
-	private long id;
-	private long taskId;
+	private Long id;
+	private Long taskId;
 
 	private LocalDateTime start;
 	private Duration duration;

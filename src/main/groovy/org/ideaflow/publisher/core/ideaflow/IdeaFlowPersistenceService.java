@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow;
 
+import org.ideaflow.publisher.core.activity.EditorActivityEntity;
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity;
 import org.ideaflow.publisher.core.event.EventEntity;
 
@@ -17,6 +18,8 @@ public interface IdeaFlowPersistenceService {
 
 	List<EventEntity> getEventList(long taskId);
 
+	List<EditorActivityEntity> getEditorActivityList(long taskId);
+
 	void saveActiveState(IdeaFlowStateEntity activeState);
 
 	void saveActiveState(IdeaFlowStateEntity activeState, IdeaFlowStateEntity containingState);
@@ -27,5 +30,7 @@ public interface IdeaFlowPersistenceService {
 	void saveIdleActivity(IdleTimeBandEntity idleActivity);
 
 	void saveEvent(EventEntity event);
+
+	void saveEditorActivity(EditorActivityEntity activity);
 
 }
