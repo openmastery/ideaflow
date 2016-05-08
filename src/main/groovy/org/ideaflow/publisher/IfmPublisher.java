@@ -21,10 +21,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
 
-@SpringBootApplication
-@EnableAutoConfiguration(exclude = {
-		SecurityAutoConfiguration.class,
-		ManagementSecurityAutoConfiguration.class})
 public class IfmPublisher {
 
 	public static void main(String[] args) {

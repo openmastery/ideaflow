@@ -1,5 +1,6 @@
 package org.ideaflow.publisher.resources
 
+import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
 import org.ideaflow.publisher.api.timeline.Timeline
 import org.ideaflow.publisher.core.TimeService
@@ -200,11 +201,10 @@ class TestDataSupport {
 		private IdeaFlowStateMachine stateMachine
 		private MockTimeService timeService = new MockTimeService()
 		private IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
+		private Long taskId = new Random().nextLong()
 
 		TimelineTestSupport() {
-			this.stateMachine = new IdeaFlowStateMachine()
-			stateMachine.timeService = timeService
-			stateMachine.ideaFlowPersistenceService = persistenceService
+			this.stateMachine = new IdeaFlowStateMachine(taskId, timeService, persistenceService)
 		}
 
 		LocalDateTime now() {
@@ -212,18 +212,18 @@ class TestDataSupport {
 		}
 
 		List<IdeaFlowStateEntity> getStateListWithActiveCompleted() {
-			List<IdeaFlowStateEntity> stateList = new ArrayList(persistenceService.getStateList())
+			List<IdeaFlowStateEntity> stateList = new ArrayList(persistenceService.getStateList(taskId))
 			completeAndAddStateIfNotNull(stateList, persistenceService.activeState)
 			completeAndAddStateIfNotNull(stateList, persistenceService.containingState)
 			stateList
 		}
 
 		List<IdleTimeBandEntity> getIdleActivityList() {
-			persistenceService.getIdleTimeBandList()
+			persistenceService.getIdleTimeBandList(taskId)
 		}
 
 		List<EventEntity> getEventList() {
-			persistenceService.getEventList()
+			persistenceService.getEventList(taskId)
 		}
 
 		private void completeAndAddStateIfNotNull(List<IdeaFlowStateEntity> stateList, IdeaFlowStateEntity state) {
@@ -241,7 +241,7 @@ class TestDataSupport {
 
 		void startSubtask(String comment) {
 			EventEntity event = EventEntity.builder()
-					.eventType(EventEntity.Type.SUBTASK)
+					.eventType(EventType.SUBTASK)
 					.position(timeService.now())
 					.comment(comment)
 					.build()
