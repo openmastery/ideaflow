@@ -16,6 +16,7 @@
 package org.ideaflow.publisher;
 
 import groovyx.net.http.RESTClient;
+import org.ideaflow.publisher.client.EventClient;
 import org.ideaflow.publisher.client.IdeaFlowClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,8 +34,13 @@ public class IfmPublisherTestConfig {
 	private String hostUri;
 
 	@Bean
-	public IdeaFlowClient eventClient() {
+	public IdeaFlowClient ideaFlowClient() {
 		return new IdeaFlowClient(hostUri);
+	}
+
+	@Bean
+	public EventClient eventClient() {
+		return new EventClient(hostUri);
 	}
 
 	@Bean

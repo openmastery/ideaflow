@@ -5,6 +5,7 @@ import org.ideaflow.publisher.core.event.EventEntity
 
 public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceService {
 
+	private long id = 1L;
 	private IdeaFlowStateEntity activeState
 	private IdeaFlowStateEntity containingState
 	private List<IdeaFlowStateEntity> stateList = []
@@ -49,17 +50,20 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 
 	@Override
 	public void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowStateEntity activeState) {
+		stateToSave.id = id++
 		stateList.add(stateToSave)
 		saveActiveState(activeState)
 	}
 
 	@Override
 	public void saveIdleActivity(IdleTimeBandEntity idleActivity) {
+		idleActivity.id = id++
 		idleTimeBandList.add(idleActivity)
 	}
 
 	@Override
 	public void saveEvent(EventEntity event) {
+		event.id = id++
 		eventList.add(event)
 	}
 

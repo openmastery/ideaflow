@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EventEntity {
 
-	private long id;
-	private long taskId;
+	private Long id;
+	private Long taskId;
 
 	private LocalDateTime position;
 
