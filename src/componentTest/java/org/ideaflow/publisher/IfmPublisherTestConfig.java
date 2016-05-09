@@ -16,10 +16,13 @@
 package org.ideaflow.publisher;
 
 import groovyx.net.http.RESTClient;
+import org.ideaflow.common.MockTimeService;
 import org.ideaflow.publisher.client.ActivityClient;
 import org.ideaflow.publisher.client.EventClient;
 import org.ideaflow.publisher.client.IdeaFlowClient;
 import org.ideaflow.publisher.client.TaskClient;
+import org.ideaflow.publisher.client.TimelineClient;
+import org.ideaflow.publisher.core.TimeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,6 +56,17 @@ public class IfmPublisherTestConfig {
 	@Bean
 	public TaskClient taskClient() {
 		return new TaskClient(hostUri);
+	}
+
+	@Bean
+	public TimelineClient timelineClient() {
+		return new TimelineClient(hostUri);
+	}
+
+	@Bean
+	@Primary
+	public TimeService timeService() {
+		return new MockTimeService();
 	}
 
 	@Bean

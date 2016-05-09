@@ -42,7 +42,7 @@ class EventResourceSpec extends Specification {
 
 	def "SHOULD post subtask"() {
 		when:
-		eventClient.addSubtask(taskId, "subtask")
+		eventClient.startSubtask(taskId, "subtask")
 
 		then:
 		assertEventPosted(EventType.SUBTASK, "subtask")

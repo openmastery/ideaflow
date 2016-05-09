@@ -23,7 +23,7 @@ public class EventClient extends CrudClient<NewEvent, EventClient> {
 				.createWithPost(event);
 	}
 
-	public void addSubtask(Long taskId, String message) {
+	public void startSubtask(Long taskId, String message) {
 		NewEvent event = createNewEvent(taskId, message);
 		crudClientRequest.path(ResourcePaths.SUBTASK_PATH)
 				.createWithPost(event);

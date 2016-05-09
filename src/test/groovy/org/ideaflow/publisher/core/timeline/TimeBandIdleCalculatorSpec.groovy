@@ -3,7 +3,7 @@ package org.ideaflow.publisher.core.timeline
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.timeline.IdleTimeBand
 import org.ideaflow.publisher.api.TimeBandTestSupport
-import org.ideaflow.publisher.core.MockTimeService
+import org.ideaflow.common.MockTimeService
 import spock.lang.Specification
 
 import java.time.LocalDateTime

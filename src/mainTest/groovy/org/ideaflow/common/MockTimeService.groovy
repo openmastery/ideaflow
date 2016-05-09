@@ -1,4 +1,6 @@
-package org.ideaflow.publisher.core
+package org.ideaflow.common
+
+import org.ideaflow.publisher.core.TimeService
 
 import java.time.LocalDateTime
 
@@ -29,9 +31,20 @@ class MockTimeService implements TimeService {
 		this
 	}
 
+	MockTimeService plusMinutes(int minutes) {
+		now = now.plusMinutes(minutes)
+		this
+	}
+
 	MockTimeService plusSeconds(int seconds) {
 		now = now.plusSeconds(seconds)
 		this
+	}
+
+	MockTimeService advanceTime(int hours, int minutes, int seconds) {
+		plusHours(hours)
+		plusMinutes(minutes)
+		plusSeconds(seconds)
 	}
 
 }

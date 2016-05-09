@@ -1,10 +1,13 @@
 package org.ideaflow.publisher.resources;
 
 import org.ideaflow.common.EntityMapper;
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateTransition;
 import org.ideaflow.publisher.api.task.NewTask;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.ideaflow.publisher.api.task.Task;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService;
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine;
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.ideaflow.publisher.core.task.TaskEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +26,8 @@ import javax.ws.rs.core.MediaType;
 public class TaskResource {
 
 	@Autowired
+	private IdeaFlowStateMachineFactory stateMachineFactory;
+	@Autowired
 	private IdeaFlowPersistenceService persistenceService;
 	private EntityMapper entityMapper = new EntityMapper();
 
@@ -33,6 +38,10 @@ public class TaskResource {
 				.description(newTask.getDescription())
 				.build();
 		task = persistenceService.saveTask(task);
+
+		IdeaFlowStateMachine stateMachine = stateMachineFactory.createStateMachine(task.getId());
+		stateMachine.startTask();
+
 		return entityMapper.mapIfNotNull(task, Task.class);
 	}
 

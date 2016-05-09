@@ -2,7 +2,7 @@ package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
-import org.ideaflow.publisher.core.MockTimeService
+import org.ideaflow.common.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService
@@ -48,6 +48,7 @@ class TimelineTestSupport {
 	private void completeAndAddStateIfNotNull(List<IdeaFlowStateEntity> stateList, IdeaFlowStateEntity state) {
 		if (state) {
 			stateList << IdeaFlowStateEntity.from(state)
+					.taskId(taskId)
 					.end(timeService.now())
 					.endingComment("")
 					.build();
@@ -69,6 +70,7 @@ class TimelineTestSupport {
 
 	void startSubtaskAndAdvanceHours(String comment, int hours) {
 		EventEntity event = EventEntity.builder()
+				.taskId(taskId)
 				.eventType(EventType.SUBTASK)
 				.position(timeService.now())
 				.comment(comment)
@@ -85,6 +87,7 @@ class TimelineTestSupport {
 		LocalDateTime start = timeService.now()
 		timeService.plusHours(hours)
 		IdleTimeBandEntity idleActivity = IdleTimeBandEntity.builder()
+				.taskId(taskId)
 				.start(start)
 				.end(timeService.now()).build()
 		persistenceService.saveIdleActivity(idleActivity)
@@ -92,6 +95,7 @@ class TimelineTestSupport {
 
 	void note() {
 		EventEntity event = EventEntity.builder()
+				.taskId(taskId)
 				.comment("")
 				.position(now())
 				.eventType(EventType.NOTE)

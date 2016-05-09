@@ -28,22 +28,22 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 
 	@Override
 	public List<IdeaFlowStateEntity> getStateList(long taskId) {
-		stateList
+		stateList.findAll { it.taskId == taskId }
 	}
 
 	@Override
 	public List<IdleTimeBandEntity> getIdleTimeBandList(long taskId) {
-		idleTimeBandList
+		idleTimeBandList.findAll { it.taskId == taskId }
 	}
 
 	@Override
 	List<EditorActivityEntity> getEditorActivityList(long taskId) {
-		editorActivityList
+		editorActivityList.findAll { it.taskId == taskId }
 	}
 
 	@Override
 	public List<EventEntity> getEventList(long taskId) {
-		eventList
+		eventList.findAll { it.taskId == taskId }
 	}
 
 	@Override

@@ -32,7 +32,7 @@ class IdeaFlowResourceSpec extends Specification {
 	private IdeaFlowClient ideaFlowClient
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
-	private BeanCompare ifmStateComparator = new BeanCompare().excludeFields("start", "end")
+	private BeanCompare ifmStateComparator = new BeanCompare().excludeFields("id", "start", "end")
 	private long taskId = 123
 
 	private void assertActiveState(IdeaFlowStateType expectedType, String expectedStartingComment) {
@@ -59,6 +59,7 @@ class IdeaFlowResourceSpec extends Specification {
 
 		IdeaFlowStateEntity actualState = persistenceService.getStateList(taskId).last()
 		ifmStateComparator.assertEquals(expectedState, actualState)
+		assert actualState.id != null
 		assert actualState.start != null
 		assert actualState.end != null
 	}

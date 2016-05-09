@@ -2,6 +2,8 @@ package org.ideaflow.publisher.resources;
 
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.ideaflow.publisher.api.timeline.Timeline;
+import org.ideaflow.publisher.core.timeline.TimelineGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -16,22 +18,13 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class TimelineResource {
 
+	@Autowired
+	private TimelineGenerator timelineGenerator;
+
 	@GET
 	@Path(ResourcePaths.TASK_PATH + "/{taskId}")
-	public Timeline getTimelineForTask(@PathParam("taskId") String taskId, @QueryParam("userId") String userId) {
-		TestDataSupport support = new TestDataSupport();
-
-		switch(taskId) {
-			case "trial":
-				return support.createTrialAndErrorMap();
-			case "learning":
-				return support.createLearningNestedConflictMap();
-			case "detailed":
-				return support.createDetailedConflictMap();
-			case "basic":
-			default:
-				return support.createBasicTimelineWithAllBandTypes();
-		}
+	public Timeline getTimelineForTask(@PathParam("taskId") Long taskId) {
+		return timelineGenerator.createTaskTimeline(taskId);
 	}
 
 
