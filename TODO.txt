@@ -1,0 +1,2 @@
+add isLinkedToPrevious to org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
+ - add validations to PrimaryScenarioSpec and any others

@@ -23,7 +23,7 @@ public abstract class TimeBand<T extends TimeBand> {
 
 	public abstract Duration getDuration();
 
-	public abstract List<TimeBand> getContainedBands();
+	public abstract List<? extends TimeBand> getContainedBands();
 
 	public boolean contains(LocalDateTime position) {
 			return (position.isAfter(getStart()) && position.isBefore(getEnd()))

@@ -3,7 +3,7 @@ package org.ideaflow.publisher.resources
 import org.ideaflow.common.MockTimeService
 import org.ideaflow.publisher.ComponentTest
 import org.ideaflow.publisher.api.event.EventType
-import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.task.Task
 import org.ideaflow.publisher.api.timeline.Timeline
 import org.ideaflow.publisher.api.timeline.TimelineSegment
@@ -144,8 +144,36 @@ class PrimaryScenarioSpec extends Specification {
 		ideaFlowClient.endConflict(taskId, "Bunch of little bugs.")
 		timeService.advanceTime(0, 0, 10)
 
-		expect:
-		false
+		when:
+		Timeline timeline = timelineClient.getTimelineForTask(taskId)
+
+		then:
+		List<TimelineSegment> segments = timeline.timelineSegments
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(15))
+		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofMinutes(45))
+		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(14))
+
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusMinutes(59).plusSeconds(15))
+		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.ofHours(2).plusMinutes(15).plusSeconds(10))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, CONFLICT, Duration.ofMinutes(15))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, LEARNING, Duration.ofMinutes(42))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 2, REWORK, Duration.ofHours(1).plusMinutes(18))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 3, CONFLICT, Duration.ofMinutes(5).plusSeconds(26))
+		// TODO: there's 10 seconds of the rework band that disappears, is that expected?
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 4, LEARNING, Duration.ofMinutes(35).plusSeconds(4))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 5, REWORK, Duration.ofHours(1).plusMinutes(14).plusSeconds(34))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 6, CONFLICT, Duration.ofMinutes(15).plusSeconds(10))
+		// TODO: there's 10 seconds of the rework band that disappears, is that expected?
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 7, LEARNING, Duration.ofMinutes(5).plusSeconds(24))
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 8, REWORK, Duration.ofMinutes(32).plusSeconds(12))
+		validator.assertTimeBand(segments[1].ideaFlowBands, 1, PROGRESS, Duration.ofMinutes(50).plusSeconds(3))
+
+		validator.assertEvent(segments[2], 0, EventType.SUBTASK, start.plusHours(9).plusMinutes(7).plusSeconds(18))
+		validator.assertTimeBand(segments[2].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(10))
+		validator.assertTimeBand(segments[2].ideaFlowBands, 1, CONFLICT, Duration.ofMinutes(30).plusSeconds(43))
+		validator.assertTimeBand(segments[2].ideaFlowBands, 2, PROGRESS, Duration.ZERO)
+
+		validator.assertValidationComplete(segments, 3)
 	}
 
 	def createLearningNestedConflictMap() {
@@ -169,8 +197,21 @@ class PrimaryScenarioSpec extends Specification {
 		eventClient.startSubtask(taskId, "Final Validation")
 		timeService.advanceTime(0, 32, 3)
 
-		expect:
-		false
+		when:
+		Timeline timeline = timelineClient.getTimelineForTask(taskId)
+
+		then:
+		List<TimelineSegment> segments = timeline.timelineSegments
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(1).plusSeconds(30))
+		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(5).plusMinutes(44).plusSeconds(2))
+		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, CONFLICT, Duration.ofMinutes(35))
+		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 1, CONFLICT, Duration.ofMinutes(46).plusSeconds(30))
+		// TODO: the duration of the final progress is set to zero and the subtask isn't getting added - what's going on?
+		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(15).plusSeconds(30))
+
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusMinutes(5))
+
+		validator.assertValidationComplete(segments, 3)
 	}
 
 	def createDetailedConflictMap() {
@@ -197,7 +238,7 @@ class PrimaryScenarioSpec extends Specification {
 		ideaFlowClient.endConflict(taskId, "Flipped || with && in the duration code #TranspositionMistake")
 		timeService.advanceTime(0, 1, 12)
 		ideaFlowClient.startConflict(taskId, "Why is the duration 5?")
-		timeService.advanceTime(0, 15, 43)
+		timeService.advanceTime(0, 7, 26)
 		ideaFlowClient.endConflict(taskId, "Missing a condition for excluding out of range values.")
 		timeService.advanceTime(0, 5, 3)
 		ideaFlowClient.endRework(taskId, "Okay, RangeBuilder is working again.")
@@ -210,8 +251,33 @@ class PrimaryScenarioSpec extends Specification {
 		ideaFlowClient.endConflict(taskId, "Flipped if/else condition. #TranspositionMistake")
 		timeService.advanceTime(0, 30, 3)
 
-		expect:
-		false
+		when:
+		Timeline timeline = timelineClient.getTimelineForTask(taskId)
+
+		then:
+		List<TimelineSegment> segments = timeline.timelineSegments
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(5).plusSeconds(10))
+		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofMinutes(20).plusSeconds(22))
+		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(2).plusSeconds(10))
+
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusMinutes(27).plusSeconds(42))
+		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(35).plusSeconds(5))
+
+		validator.assertEvent(segments[2], 0, EventType.SUBTASK, start.plusHours(1).plusMinutes(2).plusSeconds(47))
+		validator.assertTimeBand(segments[2].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1).plusMinutes(15))
+		List<IdeaFlowBand> linkedTimeBands = segments[2].timeBandGroups[0].linkedTimeBands
+		validator.assertLinkedTimeBand(linkedTimeBands, 0, CONFLICT, Duration.ofMinutes(14).plusSeconds(9))
+		validator.assertLinkedTimeBand(linkedTimeBands, 1, REWORK, Duration.ofHours(1).plusMinutes(14).plusSeconds(38))
+		validator.assertNestedTimeBand(linkedTimeBands[1].nestedBands, 0, CONFLICT, Duration.ofMinutes(15).plusSeconds(43))
+		validator.assertNestedTimeBand(linkedTimeBands[1].nestedBands, 1, CONFLICT, Duration.ofMinutes(7).plusSeconds(26))
+		validator.assertTimeBand(segments[2].ideaFlowBands, 1, PROGRESS, Duration.ofMinutes(3).plusSeconds(5))
+
+		validator.assertEvent(segments[3], 0, EventType.SUBTASK, start.plusHours(3).plusMinutes(49).plusSeconds(39))
+		validator.assertTimeBand(segments[3].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(30))
+		validator.assertTimeBand(segments[3].ideaFlowBands, 1, CONFLICT, Duration.ofMinutes(15).plusSeconds(43))
+		validator.assertTimeBand(segments[3].ideaFlowBands, 2, PROGRESS, Duration.ZERO)
+
+		validator.assertValidationComplete(segments, 4)
 	}
 
 }

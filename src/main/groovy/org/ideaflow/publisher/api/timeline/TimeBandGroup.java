@@ -23,7 +23,7 @@ public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 	private long id;
 	private long taskId;
 
-	private List<TimeBand> linkedTimeBands;
+	private List<IdeaFlowBand> linkedTimeBands;
 
 	public void addLinkedTimeBand(IdeaFlowBand linkedIdeaFlowBand) {
 		linkedTimeBands.add(linkedIdeaFlowBand);
@@ -44,13 +44,13 @@ public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 
 	@Override
 	@JsonIgnore
-	public List<TimeBand> getContainedBands() {
+	public List<? extends TimeBand> getContainedBands() {
 		return getLinkedTimeBands();
 	}
 
 	@Override
 	protected TimeBandGroup internalSplitAndReturnLeftSide(LocalDateTime position) {
-		List<TimeBand> splitLinkedBands = TimeBand.splitAndReturnLeftSide(linkedTimeBands, position);
+		List<IdeaFlowBand> splitLinkedBands = TimeBand.splitAndReturnLeftSide(linkedTimeBands, position);
 		return from(this)
 				.linkedTimeBands(splitLinkedBands)
 				.build();
@@ -58,7 +58,7 @@ public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 
 	@Override
 	protected TimeBandGroup internalSplitAndReturnRightSide(LocalDateTime position) {
-		List<TimeBand> splitLinkedBands = TimeBand.splitAndReturnRightSide(linkedTimeBands, position);
+		List<IdeaFlowBand> splitLinkedBands = TimeBand.splitAndReturnRightSide(linkedTimeBands, position);
 		return from(this)
 				.linkedTimeBands(splitLinkedBands)
 				.build();

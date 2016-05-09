@@ -23,6 +23,7 @@ import java.util.List;
 public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 
 	private long id;
+	private Long taskId;
 
 	private LocalDateTime start;
 	private LocalDateTime end;
