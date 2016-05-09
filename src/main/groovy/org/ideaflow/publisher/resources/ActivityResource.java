@@ -1,9 +1,8 @@
 package org.ideaflow.publisher.resources;
 
 import org.ideaflow.common.EntityMapper;
-import org.ideaflow.publisher.api.activity.EditorActivity;
-import org.ideaflow.publisher.api.activity.IdleActivity;
 import org.ideaflow.publisher.api.ResourcePaths;
+import org.ideaflow.publisher.api.activity.EditorActivity;
 import org.ideaflow.publisher.core.TimeService;
 import org.ideaflow.publisher.core.activity.EditorActivityEntity;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService;
