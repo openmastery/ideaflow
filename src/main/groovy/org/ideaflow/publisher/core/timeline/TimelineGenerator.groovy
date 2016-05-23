@@ -9,6 +9,8 @@ import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import java.time.LocalDateTime
+
 @Component
 public class TimelineGenerator {
 
@@ -31,19 +33,23 @@ public class TimelineGenerator {
 		List<IdeaFlowStateEntity> stateList = new ArrayList(persistenceService.getStateList(taskId))
 		IdeaFlowStateEntity activeState = persistenceService.getActiveState(taskId)
 		if (activeState != null) {
-			stateList.add(completeState(taskId, activeState))
+			LocalDateTime stateEndTime = persistenceService.getMostRecentActivityEnd(taskId)
+			stateList.add(completeState(taskId, activeState, stateEndTime))
 			IdeaFlowStateEntity containingState = persistenceService.getContainingState(taskId)
 			if (containingState != null) {
-				stateList.add(completeState(taskId, containingState))
+				stateList.add(completeState(taskId, containingState, stateEndTime))
 			}
 		}
 		stateList
 	}
 
-	private IdeaFlowStateEntity completeState(long taskId, IdeaFlowStateEntity state) {
+	private IdeaFlowStateEntity completeState(long taskId, IdeaFlowStateEntity state, LocalDateTime endTime) {
+		if (endTime == null) {
+			endTime = state.getStart()
+		}
 		return IdeaFlowStateEntity.from(state)
 				.taskId(taskId)
-				.end(state.getStart())
+				.end(endTime)
 				.endingComment("")
 				.build();
 	}

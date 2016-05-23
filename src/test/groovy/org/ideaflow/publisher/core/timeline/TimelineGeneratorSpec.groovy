@@ -3,6 +3,7 @@ package org.ideaflow.publisher.core.timeline
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.timeline.Timeline
 import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
 import java.time.Duration
@@ -15,6 +16,8 @@ import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
 class TimelineGeneratorSpec extends Specification {
 
+	@Autowired
+	TimelineGenerator generator
 	TimelineSegmentValidator validator = new TimelineSegmentValidator()
 	TimelineTestSupport testSupport = new TimelineTestSupport()
 	LocalDateTime start
@@ -24,12 +27,39 @@ class TimelineGeneratorSpec extends Specification {
 		testSupport.startTaskAndAdvanceHours(1)
 	}
 
-	private Timeline createTimeline() {
-		new TimelineGenerator().createTimeline(
-				testSupport.stateListWithActiveCompleted,
-				testSupport.idleActivityList,
-				testSupport.eventList
-		)
+	private Timeline createTaskTimeline() {
+		TimelineGenerator generator = new TimelineGenerator()
+		generator.persistenceService = testSupport.persistenceService
+		generator.createTaskTimeline(testSupport.taskId)
+	}
+
+	def "SHOULD end active band at last activity"() {
+		given:
+		testSupport.editor()
+
+		when:
+		Timeline timeline = createTaskTimeline()
+
+		then:
+		List<TimelineSegment> segments = timeline.timelineSegments
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
+		validator.assertValidationComplete(segments, 1)
+	}
+
+	def "SHOULD end subtask at last activity"() {
+		given:
+		testSupport.startSubtaskAndAdvanceHours(2)
+		testSupport.editor()
+
+		when:
+		Timeline timeline = createTaskTimeline()
+
+		then:
+		List<TimelineSegment> segments = timeline.timelineSegments
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(1))
+		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.ofHours(2), Duration.ofHours(1).seconds)
+		validator.assertValidationComplete(segments, 2)
 	}
 
 	def "WHEN subtask splits between idle bands SHOULD split idle time between the time segments"() {
@@ -38,10 +68,10 @@ class TimelineGeneratorSpec extends Specification {
 		testSupport.idle(3)
 		testSupport.startSubtaskAndAdvanceHours(1)
 		testSupport.idle(2)
-		testSupport.endBand(LEARNING)
+		testSupport.editor()
 
 		when:
-		Timeline timeline = createTimeline()
+		Timeline timeline = createTaskTimeline()
 
 		then:
 		List<TimelineSegment> segments = timeline.timelineSegments
@@ -49,7 +79,6 @@ class TimelineGeneratorSpec extends Specification {
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(2), Duration.ofHours(3), Duration.ofHours(1).seconds)
 		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(6))
 		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(1), Duration.ofHours(2), Duration.ofHours(3).seconds)
-		validator.assertTimeBand(segments[1].ideaFlowBands, 1, PROGRESS, Duration.ZERO, Duration.ofHours(4).seconds)
 		validator.assertValidationComplete(segments, 2)
 	}
 
@@ -60,9 +89,10 @@ class TimelineGeneratorSpec extends Specification {
 		testSupport.startSubtaskAndAdvanceHours(1)
 		testSupport.startBandAndAdvanceHours(REWORK, 3)
 		testSupport.idle(2)
+		testSupport.editor()
 
 		when:
-		Timeline timeline = createTimeline()
+		Timeline timeline = createTaskTimeline()
 
 		then:
 		List<TimelineSegment> segments = timeline.timelineSegments
@@ -84,9 +114,10 @@ class TimelineGeneratorSpec extends Specification {
 		testSupport.startBandAndAdvanceHours(CONFLICT, 1)
 		testSupport.idle(1)
 		testSupport.startSubtaskAndAdvanceHours(2)
+		testSupport.editor()
 
 		when:
-		Timeline timeline = createTimeline()
+		Timeline timeline = createTaskTimeline()
 
 		then:
 		List<TimelineSegment> segments = timeline.timelineSegments

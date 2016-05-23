@@ -7,6 +7,7 @@ import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.task.Task
 import org.ideaflow.publisher.api.timeline.Timeline
 import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.client.ActivityClient
 import org.ideaflow.publisher.client.EventClient
 import org.ideaflow.publisher.client.IdeaFlowClient
 import org.ideaflow.publisher.client.TaskClient
@@ -34,6 +35,8 @@ class PrimaryScenarioSpec extends Specification {
 	private IdeaFlowClient ideaFlowClient
 	@Autowired
 	private EventClient eventClient
+	@Autowired
+	private ActivityClient activityClient
 	@Autowired
 	private TimelineClient timelineClient
 	private TimelineSegmentValidator validator = new TimelineSegmentValidator()
@@ -71,6 +74,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 10, 43)
 		ideaFlowClient.endConflict(taskId, "jqPlot parameters were wrong.  Passing in [] instead of [[]]")
 		timeService.advanceTime(0, 5, 4)
+		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
 
 		when:
 		Timeline timeline = timelineClient.getTimelineForTask(taskId)
@@ -89,7 +93,7 @@ class PrimaryScenarioSpec extends Specification {
 		validator.assertTimeBand(segments[2].ideaFlowBands, 1, CONFLICT, Duration.ofMinutes(10).plusSeconds(43))
 		validator.assertTimeBand(segments[2].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(5).plusSeconds(45))
 		validator.assertTimeBand(segments[2].ideaFlowBands, 3, CONFLICT, Duration.ofMinutes(10).plusSeconds(43))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 4, PROGRESS, Duration.ZERO)
+		validator.assertTimeBand(segments[2].ideaFlowBands, 4, PROGRESS, Duration.ofMinutes(5).plusSeconds(4))
 		validator.assertValidationComplete(segments, 3)
 	}
 
@@ -143,6 +147,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 30, 43)
 		ideaFlowClient.endConflict(taskId, "Bunch of little bugs.")
 		timeService.advanceTime(0, 0, 10)
+		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(5))
 
 		when:
 		Timeline timeline = timelineClient.getTimelineForTask(taskId)
@@ -171,7 +176,7 @@ class PrimaryScenarioSpec extends Specification {
 		validator.assertEvent(segments[2], 0, EventType.SUBTASK, start.plusHours(9).plusMinutes(7).plusSeconds(18))
 		validator.assertTimeBand(segments[2].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(10))
 		validator.assertTimeBand(segments[2].ideaFlowBands, 1, CONFLICT, Duration.ofMinutes(30).plusSeconds(43))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 2, PROGRESS, Duration.ZERO)
+		validator.assertTimeBand(segments[2].ideaFlowBands, 2, PROGRESS, Duration.ofSeconds(10))
 
 		validator.assertValidationComplete(segments, 3)
 	}
@@ -196,6 +201,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 15, 30)
 		eventClient.startSubtask(taskId, "Final Validation")
 		timeService.advanceTime(0, 32, 3)
+		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
 
 		when:
 		Timeline timeline = timelineClient.getTimelineForTask(taskId)
@@ -206,12 +212,12 @@ class PrimaryScenarioSpec extends Specification {
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(5).plusMinutes(44).plusSeconds(2))
 		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, CONFLICT, Duration.ofMinutes(35))
 		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 1, CONFLICT, Duration.ofMinutes(46).plusSeconds(30))
-		// TODO: the duration of the final progress is set to zero and the subtask isn't getting added - what's going on?
 		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(15).plusSeconds(30))
 
-		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusMinutes(5))
+		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(6).plusMinutes(1).plusSeconds(2))
+		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(32).plusSeconds(3))
 
-		validator.assertValidationComplete(segments, 3)
+		validator.assertValidationComplete(segments, 2)
 	}
 
 	def createDetailedConflictMap() {
@@ -250,6 +256,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 15, 43)
 		ideaFlowClient.endConflict(taskId, "Flipped if/else condition. #TranspositionMistake")
 		timeService.advanceTime(0, 30, 3)
+		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
 
 		when:
 		Timeline timeline = timelineClient.getTimelineForTask(taskId)
@@ -275,7 +282,7 @@ class PrimaryScenarioSpec extends Specification {
 		validator.assertEvent(segments[3], 0, EventType.SUBTASK, start.plusHours(3).plusMinutes(49).plusSeconds(39))
 		validator.assertTimeBand(segments[3].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(30))
 		validator.assertTimeBand(segments[3].ideaFlowBands, 1, CONFLICT, Duration.ofMinutes(15).plusSeconds(43))
-		validator.assertTimeBand(segments[3].ideaFlowBands, 2, PROGRESS, Duration.ZERO)
+		validator.assertTimeBand(segments[3].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(30).plusSeconds(3))
 
 		validator.assertValidationComplete(segments, 4)
 	}

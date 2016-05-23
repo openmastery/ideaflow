@@ -5,6 +5,9 @@ import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.task.TaskEntity
 
+import java.time.Duration
+import java.time.LocalDateTime
+
 public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceService {
 
 	private long id = 1L;
@@ -39,6 +42,17 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	@Override
 	List<EditorActivityEntity> getEditorActivityList(long taskId) {
 		editorActivityList.findAll { it.taskId == taskId }
+	}
+
+	@Override
+	LocalDateTime getMostRecentActivityEnd(long taskId) {
+		EditorActivityEntity mostRecentActivity = null
+		editorActivityList.each { EditorActivityEntity activity ->
+			if ((mostRecentActivity == null) || (mostRecentActivity.start.isBefore(activity.start))) {
+				mostRecentActivity = activity
+			}
+		}
+		mostRecentActivity ? mostRecentActivity.start.plus(mostRecentActivity.duration) : null
 	}
 
 	@Override

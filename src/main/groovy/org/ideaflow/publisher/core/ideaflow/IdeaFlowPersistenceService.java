@@ -5,6 +5,7 @@ import org.ideaflow.publisher.core.activity.IdleTimeBandEntity;
 import org.ideaflow.publisher.core.event.EventEntity;
 import org.ideaflow.publisher.core.task.TaskEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IdeaFlowPersistenceService {
@@ -20,6 +21,8 @@ public interface IdeaFlowPersistenceService {
 	List<EventEntity> getEventList(long taskId);
 
 	List<EditorActivityEntity> getEditorActivityList(long taskId);
+
+	LocalDateTime getMostRecentActivityEnd(long taskId);
 
 	void saveActiveState(IdeaFlowStateEntity activeState);
 

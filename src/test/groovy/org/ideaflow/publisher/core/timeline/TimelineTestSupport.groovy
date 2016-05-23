@@ -3,6 +3,7 @@ package org.ideaflow.publisher.core.timeline
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
 import org.ideaflow.common.MockTimeService
+import org.ideaflow.publisher.core.activity.EditorActivityEntity
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService
@@ -10,6 +11,7 @@ import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine
 
 import java.time.LocalDateTime
+import java.time.Duration
 
 import static IdeaFlowStateType.CONFLICT
 import static IdeaFlowStateType.LEARNING
@@ -24,6 +26,14 @@ class TimelineTestSupport {
 
 	TimelineTestSupport() {
 		this.stateMachine = new IdeaFlowStateMachine(taskId, timeService, persistenceService)
+	}
+
+	long getTaskId() {
+		return taskId
+	}
+
+	IdeaFlowInMemoryPersistenceService getPersistenceService() {
+		return persistenceService
 	}
 
 	LocalDateTime now() {
@@ -91,6 +101,16 @@ class TimelineTestSupport {
 				.start(start)
 				.end(timeService.now()).build()
 		persistenceService.saveIdleActivity(idleActivity)
+	}
+
+	void editor() {
+		EditorActivityEntity editorActivity = EditorActivityEntity.builder()
+				.taskId(taskId)
+				.start(timeService.now())
+				.filePath("/some/path")
+				.duration(Duration.ZERO)
+				.build()
+		persistenceService.saveEditorActivity(editorActivity)
 	}
 
 	void note() {
