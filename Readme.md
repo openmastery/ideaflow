@@ -36,3 +36,30 @@ cd ifm-publisher
 ```
 
 Import project or module into IDEA and get to coding.
+
+
+## Postgres
+
+Postres is required to run the component tests.  
+
+As a one-time operation, pull and create the postgres container
+
+```
+docker pull postgres:9.4
+
+docker create --name=postgres --publish=5432:5432 --env="POSTGRES_USER=postgres" --env="POSTGRES_PASSWORD=postgres" postgres:9.4
+```
+
+To start the container before running tests
+
+`docker start postgres`
+
+To re-create the postgres container
+
+```
+docker rm -f postgres
+
+docker create --name=postgres --publish=5432:5432 --env="POSTGRES_USER=postgres" --env="POSTGRES_PASSWORD=postgres" postgres:9.4
+
+docker start postgres
+```

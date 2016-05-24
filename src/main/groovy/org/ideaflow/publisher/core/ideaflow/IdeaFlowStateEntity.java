@@ -3,23 +3,41 @@ package org.ideaflow.publisher.core.ideaflow;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import java.time.LocalDateTime;
 
+@Entity(name = "idea_flow_state")
 @Data
+@EqualsAndHashCode(of = "id")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class IdeaFlowStateEntity implements Comparable<IdeaFlowStateEntity> {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "idea_flow_state_seq_gen")
+	@SequenceGenerator(name = "idea_flow_state_seq_gen", sequenceName = "idea_flow_state_seq")
 	private long id;
+
 	private long taskId;
 
+	@Enumerated(EnumType.STRING)
 	private IdeaFlowStateType type;
 
+	@Column(name = "start_time")
 	private LocalDateTime start;
+	@Column(name = "end_time")
 	private LocalDateTime end;
 
 	private String startingComment;

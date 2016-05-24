@@ -33,6 +33,10 @@ dependencies {
 		exclude group: "org.slf4j"
 	}
 
+	compile "org.springframework.boot:spring-boot-starter-data-jpa"
+	compile "postgresql:postgresql:9.0-801.jdbc4"
+	compile "org.liquibase:liquibase-core"
+
 	// Utilities
 	compile "com.google.guava:guava:18.0"
 	compile "org.projectlombok:lombok:1.16.4"

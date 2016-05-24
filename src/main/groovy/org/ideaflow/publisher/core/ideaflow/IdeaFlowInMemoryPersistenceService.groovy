@@ -4,6 +4,7 @@ import org.ideaflow.publisher.core.activity.EditorActivityEntity
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.task.TaskEntity
+import org.springframework.context.annotation.Primary
 
 import java.time.Duration
 import java.time.LocalDateTime
