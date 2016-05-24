@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.File;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,7 +18,7 @@ public class EditorActivityEntity {
 	private Long taskId;
 
 	private LocalDateTime start;
-	private Duration duration;
+	private LocalDateTime end;
 
 	private String filePath;
 	private boolean isModified;

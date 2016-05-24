@@ -48,11 +48,11 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	LocalDateTime getMostRecentActivityEnd(long taskId) {
 		EditorActivityEntity mostRecentActivity = null
 		editorActivityList.each { EditorActivityEntity activity ->
-			if ((mostRecentActivity == null) || (mostRecentActivity.start.isBefore(activity.start))) {
+			if ((mostRecentActivity == null) || (mostRecentActivity.end.isBefore(activity.end))) {
 				mostRecentActivity = activity
 			}
 		}
-		mostRecentActivity ? mostRecentActivity.start.plus(mostRecentActivity.duration) : null
+		mostRecentActivity?.end
 	}
 
 	@Override

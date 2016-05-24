@@ -107,8 +107,8 @@ class TimelineTestSupport {
 		EditorActivityEntity editorActivity = EditorActivityEntity.builder()
 				.taskId(taskId)
 				.start(timeService.now())
+				.end(timeService.now())
 				.filePath("/some/path")
-				.duration(Duration.ZERO)
 				.build()
 		persistenceService.saveEditorActivity(editorActivity)
 	}

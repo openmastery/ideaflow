@@ -29,9 +29,11 @@ public class ActivityResource {
 	@POST
 	@Path(ResourcePaths.EDITOR_PATH)
 	public void addEditorActivity(EditorActivity editorActivity) {
-		LocalDateTime start = timeService.now().minus(editorActivity.getDuration());
+		LocalDateTime end = timeService.now();
+		LocalDateTime start = end.minus(editorActivity.getDuration());
 		EditorActivityEntity entity = entityMapper.mapIfNotNull(editorActivity, EditorActivityEntity.class);
 		entity.setStart(start);
+		entity.setEnd(end);
 		persistenceService.saveEditorActivity(entity);
 	}
 

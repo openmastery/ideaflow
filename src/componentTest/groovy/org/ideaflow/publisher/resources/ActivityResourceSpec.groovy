@@ -26,7 +26,7 @@ class ActivityResourceSpec extends Specification {
 
 	def "SHOULD post editor activity"() {
 		given:
-		BeanCompare comparator = new BeanCompare().excludeFields("id", "start")
+		BeanCompare comparator = new BeanCompare().excludeFields("id")
 		String filePath = "/some/file/path"
 		boolean isModified = true
 		Duration duration = Duration.ofMinutes(45)
@@ -39,14 +39,12 @@ class ActivityResourceSpec extends Specification {
 				.taskId(taskId)
 				.filePath(filePath)
 				.isModified(isModified)
-				.duration(duration)
+				.start(timeService.now().minus(duration))
+				.end(timeService.now())
 				.build()
 		EditorActivityEntity actualEditorActivity = persistenceService.getEditorActivityList(taskId).last()
 		comparator.assertEquals(expectedEditorActivity, actualEditorActivity)
 		assert actualEditorActivity.id != null
-		assert actualEditorActivity.start != null
-		LocalDateTime expectedStart = timeService.now().minus(duration)
-		assert Math.abs(Duration.between(expectedStart, actualEditorActivity.start).toMillis()) < 2000
 	}
 
 }
