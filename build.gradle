@@ -41,11 +41,13 @@ dependencies {
 	compile "com.google.guava:guava:18.0"
 	compile "org.projectlombok:lombok:1.16.4"
 
-	testCompile "org.fluttercode.datafactory:datafactory:0.8"
-	testCompile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
-	testCompile("org.spockframework:spock-spring:1.0-groovy-2.4") {
+	mainTestCompile 'com.thedeanda:lorem:2.0'
+	mainTestCompile "org.fluttercode.datafactory:datafactory:0.8"
+	mainTestCompile("org.spockframework:spock-spring:1.0-groovy-2.4") {
 		exclude group: "org.codehaus.groovy"
 	}
+
+	testCompile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
 	testCompile "org.springframework.boot:spring-boot-starter-test"
 	testCompile "commons-io:commons-io:2.4"
 }
