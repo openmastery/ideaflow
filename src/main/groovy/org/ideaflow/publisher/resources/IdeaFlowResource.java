@@ -15,7 +15,7 @@
  */
 package org.ideaflow.publisher.resources;
 
-import org.ideaflow.common.EntityMapper;
+import org.openmastery.mapper.EntityMapper;
 import org.ideaflow.publisher.api.ResourcePaths;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowState;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateTransition;

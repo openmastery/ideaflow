@@ -1,6 +1,6 @@
 package org.ideaflow.publisher.core.ideaflow;
 
-import org.ideaflow.publisher.core.TimeService;
+import org.openmastery.time.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

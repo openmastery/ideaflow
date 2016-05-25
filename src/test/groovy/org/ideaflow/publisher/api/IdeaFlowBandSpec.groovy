@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.api
 
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
-import org.ideaflow.common.MockTimeService
+import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
 import java.time.LocalDateTime

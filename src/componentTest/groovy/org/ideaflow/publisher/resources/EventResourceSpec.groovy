@@ -1,6 +1,6 @@
 package org.ideaflow.publisher.resources
 
-import org.ideaflow.common.BeanCompare
+import org.openmastery.testsupport.BeanCompare
 import org.ideaflow.publisher.ComponentTest
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.client.EventClient

@@ -1,4 +1,4 @@
-package org.ideaflow.publisher.core;
+package org.openmastery.time;
 
 import org.springframework.stereotype.Component;
 

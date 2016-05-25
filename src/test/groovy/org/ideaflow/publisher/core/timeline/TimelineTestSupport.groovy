@@ -2,7 +2,7 @@ package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
-import org.ideaflow.common.MockTimeService
+import org.openmastery.time.MockTimeService
 import org.ideaflow.publisher.core.activity.EditorActivityEntity
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
@@ -11,7 +11,6 @@ import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine
 
 import java.time.LocalDateTime
-import java.time.Duration
 
 import static IdeaFlowStateType.CONFLICT
 import static IdeaFlowStateType.LEARNING

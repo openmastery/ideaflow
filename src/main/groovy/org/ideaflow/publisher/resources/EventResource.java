@@ -3,7 +3,7 @@ package org.ideaflow.publisher.resources;
 import org.ideaflow.publisher.api.event.NewEvent;
 import org.ideaflow.publisher.api.event.EventType;
 import org.ideaflow.publisher.api.ResourcePaths;
-import org.ideaflow.publisher.core.TimeService;
+import org.openmastery.time.TimeService;
 import org.ideaflow.publisher.core.event.EventEntity;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService;
 import org.springframework.beans.factory.annotation.Autowired;

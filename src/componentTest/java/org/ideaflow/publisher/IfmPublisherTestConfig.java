@@ -16,13 +16,13 @@
 package org.ideaflow.publisher;
 
 import groovyx.net.http.RESTClient;
-import org.ideaflow.common.MockTimeService;
+import org.openmastery.time.MockTimeService;
 import org.ideaflow.publisher.client.ActivityClient;
 import org.ideaflow.publisher.client.EventClient;
 import org.ideaflow.publisher.client.IdeaFlowClient;
 import org.ideaflow.publisher.client.TaskClient;
 import org.ideaflow.publisher.client.TimelineClient;
-import org.ideaflow.publisher.core.TimeService;
+import org.openmastery.time.TimeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

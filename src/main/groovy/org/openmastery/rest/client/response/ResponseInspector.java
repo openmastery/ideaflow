@@ -1,4 +1,4 @@
-package org.ideaflow.common.rest.client.response;
+package org.openmastery.rest.client.response;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MultivaluedMap;

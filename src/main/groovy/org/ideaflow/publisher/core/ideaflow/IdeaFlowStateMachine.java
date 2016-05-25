@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.core.ideaflow;
 
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType;
-import org.ideaflow.publisher.core.TimeService;
+import org.openmastery.time.TimeService;
 
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT;
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING;

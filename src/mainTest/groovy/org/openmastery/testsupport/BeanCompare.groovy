@@ -1,4 +1,4 @@
-package org.ideaflow.common
+package org.openmastery.testsupport
 
 import org.codehaus.groovy.runtime.powerassert.PowerAssertionError
 

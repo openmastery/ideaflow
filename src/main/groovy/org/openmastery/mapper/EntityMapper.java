@@ -1,4 +1,4 @@
-package org.ideaflow.common;
+package org.openmastery.mapper;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;

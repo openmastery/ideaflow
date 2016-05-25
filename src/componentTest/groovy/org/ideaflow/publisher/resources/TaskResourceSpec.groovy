@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.resources
 
 import com.bancvue.rest.exception.NotFoundException
-import org.ideaflow.common.BeanCompare
+import org.openmastery.testsupport.BeanCompare
 import org.ideaflow.publisher.ComponentTest
 import org.ideaflow.publisher.api.task.Task
 import org.ideaflow.publisher.client.TaskClient

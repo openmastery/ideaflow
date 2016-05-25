@@ -1,17 +1,15 @@
 package org.ideaflow.publisher.resources
 
-import org.ideaflow.common.BeanCompare
+import org.openmastery.testsupport.BeanCompare
 import org.ideaflow.publisher.ComponentTest
 import org.ideaflow.publisher.client.ActivityClient
-import org.ideaflow.publisher.core.TimeService
+import org.openmastery.time.TimeService
 import org.ideaflow.publisher.core.activity.EditorActivityEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
 import java.time.Duration
-import java.time.LocalDateTime
-
 
 @ComponentTest
 class ActivityResourceSpec extends Specification {

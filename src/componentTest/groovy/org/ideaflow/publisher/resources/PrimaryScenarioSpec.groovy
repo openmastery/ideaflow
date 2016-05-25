@@ -1,6 +1,6 @@
 package org.ideaflow.publisher.resources
 
-import org.ideaflow.common.MockTimeService
+import org.openmastery.time.MockTimeService
 import org.ideaflow.publisher.ComponentTest
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand

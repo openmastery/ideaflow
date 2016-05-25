@@ -1,6 +1,4 @@
-package org.ideaflow.common
-
-import org.ideaflow.publisher.core.TimeService
+package org.openmastery.time
 
 import java.time.LocalDateTime
 

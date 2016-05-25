@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ideaflow.common.rest.client;
+package org.openmastery.rest.client;
 
 import com.bancvue.rest.client.ClientRequestFactory;
-import org.ideaflow.common.rest.api.ApiEntity;
-import org.ideaflow.common.rest.client.response.ResponseInspector;
+import org.openmastery.rest.api.ApiEntity;
+import org.openmastery.rest.client.response.ResponseInspector;
 import org.ideaflow.publisher.config.ObjectMapperContextResolver;
 
 import java.lang.reflect.Constructor;

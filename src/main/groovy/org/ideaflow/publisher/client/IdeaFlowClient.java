@@ -15,7 +15,7 @@
  */
 package org.ideaflow.publisher.client;
 
-import org.ideaflow.common.rest.client.CrudClient;
+import org.openmastery.rest.client.CrudClient;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowState;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateTransition;
 import org.ideaflow.publisher.api.ResourcePaths;

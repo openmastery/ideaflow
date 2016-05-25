@@ -1,4 +1,4 @@
-package org.ideaflow.common.rest.client;
+package org.openmastery.rest.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
