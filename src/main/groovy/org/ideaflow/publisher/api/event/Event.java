@@ -22,4 +22,5 @@ public class Event {
 	private String comment;
 	private EventType eventType;
 
+	private Long relativeStart;
 }

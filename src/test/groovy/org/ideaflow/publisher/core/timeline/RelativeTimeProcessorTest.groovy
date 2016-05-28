@@ -134,4 +134,9 @@ class RelativeTimeProcessorTest extends Specification {
 		assert segment.timeBandGroups[1].linkedTimeBands[1].relativeStart == Duration.ofHours(9).seconds
 	}
 
+	def "TODO add event test"() {
+		expect:
+		assert false
+	}
+
 }
