@@ -3,13 +3,12 @@ package org.ideaflow.publisher.resources
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
 import org.ideaflow.publisher.api.timeline.Timeline
-import org.openmastery.time.TimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService
-import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine
 import org.ideaflow.publisher.core.timeline.TimelineGenerator
+import org.openmastery.time.TimeService
 
 import java.time.LocalDateTime
 
@@ -26,7 +25,7 @@ class TestDataSupport {
 	}
 
 	Timeline createTimeline(String taskId) {
-		switch(taskId) {
+		switch (taskId) {
 			case "trial":
 				return createTrialAndErrorMap();
 			case "learning":
@@ -151,11 +150,12 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 20, 22)
 		testSupport.endBand(LEARNING, "Rework the ChartVisualizer to use TimeBand abstraction")
 		testSupport.advanceTime(0, 2, 10)
-		testSupport.startSubtask("Extract TimeBand class")
+
+		testSupport.startSubtask("Create TimeBand class")
 		testSupport.advanceTime(0, 35, 5)
+
 		testSupport.startSubtask("Refactor ChartVisualizer to use new TimeBand")
 		testSupport.advanceTime(1, 15, 0)
-
 		testSupport.startBand(CONFLICT, "Why isn't the RangeBuilder working anymore?")
 		testSupport.advanceTime(0, 14, 9)
 		testSupport.startBand(REWORK, "Range builder uses the duration details to calculate range.  Need to refactor.")
@@ -253,6 +253,15 @@ class TestDataSupport {
 			timeService.plusHours(hours)
 			timeService.plusMinutes(minutes)
 			timeService.plusSeconds(seconds)
+		}
+
+		void note(String comment) {
+			EventEntity note = EventEntity.builder()
+					.eventType(EventType.NOTE)
+					.position(timeService.now())
+					.comment(comment)
+					.build()
+			persistenceService.saveEvent(note)
 		}
 
 		void idle(int hours) {
