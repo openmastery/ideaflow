@@ -10,6 +10,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @Path("/stubtimeline")
@@ -32,6 +35,12 @@ public class StubTimelineResource {
 			default:
 				return support.createBasicTimelineWithAllBandTypes();
 		}
+	}
+
+	@GET
+	@Path(ResourcePaths.TASK_PATH)
+	public List<String> getTimelineForTask() {
+		return Arrays.asList("trial", "learning", "detailed", "basic");
 	}
 
 }
