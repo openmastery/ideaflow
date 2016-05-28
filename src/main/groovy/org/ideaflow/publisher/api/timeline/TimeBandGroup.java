@@ -20,7 +20,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 
-	private long id;
+	private String id;
 	private long taskId;
 
 	private List<IdeaFlowBand> linkedTimeBands;

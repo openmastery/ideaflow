@@ -22,6 +22,7 @@ class TimelineSegmentFactory {
 		ArrayList<TimeBandGroup> ideaFlowBandGroups = new ArrayList<>();
 		for (IdeaFlowStateEntity state : ideaFlowStates) {
 			IdeaFlowBand timeBand = IdeaFlowBand.builder()
+					.id(state.id)
 					.type(state.type)
 					.start(state.start)
 					.end(state.end)
@@ -36,11 +37,12 @@ class TimelineSegmentFactory {
 			} else {
 				if (state.isLinkedToPrevious() && (ideaFlowBands.isEmpty() == false)) {
 					if (activeTimeBandGroup == null) {
+						IdeaFlowBand firstBandInGroup = ideaFlowBands.remove(ideaFlowBands.size() - 1)
 						activeTimeBandGroup = TimeBandGroup.builder()
+								.id("group-${firstBandInGroup.id}")
 								.linkedTimeBands(new ArrayList<IdeaFlowBand>())
 								.build()
 
-						IdeaFlowBand firstBandInGroup = ideaFlowBands.remove(ideaFlowBands.size() - 1)
 						activeTimeBandGroup.addLinkedTimeBand(firstBandInGroup)
 						ideaFlowBandGroups.add(activeTimeBandGroup)
 					}
