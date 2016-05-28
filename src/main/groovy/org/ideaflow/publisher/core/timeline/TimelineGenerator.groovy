@@ -21,6 +21,10 @@ public class TimelineGenerator {
 	private TimelineSplitter timelineSplitter = new TimelineSplitter()
 	private RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 
+	public void disableTimelineSplitter() {
+		timelineSplitter = null
+	}
+
 	public Timeline createTaskTimeline(long taskId) {
 		List<IdeaFlowStateEntity> ideaFlowStates = getStateListWithActiveCompleted(taskId)
 		List<IdleTimeBandEntity> idleActivities = persistenceService.getIdleTimeBandList(taskId)
@@ -58,7 +62,12 @@ public class TimelineGenerator {
 	                               List<EventEntity> eventList) {
 		TimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates, eventList)
 		idleTimeProcessor.collapseIdleTime(segment, idleActivities)
-		List<TimelineSegment> segments = timelineSplitter.splitTimelineSegment(segment)
+		List<TimelineSegment> segments
+		if (timelineSplitter != null) {
+			segments = timelineSplitter.splitTimelineSegment(segment)
+		} else {
+			segments = [segment]
+		}
 		Timeline timeline = Timeline.builder()
 				.timelineSegments(segments)
 				.build()

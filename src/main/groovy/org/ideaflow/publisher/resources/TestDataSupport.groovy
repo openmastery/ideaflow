@@ -19,9 +19,31 @@ import static IdeaFlowStateType.REWORK
 
 class TestDataSupport {
 
-	Timeline createBasicTimelineWithAllBandTypes() {
-		TimelineTestSupport testSupport = new TimelineTestSupport()
+	TimelineTestSupport testSupport = new TimelineTestSupport()
 
+	void disableTimelineSplitter() {
+		testSupport.disableTimelineSplitter()
+	}
+
+	Timeline createTimeline(String taskId) {
+		switch(taskId) {
+			case "trial":
+				return createTrialAndErrorMap();
+			case "learning":
+				return createLearningNestedConflictMap();
+			case "detailed":
+				return createDetailedConflictMap();
+			case "basic":
+			default:
+				return createBasicTimelineWithAllBandTypes();
+		}
+	}
+
+	List<String> getTaskIds() {
+		["trial", "learning", "detailed", "basic"]
+	}
+
+	Timeline createBasicTimelineWithAllBandTypes() {
 		testSupport.startTask()
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How should I break down this task?")
@@ -51,8 +73,6 @@ class TestDataSupport {
 	}
 
 	Timeline createTrialAndErrorMap() {
-		TimelineTestSupport testSupport = new TimelineTestSupport()
-
 		testSupport.startTask()
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How does the existing QueryBuilder work?")
@@ -104,8 +124,6 @@ class TestDataSupport {
 	}
 
 	Timeline createLearningNestedConflictMap() {
-		TimelineTestSupport testSupport = new TimelineTestSupport()
-
 		testSupport.startTask()
 		testSupport.advanceTime(0, 1, 30)
 		testSupport.startBand(LEARNING, "Where do I need to change the ReportingEngine code? #LackOfFamiliarity")
@@ -127,8 +145,6 @@ class TestDataSupport {
 	}
 
 	Timeline createDetailedConflictMap() {
-		TimelineTestSupport testSupport = new TimelineTestSupport()
-
 		testSupport.startTask()
 		testSupport.advanceTime(0, 5, 10)
 		testSupport.startBand(LEARNING, "What's the plan?")
@@ -202,37 +218,22 @@ class TestDataSupport {
 		private MockTimeService timeService = new MockTimeService()
 		private IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
 		private Long taskId = new Random().nextLong()
+		private TimelineGenerator generator = new TimelineGenerator()
 
 		TimelineTestSupport() {
 			this.stateMachine = new IdeaFlowStateMachine(taskId, timeService, persistenceService)
+		}
+
+		void disableTimelineSplitter() {
+			generator.disableTimelineSplitter()
 		}
 
 		LocalDateTime now() {
 			timeService.now()
 		}
 
-		List<IdeaFlowStateEntity> getStateListWithActiveCompleted() {
-			List<IdeaFlowStateEntity> stateList = new ArrayList(persistenceService.getStateList(taskId))
-			completeAndAddStateIfNotNull(stateList, persistenceService.activeState)
-			completeAndAddStateIfNotNull(stateList, persistenceService.containingState)
-			stateList
-		}
-
-		List<IdleTimeBandEntity> getIdleActivityList() {
-			persistenceService.getIdleTimeBandList(taskId)
-		}
-
 		List<EventEntity> getEventList() {
 			persistenceService.getEventList(taskId)
-		}
-
-		private void completeAndAddStateIfNotNull(List<IdeaFlowStateEntity> stateList, IdeaFlowStateEntity state) {
-			if (state) {
-				stateList << IdeaFlowStateEntity.from(state)
-						.end(timeService.now())
-						.endingComment("")
-						.build();
-			}
 		}
 
 		void startTask() {
@@ -292,7 +293,6 @@ class TestDataSupport {
 		}
 
 		Timeline createTimeline() {
-			TimelineGenerator generator = new TimelineGenerator()
 			generator.createTimeline(persistenceService.stateList, persistenceService.idleTimeBandList, persistenceService.eventList)
 		}
 	}

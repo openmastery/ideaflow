@@ -20,27 +20,18 @@ import java.util.List;
 public class StubTimelineResource {
 
 	@GET
-	@Path(ResourcePaths.TASK_PATH + "/{taskId}")
-	public Timeline getTimelineForTask(@PathParam("taskId") String taskId, @QueryParam("userId") String userId) {
+	@Path(ResourcePaths.TIMELINE_NATURAL_PATH + ResourcePaths.TASK_PATH + "/{taskId}")
+	public Timeline getTimelineForTask(@PathParam("taskId") String taskId) {
 		TestDataSupport support = new TestDataSupport();
-
-		switch(taskId) {
-			case "trial":
-				return support.createTrialAndErrorMap();
-			case "learning":
-				return support.createLearningNestedConflictMap();
-			case "detailed":
-				return support.createDetailedConflictMap();
-			case "basic":
-			default:
-				return support.createBasicTimelineWithAllBandTypes();
-		}
+		support.disableTimelineSplitter();
+		return support.createTimeline(taskId);
 	}
 
 	@GET
 	@Path(ResourcePaths.TASK_PATH)
 	public List<String> getTimelineForTask() {
-		return Arrays.asList("trial", "learning", "detailed", "basic");
+		TestDataSupport support = new TestDataSupport();
+		return support.getTaskIds();
 	}
 
 }
