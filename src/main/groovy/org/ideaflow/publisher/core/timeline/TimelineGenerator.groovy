@@ -16,7 +16,7 @@ class TimelineGenerator {
 	}
 
 	public TreeTimeline createTreeTimelineForTask(long taskId) {
-		BandTimeline bandTimeline = bandTimelineFactory.createSingleSegmentBandTimelineForTask(taskId)
+		BandTimeline bandTimeline = bandTimelineFactory.createSegmentedBandTimelineForTask(taskId)
 		return new TreeTimelineBuilder()
 				.addTimeline(bandTimeline)
 				.build();

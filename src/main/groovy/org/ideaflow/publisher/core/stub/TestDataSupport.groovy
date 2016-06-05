@@ -239,6 +239,7 @@ class TestDataSupport {
 
 		void note(String comment) {
 			EventEntity note = EventEntity.builder()
+					.taskId(taskId)
 					.type(EventType.NOTE)
 					.position(timeService.now())
 					.comment(comment)
