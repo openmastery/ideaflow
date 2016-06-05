@@ -79,7 +79,7 @@ class TestDataSupport {
 		testSupport.endBand(LEARNING, "QueryBuilder is sliced by filter types, lots of duplication")
 		testSupport.advanceTime(0, 14, 0)
 
-		testSupport.startSubtask("Implement new QueryBuilder replacement")
+		testSupport.note("Implement new QueryBuilder replacement")
 		testSupport.advanceTime(2, 15, 10)
 
 		testSupport.startBand(CONFLICT, "This isn't going to work... Filter types overlap")
@@ -151,7 +151,7 @@ class TestDataSupport {
 		testSupport.endBand(LEARNING, "Rework the ChartVisualizer to use TimeBand abstraction")
 		testSupport.advanceTime(0, 2, 10)
 
-		testSupport.startSubtask("Create TimeBand class")
+		testSupport.note("Create TimeBand class")
 		testSupport.advanceTime(0, 35, 5)
 
 		testSupport.startSubtask("Refactor ChartVisualizer to use new TimeBand")
@@ -166,6 +166,8 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 1, 12)
 		testSupport.startBand(CONFLICT, "Why is the duration 5?")
 		testSupport.advanceTime(0, 15, 43)
+		testSupport.note("Checking out dependencies...")
+		testSupport.advanceTime(0, 05, 10)
 		testSupport.endBand(CONFLICT, "Missing a condition for excluding out of range values.")
 		testSupport.advanceTime(0, 5, 3)
 		testSupport.endBand(REWORK, "Okay, RangeBuilder is working again.")

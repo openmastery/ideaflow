@@ -133,6 +133,7 @@ public class TreeTimelineBuilder {
 				.start(event.position)
 				.end(event.position)
 				.relativeStart(event.relativeStart)
+				.startingComment(event.comment)
 				.build()
 	}
 
