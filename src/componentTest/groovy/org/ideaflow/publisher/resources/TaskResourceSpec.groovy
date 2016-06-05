@@ -1,5 +1,7 @@
 package org.ideaflow.publisher.resources
 
+import com.bancvue.rest.exception.ConflictException
+import com.bancvue.rest.exception.ConflictingEntityException
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.testsupport.BeanCompare
 import org.ideaflow.publisher.ComponentTest
@@ -8,6 +10,7 @@ import org.ideaflow.publisher.client.TaskClient
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
+import static org.ideaflow.publisher.ARandom.aRandom
 
 @ComponentTest
 class TaskResourceSpec extends Specification {
@@ -20,7 +23,7 @@ class TaskResourceSpec extends Specification {
 
 	def "SHOULD create task"() {
 		given:
-		String name = "task123"
+		String name = aRandom.text(10)
 		String description = "task description"
 
 		when:
@@ -37,19 +40,33 @@ class TaskResourceSpec extends Specification {
 
 	def "SHOULD find task with name"() {
 		given:
-		Task createdTask = taskClient.createTask("task123", "task description")
+		String name = aRandom.text(10)
+		Task createdTask = taskClient.createTask(name, "task description")
 
 		when:
-		Task foundTask = taskClient.findTaskWithName("task123")
+		Task foundTask = taskClient.findTaskWithName(name)
 
 		then:
 		taskComparator.assertEquals(createdTask, foundTask)
 
 		when:
-		taskClient.findTaskWithName("task124")
+		taskClient.findTaskWithName(name + "x")
 
 		then:
 		thrown(NotFoundException)
+	}
+
+	def "SHOULD return http conflict (409) if creating task with same name"() {
+		given:
+		Task expectedConflict = Task.builder().name("task").description("task description").build()
+		taskClient.createTask("task", "task description")
+
+		when:
+		taskClient.createTask("task", "other description")
+
+		then:
+		ConflictingEntityException ex = thrown()
+		taskComparator.assertEquals(ex.entity, expectedConflict)
 	}
 
 }

@@ -1,5 +1,7 @@
 package org.ideaflow.publisher.resources;
 
+import com.bancvue.rest.exception.ConflictException;
+import com.bancvue.rest.exception.ConflictingEntityException;
 import org.openmastery.mapper.EntityMapper;
 import org.ideaflow.publisher.api.task.NewTask;
 import org.ideaflow.publisher.api.ResourcePaths;
@@ -8,7 +10,9 @@ import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.ideaflow.publisher.core.task.TaskEntity;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -30,13 +34,28 @@ public class TaskResource {
 	private IdeaFlowPersistenceService persistenceService;
 	private EntityMapper entityMapper = new EntityMapper();
 
+	private Task toApiTask(TaskEntity taskEntity) {
+		return entityMapper.mapIfNotNull(taskEntity, Task.class);
+	}
+
 	@POST
 	public Task create(NewTask newTask) {
 		TaskEntity task = TaskEntity.builder()
 				.name(newTask.getName())
 				.description(newTask.getDescription())
 				.build();
-		task = persistenceService.saveTask(task);
+
+		TaskEntity existingTask = persistenceService.findTaskWithName(task.getName());
+		if (existingTask != null) {
+			throw new ConflictingTaskException(toApiTask(existingTask));
+		}
+
+		try {
+			task = persistenceService.saveTask(task);
+		} catch (DataIntegrityViolationException ex) {
+			existingTask = persistenceService.findTaskWithName(task.getName());
+			throw new ConflictingTaskException(toApiTask(existingTask));
+		}
 
 		IdeaFlowStateMachine stateMachine = stateMachineFactory.createStateMachine(task.getId());
 		stateMachine.startTask();
@@ -50,7 +69,14 @@ public class TaskResource {
 		if (task == null) {
 			throw new NotFoundException();
 		}
-		return entityMapper.mapIfNotNull(task, Task.class);
+		return toApiTask(task);
+	}
+
+
+	class ConflictingTaskException extends ConflictingEntityException {
+		ConflictingTaskException(Task existingTask) {
+			super("Task with name '" + existingTask.getName() + "' already exists", existingTask);
+		}
 	}
 
 }

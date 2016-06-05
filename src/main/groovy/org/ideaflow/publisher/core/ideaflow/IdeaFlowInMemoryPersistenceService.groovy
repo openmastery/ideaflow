@@ -5,6 +5,7 @@ import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.task.TaskEntity
 import org.springframework.context.annotation.Primary
+import org.springframework.dao.DataIntegrityViolationException
 
 import java.time.Duration
 import java.time.LocalDateTime
@@ -102,6 +103,10 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 
 	@Override
 	TaskEntity saveTask(TaskEntity task) {
+		if (taskList.find { it.name == task.name }) {
+			throw new DataIntegrityViolationException("Duplicate task");
+		}
+
 		task.id = id++
 		taskList.add(task)
 		task
