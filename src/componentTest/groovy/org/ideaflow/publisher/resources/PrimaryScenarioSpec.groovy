@@ -6,7 +6,7 @@ import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.task.Task
 import org.ideaflow.publisher.api.timeline.BandTimeline
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
+import org.ideaflow.publisher.core.timeline.BandTimelineSegment
 import org.ideaflow.publisher.client.ActivityClient
 import org.ideaflow.publisher.client.EventClient
 import org.ideaflow.publisher.client.IdeaFlowClient

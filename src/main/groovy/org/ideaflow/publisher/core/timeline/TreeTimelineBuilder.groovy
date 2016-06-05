@@ -6,7 +6,6 @@ import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.timeline.TimeBand
 import org.ideaflow.publisher.api.timeline.TimeBandGroup
 import org.ideaflow.publisher.api.timeline.BandTimeline
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.api.timeline.TreeNode
 import org.ideaflow.publisher.api.timeline.TreeNodeType
 import org.ideaflow.publisher.api.timeline.TreeTimeline
@@ -16,8 +15,8 @@ public class TreeTimelineBuilder {
 	private int indentLevel = 0
 	private List<TreeNode> treeNodes = []
 
-	public TreeTimelineBuilder addTimeline(BandTimeline timeline) {
-		for (BandTimelineSegment segment : timeline.timelineSegments) {
+	public TreeTimelineBuilder addTimelineSegments(List<BandTimelineSegment> segments) {
+		for (BandTimelineSegment segment : segments) {
 			addTimelineSegment(segment)
 		}
 		this

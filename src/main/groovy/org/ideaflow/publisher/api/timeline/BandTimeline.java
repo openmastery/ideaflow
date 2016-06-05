@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ideaflow.publisher.api.event.Event;
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand;
+import org.ideaflow.publisher.core.timeline.BandTimelineSegment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,6 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 public class BandTimeline {
 
-	private List<BandTimelineSegment> timelineSegments;
+	private String description;
+	private List<IdeaFlowBand> ideaFlowBands;
+	private List<TimeBandGroup> timeBandGroups;
+	private List<Event> events;
 
 }

@@ -1,33 +1,36 @@
 package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
-import org.ideaflow.publisher.api.timeline.BandTimeline
 import org.ideaflow.publisher.api.timeline.TreeNode
 import org.ideaflow.publisher.api.timeline.TreeNodeType
 import org.ideaflow.publisher.api.timeline.TreeTimeline
 import spock.lang.Specification
 
-import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.*
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
+import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
 
 class TreeTimelineBuilderSpec extends Specification {
 
-	TreeTimelineBuilder builder = new TreeTimelineBuilder()
 	TimelineTestSupport testSupport = new TimelineTestSupport()
 
 	def setup() {
 		testSupport.startTaskAndAdvanceHours(1)
 	}
 
-	private BandTimeline createTimeline() {
+	private List<BandTimelineSegment> createBandTimelineSegments() {
 		BandTimelineFactory factory = new BandTimelineFactory()
 		factory.persistenceService = testSupport.persistenceService
-		factory.createSegmentedBandTimelineForTask(testSupport.taskId)
+		factory.createAndSplitBandTimelineSegmentForTask(testSupport.taskId)
 	}
 
 	private TreeTimelineValidator createTreeTimelineAndValidator() {
-		BandTimeline timeline = createTimeline()
-		TreeTimeline treeTimeline = builder.addTimeline(timeline).build()
+		List<BandTimelineSegment> segments = createBandTimelineSegments()
+		TreeTimeline treeTimeline = new TreeTimelineBuilder()
+				.addTimelineSegments(segments)
+				.build()
 		new TreeTimelineValidator(treeTimeline)
 	}
 

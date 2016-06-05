@@ -5,7 +5,6 @@ import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
 import org.ideaflow.publisher.api.timeline.TimeBand
 import org.ideaflow.publisher.api.timeline.TimeBandGroup
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 
 import java.time.Duration
 import java.time.LocalDateTime

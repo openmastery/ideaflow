@@ -1,7 +1,6 @@
 package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
 

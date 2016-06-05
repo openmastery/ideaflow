@@ -4,16 +4,14 @@ import org.ideaflow.publisher.api.event.Event
 import org.ideaflow.publisher.api.timeline.IdleTimeBand
 import org.ideaflow.publisher.api.timeline.TimeBand
 import org.ideaflow.publisher.api.timeline.TimeBandComparator
-import org.ideaflow.publisher.api.timeline.BandTimeline
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 
 import java.time.Duration
 import java.time.LocalDateTime
 
 class RelativeTimeProcessor {
 
-	public void setRelativeTime(BandTimeline timeline) {
-		Set<TimeBand> allTimeBands = getFlattenedSortedTimeBandSet(timeline);
+	public void computeRelativeTime(List<BandTimelineSegment> segments) {
+		Set<TimeBand> allTimeBands = getFlattenedSortedTimeBandSet(segments);
 		TimeBand previousTimeBand = null
 		long relativeTime = 0
 
@@ -37,9 +35,9 @@ class RelativeTimeProcessor {
 		}
 	}
 
-	private Set<TimeBand> getFlattenedSortedTimeBandSet(BandTimeline timeline) {
+	private Set<TimeBand> getFlattenedSortedTimeBandSet(List<BandTimelineSegment> segments) {
 		ArrayList<TimeBand> allTimeBands = new ArrayList<>();
-		for (BandTimelineSegment segment : timeline.timelineSegments) {
+		for (BandTimelineSegment segment : segments) {
 			addTimeBands(allTimeBands, segment.allTimeBands)
 			addEventAdapters(allTimeBands, segment.events)
 		}

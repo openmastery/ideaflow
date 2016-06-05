@@ -4,7 +4,6 @@ import org.ideaflow.publisher.api.event.Event
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.timeline.IdleTimeBand
 import org.ideaflow.publisher.api.timeline.TimeBandGroup
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 

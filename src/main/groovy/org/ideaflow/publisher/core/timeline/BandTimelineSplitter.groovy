@@ -4,7 +4,6 @@ import org.ideaflow.publisher.api.event.Event
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.timeline.TimeBand
 import org.ideaflow.publisher.api.timeline.TimeBandComparator
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 
 class BandTimelineSplitter {
 

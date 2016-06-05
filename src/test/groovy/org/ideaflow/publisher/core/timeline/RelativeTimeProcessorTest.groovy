@@ -1,8 +1,6 @@
 package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.TestTimelineSegmentBuilder
-import org.ideaflow.publisher.api.timeline.BandTimeline
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import spock.lang.Specification
 
 import java.time.Duration
@@ -21,12 +19,10 @@ class RelativeTimeProcessorTest extends Specification {
 		testSupport.startTaskAndAdvanceHours(1)
 	}
 
-	private BandTimeline processRelativeTime() {
-		BandTimeline timeline = BandTimeline.builder()
-				.timelineSegments([builder.build()])
-				.build()
-		new RelativeTimeProcessor().setRelativeTime(timeline)
-		timeline
+	private BandTimelineSegment processRelativeTime() {
+		BandTimelineSegment segment = builder.build()
+		new RelativeTimeProcessor().computeRelativeTime([segment])
+		segment
 	}
 
 	def "WHEN there is no idle"() {
@@ -38,10 +34,9 @@ class RelativeTimeProcessorTest extends Specification {
 				.linkedIdeaFlowBand(REWORK, 10, 12)
 
 		when:
-		BandTimeline timeline = processRelativeTime()
+		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		BandTimelineSegment segment = timeline.timelineSegments[0]
 		assert segment.ideaFlowBands[0].relativeStart == 0
 		assert segment.ideaFlowBands[0].nestedBands[0].relativeStart == Duration.ofHours(1).seconds
 		assert segment.ideaFlowBands[1].relativeStart == Duration.ofHours(5).seconds
@@ -59,10 +54,9 @@ class RelativeTimeProcessorTest extends Specification {
 				.ideaFlowBand(PROGRESS, 7, 8)
 
 		when:
-		BandTimeline timeline = processRelativeTime()
+		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		BandTimelineSegment segment = timeline.timelineSegments[0]
 		assert segment.ideaFlowBands[0].relativeStart == 0
 		assert segment.ideaFlowBands[0].nestedBands[0].relativeStart == Duration.ofHours(2).seconds
 		assert segment.ideaFlowBands[0].nestedBands[1].relativeStart == Duration.ofHours(4).seconds
@@ -81,10 +75,9 @@ class RelativeTimeProcessorTest extends Specification {
 				.ideaFlowBand(PROGRESS, 10, 12)
 
 		when:
-		BandTimeline timeline = processRelativeTime()
+		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		BandTimelineSegment segment = timeline.timelineSegments[0]
 		assert segment.ideaFlowBands[0].relativeStart == 0
 		assert segment.ideaFlowBands[0].nestedBands[0].relativeStart == Duration.ofHours(2).seconds
 		assert segment.ideaFlowBands[0].nestedBands[1].relativeStart == Duration.ofHours(4).seconds
@@ -101,10 +94,9 @@ class RelativeTimeProcessorTest extends Specification {
 				.ideaFlowBand(PROGRESS, 7, 8)
 
 		when:
-		BandTimeline timeline = processRelativeTime()
+		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		BandTimelineSegment segment = timeline.timelineSegments[0]
 		assert segment.timeBandGroups[0].relativeStart == 0
 		assert segment.timeBandGroups[0].linkedTimeBands[0].relativeStart == 0
 		assert segment.timeBandGroups[0].linkedTimeBands[1].relativeStart == Duration.ofHours(2).seconds
@@ -122,10 +114,9 @@ class RelativeTimeProcessorTest extends Specification {
 				.linkedIdeaFlowBand(REWORK, 12, 13)
 
 		when:
-		BandTimeline timeline = processRelativeTime()
+		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		BandTimelineSegment segment = timeline.timelineSegments[0]
 		assert segment.timeBandGroups[0].relativeStart == 0
 		assert segment.timeBandGroups[0].linkedTimeBands[0].relativeStart == 0
 		assert segment.timeBandGroups[0].linkedTimeBands[1].relativeStart == Duration.ofHours(4).seconds

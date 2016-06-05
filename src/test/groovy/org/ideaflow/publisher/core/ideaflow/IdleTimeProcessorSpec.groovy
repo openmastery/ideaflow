@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.timeline.TimeBand
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
+import org.ideaflow.publisher.core.timeline.BandTimelineSegment
 import org.ideaflow.publisher.core.timeline.TimelineSegmentValidator
 import org.ideaflow.publisher.core.timeline.TimelineTestSupport
 import org.ideaflow.publisher.core.timeline.IdleTimeProcessor

@@ -3,7 +3,7 @@ package org.ideaflow.publisher.api
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
 import org.ideaflow.publisher.api.timeline.TimeBandGroup
-import org.ideaflow.publisher.api.timeline.BandTimelineSegment
+import org.ideaflow.publisher.core.timeline.BandTimelineSegment
 import org.openmastery.time.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.timeline.IdleTimeProcessor
