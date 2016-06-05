@@ -19,10 +19,14 @@ class TreeTimelineBuilderSpec extends Specification {
 		testSupport.startTaskAndAdvanceHours(1)
 	}
 
-	private TreeTimelineValidator createTreeTimelineAndValidator() {
+	private Timeline createTimeline() {
 		TimelineGenerator generator = new TimelineGenerator()
 		generator.persistenceService = testSupport.persistenceService
-		Timeline timeline = generator.createTaskTimeline(testSupport.taskId)
+		generator.createTaskTimeline(testSupport.taskId)
+	}
+
+	private TreeTimelineValidator createTreeTimelineAndValidator() {
+		Timeline timeline = createTimeline()
 		TreeTimeline treeTimeline = builder.addTimeline(timeline).build()
 		new TreeTimelineValidator(treeTimeline)
 	}

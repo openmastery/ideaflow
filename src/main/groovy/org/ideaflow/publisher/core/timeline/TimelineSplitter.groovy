@@ -18,6 +18,7 @@ class TimelineSplitter {
 		Collections.sort(timeBands, TimeBandComparator.INSTANCE);
 		List<TimelineSegment> splitSegments = []
 		TimelineSegment activeSegment = new TimelineSegment()
+		activeSegment.id = segment.id
 		activeSegment.description = segment.description
 
 		List<Event> sortedEvents = segment.events.sort { Event event -> event.position }
@@ -49,6 +50,7 @@ class TimelineSplitter {
 				splitSegments << activeSegment
 				activeSegment = new TimelineSegment()
 				activeSegment.addEvent(event)
+				activeSegment.id = event.id
 				activeSegment.description = event.comment
 			}
 		}

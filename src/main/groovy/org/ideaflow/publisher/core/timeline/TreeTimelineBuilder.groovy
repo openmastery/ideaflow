@@ -88,6 +88,7 @@ public class TreeTimelineBuilder {
 
 	private TreeNode createTreeNode(TimelineSegment segment) {
 		return TreeNode.builder()
+				.id(segment.id as String)
 				.indentLevel(indentLevel)
 				.type(TreeNodeType.SEGMENT)
 				.start(segment.start)
