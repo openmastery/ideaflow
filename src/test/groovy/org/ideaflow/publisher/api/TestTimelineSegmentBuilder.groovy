@@ -3,7 +3,7 @@ package org.ideaflow.publisher.api
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
 import org.ideaflow.publisher.api.timeline.TimeBandGroup
-import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.openmastery.time.MockTimeService
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.timeline.IdleTimeProcessor
@@ -27,8 +27,8 @@ class TestTimelineSegmentBuilder {
 		this.timeService = timeService
 	}
 
-	TimelineSegment build() {
-		TimelineSegment segment = TimelineSegment.builder()
+	BandTimelineSegment build() {
+		BandTimelineSegment segment = BandTimelineSegment.builder()
 				.ideaFlowBands(ideaFlowBands)
 				.timeBandGroups(timeBandGroups)
 				.build()

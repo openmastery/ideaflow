@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Timeline {
+public class BandTimeline {
 
-	private List<TimelineSegment> timelineSegments;
+	private List<BandTimelineSegment> timelineSegments;
 }

@@ -1,8 +1,8 @@
 package org.ideaflow.publisher.core.timeline
 
 import com.bancvue.rest.exception.NotFoundException
-import org.ideaflow.publisher.api.timeline.Timeline
-import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.api.timeline.BandTimeline
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService
@@ -14,20 +14,20 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-public class TimelineGenerator {
+public class BandTimelineFactory {
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
-	private TimelineSegmentFactory segmentFactory = new TimelineSegmentFactory()
+	private BandTimelineSegmentFactory segmentFactory = new BandTimelineSegmentFactory()
 	private IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
-	private TimelineSplitter timelineSplitter = new TimelineSplitter()
+	private BandTimelineSplitter timelineSplitter = new BandTimelineSplitter()
 	private RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 
 	public void disableTimelineSplitter() {
 		timelineSplitter = null
 	}
 
-	public Timeline createTaskTimeline(long taskId) {
+	public BandTimeline createTaskTimeline(long taskId) {
 		TaskEntity task = persistenceService.findTaskWithId(taskId)
 		if (task == null) {
 			throw new NotFoundException("No task with id=" + taskId);
@@ -65,18 +65,18 @@ public class TimelineGenerator {
 		}
 	}
 
-	private Timeline createTimeline(TaskEntity task, List<IdeaFlowStateEntity> ideaFlowStates,
-	                                List<IdleTimeBandEntity> idleActivities, List<EventEntity> eventList) {
-		TimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates, eventList)
+	private BandTimeline createTimeline(TaskEntity task, List<IdeaFlowStateEntity> ideaFlowStates,
+	                                    List<IdleTimeBandEntity> idleActivities, List<EventEntity> eventList) {
+		BandTimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates, eventList)
 		segment.setDescription(task.description)
 		idleTimeProcessor.collapseIdleTime(segment, idleActivities)
-		List<TimelineSegment> segments
+		List<BandTimelineSegment> segments
 		if (timelineSplitter != null) {
 			segments = timelineSplitter.splitTimelineSegment(segment)
 		} else {
 			segments = [segment]
 		}
-		Timeline timeline = Timeline.builder()
+		BandTimeline timeline = BandTimeline.builder()
 				.timelineSegments(segments)
 				.build()
 		relativeTimeProcessor.setRelativeTime(timeline)

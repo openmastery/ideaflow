@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
-import org.ideaflow.publisher.api.timeline.Timeline
+import org.ideaflow.publisher.api.timeline.BandTimeline
 import org.ideaflow.publisher.api.timeline.TreeNode
 import org.ideaflow.publisher.api.timeline.TreeNodeType
 import org.ideaflow.publisher.api.timeline.TreeTimeline
@@ -19,14 +19,14 @@ class TreeTimelineBuilderSpec extends Specification {
 		testSupport.startTaskAndAdvanceHours(1)
 	}
 
-	private Timeline createTimeline() {
-		TimelineGenerator generator = new TimelineGenerator()
-		generator.persistenceService = testSupport.persistenceService
-		generator.createTaskTimeline(testSupport.taskId)
+	private BandTimeline createTimeline() {
+		BandTimelineFactory factory = new BandTimelineFactory()
+		factory.persistenceService = testSupport.persistenceService
+		factory.createTaskTimeline(testSupport.taskId)
 	}
 
 	private TreeTimelineValidator createTreeTimelineAndValidator() {
-		Timeline timeline = createTimeline()
+		BandTimeline timeline = createTimeline()
 		TreeTimeline treeTimeline = builder.addTimeline(timeline).build()
 		new TreeTimelineValidator(treeTimeline)
 	}

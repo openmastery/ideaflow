@@ -4,14 +4,14 @@ import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.timeline.IdleTimeBand
 import org.ideaflow.publisher.api.timeline.TimeBand
 import org.ideaflow.publisher.api.timeline.TimeBandGroup
-import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 
 class IdleTimeProcessor {
 
 	private TimeBandIdleCalculator timeBandCalculator = new TimeBandIdleCalculator()
 
-	public void collapseIdleTime(TimelineSegment timelineSegment, List<IdleTimeBandEntity> idleActivities) {
+	public void collapseIdleTime(BandTimelineSegment timelineSegment, List<IdleTimeBandEntity> idleActivities) {
 		for (IdleTimeBandEntity idle : idleActivities) {
 			addIdleDuration(timelineSegment.ideaFlowBands, idle)
 

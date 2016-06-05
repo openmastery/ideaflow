@@ -2,13 +2,13 @@ package org.ideaflow.publisher.resources
 
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
-import org.ideaflow.publisher.api.timeline.Timeline
+import org.ideaflow.publisher.api.timeline.BandTimeline
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine
 import org.ideaflow.publisher.core.task.TaskEntity
-import org.ideaflow.publisher.core.timeline.TimelineGenerator
+import org.ideaflow.publisher.core.timeline.BandTimelineFactory
 import org.openmastery.time.TimeService
 
 import java.time.LocalDateTime
@@ -25,7 +25,7 @@ class TestDataSupport {
 		testSupport.disableTimelineSplitter()
 	}
 
-	Timeline createTimeline(String taskId) {
+	BandTimeline createTimeline(String taskId) {
 		switch (taskId) {
 			case "trial":
 				return createTrialAndErrorMap();
@@ -43,7 +43,7 @@ class TestDataSupport {
 		["trial", "learning", "detailed", "basic"]
 	}
 
-	Timeline createBasicTimelineWithAllBandTypes() {
+	BandTimeline createBasicTimelineWithAllBandTypes() {
 		testSupport.startTask("basic", "Basic timeline with all band types")
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How should I break down this task?")
@@ -72,7 +72,7 @@ class TestDataSupport {
 		testSupport.createTimeline()
 	}
 
-	Timeline createTrialAndErrorMap() {
+	BandTimeline createTrialAndErrorMap() {
 		testSupport.startTask("trialAndError", "Trial and error timeline map")
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How does the existing QueryBuilder work?")
@@ -123,7 +123,7 @@ class TestDataSupport {
 		testSupport.createTimeline()
 	}
 
-	Timeline createLearningNestedConflictMap() {
+	BandTimeline createLearningNestedConflictMap() {
 		testSupport.startTask("nested", "Learning nested conflict map")
 		testSupport.advanceTime(0, 1, 30)
 		testSupport.startBand(LEARNING, "Where do I need to change the ReportingEngine code? #LackOfFamiliarity")
@@ -144,7 +144,7 @@ class TestDataSupport {
 		testSupport.createTimeline()
 	}
 
-	Timeline createDetailedConflictMap() {
+	BandTimeline createDetailedConflictMap() {
 		testSupport.startTask("detail", "Detailed conflict map")
 		testSupport.advanceTime(0, 5, 10)
 		testSupport.startBand(LEARNING, "What's the plan?")
@@ -221,7 +221,7 @@ class TestDataSupport {
 		private IdeaFlowStateMachine stateMachine
 		private MockTimeService timeService = new MockTimeService()
 		private IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
-		private TimelineGenerator generator = new TimelineGenerator()
+		private BandTimelineFactory generator = new BandTimelineFactory()
 
 		void disableTimelineSplitter() {
 			generator.disableTimelineSplitter()
@@ -309,7 +309,7 @@ class TestDataSupport {
 			}
 		}
 
-		Timeline createTimeline() {
+		BandTimeline createTimeline() {
 			TaskEntity task = persistenceService.findTaskWithId(taskId)
 			generator.createTimeline(task, persistenceService.stateList, persistenceService.idleTimeBandList, persistenceService.eventList)
 		}

@@ -5,8 +5,8 @@ import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.timeline.TimeBand
 import org.ideaflow.publisher.api.timeline.TimeBandGroup
-import org.ideaflow.publisher.api.timeline.Timeline
-import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.api.timeline.BandTimeline
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.api.timeline.TreeNode
 import org.ideaflow.publisher.api.timeline.TreeNodeType
 import org.ideaflow.publisher.api.timeline.TreeTimeline
@@ -16,14 +16,14 @@ public class TreeTimelineBuilder {
 	private int indentLevel = 0
 	private List<TreeNode> treeNodes = []
 
-	public TreeTimelineBuilder addTimeline(Timeline timeline) {
-		for (TimelineSegment segment : timeline.timelineSegments) {
+	public TreeTimelineBuilder addTimeline(BandTimeline timeline) {
+		for (BandTimelineSegment segment : timeline.timelineSegments) {
 			addTimelineSegment(segment)
 		}
 		this
 	}
 
-	public TreeTimelineBuilder addTimelineSegment(TimelineSegment segment) {
+	public TreeTimelineBuilder addTimelineSegment(BandTimelineSegment segment) {
 		TreeNode node = createTreeNode(segment)
 		treeNodes.add(node)
 
@@ -86,7 +86,7 @@ public class TreeTimelineBuilder {
 		}
 	}
 
-	private TreeNode createTreeNode(TimelineSegment segment) {
+	private TreeNode createTreeNode(BandTimelineSegment segment) {
 		return TreeNode.builder()
 				.id(segment.id as String)
 				.indentLevel(indentLevel)

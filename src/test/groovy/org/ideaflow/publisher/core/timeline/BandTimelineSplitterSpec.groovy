@@ -1,8 +1,7 @@
 package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.event.EventType
-import org.ideaflow.publisher.api.timeline.TimelineSegment
-import org.ideaflow.publisher.core.activity.EditorActivityEntity
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
 
@@ -14,11 +13,11 @@ import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
-class TimelineSplitterSpec extends Specification {
+class BandTimelineSplitterSpec extends Specification {
 
 	TimelineSegmentValidator validator = new TimelineSegmentValidator()
 	TimelineTestSupport testSupport = new TimelineTestSupport()
-	TimelineSegment inputSegment
+	BandTimelineSegment inputSegment
 	LocalDateTime start
 
 	def setup() {
@@ -26,14 +25,14 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.startTaskAndAdvanceHours(1)
 	}
 
-	private List<TimelineSegment> createTimelineSegmentAndSplit() {
+	private List<BandTimelineSegment> createTimelineSegmentAndSplit() {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
 
-		TimelineSegmentFactory segmentFactory = new TimelineSegmentFactory()
+		BandTimelineSegmentFactory segmentFactory = new BandTimelineSegmentFactory()
 		inputSegment = segmentFactory.createTimelineSegment(stateList, testSupport.getEventList())
 		inputSegment.description = "initial segment"
 
-		TimelineSplitter splitter = new TimelineSplitter()
+		BandTimelineSplitter splitter = new BandTimelineSplitter()
 		splitter.splitTimelineSegment(inputSegment)
 	}
 
@@ -43,7 +42,7 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.startBandAndAdvanceHours(REWORK, 1)
 
 		when:
-		List<TimelineSegment> actualSegments = createTimelineSegmentAndSplit()
+		List<BandTimelineSegment> actualSegments = createTimelineSegmentAndSplit()
 
 		then:
 		assert inputSegment.is(actualSegments[0])
@@ -56,7 +55,7 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.startSubtaskAndAdvanceHours(3)
 
 		when:
-		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
 
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -73,7 +72,7 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.startSubtaskAndAdvanceHours(4)
 
 		when:
-		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
 
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -91,7 +90,7 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.startSubtaskAndAdvanceHours(2)
 
 		when:
-		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
 
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -109,7 +108,7 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.startSubtaskAndAdvanceHours(1)
 
 		when:
-		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
 
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -131,7 +130,7 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.startBandAndAdvanceHours(CONFLICT, 2)
 
 		when:
-		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
 
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -151,7 +150,7 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.startBandAndAdvanceHours(LEARNING, 5)
 
 		when:
-		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
 
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -174,7 +173,7 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.note()
 
 		when:
-		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
 
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -194,7 +193,7 @@ class TimelineSplitterSpec extends Specification {
 		testSupport.startSubtaskAndAdvanceHours("subtask comment", 1)
 
 		when:
-		List<TimelineSegment> segments = createTimelineSegmentAndSplit()
+		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
 
 		then:
 		assert segments[0].description == inputSegment.description

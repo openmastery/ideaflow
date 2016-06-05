@@ -20,7 +20,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimelineSegment {
+public class BandTimelineSegment {
 
 	private Long id;
 	private String description;

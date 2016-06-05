@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
-import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
 
@@ -12,9 +12,9 @@ import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
-class TimelineSegmentFactorySpec extends Specification {
+class BandTimelineSegmentFactorySpec extends Specification {
 
-	TimelineSegmentFactory factory = new TimelineSegmentFactory()
+	BandTimelineSegmentFactory factory = new BandTimelineSegmentFactory()
 	TimelineSegmentValidator validator = new TimelineSegmentValidator()
 	TimelineTestSupport testSupport = new TimelineTestSupport()
 
@@ -22,7 +22,7 @@ class TimelineSegmentFactorySpec extends Specification {
 		testSupport.startTaskAndAdvanceHours(1)
 	}
 
-	private TimelineSegment generatePrimaryTimeline() {
+	private BandTimelineSegment generatePrimaryTimeline() {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
 		factory.createTimelineSegment(stateList, testSupport.getEventList())
 	}
@@ -33,7 +33,7 @@ class TimelineSegmentFactorySpec extends Specification {
 		testSupport.endBandAndAdvanceHours(REWORK, 1)
 
 		when:
-		TimelineSegment segment = generatePrimaryTimeline()
+		BandTimelineSegment segment = generatePrimaryTimeline()
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -52,7 +52,7 @@ class TimelineSegmentFactorySpec extends Specification {
 		testSupport.endBandAndAdvanceHours(CONFLICT, 1)
 
 		when:
-		TimelineSegment segment = generatePrimaryTimeline()
+		BandTimelineSegment segment = generatePrimaryTimeline()
 
 
 		then:
@@ -72,7 +72,7 @@ class TimelineSegmentFactorySpec extends Specification {
 		testSupport.startBandAndAdvanceHours(REWORK, 2)
 
 		when:
-		TimelineSegment segment = generatePrimaryTimeline()
+		BandTimelineSegment segment = generatePrimaryTimeline()
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -92,7 +92,7 @@ class TimelineSegmentFactorySpec extends Specification {
 		testSupport.startBandAndAdvanceHours(LEARNING, 4)
 
 		when:
-		TimelineSegment segment = generatePrimaryTimeline()
+		BandTimelineSegment segment = generatePrimaryTimeline()
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -118,7 +118,7 @@ class TimelineSegmentFactorySpec extends Specification {
 		testSupport.endBandAndAdvanceHours(LEARNING, 2) //finish the group
 
 		when:
-		TimelineSegment segment = generatePrimaryTimeline()
+		BandTimelineSegment segment = generatePrimaryTimeline()
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))

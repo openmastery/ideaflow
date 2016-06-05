@@ -1,11 +1,11 @@
 package org.ideaflow.publisher.core.ideaflow
 
 import org.ideaflow.publisher.api.timeline.TimeBand
-import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.core.timeline.TimelineSegmentValidator
 import org.ideaflow.publisher.core.timeline.TimelineTestSupport
 import org.ideaflow.publisher.core.timeline.IdleTimeProcessor
-import org.ideaflow.publisher.core.timeline.TimelineSegmentFactory
+import org.ideaflow.publisher.core.timeline.BandTimelineSegmentFactory
 import spock.lang.Specification
 
 import java.time.Duration
@@ -24,11 +24,11 @@ class IdleTimeProcessorSpec extends Specification {
 		testSupport.startTaskAndAdvanceHours(1)
 	}
 
-	private TimelineSegment createTimelineSegmentAndParseIdleTime() {
+	private BandTimelineSegment createTimelineSegmentAndParseIdleTime() {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
 
-		TimelineSegmentFactory segmentFactory = new TimelineSegmentFactory()
-		TimelineSegment segment = segmentFactory.createTimelineSegment(stateList, testSupport.getEventList())
+		BandTimelineSegmentFactory segmentFactory = new BandTimelineSegmentFactory()
+		BandTimelineSegment segment = segmentFactory.createTimelineSegment(stateList, testSupport.getEventList())
 
 		IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 		idleTimeProcessor.collapseIdleTime(segment, testSupport.getIdleActivityList())
@@ -44,7 +44,7 @@ class IdleTimeProcessorSpec extends Specification {
 		testSupport.advanceHours(1)
 
 		when:
-		TimelineSegment segment = createTimelineSegmentAndParseIdleTime()
+		BandTimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -63,7 +63,7 @@ class IdleTimeProcessorSpec extends Specification {
 		testSupport.advanceHours(1)
 
 		when:
-		TimelineSegment segment = createTimelineSegmentAndParseIdleTime()
+		BandTimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -82,7 +82,7 @@ class IdleTimeProcessorSpec extends Specification {
 		testSupport.idle(4)
 
 		when:
-		TimelineSegment segment = createTimelineSegmentAndParseIdleTime()
+		BandTimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
@@ -100,7 +100,7 @@ class IdleTimeProcessorSpec extends Specification {
 		testSupport.idle(3)
 
 		when:
-		TimelineSegment segment = createTimelineSegmentAndParseIdleTime()
+		BandTimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))

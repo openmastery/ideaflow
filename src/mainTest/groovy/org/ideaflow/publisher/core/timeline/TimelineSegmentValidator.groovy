@@ -5,7 +5,7 @@ import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
 import org.ideaflow.publisher.api.timeline.TimeBand
 import org.ideaflow.publisher.api.timeline.TimeBandGroup
-import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 
 import java.time.Duration
 import java.time.LocalDateTime
@@ -35,7 +35,7 @@ class TimelineSegmentValidator {
 		}
 	}
 
-	void assertEvent(TimelineSegment segment, int index, EventType expectedType, LocalDateTime expectedPosition) {
+	void assertEvent(BandTimelineSegment segment, int index, EventType expectedType, LocalDateTime expectedPosition) {
 		assert segment.events[index] != null
 		assert segment.events[index].eventType == expectedType
 		assert segment.events[index].position == expectedPosition
@@ -78,11 +78,11 @@ class TimelineSegmentValidator {
 		expectedLinkedTimeBandCount++
 	}
 
-	void assertValidationComplete(TimelineSegment segment) {
+	void assertValidationComplete(BandTimelineSegment segment) {
 		assertValidationComplete([segment], 1)
 	}
 
-	void assertValidationComplete(List<TimelineSegment> segments, int expectedSegmentCount) {
+	void assertValidationComplete(List<BandTimelineSegment> segments, int expectedSegmentCount) {
 		assert expectedTimeBandCount == (segments.sum { it.ideaFlowBands.size() } as int)
 		assert expectedLinkedTimeBandCount == (segments.sum { countLinkedTimeBands(it) } as int)
 		assert expectedNestedTimeBandCount == (segments.sum { countNestedBands(it) } as int)
@@ -90,7 +90,7 @@ class TimelineSegmentValidator {
 		assert expectedSegmentCount == segments.size()
 	}
 
-	private int countLinkedTimeBands(TimelineSegment segment) {
+	private int countLinkedTimeBands(BandTimelineSegment segment) {
 		int linkedTimeBandCount = 0
 		segment.timeBandGroups.each { TimeBandGroup group ->
 			linkedTimeBandCount += group.linkedTimeBands.size()
@@ -98,7 +98,7 @@ class TimelineSegmentValidator {
 		linkedTimeBandCount
 	}
 
-	private int countNestedBands(TimelineSegment segment) {
+	private int countNestedBands(BandTimelineSegment segment) {
 		int nestedBandCount = sumNestedTimeBands(segment.ideaFlowBands)
 		segment.timeBandGroups.each { TimeBandGroup group ->
 			nestedBandCount += sumNestedTimeBands(group.linkedTimeBands)

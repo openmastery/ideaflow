@@ -5,8 +5,8 @@ import org.ideaflow.publisher.ComponentTest
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.task.Task
-import org.ideaflow.publisher.api.timeline.Timeline
-import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.api.timeline.BandTimeline
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 import org.ideaflow.publisher.client.ActivityClient
 import org.ideaflow.publisher.client.EventClient
 import org.ideaflow.publisher.client.IdeaFlowClient
@@ -77,10 +77,10 @@ class PrimaryScenarioSpec extends Specification {
 		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
 
 		when:
-		Timeline timeline = timelineClient.getTimelineForTask(taskId)
+		BandTimeline timeline = timelineClient.getTimelineForTask(taskId)
 
 		then:
-		List<TimelineSegment> segments = timeline.timelineSegments
+		List<BandTimelineSegment> segments = timeline.timelineSegments
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(15))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofMinutes(45))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(1))
@@ -150,10 +150,10 @@ class PrimaryScenarioSpec extends Specification {
 		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(5))
 
 		when:
-		Timeline timeline = timelineClient.getTimelineForTask(taskId)
+		BandTimeline timeline = timelineClient.getTimelineForTask(taskId)
 
 		then:
-		List<TimelineSegment> segments = timeline.timelineSegments
+		List<BandTimelineSegment> segments = timeline.timelineSegments
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(15))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofMinutes(45))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(14))
@@ -204,10 +204,10 @@ class PrimaryScenarioSpec extends Specification {
 		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
 
 		when:
-		Timeline timeline = timelineClient.getTimelineForTask(taskId)
+		BandTimeline timeline = timelineClient.getTimelineForTask(taskId)
 
 		then:
-		List<TimelineSegment> segments = timeline.timelineSegments
+		List<BandTimelineSegment> segments = timeline.timelineSegments
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(1).plusSeconds(30))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(5).plusMinutes(44).plusSeconds(2))
 		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, CONFLICT, Duration.ofMinutes(35))
@@ -259,10 +259,10 @@ class PrimaryScenarioSpec extends Specification {
 		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
 
 		when:
-		Timeline timeline = timelineClient.getTimelineForTask(taskId)
+		BandTimeline timeline = timelineClient.getTimelineForTask(taskId)
 
 		then:
-		List<TimelineSegment> segments = timeline.timelineSegments
+		List<BandTimelineSegment> segments = timeline.timelineSegments
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(5).plusSeconds(10))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofMinutes(20).plusSeconds(22))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(2).plusSeconds(10))

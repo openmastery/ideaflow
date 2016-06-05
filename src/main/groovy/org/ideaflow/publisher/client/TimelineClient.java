@@ -2,15 +2,15 @@ package org.ideaflow.publisher.client;
 
 import org.openmastery.rest.client.CrudClient;
 import org.ideaflow.publisher.api.ResourcePaths;
-import org.ideaflow.publisher.api.timeline.Timeline;
+import org.ideaflow.publisher.api.timeline.BandTimeline;
 
-public class TimelineClient extends CrudClient<Timeline, TimelineClient> {
+public class TimelineClient extends CrudClient<BandTimeline, TimelineClient> {
 
 	public TimelineClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.TIMELINE_PATH, Timeline.class);
+		super(baseUrl, ResourcePaths.TIMELINE_PATH, BandTimeline.class);
 	}
 
-	public Timeline getTimelineForTask(long taskId) {
+	public BandTimeline getTimelineForTask(long taskId) {
 		return crudClientRequest
 				.path(ResourcePaths.TASK_PATH)
 				.path(taskId)

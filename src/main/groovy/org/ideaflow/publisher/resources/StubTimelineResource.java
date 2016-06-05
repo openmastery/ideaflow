@@ -1,7 +1,7 @@
 package org.ideaflow.publisher.resources;
 
 import org.ideaflow.publisher.api.ResourcePaths;
-import org.ideaflow.publisher.api.timeline.Timeline;
+import org.ideaflow.publisher.api.timeline.BandTimeline;
 import org.ideaflow.publisher.api.timeline.TreeTimeline;
 import org.ideaflow.publisher.core.timeline.TreeTimelineBuilder;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class StubTimelineResource {
 
 	@GET
 	@Path(ResourcePaths.TIMELINE_NATURAL_PATH + ResourcePaths.TASK_PATH + "/{taskId}")
-	public Timeline getTimelineForTask(@PathParam("taskId") String taskId) {
+	public BandTimeline getTimelineForTask(@PathParam("taskId") String taskId) {
 		TestDataSupport support = new TestDataSupport();
 		support.disableTimelineSplitter();
 		return support.createTimeline(taskId);
@@ -30,10 +30,10 @@ public class StubTimelineResource {
 	@Path(ResourcePaths.TIMELINE_TREE_PATH + ResourcePaths.TASK_PATH + "/{taskId}")
 	public TreeTimeline getTimelineTreeForTask(@PathParam("taskId") String taskId) {
 		TestDataSupport support = new TestDataSupport();
-		Timeline timeline = support.createTimeline(taskId);
+		BandTimeline bandTimeline = support.createTimeline(taskId);
 
 		return new TreeTimelineBuilder()
-				.addTimeline(timeline)
+				.addTimeline(bandTimeline)
 				.build();
 	}
 

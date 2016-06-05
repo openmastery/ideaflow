@@ -1,8 +1,8 @@
 package org.ideaflow.publisher.resources;
 
 import org.ideaflow.publisher.api.ResourcePaths;
-import org.ideaflow.publisher.api.timeline.Timeline;
-import org.ideaflow.publisher.core.timeline.TimelineGenerator;
+import org.ideaflow.publisher.api.timeline.BandTimeline;
+import org.ideaflow.publisher.core.timeline.BandTimelineFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 @Component
@@ -19,11 +18,11 @@ import javax.ws.rs.core.MediaType;
 public class TimelineResource {
 
 	@Autowired
-	private TimelineGenerator timelineGenerator;
+	private BandTimelineFactory timelineGenerator;
 
 	@GET
 	@Path(ResourcePaths.TASK_PATH + "/{taskId}")
-	public Timeline getTimelineForTask(@PathParam("taskId") Long taskId) {
+	public BandTimeline getTimelineForTask(@PathParam("taskId") Long taskId) {
 		return timelineGenerator.createTaskTimeline(taskId);
 	}
 

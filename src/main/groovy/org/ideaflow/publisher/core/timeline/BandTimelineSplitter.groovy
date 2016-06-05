@@ -4,11 +4,11 @@ import org.ideaflow.publisher.api.event.Event
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.timeline.TimeBand
 import org.ideaflow.publisher.api.timeline.TimeBandComparator
-import org.ideaflow.publisher.api.timeline.TimelineSegment
+import org.ideaflow.publisher.api.timeline.BandTimelineSegment
 
-class TimelineSplitter {
+class BandTimelineSplitter {
 
-	List<TimelineSegment> splitTimelineSegment(TimelineSegment segment) {
+	List<BandTimelineSegment> splitTimelineSegment(BandTimelineSegment segment) {
 		boolean hasSubtask = segment.events.find { it.eventType == EventType.SUBTASK }
 		if (hasSubtask == false) {
 			return [segment]
@@ -16,8 +16,8 @@ class TimelineSplitter {
 
 		List timeBands = segment.getAllTimeBands()
 		Collections.sort(timeBands, TimeBandComparator.INSTANCE);
-		List<TimelineSegment> splitSegments = []
-		TimelineSegment activeSegment = new TimelineSegment()
+		List<BandTimelineSegment> splitSegments = []
+		BandTimelineSegment activeSegment = new BandTimelineSegment()
 		activeSegment.id = segment.id
 		activeSegment.description = segment.description
 
@@ -48,7 +48,7 @@ class TimelineSplitter {
 
 			if (activeSegment.ideaFlowBands || activeSegment.timeBandGroups) {
 				splitSegments << activeSegment
-				activeSegment = new TimelineSegment()
+				activeSegment = new BandTimelineSegment()
 				activeSegment.addEvent(event)
 				activeSegment.id = event.id
 				activeSegment.description = event.comment
