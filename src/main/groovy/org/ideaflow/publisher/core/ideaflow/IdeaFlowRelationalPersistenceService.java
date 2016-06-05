@@ -112,6 +112,11 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
+	public TaskEntity findTaskWithId(long taskId) {
+		return taskRepository.findOne(taskId);
+	}
+
+	@Override
 	public TaskEntity findTaskWithName(String taskName) {
 		return taskRepository.findByName(taskName);
 	}

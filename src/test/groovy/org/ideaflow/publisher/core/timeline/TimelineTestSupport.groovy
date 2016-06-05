@@ -2,6 +2,7 @@ package org.ideaflow.publisher.core.timeline
 
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
+import org.ideaflow.publisher.core.task.TaskEntity
 import org.openmastery.time.MockTimeService
 import org.ideaflow.publisher.core.activity.EditorActivityEntity
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
@@ -21,11 +22,7 @@ class TimelineTestSupport {
 	private IdeaFlowStateMachine stateMachine
 	private MockTimeService timeService = new MockTimeService()
 	private IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
-	private long taskId = 123L
-
-	TimelineTestSupport() {
-		this.stateMachine = new IdeaFlowStateMachine(taskId, timeService, persistenceService)
-	}
+	private long taskId
 
 	long getTaskId() {
 		return taskId
@@ -65,11 +62,19 @@ class TimelineTestSupport {
 	}
 
 	void startTaskAndAdvanceHours(int hours) {
-		stateMachine.startTask()
+		startTask("task", "task description")
 		timeService.plusHours(hours)
 	}
 
-	void startTask() {
+	void startTask(String name, String description) {
+		TaskEntity task = TaskEntity.builder()
+				.name(name)
+				.description(description)
+				.build();
+
+		task = persistenceService.saveTask(task)
+		taskId = task.id
+		stateMachine = new IdeaFlowStateMachine(taskId, timeService, persistenceService)
 		stateMachine.startTask()
 	}
 

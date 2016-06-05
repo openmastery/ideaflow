@@ -1,11 +1,13 @@
 package org.ideaflow.publisher.core.timeline
 
+import com.bancvue.rest.exception.NotFoundException
 import org.ideaflow.publisher.api.timeline.Timeline
 import org.ideaflow.publisher.api.timeline.TimelineSegment
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateEntity
+import org.ideaflow.publisher.core.task.TaskEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -26,11 +28,16 @@ public class TimelineGenerator {
 	}
 
 	public Timeline createTaskTimeline(long taskId) {
+		TaskEntity task = persistenceService.findTaskWithId(taskId)
+		if (task == null) {
+			throw new NotFoundException("No task with id=" + taskId);
+		}
+
 		List<IdeaFlowStateEntity> ideaFlowStates = getStateListWithActiveCompleted(taskId)
 		List<IdleTimeBandEntity> idleActivities = persistenceService.getIdleTimeBandList(taskId)
 		List<EventEntity> eventList = persistenceService.getEventList(taskId)
 
-		createTimeline(ideaFlowStates, idleActivities, eventList)
+		createTimeline(task, ideaFlowStates, idleActivities, eventList)
 	}
 
 	private List<IdeaFlowStateEntity> getStateListWithActiveCompleted(long taskId) {
@@ -58,9 +65,10 @@ public class TimelineGenerator {
 		}
 	}
 
-	private Timeline createTimeline(List<IdeaFlowStateEntity> ideaFlowStates, List<IdleTimeBandEntity> idleActivities,
-	                               List<EventEntity> eventList) {
+	private Timeline createTimeline(TaskEntity task, List<IdeaFlowStateEntity> ideaFlowStates,
+	                                List<IdleTimeBandEntity> idleActivities, List<EventEntity> eventList) {
 		TimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates, eventList)
+		segment.setDescription(task.description)
 		idleTimeProcessor.collapseIdleTime(segment, idleActivities)
 		List<TimelineSegment> segments
 		if (timelineSplitter != null) {

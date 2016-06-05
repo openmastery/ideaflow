@@ -113,6 +113,13 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
+	TaskEntity findTaskWithId(long taskId) {
+		taskList.find {
+			it.id == taskId
+		}
+	}
+
+	@Override
 	TaskEntity findTaskWithName(String taskName) {
 		taskList.find {
 			it.name == taskName
