@@ -12,7 +12,11 @@ import java.time.LocalDateTime
 
 public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceService {
 
-	private long id = 1L;
+	private long ideaFlowStateId = 1L
+	private long eventId = 1L
+	private long taskId = 1L
+	private long activityId = 1L
+	private long idleTimeBandId = 1L
 	private IdeaFlowStateEntity activeState
 	private IdeaFlowStateEntity containingState
 	private List<IdeaFlowStateEntity> stateList = []
@@ -75,28 +79,28 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 
 	@Override
 	public void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowStateEntity activeState) {
-		stateToSave.id = id++
+		stateToSave.id = ideaFlowStateId++
 		stateList.add(stateToSave)
 		saveActiveState(activeState)
 	}
 
 	@Override
 	public IdleTimeBandEntity saveIdleActivity(IdleTimeBandEntity idleActivity) {
-		idleActivity.id = id++
+		idleActivity.id = idleTimeBandId++
 		idleTimeBandList.add(idleActivity)
 		idleActivity
 	}
 
 	@Override
 	public EventEntity saveEvent(EventEntity event) {
-		event.id = id++
+		event.id = eventId++
 		eventList.add(event)
 		event
 	}
 
 	@Override
 	public EditorActivityEntity saveEditorActivity(EditorActivityEntity activity) {
-		activity.id = id++
+		activity.id = activityId++
 		editorActivityList.add(activity)
 		activity
 	}
@@ -107,7 +111,7 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 			throw new DataIntegrityViolationException("Duplicate task");
 		}
 
-		task.id = id++
+		task.id = taskId++
 		taskList.add(task)
 		task
 	}
