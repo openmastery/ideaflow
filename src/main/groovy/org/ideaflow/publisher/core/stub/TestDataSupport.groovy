@@ -1,4 +1,4 @@
-package org.ideaflow.publisher.resources
+package org.ideaflow.publisher.core.stub
 
 import org.ideaflow.publisher.api.event.EventType
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType
@@ -6,6 +6,7 @@ import org.ideaflow.publisher.api.timeline.BandTimeline
 import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService
+import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine
 import org.ideaflow.publisher.core.task.TaskEntity
 import org.ideaflow.publisher.core.timeline.BandTimelineFactory
@@ -19,31 +20,13 @@ import static IdeaFlowStateType.REWORK
 
 class TestDataSupport {
 
-	TimelineTestSupport testSupport = new TimelineTestSupport()
+	private TimelineTestSupport testSupport
 
-	void disableTimelineSplitter() {
-		testSupport.disableTimelineSplitter()
+	TestDataSupport(IdeaFlowPersistenceService persistenceService) {
+		this.testSupport = new TimelineTestSupport(persistenceService)
 	}
 
-	BandTimeline createTimeline(String taskId) {
-		switch (taskId) {
-			case "trial":
-				return createTrialAndErrorMap();
-			case "learning":
-				return createLearningNestedConflictMap();
-			case "detailed":
-				return createDetailedConflictMap();
-			case "basic":
-			default:
-				return createBasicTimelineWithAllBandTypes();
-		}
-	}
-
-	List<String> getTaskIds() {
-		["trial", "learning", "detailed", "basic"]
-	}
-
-	BandTimeline createBasicTimelineWithAllBandTypes() {
+	void createBasicTimelineWithAllBandTypes() {
 		testSupport.startTask("basic", "Basic timeline with all band types")
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How should I break down this task?")
@@ -68,11 +51,9 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 10, 43)
 		testSupport.endBand(CONFLICT, "jqPlot parameters were wrong.  Passing in [] instead of [[]]")
 		testSupport.advanceTime(0, 5, 4)
-
-		testSupport.createTimeline()
 	}
 
-	BandTimeline createTrialAndErrorMap() {
+	void createTrialAndErrorMap() {
 		testSupport.startTask("trialAndError", "Trial and error timeline map")
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How does the existing QueryBuilder work?")
@@ -119,11 +100,9 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 30, 43)
 		testSupport.endBand(CONFLICT, "Bunch of little bugs.")
 		testSupport.advanceTime(0, 0, 10)
-
-		testSupport.createTimeline()
 	}
 
-	BandTimeline createLearningNestedConflictMap() {
+	void createLearningNestedConflictMap() {
 		testSupport.startTask("nested", "Learning nested conflict map")
 		testSupport.advanceTime(0, 1, 30)
 		testSupport.startBand(LEARNING, "Where do I need to change the ReportingEngine code? #LackOfFamiliarity")
@@ -140,11 +119,9 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 15, 30)
 		testSupport.startSubtask("Final Validation")
 		testSupport.advanceTime(0, 32, 3)
-
-		testSupport.createTimeline()
 	}
 
-	BandTimeline createDetailedConflictMap() {
+	void createDetailedConflictMap() {
 		testSupport.startTask("detail", "Detailed conflict map")
 		testSupport.advanceTime(0, 5, 10)
 		testSupport.startBand(LEARNING, "What's the plan?")
@@ -180,8 +157,6 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 15, 43)
 		testSupport.endBand(CONFLICT, "Flipped if/else condition. #TranspositionMistake")
 		testSupport.advanceTime(0, 30, 3)
-
-		testSupport.createTimeline()
 	}
 
 
@@ -219,12 +194,11 @@ class TestDataSupport {
 
 		private Long taskId
 		private IdeaFlowStateMachine stateMachine
+		private IdeaFlowPersistenceService persistenceService
 		private MockTimeService timeService = new MockTimeService()
-		private IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
-		private BandTimelineFactory generator = new BandTimelineFactory()
 
-		void disableTimelineSplitter() {
-			generator.disableTimelineSplitter()
+		TimelineTestSupport(IdeaFlowPersistenceService persistenceService) {
+			this.persistenceService = persistenceService
 		}
 
 		LocalDateTime now() {
@@ -309,10 +283,6 @@ class TestDataSupport {
 			}
 		}
 
-		BandTimeline createTimeline() {
-			TaskEntity task = persistenceService.findTaskWithId(taskId)
-			generator.createTimeline(task, persistenceService.stateList, persistenceService.idleTimeBandList, persistenceService.eventList)
-		}
 	}
 
 }

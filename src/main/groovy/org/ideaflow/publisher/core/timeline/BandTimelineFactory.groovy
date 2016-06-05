@@ -23,11 +23,15 @@ public class BandTimelineFactory {
 	private BandTimelineSplitter timelineSplitter = new BandTimelineSplitter()
 	private RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 
-	public void disableTimelineSplitter() {
-		timelineSplitter = null
+	public BandTimeline createSingleSegmentBandTimelineForTask(long taskId) {
+		createTimelineForTask(taskId, false)
 	}
 
-	public BandTimeline createTaskTimeline(long taskId) {
+	public BandTimeline createSegmentedBandTimelineForTask(long taskId) {
+		createTimelineForTask(taskId, true)
+	}
+
+	private BandTimeline createTimelineForTask(long taskId, boolean split) {
 		TaskEntity task = persistenceService.findTaskWithId(taskId)
 		if (task == null) {
 			throw new NotFoundException("No task with id=" + taskId);
@@ -37,7 +41,7 @@ public class BandTimelineFactory {
 		List<IdleTimeBandEntity> idleActivities = persistenceService.getIdleTimeBandList(taskId)
 		List<EventEntity> eventList = persistenceService.getEventList(taskId)
 
-		createTimeline(task, ideaFlowStates, idleActivities, eventList)
+		createTimeline(split, task, ideaFlowStates, idleActivities, eventList)
 	}
 
 	private List<IdeaFlowStateEntity> getStateListWithActiveCompleted(long taskId) {
@@ -65,13 +69,13 @@ public class BandTimelineFactory {
 		}
 	}
 
-	private BandTimeline createTimeline(TaskEntity task, List<IdeaFlowStateEntity> ideaFlowStates,
+	private BandTimeline createTimeline(boolean split, TaskEntity task, List<IdeaFlowStateEntity> ideaFlowStates,
 	                                    List<IdleTimeBandEntity> idleActivities, List<EventEntity> eventList) {
 		BandTimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates, eventList)
 		segment.setDescription(task.description)
 		idleTimeProcessor.collapseIdleTime(segment, idleActivities)
 		List<BandTimelineSegment> segments
-		if (timelineSplitter != null) {
+		if (split) {
 			segments = timelineSplitter.splitTimelineSegment(segment)
 		} else {
 			segments = [segment]

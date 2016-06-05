@@ -10,10 +10,10 @@ public class TimelineClient extends CrudClient<BandTimeline, TimelineClient> {
 		super(baseUrl, ResourcePaths.TIMELINE_PATH, BandTimeline.class);
 	}
 
-	public BandTimeline getTimelineForTask(long taskId) {
+	public BandTimeline getBandTimelineForTask(long taskId) {
 		return crudClientRequest
-				.path(ResourcePaths.TASK_PATH)
-				.path(taskId)
+				.path(ResourcePaths.TIMELINE_BAND_PATH)
+				.queryParam("taskId", taskId)
 				.find();
 	}
 

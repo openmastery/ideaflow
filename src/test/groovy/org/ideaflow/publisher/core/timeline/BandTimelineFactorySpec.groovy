@@ -30,7 +30,7 @@ class BandTimelineFactorySpec extends Specification {
 	private BandTimeline createTaskTimeline() {
 		BandTimelineFactory factory = new BandTimelineFactory()
 		factory.persistenceService = testSupport.persistenceService
-		factory.createTaskTimeline(testSupport.taskId)
+		factory.createSegmentedBandTimelineForTask(testSupport.taskId)
 	}
 
 	def "SHOULD use task description as first segment description"() {

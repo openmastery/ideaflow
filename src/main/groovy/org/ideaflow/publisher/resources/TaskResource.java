@@ -1,16 +1,14 @@
 package org.ideaflow.publisher.resources;
 
-import com.bancvue.rest.exception.ConflictException;
 import com.bancvue.rest.exception.ConflictingEntityException;
-import org.openmastery.mapper.EntityMapper;
-import org.ideaflow.publisher.api.task.NewTask;
 import org.ideaflow.publisher.api.ResourcePaths;
+import org.ideaflow.publisher.api.task.NewTask;
 import org.ideaflow.publisher.api.task.Task;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowPersistenceService;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.ideaflow.publisher.core.task.TaskEntity;
-import org.postgresql.util.PSQLException;
+import org.openmastery.mapper.EntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;

@@ -14,4 +14,5 @@ import java.util.List;
 public class BandTimeline {
 
 	private List<BandTimelineSegment> timelineSegments;
+
 }

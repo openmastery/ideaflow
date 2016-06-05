@@ -22,7 +22,7 @@ class TreeTimelineBuilderSpec extends Specification {
 	private BandTimeline createTimeline() {
 		BandTimelineFactory factory = new BandTimelineFactory()
 		factory.persistenceService = testSupport.persistenceService
-		factory.createTaskTimeline(testSupport.taskId)
+		factory.createSegmentedBandTimelineForTask(testSupport.taskId)
 	}
 
 	private TreeTimelineValidator createTreeTimelineAndValidator() {
