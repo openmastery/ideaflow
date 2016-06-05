@@ -113,9 +113,13 @@ class TimelineTestSupport {
 	}
 
 	void note() {
+		note("")
+	}
+
+	void note(String comment) {
 		EventEntity event = EventEntity.builder()
 				.taskId(taskId)
-				.comment("")
+				.comment(comment)
 				.position(now())
 				.type(EventType.NOTE)
 				.build()
