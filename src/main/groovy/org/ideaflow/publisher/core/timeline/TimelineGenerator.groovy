@@ -38,24 +38,24 @@ public class TimelineGenerator {
 		IdeaFlowStateEntity activeState = persistenceService.getActiveState(taskId)
 		if (activeState != null) {
 			LocalDateTime stateEndTime = persistenceService.getMostRecentActivityEnd(taskId)
-			stateList.add(completeState(taskId, activeState, stateEndTime))
+			addCompleteStateIfDurationNotZero(stateList, taskId, activeState, stateEndTime)
 			IdeaFlowStateEntity containingState = persistenceService.getContainingState(taskId)
 			if (containingState != null) {
-				stateList.add(completeState(taskId, containingState, stateEndTime))
+				addCompleteStateIfDurationNotZero(stateList, taskId, containingState, stateEndTime)
 			}
 		}
 		stateList
 	}
 
-	private IdeaFlowStateEntity completeState(long taskId, IdeaFlowStateEntity state, LocalDateTime endTime) {
-		if (endTime == null) {
-			endTime = state.getStart()
+	private void addCompleteStateIfDurationNotZero(List<IdeaFlowStateEntity> stateList, long taskId, IdeaFlowStateEntity state, LocalDateTime endTime) {
+		if (endTime != null && endTime != state.start) {
+			IdeaFlowStateEntity ideaFlowState = IdeaFlowStateEntity.from(state)
+					.taskId(taskId)
+					.end(endTime)
+					.endingComment("")
+					.build();
+			stateList.add(ideaFlowState)
 		}
-		return IdeaFlowStateEntity.from(state)
-				.taskId(taskId)
-				.end(endTime)
-				.endingComment("")
-				.build();
 	}
 
 	private Timeline createTimeline(List<IdeaFlowStateEntity> ideaFlowStates, List<IdleTimeBandEntity> idleActivities,

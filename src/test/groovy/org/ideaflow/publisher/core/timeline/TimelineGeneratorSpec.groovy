@@ -131,4 +131,17 @@ class TimelineGeneratorSpec extends Specification {
 		validator.assertValidationComplete(segments, 2)
 	}
 
+	def "SHOULD not complete state if duration would be zero"() {
+		given:
+		testSupport.startBand(CONFLICT)
+
+		when:
+		Timeline timeline = createTaskTimeline()
+
+		then:
+		List<TimelineSegment> segments = timeline.timelineSegments
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
+		validator.assertValidationComplete(segments, 1)
+	}
+
 }
