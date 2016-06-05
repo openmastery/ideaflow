@@ -9,6 +9,7 @@ import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine;
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.ideaflow.publisher.core.task.TaskEntity;
 import org.openmastery.mapper.EntityMapper;
+import org.openmastery.time.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,9 @@ public class TaskResource {
 	private IdeaFlowStateMachineFactory stateMachineFactory;
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService;
+	@Autowired
+	private TimeService timeService;
+
 	private EntityMapper entityMapper = new EntityMapper();
 
 	private Task toApiTask(TaskEntity taskEntity) {
@@ -42,6 +46,7 @@ public class TaskResource {
 		TaskEntity task = TaskEntity.builder()
 				.name(newTask.getName())
 				.description(newTask.getDescription())
+				.creationDate(timeService.now())
 				.build();
 
 		TaskEntity existingTask = persistenceService.findTaskWithName(task.getName());

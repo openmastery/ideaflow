@@ -213,6 +213,7 @@ class TestDataSupport {
 			TaskEntity task = TaskEntity.builder()
 					.name(name)
 					.description(description)
+					.creationDate(timeService.now())
 					.build();
 
 			task = persistenceService.saveTask(task)

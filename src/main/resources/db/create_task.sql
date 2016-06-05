@@ -8,6 +8,7 @@ create table task (
   id bigint constraint task_pk primary key,
   name varchar(250),
   description varchar(500),
+  creation_date timestamp without time zone,
   unique (name)
 )
 

@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import java.time.LocalDateTime;
 
 @Entity(name = "task")
 @Data
@@ -27,5 +28,6 @@ public class TaskEntity {
 	private Long id;
 	private String name;
 	private String description;
+	private LocalDateTime creationDate;
 
 }
