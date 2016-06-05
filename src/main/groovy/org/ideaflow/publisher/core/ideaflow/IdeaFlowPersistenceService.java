@@ -39,6 +39,8 @@ public interface IdeaFlowPersistenceService {
 
 	TaskEntity saveTask(TaskEntity task);
 
+	TaskEntity findTaskWithId(long taskId);
+
 	TaskEntity findTaskWithName(String taskName);
 
 }

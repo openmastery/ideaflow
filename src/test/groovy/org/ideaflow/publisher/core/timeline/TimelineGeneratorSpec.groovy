@@ -33,6 +33,20 @@ class TimelineGeneratorSpec extends Specification {
 		generator.createTaskTimeline(testSupport.taskId)
 	}
 
+	def "SHOULD use task description as first segment description"() {
+		given:
+		testSupport = new TimelineTestSupport()
+		testSupport.startTask("task", "task description")
+		testSupport.advanceHours(1)
+
+		when:
+		Timeline timeline = createTaskTimeline()
+
+		then:
+		List<TimelineSegment> segments = timeline.timelineSegments
+		assert segments[0].description == "task description"
+	}
+
 	def "SHOULD end active band at last activity"() {
 		given:
 		testSupport.editor()

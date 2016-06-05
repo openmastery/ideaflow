@@ -7,6 +7,7 @@ import org.ideaflow.publisher.core.activity.IdleTimeBandEntity
 import org.ideaflow.publisher.core.event.EventEntity
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowInMemoryPersistenceService
 import org.ideaflow.publisher.core.ideaflow.IdeaFlowStateMachine
+import org.ideaflow.publisher.core.task.TaskEntity
 import org.ideaflow.publisher.core.timeline.TimelineGenerator
 import org.openmastery.time.TimeService
 
@@ -43,7 +44,7 @@ class TestDataSupport {
 	}
 
 	Timeline createBasicTimelineWithAllBandTypes() {
-		testSupport.startTask()
+		testSupport.startTask("basic", "Basic timeline with all band types")
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How should I break down this task?")
 		testSupport.advanceTime(0, 45, 0)
@@ -72,7 +73,7 @@ class TestDataSupport {
 	}
 
 	Timeline createTrialAndErrorMap() {
-		testSupport.startTask()
+		testSupport.startTask("trialAndError", "Trial and error timeline map")
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How does the existing QueryBuilder work?")
 		testSupport.advanceTime(0, 45, 0)
@@ -123,7 +124,7 @@ class TestDataSupport {
 	}
 
 	Timeline createLearningNestedConflictMap() {
-		testSupport.startTask()
+		testSupport.startTask("nested", "Learning nested conflict map")
 		testSupport.advanceTime(0, 1, 30)
 		testSupport.startBand(LEARNING, "Where do I need to change the ReportingEngine code? #LackOfFamiliarity")
 		testSupport.advanceTime(1, 45, 0)
@@ -144,7 +145,7 @@ class TestDataSupport {
 	}
 
 	Timeline createDetailedConflictMap() {
-		testSupport.startTask()
+		testSupport.startTask("detail", "Detailed conflict map")
 		testSupport.advanceTime(0, 5, 10)
 		testSupport.startBand(LEARNING, "What's the plan?")
 		testSupport.advanceTime(0, 20, 22)
@@ -214,15 +215,11 @@ class TestDataSupport {
 
 	static class TimelineTestSupport {
 
+		private Long taskId
 		private IdeaFlowStateMachine stateMachine
 		private MockTimeService timeService = new MockTimeService()
 		private IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
-		private Long taskId = new Random().nextLong()
 		private TimelineGenerator generator = new TimelineGenerator()
-
-		TimelineTestSupport() {
-			this.stateMachine = new IdeaFlowStateMachine(taskId, timeService, persistenceService)
-		}
 
 		void disableTimelineSplitter() {
 			generator.disableTimelineSplitter()
@@ -236,7 +233,15 @@ class TestDataSupport {
 			persistenceService.getEventList(taskId)
 		}
 
-		void startTask() {
+		void startTask(String name, String description) {
+			TaskEntity task = TaskEntity.builder()
+					.name(name)
+					.description(description)
+					.build();
+
+			task = persistenceService.saveTask(task)
+			taskId = task.id
+			stateMachine = new IdeaFlowStateMachine(taskId, timeService, persistenceService)
 			stateMachine.startTask()
 		}
 
@@ -302,7 +307,8 @@ class TestDataSupport {
 		}
 
 		Timeline createTimeline() {
-			generator.createTimeline(persistenceService.stateList, persistenceService.idleTimeBandList, persistenceService.eventList)
+			TaskEntity task = persistenceService.findTaskWithId(taskId)
+			generator.createTimeline(task, persistenceService.stateList, persistenceService.idleTimeBandList, persistenceService.eventList)
 		}
 	}
 
