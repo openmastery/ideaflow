@@ -1,6 +1,8 @@
 package org.ideaflow.publisher.resources;
 
 import org.ideaflow.publisher.api.ResourcePaths;
+import org.ideaflow.publisher.api.event.Event;
+import org.ideaflow.publisher.api.event.EventType;
 import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand;
 import org.ideaflow.publisher.api.timeline.TimeBand;
 import org.ideaflow.publisher.api.timeline.TimeBandGroup;
@@ -68,13 +70,36 @@ public class StubTimelineResource {
 				treeNodes.add(node);
 
 				addTimeBandNodes(segment.getAllTimeBands());
+				addNonSubtaskEvents(segment.getEvents());
 			}
 
-			Collections.sort(treeNodes);
+			sortTreeNodesAndSetEventIndentLevel();
 
 			return TreeTimeline.builder()
 					.treeNodes(treeNodes)
 					.build();
+		}
+
+		private void sortTreeNodesAndSetEventIndentLevel() {
+			Collections.sort(treeNodes);
+
+			int indentLevel = 0;
+			for (TreeNode node : treeNodes) {
+				if (node.getType() == TreeNodeType.EVENT) {
+					node.setIndentLevel(indentLevel);
+				} else {
+					indentLevel = node.getIndentLevel();
+				}
+			}
+		}
+
+		private void addNonSubtaskEvents(List<Event> events) {
+			for (Event event : events) {
+				if (event.getEventType() != EventType.SUBTASK) {
+					TreeNode node = createTreeNode(event);
+					treeNodes.add(node);
+				}
+			}
 		}
 
 		private void addTimeBandNodes(List<? extends TimeBand> timeBands) {
@@ -137,6 +162,17 @@ public class StubTimelineResource {
 					.end(timeBand.getEnd())
 					.relativeStart(timeBand.getRelativeStart())
 					.duration(timeBand.getDuration())
+					.build();
+		}
+
+		private TreeNode createTreeNode(Event event) {
+			return TreeNode.builder()
+					.id(Long.toString(event.getId()))
+					.indentLevel(indentLevel)
+					.type(TreeNodeType.EVENT)
+					.start(event.getPosition())
+					.end(event.getPosition())
+					.relativeStart(event.getRelativeStart())
 					.build();
 		}
 
