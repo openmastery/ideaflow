@@ -17,6 +17,8 @@ package org.ideaflow.publisher.api;
 
 public class ResourcePaths {
 
+	public static final String ID_PATH = "/id";
+
 	// task paths
 	public static final String TASK_PATH = "/task";
 	public static final String ACTIVATE_PATH = "/activate";

@@ -17,6 +17,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -60,6 +61,17 @@ public class TaskResource {
 
 		return entityMapper.mapIfNotNull(task, Task.class);
 	}
+
+	@GET
+	@Path(ResourcePaths.ID_PATH + "/{id}")
+	public Task findTaskWithId(@PathParam("id") Long taskId) {
+		TaskEntity task = persistenceService.findTaskWithId(taskId);
+		if (task == null) {
+			throw new NotFoundException();
+		}
+		return toApiTask(task);
+	}
+
 
 	@GET
 	public Task findTaskWithName(@QueryParam("taskName") String taskName) {
