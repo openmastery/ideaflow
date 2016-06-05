@@ -22,7 +22,7 @@ class EventResourceSpec extends Specification {
 	private void assertEventPosted(EventType expectedType, String comment) {
 		EventEntity expectedEvent = EventEntity.builder()
 				.taskId(taskId)
-				.eventType(expectedType)
+				.type(expectedType)
 				.comment(comment)
 				.build()
 

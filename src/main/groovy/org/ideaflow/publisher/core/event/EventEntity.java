@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.ideaflow.publisher.api.event.EventType;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,6 +34,8 @@ public class EventEntity {
 	private LocalDateTime position;
 
 	private String comment;
-	private EventType eventType;
+
+	@Enumerated(EnumType.STRING)
+	private EventType type;
 
 }

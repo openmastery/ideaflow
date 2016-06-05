@@ -80,7 +80,7 @@ class TimelineTestSupport {
 	void startSubtaskAndAdvanceHours(String comment, int hours) {
 		EventEntity event = EventEntity.builder()
 				.taskId(taskId)
-				.eventType(EventType.SUBTASK)
+				.type(EventType.SUBTASK)
 				.position(timeService.now())
 				.comment(comment)
 				.build()
@@ -117,7 +117,7 @@ class TimelineTestSupport {
 				.taskId(taskId)
 				.comment("")
 				.position(now())
-				.eventType(EventType.NOTE)
+				.type(EventType.NOTE)
 				.build()
 		persistenceService.saveEvent(event)
 	}

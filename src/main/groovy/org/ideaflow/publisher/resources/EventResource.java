@@ -30,7 +30,7 @@ public class EventResource {
 				.position(timeService.now())
 				.taskId(event.getTaskId())
 				.comment(event.getComment())
-				.eventType(type)
+				.type(type)
 				.build();
 	}
 

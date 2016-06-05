@@ -84,7 +84,7 @@ class TimelineSegmentFactory {
 				.taskId(subtask.taskId)
 				.position(subtask.position)
 				.comment(subtask.comment)
-				.eventType(subtask.eventType)
+				.eventType(subtask.type)
 				.build()
 		subtaskEvent
 	}

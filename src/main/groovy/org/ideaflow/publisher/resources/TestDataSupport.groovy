@@ -242,7 +242,7 @@ class TestDataSupport {
 
 		void startSubtask(String comment) {
 			EventEntity event = EventEntity.builder()
-					.eventType(EventType.SUBTASK)
+					.type(EventType.SUBTASK)
 					.position(timeService.now())
 					.comment(comment)
 					.build()
@@ -257,7 +257,7 @@ class TestDataSupport {
 
 		void note(String comment) {
 			EventEntity note = EventEntity.builder()
-					.eventType(EventType.NOTE)
+					.type(EventType.NOTE)
 					.position(timeService.now())
 					.comment(comment)
 					.build()
