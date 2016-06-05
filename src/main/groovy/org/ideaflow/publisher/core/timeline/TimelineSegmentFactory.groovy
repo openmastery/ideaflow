@@ -23,6 +23,7 @@ class TimelineSegmentFactory {
 		for (IdeaFlowStateEntity state : ideaFlowStates) {
 			IdeaFlowBand timeBand = IdeaFlowBand.builder()
 					.id(state.id)
+					.taskId(state.taskId)
 					.type(state.type)
 					.start(state.start)
 					.end(state.end)

@@ -247,6 +247,7 @@ class TestDataSupport {
 
 		void startSubtask(String comment) {
 			EventEntity event = EventEntity.builder()
+					.taskId(taskId)
 					.type(EventType.SUBTASK)
 					.position(timeService.now())
 					.comment(comment)
