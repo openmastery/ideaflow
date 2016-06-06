@@ -1,2 +1,11 @@
-add isLinkedToPrevious to org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
- - add validations to PrimaryScenarioSpec and any others
+Bugs in UI caused by API changes that were missed in tests:
+
+1. Events and TimeSegments disappeared from API because events were not being persisted with taskId, and thus not being retrieved.
+
+2. When switching from TimelineSegment to BandTimeline (one segment) several fields disappeared (start/end/duration)
+
+3. UI depends on all ids being populated and consistent between timeline/band and timeline/tree views.
+
+4. UI depends on all ids being unique across timeBands and timeGroups, events must be unique across events
+
+5. TimeSegment ids are expected to have an id matching an event id, or be null (first segment)
