@@ -28,26 +28,26 @@ public class TimelineResource {
 
 	@GET
 	@Path(ResourcePaths.TIMELINE_BAND_PATH)
-	public BandTimeline getBandTimelineForTask(@QueryParam("taskId") Long taskId, @QueryParam("taskName") String taskName) {
-		Long timebandTaskId = getTaskId(taskId, taskName);
-		return timelineGenerator.createBandTimelineForTask(timebandTaskId);
+	public BandTimeline getBandTimelineForTask(@QueryParam("taskId") Long optionalTaskId, @QueryParam("taskName") String optionalTaskName) {
+		Long taskId = getTaskId(optionalTaskId, optionalTaskName);
+		return timelineGenerator.createBandTimelineForTask(taskId);
 	}
 
 	@GET
 	@Path(ResourcePaths.TIMELINE_TREE_PATH)
-	public TreeTimeline getTreeTimelineTreeForTask(@QueryParam("taskId") Long taskId, @QueryParam("taskName") String taskName) {
-		Long timebandTaskId = getTaskId(taskId, taskName);
-		return timelineGenerator.createTreeTimelineForTask(timebandTaskId);
+	public TreeTimeline getTreeTimelineTreeForTask(@QueryParam("taskId") Long optionalTaskId, @QueryParam("taskName") String optionalTaskName) {
+		Long taskId = getTaskId(optionalTaskId, optionalTaskName);
+		return timelineGenerator.createTreeTimelineForTask(taskId);
 	}
 
-	private Long getTaskId(Long taskId, String taskName) {
-		if (taskId != null) {
-			return taskId;
+	private Long getTaskId(Long optionalTaskId, String optionalTaskName) {
+		if (optionalTaskId != null) {
+			return optionalTaskId;
 		}
-		if (taskName != null) {
-			TaskEntity task = persistenceService.findTaskWithName(taskName);
+		if (optionalTaskName != null) {
+			TaskEntity task = persistenceService.findTaskWithName(optionalTaskName);
 			if (task == null) {
-				throw new NotFoundException("No task with name=" + taskName);
+				throw new NotFoundException("No task with name=" + optionalTaskName);
 			}
 			return task.getId();
 		}
