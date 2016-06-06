@@ -1,13 +1,11 @@
 package org.ideaflow.publisher.core.timeline;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand;
 import org.ideaflow.publisher.api.event.Event;
+import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand;
 import org.ideaflow.publisher.api.timeline.TimeBand;
 import org.ideaflow.publisher.api.timeline.TimeBandComparator;
 import org.ideaflow.publisher.api.timeline.TimeBandGroup;
@@ -31,39 +29,33 @@ public class BandTimelineSegment {
 	private List<TimeBandGroup> timeBandGroups = new ArrayList<>();
 	private List<Event> events = new ArrayList<>();
 
-	@JsonIgnore
 	public List<TimeBand> getAllTimeBands() {
 		List<TimeBand> allTimeBands = new ArrayList<>(ideaFlowBands);
 		allTimeBands.addAll(timeBandGroups);
 		return allTimeBands;
 	}
 
-	@JsonIgnore
 	public List<TimeBand> getAllTimeBandsSortedByStartTime() {
 		List<TimeBand> allTimeBands = getAllTimeBands();
 		Collections.sort(allTimeBands, TimeBandComparator.INSTANCE);
 		return allTimeBands;
 	}
 
-	@JsonGetter
 	public LocalDateTime getStart() {
 		List<TimeBand> sortedTimeBands = getAllTimeBandsSortedByStartTime();
 		return sortedTimeBands.get(0).getStart();
 	}
 
-	@JsonGetter
 	public LocalDateTime getEnd() {
 		List<TimeBand> sortedTimeBands = getAllTimeBandsSortedByStartTime();
 		return sortedTimeBands.get(sortedTimeBands.size() - 1).getStart();
 	}
 
-	@JsonGetter
 	public long getRelativeStart() {
 		List<TimeBand> sortedTimeBands = getAllTimeBandsSortedByStartTime();
 		return sortedTimeBands.get(0).getRelativeStart();
 	}
 
-	@JsonGetter
 	public Duration getDuration() {
 		Duration duration = TimeBand.sumDuration(ideaFlowBands);
 		return duration.plus(TimeBand.sumDuration(timeBandGroups));
