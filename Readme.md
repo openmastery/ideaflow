@@ -1,6 +1,11 @@
 # To Run
 
+Install/setup docker (instructions below), then:
+
 ```
+git clone https://github.com/ideaflow/common-rest.git
+./gradlew publishLocal
+
 git clone git@github.com:ideaflow/ifm-publisher.git
 ./gradlew bootRun
 ```
