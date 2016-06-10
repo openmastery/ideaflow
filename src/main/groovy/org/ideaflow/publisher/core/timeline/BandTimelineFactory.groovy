@@ -75,7 +75,6 @@ public class BandTimelineFactory {
 			IdeaFlowStateEntity ideaFlowState = IdeaFlowStateEntity.from(state)
 					.taskId(taskId)
 					.end(endTime)
-					.endingComment("")
 					.build();
 			stateList.add(ideaFlowState)
 		}

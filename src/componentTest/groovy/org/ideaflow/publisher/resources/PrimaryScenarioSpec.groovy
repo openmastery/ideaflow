@@ -1,33 +1,28 @@
 package org.ideaflow.publisher.resources
 
-import org.openmastery.time.MockTimeService
 import org.ideaflow.publisher.ComponentTest
-import org.ideaflow.publisher.api.event.EventType
-import org.ideaflow.publisher.api.ideaflow.IdeaFlowBand
 import org.ideaflow.publisher.api.task.Task
 import org.ideaflow.publisher.api.timeline.BandTimeline
-import org.ideaflow.publisher.core.timeline.BandTimelineSegment
+import org.ideaflow.publisher.api.timeline.TreeTimeline
 import org.ideaflow.publisher.client.ActivityClient
 import org.ideaflow.publisher.client.EventClient
 import org.ideaflow.publisher.client.IdeaFlowClient
 import org.ideaflow.publisher.client.TaskClient
 import org.ideaflow.publisher.client.TimelineClient
-import org.ideaflow.publisher.core.timeline.TimelineSegmentValidator
+import org.ideaflow.publisher.core.timeline.TimelineValidator
+import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.time.Duration
 import java.time.LocalDateTime
 
+import static org.ideaflow.publisher.api.event.EventType.SUBTASK
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
 import static org.ideaflow.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
-// TODO: this test needs to be updated to account for the change in how timelines work - specifically,
-// band timeline is no longer segmented
-@Ignore
 @ComponentTest
 class PrimaryScenarioSpec extends Specification {
 
@@ -43,7 +38,6 @@ class PrimaryScenarioSpec extends Specification {
 	private ActivityClient activityClient
 	@Autowired
 	private TimelineClient timelineClient
-	private TimelineSegmentValidator validator = new TimelineSegmentValidator()
 	private LocalDateTime start
 
 	def setup() {
@@ -81,24 +75,23 @@ class PrimaryScenarioSpec extends Specification {
 		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
 
 		when:
-		BandTimeline timeline = timelineClient.getBandTimelineForTask(taskId)
+		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
+		TreeTimeline treeTimeline = timelineClient.getTreeTimelineForTask(taskId)
 
 		then:
-		List<BandTimelineSegment> segments = timeline.timelineSegments
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(15))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofMinutes(45))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(1))
-		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusMinutes(46).plusSeconds(15))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1).plusMinutes(13))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 1, REWORK, Duration.ofMinutes(40).plusSeconds(12))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 2, PROGRESS, Duration.ofHours(1).plusMinutes(15).plusSeconds(30))
-		validator.assertEvent(segments[2], 0, EventType.SUBTASK, start.plusHours(3).plusMinutes(54).plusSeconds(57))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(15).plusSeconds(10))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 1, CONFLICT, Duration.ofMinutes(10).plusSeconds(43))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(5).plusSeconds(45))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 3, CONFLICT, Duration.ofMinutes(10).plusSeconds(43))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 4, PROGRESS, Duration.ofMinutes(5).plusSeconds(4))
-		validator.assertValidationComplete(segments, 3)
+		TimelineValidator validator = new TimelineValidator(bandTimeline, treeTimeline)
+		validator.assertIdeaFlowBand(PROGRESS, Duration.ofSeconds(15))
+		validator.assertIdeaFlowBand(LEARNING, Duration.ofMinutes(45))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1h14m"))
+		validator.assertSegmentStartAndProgressNode(Duration.parse("PT1h13m"))
+		validator.assertIdeaFlowBand(REWORK, Duration.parse("PT40m12s"))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1h30m40s"))
+		validator.assertSegmentStartAndProgressNode(Duration.parse("PT15m10s"))
+		validator.assertIdeaFlowBand(CONFLICT, Duration.parse("PT10m43s"))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT5m45s"))
+		validator.assertIdeaFlowBand(CONFLICT, Duration.parse("PT10m43s"))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT5m4s"))
+		validator.assertValidationComplete()
 	}
 
 	def createTrialAndErrorMap() {
@@ -154,35 +147,32 @@ class PrimaryScenarioSpec extends Specification {
 		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(5))
 
 		when:
-		BandTimeline timeline = timelineClient.getBandTimelineForTask(taskId)
+		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
+		TreeTimeline treeTimeline = timelineClient.getTreeTimelineForTask(taskId)
 
 		then:
-		List<BandTimelineSegment> segments = timeline.timelineSegments
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(15))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofMinutes(45))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(14))
-
-		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusMinutes(59).plusSeconds(15))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.ofHours(2).plusMinutes(15).plusSeconds(10))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, CONFLICT, Duration.ofMinutes(15))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, LEARNING, Duration.ofMinutes(42))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 2, REWORK, Duration.ofHours(1).plusMinutes(18))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 3, CONFLICT, Duration.ofMinutes(5).plusSeconds(26))
+		TimelineValidator validator = new TimelineValidator(bandTimeline, treeTimeline)
+		validator.assertIdeaFlowBand(PROGRESS, Duration.ofSeconds(15))
+		validator.assertIdeaFlowBand(LEARNING, Duration.ofMinutes(45))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT2h29m10s"))
+		validator.assertSegmentStartAndProgressNode(Duration.parse("PT2h15m10s"))
+		validator.assertTimeBandGroupNode(Duration.parse("PT5h2m50s"))
+		validator.assertLinkedBand(CONFLICT, Duration.ofMinutes(15))
+		validator.assertLinkedBand(LEARNING, Duration.ofMinutes(42))
+		validator.assertLinkedBand(REWORK, Duration.parse("PT1h18m"))
+		validator.assertLinkedBand(CONFLICT, Duration.parse("PT5m26s"))
 		// TODO: there's 10 seconds of the rework band that disappears, is that expected?
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 4, LEARNING, Duration.ofMinutes(35).plusSeconds(4))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 5, REWORK, Duration.ofHours(1).plusMinutes(14).plusSeconds(34))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 6, CONFLICT, Duration.ofMinutes(15).plusSeconds(10))
+		validator.assertLinkedBand(LEARNING, Duration.parse("PT35m4s"))
+		validator.assertLinkedBand(REWORK, Duration.parse("PT1h14m34s"))
+		validator.assertLinkedBand(CONFLICT, Duration.parse("PT15m10s"))
 		// TODO: there's 10 seconds of the rework band that disappears, is that expected?
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 7, LEARNING, Duration.ofMinutes(5).plusSeconds(24))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 8, REWORK, Duration.ofMinutes(32).plusSeconds(12))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 1, PROGRESS, Duration.ofMinutes(50).plusSeconds(3))
-
-		validator.assertEvent(segments[2], 0, EventType.SUBTASK, start.plusHours(9).plusMinutes(7).plusSeconds(18))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(10))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 1, CONFLICT, Duration.ofMinutes(30).plusSeconds(43))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 2, PROGRESS, Duration.ofSeconds(10))
-
-		validator.assertValidationComplete(segments, 3)
+		validator.assertLinkedBand(LEARNING, Duration.parse("PT5m24s"))
+		validator.assertLinkedBand(REWORK, Duration.parse("PT32m12s"))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT50m13s"))
+		validator.assertSegmentStartAndProgressNode(Duration.parse("PT10s"))
+		validator.assertIdeaFlowBand(CONFLICT, Duration.parse("PT30m43s"))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.ofSeconds(10))
+		validator.assertValidationComplete()
 	}
 
 	def createLearningNestedConflictMap() {
@@ -208,20 +198,18 @@ class PrimaryScenarioSpec extends Specification {
 		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
 
 		when:
-		BandTimeline timeline = timelineClient.getBandTimelineForTask(taskId)
+		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
+		TreeTimeline treeTimeline = timelineClient.getTreeTimelineForTask(taskId)
 
 		then:
-		List<BandTimelineSegment> segments = timeline.timelineSegments
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(1).plusSeconds(30))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(5).plusMinutes(44).plusSeconds(2))
-		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, CONFLICT, Duration.ofMinutes(35))
-		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 1, CONFLICT, Duration.ofMinutes(46).plusSeconds(30))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(15).plusSeconds(30))
-
-		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(6).plusMinutes(1).plusSeconds(2))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(32).plusSeconds(3))
-
-		validator.assertValidationComplete(segments, 2)
+		TimelineValidator validator = new TimelineValidator(bandTimeline, treeTimeline)
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1m30s"))
+		validator.assertIdeaFlowBand(LEARNING, Duration.parse("PT5h44m2s"))
+		validator.assertNestedTimeBand(CONFLICT, Duration.ofMinutes(35))
+		validator.assertNestedTimeBand(CONFLICT, Duration.parse("PT46m30s"))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT47m33s"))
+		validator.assertSegmentStartAndProgressNode(Duration.parse("PT32m3s"))
+		validator.assertValidationComplete()
 	}
 
 	def createDetailedConflictMap() {
@@ -263,32 +251,26 @@ class PrimaryScenarioSpec extends Specification {
 		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
 
 		when:
-		BandTimeline timeline = timelineClient.getBandTimelineForTask(taskId)
+		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
+		TreeTimeline treeTimeline = timelineClient.getTreeTimelineForTask(taskId)
 
 		then:
-		List<BandTimelineSegment> segments = timeline.timelineSegments
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(5).plusSeconds(10))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofMinutes(20).plusSeconds(22))
-		validator.assertTimeBand(segments[0].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(2).plusSeconds(10))
-
-		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusMinutes(27).plusSeconds(42))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.ofMinutes(35).plusSeconds(5))
-
-		validator.assertEvent(segments[2], 0, EventType.SUBTASK, start.plusHours(1).plusMinutes(2).plusSeconds(47))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1).plusMinutes(15))
-		List<IdeaFlowBand> linkedTimeBands = segments[2].timeBandGroups[0].linkedTimeBands
-		validator.assertLinkedTimeBand(linkedTimeBands, 0, CONFLICT, Duration.ofMinutes(14).plusSeconds(9))
-		validator.assertLinkedTimeBand(linkedTimeBands, 1, REWORK, Duration.ofHours(1).plusMinutes(14).plusSeconds(38))
-		validator.assertNestedTimeBand(linkedTimeBands[1].nestedBands, 0, CONFLICT, Duration.ofMinutes(15).plusSeconds(43))
-		validator.assertNestedTimeBand(linkedTimeBands[1].nestedBands, 1, CONFLICT, Duration.ofMinutes(7).plusSeconds(26))
-		validator.assertTimeBand(segments[2].ideaFlowBands, 1, PROGRESS, Duration.ofMinutes(3).plusSeconds(5))
-
-		validator.assertEvent(segments[3], 0, EventType.SUBTASK, start.plusHours(3).plusMinutes(49).plusSeconds(39))
-		validator.assertTimeBand(segments[3].ideaFlowBands, 0, PROGRESS, Duration.ofSeconds(30))
-		validator.assertTimeBand(segments[3].ideaFlowBands, 1, CONFLICT, Duration.ofMinutes(15).plusSeconds(43))
-		validator.assertTimeBand(segments[3].ideaFlowBands, 2, PROGRESS, Duration.ofMinutes(30).plusSeconds(3))
-
-		validator.assertValidationComplete(segments, 4)
+		TimelineValidator validator = new TimelineValidator(bandTimeline, treeTimeline)
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT5m10s"))
+		validator.assertIdeaFlowBand(LEARNING, Duration.parse("PT20m22s"))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1h52m15s"))
+		validator.assertSegmentStartAndProgressNode(Duration.parse("PT35m5s"))
+		validator.assertSegmentStartAndProgressNode(Duration.parse("PT1h15m"))
+		validator.assertTimeBandGroupNode(Duration.parse("PT1h28m47s"))
+		validator.assertLinkedBand(CONFLICT, Duration.parse("PT14m9s"))
+		validator.assertLinkedBand(REWORK, Duration.parse("PT1h14m38s"))
+		validator.assertLinkedNestedTimeBand(CONFLICT, Duration.parse("PT15m43s"))
+		validator.assertLinkedNestedTimeBand(CONFLICT, Duration.parse("PT7m26s"))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT3m35s"))
+		validator.assertSegmentStartAndProgressNode(Duration.parse("PT30s"))
+		validator.assertIdeaFlowBand(CONFLICT, Duration.parse("PT15m43s"))
+		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT30m3s"))
+		validator.assertValidationComplete()
 	}
 
 }
