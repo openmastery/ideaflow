@@ -17,6 +17,7 @@ package org.openmastery.publisher.config;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import org.openmastery.rest.config.ObjectMapperContextResolver;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -31,6 +32,7 @@ public class JerseyConfig extends ResourceConfig {
 		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
 		packages("org.openmastery.publisher.config");
 		packages("org.openmastery.publisher.resources");
+		register(ObjectMapperContextResolver.class);
 	}
 
 }

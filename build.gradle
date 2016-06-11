@@ -13,12 +13,28 @@ buildscript {
 }
 
 apply plugin: "com.bancvue.core-oss"
+apply plugin: "com.bancvue.maven-publish-ext"
 apply plugin: "spring-boot"
 apply plugin: "net.jokubasdargis.build-timer"
 
 repositories {
 	mavenLocal()
 	mavenCentral()
+}
+
+configurations {
+	client
+}
+
+sourceSets {
+	client {
+		java {
+			srcDir "src/main/java"
+			include "org/openmastery/rest/**"
+			include "org/openmastery/publisher/api/**"
+			include "org/openmastery/publisher/client/**"
+		}
+	}
 }
 
 dependencies {
@@ -41,6 +57,10 @@ dependencies {
 	compile "com.google.guava:guava:18.0"
 	compile "org.projectlombok:lombok:1.16.4"
 
+	clientCompile "com.bancvue:common-rest:2.+"
+	clientCompile "org.projectlombok:lombok:1.16.4"
+	clientCompile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.3'
+
 	mainTestCompile 'com.thedeanda:lorem:2.0'
 	mainTestCompile "org.fluttercode.datafactory:datafactory:0.8"
 	mainTestCompile("org.spockframework:spock-spring:1.0-groovy-2.4") {
@@ -50,4 +70,11 @@ dependencies {
 	testCompile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
 	testCompile "org.springframework.boot:spring-boot-starter-test"
 	testCompile "commons-io:commons-io:2.4"
+}
+
+sourceSets.main.java.srcDirs = []
+sourceSets.main.groovy.srcDirs += ["src/main/java"]
+
+publishing_ext {
+	publication('client')
 }
