@@ -30,8 +30,8 @@ public class JerseyConfig extends ResourceConfig {
 	@PostConstruct
 	public void initialize() {
 		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
-		packages("org.openmastery.publisher.config");
 		packages("org.openmastery.publisher.resources");
+		register(CORSResponseFilter.class);
 		register(ObjectMapperContextResolver.class);
 	}
 
