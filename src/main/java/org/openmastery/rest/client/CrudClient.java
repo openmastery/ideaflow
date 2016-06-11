@@ -19,7 +19,7 @@ package org.openmastery.rest.client;
 import com.bancvue.rest.client.ClientRequestFactory;
 import org.openmastery.rest.api.ApiEntity;
 import org.openmastery.rest.client.response.ResponseInspector;
-import org.openmastery.publisher.config.ObjectMapperContextResolver;
+import org.openmastery.rest.config.ObjectMapperContextResolver;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
