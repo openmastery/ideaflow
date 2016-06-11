@@ -42,6 +42,42 @@ cd ifm-publisher
 
 Import project or module into IDEA and get to coding.
 
+## Install/Setup Docker
+
+To install, follow instructions here:
+
+https://docs.docker.com/machine/install-machine/
+
+Then to start the machine:
+
+```
+docker-machine start default
+```
+
+To enable Docker in your current shell, run:
+
+```
+eval "$(docker-machine env default)"
+```
+
+Finally, to configure the machine, you'll need to add an entry to your /etc/hosts
+configuration.  First, run:
+
+```
+docker-machine env default
+```
+
+And copy the IP address from the configuration line that looks like this:
+
+```
+export DOCKER_HOST="tcp://<ip-address>:2376"
+```
+
+Edit your /etc/hosts file and add:
+
+```
+<ip-address>	local.docker
+```
 
 ## Postgres
 
@@ -68,3 +104,12 @@ docker create --name=postgres --publish=5432:5432 --env="POSTGRES_USER=postgres"
 
 docker start postgres
 ```
+
+## Troubleshooting Setup
+
+If you get an error on starting up the app that looks like:
+
+"org.postgresql.util.PSQLException: Connection refused." 
+
+That means the application is unable to connect to Docker.  
+Run through the docker setup/install steps.
