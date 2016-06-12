@@ -1,11 +1,11 @@
-package org.openmastery.publisher.api.timeline;
+package org.openmastery.publisher.core.timeline;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TimeBand<T extends TimeBand> {
+public abstract class TimeBandModel<T extends TimeBandModel> {
 
 	private long relativeStart;
 
@@ -23,7 +23,7 @@ public abstract class TimeBand<T extends TimeBand> {
 
 	public abstract Duration getDuration();
 
-	public abstract List<? extends TimeBand> getContainedBands();
+	public abstract List<? extends TimeBandModel> getContainedBands();
 
 	public boolean contains(LocalDateTime position) {
 			return (position.isAfter(getStart()) && position.isBefore(getEnd()))
@@ -62,8 +62,8 @@ public abstract class TimeBand<T extends TimeBand> {
 
 	protected abstract T internalSplitAndReturnRightSide(LocalDateTime position);
 
-	public static <TB extends TimeBand> List<TB> splitAndReturnLeftSide(List<TB> timeBands, LocalDateTime position) {
-		List<TB> splitTimeBands = new ArrayList<TB>();
+	public static <TB extends TimeBandModel> List<TB> splitAndReturnLeftSide(List<TB> timeBands, LocalDateTime position) {
+		List<TB> splitTimeBands = new ArrayList<>();
 		for (TB timeBand : timeBands) {
 			TB splitTimeBand = (TB) timeBand.splitAndReturnLeftSide(position);
 			if (splitTimeBand != null) {
@@ -73,8 +73,8 @@ public abstract class TimeBand<T extends TimeBand> {
 		return splitTimeBands;
 	}
 
-	public static <TB extends TimeBand> List<TB> splitAndReturnRightSide(List<TB> timeBands, LocalDateTime position) {
-		List<TB> splitTimeBands = new ArrayList<TB>();
+	public static <TB extends TimeBandModel> List<TB> splitAndReturnRightSide(List<TB> timeBands, LocalDateTime position) {
+		List<TB> splitTimeBands = new ArrayList<>();
 		for (TB timeBand : timeBands) {
 			TB splitTimeBand = (TB) timeBand.splitAndReturnRightSide(position);
 			if (splitTimeBand != null) {
@@ -84,9 +84,9 @@ public abstract class TimeBand<T extends TimeBand> {
 		return splitTimeBands;
 	}
 
-	public static Duration sumDuration(List<? extends TimeBand> ideaFlowBands) {
+	public static Duration sumDuration(List<? extends TimeBandModel> ideaFlowBands) {
 		Duration duration = Duration.ZERO;
-		for (TimeBand ideaFlowBand : ideaFlowBands) {
+		for (TimeBandModel ideaFlowBand : ideaFlowBands) {
 			duration = duration.plus(ideaFlowBand.getDuration());
 		}
 		return duration;

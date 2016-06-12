@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Data
@@ -21,7 +20,7 @@ public class TreeNode implements Comparable<TreeNode> {
 	private LocalDateTime start;
 	private LocalDateTime end;
 	private TreeNodeType type;
-	private Duration duration;
+	private Long duration;
 
 	private String startingComment;
 	private String endingComment;

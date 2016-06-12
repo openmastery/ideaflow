@@ -2,9 +2,7 @@ package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
-import org.openmastery.publisher.api.timeline.TimeBand
-import org.openmastery.publisher.api.timeline.TimeBandGroup
+import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.api.timeline.TreeNode
 import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.publisher.api.timeline.TreeNodeType
@@ -60,22 +58,22 @@ public class TreeTimelineBuilder {
 		}
 	}
 
-	private void addTimeBandNodes(List<? extends TimeBand> timeBands) {
+	private void addTimeBandNodes(List<? extends TimeBandModel> timeBands) {
 		indentLevel++
-		for (TimeBand timeBand : timeBands) {
+		for (TimeBandModel timeBand : timeBands) {
 			addTimeBandNode(timeBand)
 		}
 		indentLevel--
 	}
 
-	private void addTimeBandNode(TimeBand timeBand) {
-		if (timeBand instanceof IdeaFlowBand) {
-			IdeaFlowBand ideaFlowBand = timeBand as IdeaFlowBand
+	private void addTimeBandNode(TimeBandModel timeBand) {
+		if (timeBand instanceof IdeaFlowBandModel) {
+			IdeaFlowBandModel ideaFlowBand = timeBand as IdeaFlowBandModel
 			TreeNode node = createTreeNode(ideaFlowBand)
 			treeNodes.add(node)
 			addTimeBandNodes(ideaFlowBand.nestedBands)
-		} else if (timeBand instanceof TimeBandGroup) {
-			TimeBandGroup timeBandGroup = timeBand as TimeBandGroup
+		} else if (timeBand instanceof TimeBandGroupModel) {
+			TimeBandGroupModel timeBandGroup = timeBand as TimeBandGroupModel
 			TreeNode node = createTreeNode(timeBandGroup)
 			treeNodes.add(node)
 			addTimeBandNodes(timeBandGroup.linkedTimeBands)
@@ -93,11 +91,11 @@ public class TreeTimelineBuilder {
 				.end(segment.end)
 				.relativeStart(segment.relativeStart)
 				.startingComment(segment.description)
-				.duration(segment.duration)
+				.duration(segment.duration.seconds)
 				.build()
 	}
 
-	private TreeNode createTreeNode(IdeaFlowBand ideaFlowBand) {
+	private TreeNode createTreeNode(IdeaFlowBandModel ideaFlowBand) {
 		return TreeNode.builder()
 				.id(ideaFlowBand.id as String)
 				.indentLevel(indentLevel)
@@ -108,11 +106,11 @@ public class TreeTimelineBuilder {
 				.startingComment(ideaFlowBand.startingComment)
 				.endingComment(ideaFlowBand.endingComent)
 				.bandType(ideaFlowBand.type)
-				.duration(ideaFlowBand.duration)
+				.duration(ideaFlowBand.duration.seconds)
 				.build()
 	}
 
-	private TreeNode createTreeNode(TimeBandGroup timeBand) {
+	private TreeNode createTreeNode(TimeBandGroupModel timeBand) {
 		return TreeNode.builder()
 				.id(timeBand.id)
 				.indentLevel(indentLevel)
@@ -120,7 +118,7 @@ public class TreeTimelineBuilder {
 				.start(timeBand.start)
 				.end(timeBand.end)
 				.relativeStart(timeBand.relativeStart)
-				.duration(timeBand.duration)
+				.duration(timeBand.duration.seconds)
 				.build()
 	}
 

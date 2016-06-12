@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.File;
-import java.time.Duration;
 
 @Data
 @Builder
@@ -17,7 +16,7 @@ public class EditorActivity {
 	private Long taskId;
 	private String filePath;
 	private boolean isModified;
-	private Duration duration;
+	private Long duration;
 
 	public String getFileName() {
 		return new File(filePath).getName();

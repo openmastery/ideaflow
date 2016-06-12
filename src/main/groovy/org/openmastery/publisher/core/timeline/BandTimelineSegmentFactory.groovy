@@ -1,11 +1,9 @@
 package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
-import org.openmastery.publisher.api.timeline.TimeBandGroup
+import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
-import org.openmastery.publisher.api.timeline.IdleTimeBand
 
 class BandTimelineSegmentFactory {
 
@@ -15,12 +13,12 @@ class BandTimelineSegmentFactory {
 		ideaFlowStates = new ArrayList<>(ideaFlowStates);
 		Collections.sort(ideaFlowStates)
 
-		IdeaFlowBand previousBand = null;
-		TimeBandGroup activeTimeBandGroup = null;
-		ArrayList<IdeaFlowBand> ideaFlowBands = new ArrayList<>();
-		ArrayList<TimeBandGroup> ideaFlowBandGroups = new ArrayList<>();
+		IdeaFlowBandModel previousBand = null;
+		TimeBandGroupModel activeTimeBandGroup = null;
+		ArrayList<IdeaFlowBandModel> ideaFlowBands = new ArrayList<>();
+		ArrayList<TimeBandGroupModel> ideaFlowBandGroups = new ArrayList<>();
 		for (IdeaFlowStateEntity state : ideaFlowStates) {
-			IdeaFlowBand timeBand = IdeaFlowBand.builder()
+			IdeaFlowBandModel timeBand = IdeaFlowBandModel.builder()
 					.id(state.id)
 					.taskId(state.taskId)
 					.type(state.type)
@@ -28,8 +26,8 @@ class BandTimelineSegmentFactory {
 					.end(state.end)
 					.startingComment(state.startingComment)
 					.endingComent(state.endingComment)
-					.idleBands(new ArrayList<IdleTimeBand>())
-					.nestedBands(new ArrayList<IdeaFlowBand>())
+					.idleBands(new ArrayList<IdleTimeBandModel>())
+					.nestedBands(new ArrayList<IdeaFlowBandModel>())
 					.build()
 
 			if (state.isNested()) {
@@ -37,10 +35,10 @@ class BandTimelineSegmentFactory {
 			} else {
 				if (state.isLinkedToPrevious() && (ideaFlowBands.isEmpty() == false)) {
 					if (activeTimeBandGroup == null) {
-						IdeaFlowBand firstBandInGroup = ideaFlowBands.remove(ideaFlowBands.size() - 1)
-						activeTimeBandGroup = TimeBandGroup.builder()
+						IdeaFlowBandModel firstBandInGroup = ideaFlowBands.remove(ideaFlowBands.size() - 1)
+						activeTimeBandGroup = TimeBandGroupModel.builder()
 								.id("group-${firstBandInGroup.id}")
-								.linkedTimeBands(new ArrayList<IdeaFlowBand>())
+								.linkedTimeBands(new ArrayList<IdeaFlowBandModel>())
 								.build()
 
 						activeTimeBandGroup.addLinkedTimeBand(firstBandInGroup)

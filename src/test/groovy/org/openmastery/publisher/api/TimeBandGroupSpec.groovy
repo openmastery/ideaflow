@@ -1,6 +1,6 @@
 package org.openmastery.publisher.api
 
-import org.openmastery.publisher.api.timeline.TimeBandGroup
+import org.openmastery.publisher.core.timeline.TimeBandGroupModel
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
@@ -21,7 +21,7 @@ public class TimeBandGroupSpec extends Specification implements TimeBandTestSupp
 
 	def "splitAndReturn should return null if position is on or outside timeband range AND exclusive direction"() {
 		given:
-		TimeBandGroup band = createGroup(hourOne, hourTwo)
+		TimeBandGroupModel band = createGroup(hourOne, hourTwo)
 
 		expect:
 		assert band.splitAndReturnLeftSide(hourZero) == null
@@ -34,7 +34,7 @@ public class TimeBandGroupSpec extends Specification implements TimeBandTestSupp
 
 	def "splitAndReturn should return self WHEN position is on or outside timeband range AND inclusive direction"() {
 		given:
-		TimeBandGroup band = createGroup(hourOne, hourTwo)
+		TimeBandGroupModel band = createGroup(hourOne, hourTwo)
 
 		expect:
 		assert band.splitAndReturnLeftSide(hourTwo).is(band)
@@ -47,16 +47,16 @@ public class TimeBandGroupSpec extends Specification implements TimeBandTestSupp
 
 	def "spiltAndReturn should split timeband WHEN position is within timeband range"() {
 		given:
-		TimeBandGroup band = createGroup(hourOne, hourThree)
+		TimeBandGroupModel band = createGroup(hourOne, hourThree)
 
 		when:
-		TimeBandGroup leftSide = band.splitAndReturnLeftSide(hourTwo)
+		TimeBandGroupModel leftSide = band.splitAndReturnLeftSide(hourTwo)
 
 		then:
 		assertStartAndEnd(leftSide, hourOne, hourTwo)
 
 		when:
-		TimeBandGroup rightSide = band.splitAndReturnRightSide(hourTwo)
+		TimeBandGroupModel rightSide = band.splitAndReturnRightSide(hourTwo)
 
 		then:
 		assertStartAndEnd(rightSide, hourTwo, hourThree)
@@ -64,7 +64,7 @@ public class TimeBandGroupSpec extends Specification implements TimeBandTestSupp
 
 	def "splitAndReturn should split linked bands"() {
 		given:
-		TimeBandGroup outerBand = createGroup(
+		TimeBandGroupModel outerBand = createGroup(
 				createBand(hourTwo, hourThree),
 				createBand(hourFour, hourFive),
 				createBand(hourFive, hourSix)
@@ -72,7 +72,7 @@ public class TimeBandGroupSpec extends Specification implements TimeBandTestSupp
 		LocalDateTime hourFourOneHalf = hourFour.plusMinutes(30)
 
 		when:
-		TimeBandGroup leftSide = outerBand.splitAndReturnLeftSide(hourFourOneHalf)
+		TimeBandGroupModel leftSide = outerBand.splitAndReturnLeftSide(hourFourOneHalf)
 
 		then:
 		assertStartAndEnd(leftSide, hourTwo, hourFourOneHalf)
@@ -80,7 +80,7 @@ public class TimeBandGroupSpec extends Specification implements TimeBandTestSupp
 		assertStartAndEnd(leftSide.linkedTimeBands[1], hourFour, hourFourOneHalf)
 
 		when:
-		TimeBandGroup rightSide = outerBand.splitAndReturnRightSide(hourFour.plusMinutes(30))
+		TimeBandGroupModel rightSide = outerBand.splitAndReturnRightSide(hourFour.plusMinutes(30))
 
 		then:
 		assertStartAndEnd(rightSide, hourFourOneHalf, hourSix)

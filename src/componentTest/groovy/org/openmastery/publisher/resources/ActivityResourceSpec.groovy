@@ -30,7 +30,7 @@ class ActivityResourceSpec extends Specification {
 		Duration duration = Duration.ofMinutes(45)
 
 		when:
-		client.addEditorActivity(taskId, filePath, isModified, duration)
+		client.addEditorActivity(taskId, filePath, isModified, duration.seconds)
 
 		then:
 		EditorActivityEntity expectedEditorActivity = EditorActivityEntity.builder()

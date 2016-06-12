@@ -1,14 +1,11 @@
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.api.timeline.TimeBand
-import org.openmastery.publisher.api.timeline.IdleTimeBand
-
 import java.time.LocalDateTime
 
 class TimeBandIdleCalculator {
 
-	IdleTimeBand getIdleForTimeBandOrNull(TimeBand timeBand, IdleTimeBand idle) {
-		IdleTimeBand splitIdle
+	IdleTimeBandModel getIdleForTimeBandOrNull(TimeBandModel timeBand, IdleTimeBandModel idle) {
+		IdleTimeBandModel splitIdle
 		if (timeBand.startsOnOrAfter(idle.end) || timeBand.endsOnOrBefore(idle.start)) {
 			splitIdle = null
 		} else if (idle.startsOnOrAfter(timeBand.start)) {
@@ -28,8 +25,8 @@ class TimeBandIdleCalculator {
 		splitIdle
 	}
 
-	private static IdleTimeBand cloneIdleBand(IdleTimeBand source, LocalDateTime start, LocalDateTime end) {
-		IdleTimeBand.from(source)
+	private static IdleTimeBandModel cloneIdleBand(IdleTimeBandModel source, LocalDateTime start, LocalDateTime end) {
+		IdleTimeBandModel.from(source)
 				.start(start)
 				.end(end)
 				.build()

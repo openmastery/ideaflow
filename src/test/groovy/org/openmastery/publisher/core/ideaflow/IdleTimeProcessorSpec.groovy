@@ -1,6 +1,6 @@
 package org.openmastery.publisher.core.ideaflow
 
-import org.openmastery.publisher.api.timeline.TimeBand
+import org.openmastery.publisher.core.timeline.TimeBandModel
 import org.openmastery.publisher.core.timeline.BandTimelineSegment
 import org.openmastery.publisher.core.timeline.TimelineSegmentValidator
 import org.openmastery.publisher.core.timeline.IdleTimeProcessor
@@ -104,7 +104,7 @@ class IdleTimeProcessorSpec extends Specification {
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		List<TimeBand> linkedTimeBands = segment.timeBandGroups[0].linkedTimeBands
+		List<TimeBandModel> linkedTimeBands = segment.timeBandGroups[0].linkedTimeBands
 		validator.assertLinkedTimeBand(linkedTimeBands, 0, LEARNING, Duration.ofHours(4), Duration.ofHours(2))
 		validator.assertLinkedTimeBand(linkedTimeBands, 1, REWORK, Duration.ofHours(6), Duration.ofHours(3))
 		validator.assertValidationComplete(segment)

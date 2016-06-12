@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.openmastery.publisher.api.event.Event;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
-import org.openmastery.publisher.api.timeline.TimeBand;
-import org.openmastery.publisher.api.timeline.TimeBandComparator;
-import org.openmastery.publisher.api.timeline.TimeBandGroup;
+import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -25,47 +22,47 @@ public class BandTimelineSegment {
 
 	private Long id;
 	private String description;
-	private List<IdeaFlowBand> ideaFlowBands = new ArrayList<>();
-	private List<TimeBandGroup> timeBandGroups = new ArrayList<>();
+	private List<IdeaFlowBandModel> ideaFlowBands = new ArrayList<>();
+	private List<TimeBandGroupModel> timeBandGroups = new ArrayList<>();
 	private List<Event> events = new ArrayList<>();
 
-	public List<TimeBand> getAllTimeBands() {
-		List<TimeBand> allTimeBands = new ArrayList<>(ideaFlowBands);
+	public List<TimeBandModel> getAllTimeBands() {
+		List<TimeBandModel> allTimeBands = new ArrayList<>(ideaFlowBands);
 		allTimeBands.addAll(timeBandGroups);
 		return allTimeBands;
 	}
 
-	public List<TimeBand> getAllTimeBandsSortedByStartTime() {
-		List<TimeBand> allTimeBands = getAllTimeBands();
+	public List<TimeBandModel> getAllTimeBandsSortedByStartTime() {
+		List<TimeBandModel> allTimeBands = getAllTimeBands();
 		Collections.sort(allTimeBands, TimeBandComparator.INSTANCE);
 		return allTimeBands;
 	}
 
 	public LocalDateTime getStart() {
-		List<TimeBand> sortedTimeBands = getAllTimeBandsSortedByStartTime();
+		List<TimeBandModel> sortedTimeBands = getAllTimeBandsSortedByStartTime();
 		return sortedTimeBands.get(0).getStart();
 	}
 
 	public LocalDateTime getEnd() {
-		List<TimeBand> sortedTimeBands = getAllTimeBandsSortedByStartTime();
+		List<TimeBandModel> sortedTimeBands = getAllTimeBandsSortedByStartTime();
 		return sortedTimeBands.get(sortedTimeBands.size() - 1).getStart();
 	}
 
 	public long getRelativeStart() {
-		List<TimeBand> sortedTimeBands = getAllTimeBandsSortedByStartTime();
+		List<TimeBandModel> sortedTimeBands = getAllTimeBandsSortedByStartTime();
 		return sortedTimeBands.get(0).getRelativeStart();
 	}
 
 	public Duration getDuration() {
-		Duration duration = TimeBand.sumDuration(ideaFlowBands);
-		return duration.plus(TimeBand.sumDuration(timeBandGroups));
+		Duration duration = TimeBandModel.sumDuration(ideaFlowBands);
+		return duration.plus(TimeBandModel.sumDuration(timeBandGroups));
 	}
 
-	public void addTimeBand(TimeBand timeBand) {
-		if (timeBand instanceof IdeaFlowBand) {
-			ideaFlowBands.add((IdeaFlowBand) timeBand);
-		} else if (timeBand instanceof TimeBandGroup) {
-			timeBandGroups.add((TimeBandGroup) timeBand);
+	public void addTimeBand(TimeBandModel timeBand) {
+		if (timeBand instanceof IdeaFlowBandModel) {
+			ideaFlowBands.add((IdeaFlowBandModel) timeBand);
+		} else if (timeBand instanceof TimeBandGroupModel) {
+			timeBandGroups.add((TimeBandGroupModel) timeBand);
 		} else {
 			throw new RuntimeException("Unexpected time band=" + timeBand);
 		}

@@ -1,8 +1,8 @@
 package org.openmastery.publisher.api
 
-import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
+import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.api.timeline.TimeBandGroup
+import org.openmastery.publisher.core.timeline.TimeBandGroupModel
 import org.openmastery.publisher.core.timeline.BandTimelineSegment
 import org.openmastery.time.MockTimeService
 import org.openmastery.publisher.core.activity.IdleTimeBandEntity
@@ -12,10 +12,10 @@ import static IdeaFlowStateType.CONFLICT
 
 class TestTimelineSegmentBuilder {
 
-	private IdeaFlowBand activeIdeaFlowBand = null
-	private TimeBandGroup activeTimeBandGroup = null
-	private List<IdeaFlowBand> ideaFlowBands = []
-	private List<TimeBandGroup> timeBandGroups = []
+	private IdeaFlowBandModel activeIdeaFlowBand = null
+	private TimeBandGroupModel activeTimeBandGroup = null
+	private List<IdeaFlowBandModel> ideaFlowBands = []
+	private List<TimeBandGroupModel> timeBandGroups = []
 	private List<IdleTimeBandEntity> idleTimeBands = []
 	private MockTimeService timeService
 
@@ -41,8 +41,8 @@ class TestTimelineSegmentBuilder {
 		segment
 	}
 
-	private IdeaFlowBand createIdeaFlowBand(IdeaFlowStateType type, int startHour, int endHour) {
-		IdeaFlowBand.builder()
+	private IdeaFlowBandModel createIdeaFlowBand(IdeaFlowStateType type, int startHour, int endHour) {
+		IdeaFlowBandModel.builder()
 				.type(type)
 				.start(timeService.inFuture(startHour))
 				.end(timeService.inFuture(endHour))
@@ -59,19 +59,19 @@ class TestTimelineSegmentBuilder {
 	}
 
 	TestTimelineSegmentBuilder nestedConflict(int startHour, int endHour) {
-		IdeaFlowBand nestedBand = createIdeaFlowBand(CONFLICT, startHour, endHour)
+		IdeaFlowBandModel nestedBand = createIdeaFlowBand(CONFLICT, startHour, endHour)
 		activeIdeaFlowBand.addNestedBand(nestedBand)
 		this
 	}
 
 	TestTimelineSegmentBuilder linkedIdeaFlowBand(IdeaFlowStateType type, int startHour, int endHour) {
 		if (activeTimeBandGroup == null) {
-			activeTimeBandGroup = TimeBandGroup.builder()
+			activeTimeBandGroup = TimeBandGroupModel.builder()
 					.linkedTimeBands([])
 					.build()
 			timeBandGroups << activeTimeBandGroup
 		}
-		IdeaFlowBand linkedBand = createIdeaFlowBand(type, startHour, endHour)
+		IdeaFlowBandModel linkedBand = createIdeaFlowBand(type, startHour, endHour)
 		activeTimeBandGroup.addLinkedTimeBand(linkedBand)
 		activeIdeaFlowBand = linkedBand
 		this

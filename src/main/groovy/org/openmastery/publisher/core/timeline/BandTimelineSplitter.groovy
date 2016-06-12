@@ -1,8 +1,6 @@
 package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.timeline.TimeBand
-import org.openmastery.publisher.api.timeline.TimeBandComparator
 import org.openmastery.publisher.api.event.EventType
 
 class BandTimelineSplitter {
@@ -28,7 +26,7 @@ class BandTimelineSplitter {
 			}
 
 			while (timeBands.isEmpty() == false) {
-				TimeBand timeBand = timeBands.remove(0)
+				TimeBandModel timeBand = timeBands.remove(0)
 				if (timeBand.endsOnOrBefore(event.position)) {
 					activeSegment.addTimeBand(timeBand)
 				} else {
@@ -36,8 +34,8 @@ class BandTimelineSplitter {
 						// pop the band back on the stack for processing by the next event
 						timeBands.add(0, timeBand)
 					} else {
-						TimeBand leftBand = timeBand.splitAndReturnLeftSide(event.position)
-						TimeBand rightBand = timeBand.splitAndReturnRightSide(event.position)
+						TimeBandModel leftBand = timeBand.splitAndReturnLeftSide(event.position)
+						TimeBandModel rightBand = timeBand.splitAndReturnRightSide(event.position)
 						activeSegment.addTimeBand(leftBand)
 						timeBands.add(0, rightBand)
 					}
@@ -55,7 +53,7 @@ class BandTimelineSplitter {
 		}
 
 		if (timeBands) {
-			timeBands.each { TimeBand timeBand ->
+			timeBands.each { TimeBandModel timeBand ->
 				activeSegment.addTimeBand(timeBand)
 			}
 			splitSegments << activeSegment

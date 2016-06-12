@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,9 +18,9 @@ public class BandTimeline {
 
 	private String description;
 	private Long relativeStart;
-	public LocalDateTime start;
-	public LocalDateTime end;
-	private Duration duration;
+	private LocalDateTime start;
+	private LocalDateTime end;
+	private Long duration;
 	private List<IdeaFlowBand> ideaFlowBands;
 	private List<TimeBandGroup> timeBandGroups;
 	private List<Event> events;

@@ -3,17 +3,17 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
-    <configuration>
-        <copy-by-references>
-            <copy-by-reference>
-                java.time.LocalDate
-            </copy-by-reference>
-            <copy-by-reference>
-                java.time.LocalDateTime
-            </copy-by-reference>
-            <copy-by-reference>
-                java.time.Duration
-            </copy-by-reference>
-        </copy-by-references>
-    </configuration>
+	<configuration>
+		<custom-converters>
+			<converter type="org.openmastery.mapper.LongDurationConverter">
+				<class-a>java.time.Duration</class-a>
+				<class-b>java.lang.Long</class-b>
+			</converter>
+		</custom-converters>
+		<copy-by-references>
+			<copy-by-reference>java.time.LocalDate</copy-by-reference>
+			<copy-by-reference>java.time.LocalDateTime</copy-by-reference>
+			<copy-by-reference>java.time.Duration</copy-by-reference>
+		</copy-by-references>
+	</configuration>
 </mappings>

@@ -71,7 +71,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 10, 43)
 		ideaFlowClient.endConflict(taskId, "jqPlot parameters were wrong.  Passing in [] instead of [[]]")
 		timeService.advanceTime(0, 5, 4)
-		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
+		activityClient.addEditorActivity(taskId, "/some/path", true, 10l)
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
@@ -143,7 +143,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 30, 43)
 		ideaFlowClient.endConflict(taskId, "Bunch of little bugs.")
 		timeService.advanceTime(0, 0, 10)
-		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(5))
+		activityClient.addEditorActivity(taskId, "/some/path", true, 5l)
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
@@ -194,7 +194,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 15, 30)
 		eventClient.startSubtask(taskId, "Final Validation")
 		timeService.advanceTime(0, 32, 3)
-		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
+		activityClient.addEditorActivity(taskId, "/some/path", true, 10l)
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
@@ -247,7 +247,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 15, 43)
 		ideaFlowClient.endConflict(taskId, "Flipped if/else condition. #TranspositionMistake")
 		timeService.advanceTime(0, 30, 3)
-		activityClient.addEditorActivity(taskId, "/some/path", true, Duration.ofSeconds(10))
+		activityClient.addEditorActivity(taskId, "/some/path", true, 10l)
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)

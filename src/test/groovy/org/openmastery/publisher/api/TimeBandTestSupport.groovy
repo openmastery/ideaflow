@@ -1,17 +1,17 @@
 package org.openmastery.publisher.api
 
-import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
-import org.openmastery.publisher.api.timeline.IdleTimeBand
-import org.openmastery.publisher.api.timeline.TimeBand
-import org.openmastery.publisher.api.timeline.TimeBandGroup
+import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.core.timeline.IdleTimeBandModel
+import org.openmastery.publisher.core.timeline.TimeBandModel
+import org.openmastery.publisher.core.timeline.TimeBandGroupModel
 
 import java.time.LocalDateTime
 
 
 trait TimeBandTestSupport {
 
-	IdeaFlowBand createBand(LocalDateTime start, LocalDateTime end) {
-		IdeaFlowBand.builder()
+	IdeaFlowBandModel createBand(LocalDateTime start, LocalDateTime end) {
+		IdeaFlowBandModel.builder()
 				.start(start)
 				.end(end)
 				.idleBands([])
@@ -19,25 +19,25 @@ trait TimeBandTestSupport {
 				.build()
 	}
 
-	IdleTimeBand createIdle(LocalDateTime start, LocalDateTime end) {
-		IdleTimeBand.builder()
+	IdleTimeBandModel createIdle(LocalDateTime start, LocalDateTime end) {
+		IdleTimeBandModel.builder()
 				.start(start)
 				.end(end)
 				.build()
 	}
 
 
-	TimeBandGroup createGroup(LocalDateTime start, LocalDateTime end) {
+	TimeBandGroupModel createGroup(LocalDateTime start, LocalDateTime end) {
 		createGroup(createBand(start, end))
 	}
 
-	TimeBandGroup createGroup(IdeaFlowBand... bands) {
-		TimeBandGroup.builder()
+	TimeBandGroupModel createGroup(IdeaFlowBandModel... bands) {
+		TimeBandGroupModel.builder()
 				.linkedTimeBands(bands as List)
 				.build()
 	}
 
-	void assertStartAndEnd(TimeBand band, LocalDateTime expectedStart, LocalDateTime expectedEnd) {
+	void assertStartAndEnd(TimeBandModel band, LocalDateTime expectedStart, LocalDateTime expectedEnd) {
 		assert band.start == expectedStart
 		assert band.end == expectedEnd
 	}

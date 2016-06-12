@@ -1,7 +1,6 @@
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
-import org.openmastery.publisher.api.timeline.IdleTimeBand
+import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.api.TimeBandTestSupport
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
@@ -22,8 +21,8 @@ class TimeBandIdleCalculatorSpec extends Specification implements TimeBandTestSu
 
 	def "getIdleDurationForTimeBand SHOULD include entire duration if idle is within band"() {
 		given:
-		IdeaFlowBand band = createBand(hourZero, hourFive)
-		IdleTimeBand idle = createIdle(hourOne, hourThree)
+		IdeaFlowBandModel band = createBand(hourZero, hourFive)
+		IdleTimeBandModel idle = createIdle(hourOne, hourThree)
 
 		expect:
 		assert idle == calculator.getIdleForTimeBandOrNull(band, idle)
@@ -31,28 +30,28 @@ class TimeBandIdleCalculatorSpec extends Specification implements TimeBandTestSu
 
 	def "getIdleDurationForTimeBand SHOULD ignore idle time before the band"() {
 		given:
-		IdeaFlowBand band = createBand(hourTwo, hourFive)
-		IdleTimeBand idle = createIdle(hourZero, hourThree)
+		IdeaFlowBandModel band = createBand(hourTwo, hourFive)
+		IdleTimeBandModel idle = createIdle(hourZero, hourThree)
 
 		expect:
-		IdleTimeBand expectedBand = IdleTimeBand.from(idle).start(hourTwo).build()
+		IdleTimeBandModel expectedBand = IdleTimeBandModel.from(idle).start(hourTwo).build()
 		assert expectedBand == calculator.getIdleForTimeBandOrNull(band, idle)
 	}
 
 	def "getIdleDurationForTimeBand SHOULD ignore idle time after the band"() {
 		given:
-		IdeaFlowBand band = createBand(hourZero, hourFive)
-		IdleTimeBand idle = createIdle(hourTwo, hourSix)
+		IdeaFlowBandModel band = createBand(hourZero, hourFive)
+		IdleTimeBandModel idle = createIdle(hourTwo, hourSix)
 
 		expect:
-		IdleTimeBand expectedBand = IdleTimeBand.from(idle).end(hourFive).build()
+		IdleTimeBandModel expectedBand = IdleTimeBandModel.from(idle).end(hourFive).build()
 		assert expectedBand == calculator.getIdleForTimeBandOrNull(band, idle)
 	}
 
 	def "getIdleDurationForTimeBand SHOULD ignore idle time that falls after the band end"() {
 		given:
-		IdeaFlowBand band = createBand(time.now(), time.inFuture(1))
-		IdleTimeBand idle = createIdle(time.inFuture(2), time.inFuture(3))
+		IdeaFlowBandModel band = createBand(time.now(), time.inFuture(1))
+		IdleTimeBandModel idle = createIdle(time.inFuture(2), time.inFuture(3))
 
 		expect:
 		assert null == calculator.getIdleForTimeBandOrNull(band, idle)
@@ -60,8 +59,8 @@ class TimeBandIdleCalculatorSpec extends Specification implements TimeBandTestSu
 
 	def "getIdleDurationForTimeBand SHOULD ignore idle time that falls before the band start"() {
 		given:
-		IdeaFlowBand band = createBand(time.inFuture(2), time.inFuture(3))
-		IdleTimeBand idle = createIdle(time.now(), time.inFuture(1))
+		IdeaFlowBandModel band = createBand(time.inFuture(2), time.inFuture(3))
+		IdleTimeBandModel idle = createIdle(time.now(), time.inFuture(1))
 
 		expect:
 		assert null == calculator.getIdleForTimeBandOrNull(band, idle)
@@ -69,11 +68,11 @@ class TimeBandIdleCalculatorSpec extends Specification implements TimeBandTestSu
 
 	def "getIdleDurationForTimeBand SHOULD ignore idle time that falls before AND after the band"() {
 		given:
-		IdeaFlowBand band = createBand(hourOne, hourFive)
-		IdleTimeBand idle = createIdle(hourZero, hourSix)
+		IdeaFlowBandModel band = createBand(hourOne, hourFive)
+		IdleTimeBandModel idle = createIdle(hourZero, hourSix)
 
 		expect:
-		IdleTimeBand expectedBand = IdleTimeBand.from(idle).start(hourOne).end(hourFive).build()
+		IdleTimeBandModel expectedBand = IdleTimeBandModel.from(idle).start(hourOne).end(hourFive).build()
 		assert expectedBand == calculator.getIdleForTimeBandOrNull(band, idle)
 	}
 

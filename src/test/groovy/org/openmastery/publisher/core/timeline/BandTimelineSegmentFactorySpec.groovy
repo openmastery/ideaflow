@@ -1,6 +1,6 @@
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
+import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
 
@@ -57,7 +57,7 @@ class BandTimelineSegmentFactorySpec extends Specification {
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertTimeBand(segment.ideaFlowBands, 1, REWORK, Duration.ofHours(8))
-		List<IdeaFlowBand> nestedBands = segment.ideaFlowBands[1].nestedBands
+		List<IdeaFlowBandModel> nestedBands = segment.ideaFlowBands[1].nestedBands
 		validator.assertNestedTimeBand(nestedBands, 0, CONFLICT, Duration.ofHours(2))
 		validator.assertNestedTimeBand(nestedBands, 1, CONFLICT, Duration.ofHours(3))
 		validator.assertValidationComplete(segment)

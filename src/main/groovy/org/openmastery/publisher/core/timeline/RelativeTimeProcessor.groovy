@@ -1,9 +1,6 @@
 package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.timeline.TimeBand
-import org.openmastery.publisher.api.timeline.TimeBandComparator
-import org.openmastery.publisher.api.timeline.IdleTimeBand
 
 import java.time.Duration
 import java.time.LocalDateTime
@@ -11,16 +8,16 @@ import java.time.LocalDateTime
 class RelativeTimeProcessor {
 
 	public void computeRelativeTime(List<BandTimelineSegment> segments) {
-		Set<TimeBand> allTimeBands = getFlattenedSortedTimeBandSet(segments);
-		TimeBand previousTimeBand = null
+		Set<TimeBandModel> allTimeBands = getFlattenedSortedTimeBandSet(segments);
+		TimeBandModel previousTimeBand = null
 		long relativeTime = 0
 
 		for (int i = 0; i < allTimeBands.size(); i++) {
-			TimeBand timeBand = allTimeBands[i]
+			TimeBandModel timeBand = allTimeBands[i]
 
 			if (previousTimeBand != null) {
 				Duration duration
-				if (previousTimeBand instanceof IdleTimeBand) {
+				if (previousTimeBand instanceof IdleTimeBandModel) {
 					duration = Duration.between(previousTimeBand.end, timeBand.start)
 				} else {
 					duration = Duration.between(previousTimeBand.start, timeBand.start)
@@ -35,8 +32,8 @@ class RelativeTimeProcessor {
 		}
 	}
 
-	private Set<TimeBand> getFlattenedSortedTimeBandSet(List<BandTimelineSegment> segments) {
-		ArrayList<TimeBand> allTimeBands = new ArrayList<>();
+	private Set<TimeBandModel> getFlattenedSortedTimeBandSet(List<BandTimelineSegment> segments) {
+		ArrayList<TimeBandModel> allTimeBands = new ArrayList<>();
 		for (BandTimelineSegment segment : segments) {
 			addTimeBands(allTimeBands, segment.allTimeBands)
 			addEventAdapters(allTimeBands, segment.events)
@@ -46,21 +43,21 @@ class RelativeTimeProcessor {
 		return allTimeBands as Set;
 	}
 
-	private void addTimeBands(List<TimeBand> targetList, List<TimeBand> bandsToAdd) {
-		for (TimeBand bandToAdd : bandsToAdd) {
+	private void addTimeBands(List<TimeBandModel> targetList, List<TimeBandModel> bandsToAdd) {
+		for (TimeBandModel bandToAdd : bandsToAdd) {
 			targetList.add(bandToAdd);
 			addTimeBands(targetList, bandToAdd.getContainedBands());
 		}
 	}
 
-	private void addEventAdapters(List<TimeBand> targetList, List<Event> eventsToAdd) {
+	private void addEventAdapters(List<TimeBandModel> targetList, List<Event> eventsToAdd) {
 		for (Event eventToAdd : eventsToAdd) {
 			targetList.add(new EventTimeBandAdapter(eventToAdd))
 		}
 	}
 
 
-	private static class EventTimeBandAdapter extends TimeBand<EventTimeBandAdapter> {
+	private static class EventTimeBandAdapter extends TimeBandModel<EventTimeBandAdapter> {
 
 		private Event event
 
@@ -88,7 +85,7 @@ class RelativeTimeProcessor {
 		}
 
 		@Override
-		List<? extends TimeBand> getContainedBands() {
+		List<? extends TimeBandModel> getContainedBands() {
 			return []
 		}
 

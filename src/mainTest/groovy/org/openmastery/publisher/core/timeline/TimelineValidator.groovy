@@ -41,7 +41,7 @@ class TimelineValidator {
 
 	private void assertTimeBandValues(IdeaFlowBand actualBand, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assert actualBand.type == expectedType
-		assert actualBand.duration == expectedDuration
+		assert actualBand.duration == expectedDuration.seconds
 	}
 
 	private void assertNoActiveLinkedOrNestedTimeBands() {
@@ -91,12 +91,12 @@ class TimelineValidator {
 	void assertIdeaFlowNode(IdeaFlowStateType expectedType, Duration expectedDuration) {
 		TreeNode treeNode = assertTreeNode(TreeNodeType.IDEA_FLOW_BAND, 1)
 		assert treeNode.bandType == expectedType
-		assert treeNode.duration == expectedDuration
+		assert Duration.ofSeconds(treeNode.duration) == expectedDuration
 	}
 
 	void assertTimeBandGroupNode(Duration expectedDuration) {
 		TreeNode treeNode = assertTreeNode(TreeNodeType.TIME_BAND_GROUP, 1)
-		assert treeNode.duration == expectedDuration
+		assert Duration.ofSeconds(treeNode.duration) == expectedDuration
 	}
 
 	void assertNestedTimeBand(IdeaFlowStateType expectedType, Duration expectedDuration) {
