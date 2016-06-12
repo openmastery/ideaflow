@@ -7,8 +7,6 @@ import org.openmastery.publisher.api.timeline.TreeNode
 import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.publisher.api.timeline.TreeNodeType
 
-import java.time.LocalDateTime
-
 import static org.openmastery.time.TimeConverter.toJodaLocalDateTime
 
 public class TreeTimelineBuilder {
@@ -93,7 +91,7 @@ public class TreeTimelineBuilder {
 				.type(TreeNodeType.SEGMENT)
 				.start(toJodaLocalDateTime(segment.start))
 				.end(toJodaLocalDateTime(segment.end))
-				.relativeStart(segment.relativeStart)
+				.relativePositionInSeconds(segment.relativePositionInSeconds)
 				.startingComment(segment.description)
 				.durationInSeconds(segment.duration.seconds)
 				.build()
@@ -106,7 +104,7 @@ public class TreeTimelineBuilder {
 				.type(TreeNodeType.IDEA_FLOW_BAND)
 				.start(toJodaLocalDateTime(ideaFlowBand.start))
 				.end(toJodaLocalDateTime(ideaFlowBand.end))
-				.relativeStart(ideaFlowBand.relativeStart)
+				.relativePositionInSeconds(ideaFlowBand.relativePositionInSeconds)
 				.startingComment(ideaFlowBand.startingComment)
 				.endingComment(ideaFlowBand.endingComent)
 				.bandType(ideaFlowBand.type)
@@ -121,7 +119,7 @@ public class TreeTimelineBuilder {
 				.type(TreeNodeType.TIME_BAND_GROUP)
 				.start(toJodaLocalDateTime(timeBand.start))
 				.end(toJodaLocalDateTime(timeBand.end))
-				.relativeStart(timeBand.relativeStart)
+				.relativePositionInSeconds(timeBand.relativePositionInSeconds)
 				.durationInSeconds(timeBand.duration.seconds)
 				.build()
 	}
@@ -133,7 +131,7 @@ public class TreeTimelineBuilder {
 				.type(TreeNodeType.EVENT)
 				.start(toJodaLocalDateTime(event.position))
 				.end(toJodaLocalDateTime(event.position))
-				.relativeStart(event.relativeStart)
+				.relativePositionInSeconds(event.relativePositionInSeconds)
 				.startingComment(event.comment)
 				.build()
 	}

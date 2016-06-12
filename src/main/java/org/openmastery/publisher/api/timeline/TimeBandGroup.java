@@ -22,6 +22,7 @@ public class TimeBandGroup {
 	private LocalDateTime start;
 	private LocalDateTime end;
 	private Long durationInSeconds;
+	private Long relativePositionInSeconds;
 
 	private List<IdeaFlowBand> linkedTimeBands;
 

@@ -7,14 +7,14 @@ import java.util.List;
 
 public abstract class TimeBandModel<T extends TimeBandModel> {
 
-	private long relativeStart;
+	private long relativePositionInSeconds;
 
-	public long getRelativeStart() {
-		return relativeStart;
+	public long getRelativePositionInSeconds() {
+		return relativePositionInSeconds;
 	}
 
-	public void setRelativeStart(long relativeStart) {
-		this.relativeStart = relativeStart;
+	public void setRelativePositionInSeconds(long relativePositionInSeconds) {
+		this.relativePositionInSeconds = relativePositionInSeconds;
 	}
 
 	public abstract LocalDateTime getStart();

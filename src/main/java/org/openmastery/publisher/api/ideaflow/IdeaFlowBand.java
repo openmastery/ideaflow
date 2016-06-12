@@ -23,6 +23,7 @@ public class IdeaFlowBand {
 	private LocalDateTime start;
 	private LocalDateTime end;
 	private Long durationInSeconds;
+	private Long relativePositionInSeconds;
 
 	private String startingComment;
 	private String endingComent;

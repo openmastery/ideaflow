@@ -18,10 +18,10 @@ import java.util.List;
 public class BandTimeline {
 
 	private String description;
-	private Long relativeStart;
 	private LocalDateTime start;
 	private LocalDateTime end;
 	private Long durationInSeconds;
+	private Long relativePositionInSeconds;
 	private List<IdeaFlowBand> ideaFlowBands;
 	private List<TimeBandGroup> timeBandGroups;
 	private List<Event> events;

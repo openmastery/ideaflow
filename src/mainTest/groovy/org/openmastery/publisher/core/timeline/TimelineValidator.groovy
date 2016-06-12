@@ -5,6 +5,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.timeline.BandTimeline
+import org.openmastery.publisher.api.timeline.TimeBandGroup
 import org.openmastery.publisher.api.timeline.TreeNode
 import org.openmastery.publisher.api.timeline.TreeNodeType
 import org.openmastery.publisher.api.timeline.TreeTimeline
@@ -36,12 +37,20 @@ class TimelineValidator {
 		TreeNode treeNode = treeTimeline.treeNodes[treeNodeIndex++]
 		assert treeNode.type == expectedType
 		assert treeNode.indentLevel == expectedIndentLevel
+		assert treeNode.relativePositionInSeconds != null
+		if (treeNodeIndex > 2) {
+			assert treeNode.relativePositionInSeconds > 0
+		}
 		treeNode
 	}
 
 	private void assertTimeBandValues(IdeaFlowBand actualBand, IdeaFlowStateType expectedType, Duration expectedDuration) {
 		assert actualBand.type == expectedType
 		assert actualBand.durationInSeconds == expectedDuration.seconds
+		assert actualBand.relativePositionInSeconds != null
+		if (ideaFlowBandIndex > 1) {
+			assert actualBand.relativePositionInSeconds > 0
+		}
 	}
 
 	private void assertNoActiveLinkedOrNestedTimeBands() {
@@ -69,6 +78,10 @@ class TimelineValidator {
 	void assertEvent(EventType expectedEventType) {
 		Event event = bandTimeline.events[eventIndex++]
 		assert event.type == expectedEventType
+		assert event.relativePositionInSeconds != null
+		if (eventIndex > 1) {
+			assert event.relativePositionInSeconds > 0
+		}
 	}
 
 	void assertIdeaFlowBand(IdeaFlowStateType expectedType, Duration expectedDuration) {
@@ -112,7 +125,12 @@ class TimelineValidator {
 
 		if (activeLinkedTimeBands.isEmpty()) {
 			assert bandTimeline.timeBandGroups[timeBandGroupIndex] != null
-			activeLinkedTimeBands = bandTimeline.timeBandGroups[timeBandGroupIndex++].linkedTimeBands
+			TimeBandGroup timeBandGroup = bandTimeline.timeBandGroups[timeBandGroupIndex++]
+			activeLinkedTimeBands = timeBandGroup.linkedTimeBands
+			assert timeBandGroup.relativePositionInSeconds != null
+			if (timeBandGroupIndex > 1) {
+				assert timeBandGroup.relativePositionInSeconds > 0
+			}
 		}
 		assert activeLinkedTimeBands.isEmpty() == false
 		IdeaFlowBand ideaFlowBand = activeLinkedTimeBands.remove(0)

@@ -15,11 +15,11 @@ public class TreeNode implements Comparable<TreeNode> {
 
 	private int indentLevel;
 	private String id;
-	private Long relativeStart;
+	private TreeNodeType type;
 	private LocalDateTime start;
 	private LocalDateTime end;
-	private TreeNodeType type;
 	private Long durationInSeconds;
+	private Long relativePositionInSeconds;
 
 	private String startingComment;
 	private String endingComment;
@@ -27,7 +27,7 @@ public class TreeNode implements Comparable<TreeNode> {
 
 	@Override
 	public int compareTo(TreeNode o) {
-		return relativeStart.compareTo(o.relativeStart);
+		return relativePositionInSeconds.compareTo(o.relativePositionInSeconds);
 	}
 
 }

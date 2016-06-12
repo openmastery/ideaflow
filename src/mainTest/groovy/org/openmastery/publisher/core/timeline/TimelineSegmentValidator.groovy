@@ -28,7 +28,7 @@ class TimelineSegmentValidator {
 		}
 		assert timeBands[index].duration == expectedDuration
 		if (expectedRelativeStart != null) {
-			assert timeBands[index].relativeStart == expectedRelativeStart
+			assert timeBands[index].relativePositionInSeconds == expectedRelativeStart
 		}
 	}
 

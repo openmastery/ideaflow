@@ -21,5 +21,5 @@ public class Event {
 	private String comment;
 	private EventType type;
 
-	private Long relativeStart;
+	private Long relativePositionInSeconds;
 }

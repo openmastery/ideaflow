@@ -37,12 +37,12 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.ideaFlowBands[0].relativeStart == 0
-		assert segment.ideaFlowBands[0].nestedBands[0].relativeStart == Duration.ofHours(1).seconds
-		assert segment.ideaFlowBands[1].relativeStart == Duration.ofHours(5).seconds
-		assert segment.timeBandGroups[0].relativeStart == Duration.ofHours(7).seconds
-		assert segment.timeBandGroups[0].linkedTimeBands[0].relativeStart == Duration.ofHours(7).seconds
-		assert segment.timeBandGroups[0].linkedTimeBands[1].relativeStart == Duration.ofHours(10).seconds
+		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0
+		assert segment.ideaFlowBands[0].nestedBands[0].relativePositionInSeconds == Duration.ofHours(1).seconds
+		assert segment.ideaFlowBands[1].relativePositionInSeconds == Duration.ofHours(5).seconds
+		assert segment.timeBandGroups[0].relativePositionInSeconds == Duration.ofHours(7).seconds
+		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == Duration.ofHours(7).seconds
+		assert segment.timeBandGroups[0].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(10).seconds
 	}
 
 	def "WHEN idle in prior nested conflict"() {
@@ -57,10 +57,10 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.ideaFlowBands[0].relativeStart == 0
-		assert segment.ideaFlowBands[0].nestedBands[0].relativeStart == Duration.ofHours(2).seconds
-		assert segment.ideaFlowBands[0].nestedBands[1].relativeStart == Duration.ofHours(4).seconds
-		assert segment.ideaFlowBands[1].relativeStart == Duration.ofHours(6).seconds
+		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0
+		assert segment.ideaFlowBands[0].nestedBands[0].relativePositionInSeconds == Duration.ofHours(2).seconds
+		assert segment.ideaFlowBands[0].nestedBands[1].relativePositionInSeconds == Duration.ofHours(4).seconds
+		assert segment.ideaFlowBands[1].relativePositionInSeconds == Duration.ofHours(6).seconds
 	}
 
 	def "WHEN segment has a mix of nested conflict and idle"() {
@@ -78,10 +78,10 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.ideaFlowBands[0].relativeStart == 0
-		assert segment.ideaFlowBands[0].nestedBands[0].relativeStart == Duration.ofHours(2).seconds
-		assert segment.ideaFlowBands[0].nestedBands[1].relativeStart == Duration.ofHours(4).seconds
-		assert segment.ideaFlowBands[1].relativeStart == Duration.ofHours(6).seconds
+		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0
+		assert segment.ideaFlowBands[0].nestedBands[0].relativePositionInSeconds == Duration.ofHours(2).seconds
+		assert segment.ideaFlowBands[0].nestedBands[1].relativePositionInSeconds == Duration.ofHours(4).seconds
+		assert segment.ideaFlowBands[1].relativePositionInSeconds == Duration.ofHours(6).seconds
 	}
 
 	def "WHEN segment has idle within a TimeBandGroup"() {
@@ -97,10 +97,10 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.timeBandGroups[0].relativeStart == 0
-		assert segment.timeBandGroups[0].linkedTimeBands[0].relativeStart == 0
-		assert segment.timeBandGroups[0].linkedTimeBands[1].relativeStart == Duration.ofHours(2).seconds
-		assert segment.ideaFlowBands[0].relativeStart == Duration.ofHours(4).seconds
+		assert segment.timeBandGroups[0].relativePositionInSeconds == 0
+		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == 0
+		assert segment.timeBandGroups[0].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(2).seconds
+		assert segment.ideaFlowBands[0].relativePositionInSeconds == Duration.ofHours(4).seconds
 	}
 
 	def "WHEN segment has idle within multiple TimeBandGroups"() {
@@ -117,13 +117,13 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.timeBandGroups[0].relativeStart == 0
-		assert segment.timeBandGroups[0].linkedTimeBands[0].relativeStart == 0
-		assert segment.timeBandGroups[0].linkedTimeBands[1].relativeStart == Duration.ofHours(4).seconds
-		assert segment.ideaFlowBands[0].relativeStart == Duration.ofHours(6).seconds
-		assert segment.timeBandGroups[1].relativeStart == Duration.ofHours(7).seconds
-		assert segment.timeBandGroups[1].linkedTimeBands[0].relativeStart == Duration.ofHours(7).seconds
-		assert segment.timeBandGroups[1].linkedTimeBands[1].relativeStart == Duration.ofHours(9).seconds
+		assert segment.timeBandGroups[0].relativePositionInSeconds == 0
+		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == 0
+		assert segment.timeBandGroups[0].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(4).seconds
+		assert segment.ideaFlowBands[0].relativePositionInSeconds == Duration.ofHours(6).seconds
+		assert segment.timeBandGroups[1].relativePositionInSeconds == Duration.ofHours(7).seconds
+		assert segment.timeBandGroups[1].linkedTimeBands[0].relativePositionInSeconds == Duration.ofHours(7).seconds
+		assert segment.timeBandGroups[1].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(9).seconds
 	}
 
 	def "TODO add event test"() {

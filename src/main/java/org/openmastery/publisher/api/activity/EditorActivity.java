@@ -18,6 +18,7 @@ public class EditorActivity {
 	private String filePath;
 	private boolean isModified;
 	private Long durationInSeconds;
+	private Long relativePositionInSeconds;
 
 	public String getFileName() {
 		return new File(filePath).getName();

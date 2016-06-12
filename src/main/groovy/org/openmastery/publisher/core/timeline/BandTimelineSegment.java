@@ -48,9 +48,9 @@ public class BandTimelineSegment {
 		return sortedTimeBands.get(sortedTimeBands.size() - 1).getStart();
 	}
 
-	public long getRelativeStart() {
+	public long getRelativePositionInSeconds() {
 		List<TimeBandModel> sortedTimeBands = getAllTimeBandsSortedByStartTime();
-		return sortedTimeBands.get(0).getRelativeStart();
+		return sortedTimeBands.get(0).getRelativePositionInSeconds();
 	}
 
 	public Duration getDuration() {

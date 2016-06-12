@@ -12,7 +12,7 @@ public class EventModel {
 	private EventEntity delegate;
 	@Getter
 	@Setter
-	private Long relativeStart;
+	private Long relativePositionInSeconds;
 
 	public EventModel(EventEntity delegate) {
 		this.delegate = delegate;

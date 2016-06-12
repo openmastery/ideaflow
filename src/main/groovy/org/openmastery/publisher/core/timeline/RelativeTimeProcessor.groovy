@@ -27,7 +27,7 @@ class RelativeTimeProcessor {
 				}
 			}
 
-			timeBand.relativeStart = relativeTime
+			timeBand.relativePositionInSeconds = relativeTime
 			previousTimeBand = timeBand
 		}
 	}
@@ -65,8 +65,8 @@ class RelativeTimeProcessor {
 			this.event = event
 		}
 
-		public void setRelativeStart(long relativeStart) {
-			event.relativeStart = relativeStart
+		public void setRelativePositionInSeconds(long relativePositionInSeconds) {
+			event.relativePositionInSeconds = relativePositionInSeconds
 		}
 
 		@Override
