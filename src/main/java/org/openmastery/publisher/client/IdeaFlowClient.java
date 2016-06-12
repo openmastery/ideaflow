@@ -17,6 +17,7 @@ package org.openmastery.publisher.client;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateTransition;
+import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.rest.client.CrudClient;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowState;
 
@@ -54,6 +55,29 @@ public class IdeaFlowClient extends CrudClient<IdeaFlowStateTransition, IdeaFlow
 		crudClientRequest.path(bandPath)
 				.path(ResourcePaths.STOP_PATH)
 				.createWithPost(transition);
+	}
+
+	private String getBandPath(IdeaFlowStateType type) {
+		switch (type) {
+			case REWORK:
+				return ResourcePaths.REWORK_PATH;
+			case LEARNING:
+				return ResourcePaths.LEARNING_PATH;
+			case CONFLICT:
+				return ResourcePaths.CONFLICT_PATH;
+			default:
+				throw new RuntimeException("Unknown band type=" + type);
+		}
+	}
+
+	public void startBand(Long taskId, String comment, IdeaFlowStateType type) {
+		String bandPath = getBandPath(type);
+		startBand(taskId, comment, bandPath);
+	}
+
+	public void endBand(Long taskId, String comment, IdeaFlowStateType type) {
+		String bandPath = getBandPath(type);
+		endBand(taskId, comment, bandPath);
 	}
 
 	public void startConflict(Long taskId, String question) {

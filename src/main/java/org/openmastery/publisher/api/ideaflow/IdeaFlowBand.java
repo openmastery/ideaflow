@@ -34,8 +34,8 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 	private IdeaFlowStateType type;
 
 	@JsonIgnore
-	private List<IdleTimeBand> idleBands = new ArrayList<>();
-	private List<IdeaFlowBand> nestedBands = new ArrayList<>();
+	private List<IdleTimeBand> idleBands = new ArrayList<IdleTimeBand>();
+	private List<IdeaFlowBand> nestedBands = new ArrayList<IdeaFlowBand>();
 
 	public void addNestedBand(IdeaFlowBand ideaFlowBand) {
 		nestedBands.add(ideaFlowBand);
@@ -58,7 +58,7 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 	@Override
 	@JsonIgnore
 	public List<TimeBand> getContainedBands() {
-		ArrayList<TimeBand> containedBands = new ArrayList<>(nestedBands);
+		ArrayList<TimeBand> containedBands = new ArrayList<TimeBand>(nestedBands);
 		containedBands.addAll(idleBands);
 		return containedBands;
 	}
@@ -92,8 +92,8 @@ public class IdeaFlowBand extends TimeBand<IdeaFlowBand> {
 				.type(band.getType())
 				.start(band.getStart())
 				.end(band.getEnd())
-				.idleBands(new ArrayList<>(band.getIdleBands()))
-				.nestedBands(new ArrayList<>(band.getNestedBands()));
+				.idleBands(new ArrayList<IdleTimeBand>(band.getIdleBands()))
+				.nestedBands(new ArrayList<IdeaFlowBand>(band.getNestedBands()));
 	}
 
 }

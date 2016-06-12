@@ -67,7 +67,7 @@ public class TimeBandGroup extends TimeBand<TimeBandGroup> {
 	public static TimeBandGroup.TimeBandGroupBuilder from(TimeBandGroup group) {
 		return builder().id(group.id)
 				.taskId(group.taskId)
-				.linkedTimeBands(new ArrayList<>(group.getLinkedTimeBands()));
+				.linkedTimeBands(new ArrayList<IdeaFlowBand>(group.getLinkedTimeBands()));
 	}
 
 }

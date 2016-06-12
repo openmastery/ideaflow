@@ -30,7 +30,7 @@ public abstract class CrudClient<API_TYPE, CLIENT_TYPE extends CrudClient> {
 
     public CrudClient(String baseUrl, String path, Class<API_TYPE> type) {
         ClientRequestFactory clientRequestFactory = new ClientRequestFactory().register(ObjectMapperContextResolver.class);
-        crudClientRequest = new CrudClientRequest<>(clientRequestFactory.createClientRequest(baseUrl), type).path(path);
+        crudClientRequest = new CrudClientRequest<API_TYPE>(clientRequestFactory.createClientRequest(baseUrl), type).path(path);
     }
 
     public CrudClient(CrudClientRequest<API_TYPE> crudClientRequest) {

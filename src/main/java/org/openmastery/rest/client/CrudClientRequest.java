@@ -83,7 +83,7 @@ public class CrudClientRequest<T> {
     public CrudClientRequest<T> entity(Class type) {
         GenericType entity = GENERIC_TYPE_FACTORY.createGenericType(type);
         GenericType entityList = GENERIC_TYPE_FACTORY.createGenericType(List.class, type);
-        return new CrudClientRequest<>(clientRequest, entity, entityList, responseInspector);
+        return new CrudClientRequest<T>(clientRequest, entity, entityList, responseInspector);
     }
 
     public CrudClientRequest<T> path(ApiEntity entity) {
@@ -128,11 +128,11 @@ public class CrudClientRequest<T> {
     }
 
     private CrudClientRequest<T> createCrudClientRequest(ClientRequest clientRequest) {
-        return new CrudClientRequest<>(clientRequest, entity, entityList, responseInspector);
+        return new CrudClientRequest<T>(clientRequest, entity, entityList, responseInspector);
     }
 
     public CrudClientRequest<T> responseInspector(ResponseInspector responseInspector) {
-        return new CrudClientRequest<>(clientRequest, entity, entityList, responseInspector);
+        return new CrudClientRequest<T>(clientRequest, entity, entityList, responseInspector);
     }
 
     private void setClientResponse(AbstractResponse abstractResponse) {

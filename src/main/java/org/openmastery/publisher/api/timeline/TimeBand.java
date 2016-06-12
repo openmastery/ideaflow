@@ -63,7 +63,7 @@ public abstract class TimeBand<T extends TimeBand> {
 	protected abstract T internalSplitAndReturnRightSide(LocalDateTime position);
 
 	public static <TB extends TimeBand> List<TB> splitAndReturnLeftSide(List<TB> timeBands, LocalDateTime position) {
-		List<TB> splitTimeBands = new ArrayList<>();
+		List<TB> splitTimeBands = new ArrayList<TB>();
 		for (TB timeBand : timeBands) {
 			TB splitTimeBand = (TB) timeBand.splitAndReturnLeftSide(position);
 			if (splitTimeBand != null) {
@@ -74,7 +74,7 @@ public abstract class TimeBand<T extends TimeBand> {
 	}
 
 	public static <TB extends TimeBand> List<TB> splitAndReturnRightSide(List<TB> timeBands, LocalDateTime position) {
-		List<TB> splitTimeBands = new ArrayList<>();
+		List<TB> splitTimeBands = new ArrayList<TB>();
 		for (TB timeBand : timeBands) {
 			TB splitTimeBand = (TB) timeBand.splitAndReturnRightSide(position);
 			if (splitTimeBand != null) {
