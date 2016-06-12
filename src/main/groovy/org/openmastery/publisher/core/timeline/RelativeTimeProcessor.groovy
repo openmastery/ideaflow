@@ -1,6 +1,6 @@
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.core.event.EventModel
 
 import java.time.Duration
 import java.time.LocalDateTime
@@ -50,8 +50,8 @@ class RelativeTimeProcessor {
 		}
 	}
 
-	private void addEventAdapters(List<TimeBandModel> targetList, List<Event> eventsToAdd) {
-		for (Event eventToAdd : eventsToAdd) {
+	private void addEventAdapters(List<TimeBandModel> targetList, List<EventModel> eventsToAdd) {
+		for (EventModel eventToAdd : eventsToAdd) {
 			targetList.add(new EventTimeBandAdapter(eventToAdd))
 		}
 	}
@@ -59,9 +59,9 @@ class RelativeTimeProcessor {
 
 	private static class EventTimeBandAdapter extends TimeBandModel<EventTimeBandAdapter> {
 
-		private Event event
+		private EventModel event
 
-		EventTimeBandAdapter(Event event) {
+		EventTimeBandAdapter(EventModel event) {
 			this.event = event
 		}
 

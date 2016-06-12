@@ -1,12 +1,12 @@
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.api.event.EventType
 
 class BandTimelineSplitter {
 
 	List<BandTimelineSegment> splitTimelineSegment(BandTimelineSegment segment) {
-		boolean hasSubtask = segment.events.find { it.eventType == EventType.SUBTASK }
+		boolean hasSubtask = segment.events.find { it.type == EventType.SUBTASK }
 		if (hasSubtask == false) {
 			return [segment]
 		}
@@ -18,9 +18,9 @@ class BandTimelineSplitter {
 		activeSegment.id = segment.id
 		activeSegment.description = segment.description
 
-		List<Event> sortedEvents = segment.events.sort { Event event -> event.position }
-		sortedEvents.each { Event event ->
-			if ((event.eventType == EventType.SUBTASK) == false) {
+		List<EventModel> sortedEvents = segment.events.sort { EventModel event -> event.position }
+		sortedEvents.each { EventModel event ->
+			if ((event.type == EventType.SUBTASK) == false) {
 				activeSegment.addEvent(event)
 				return
 			}

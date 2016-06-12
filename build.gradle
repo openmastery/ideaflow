@@ -41,9 +41,10 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-web"
 	compile "org.springframework.boot:spring-boot-starter-actuator"
 	compile "org.springframework.boot:spring-boot-starter-jersey"
-	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.3"
 	compile "org.codehaus.groovy:groovy-all:2.4.3"
 	compile "com.bancvue:common-rest:2.+"
+	compile 'joda-time:joda-time:2.9.4'
+	compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.7.5'
 
 	compile("net.sf.dozer:dozer:5.5.1") {
 		exclude group: "org.slf4j"
@@ -59,7 +60,8 @@ dependencies {
 
 	clientCompile "com.bancvue:common-rest:2.+"
 	clientCompile "org.projectlombok:lombok:1.16.4"
-	clientCompile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.3'
+	clientCompile 'joda-time:joda-time:2.9.4'
+	clientCompile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.7.5'
 
 	mainTestCompile 'com.thedeanda:lorem:2.0'
 	mainTestCompile "org.fluttercode.datafactory:datafactory:0.8"

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.core.event.EventModel;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel;
 
 import java.time.Duration;
@@ -24,7 +24,7 @@ public class BandTimelineSegment {
 	private String description;
 	private List<IdeaFlowBandModel> ideaFlowBands = new ArrayList<>();
 	private List<TimeBandGroupModel> timeBandGroups = new ArrayList<>();
-	private List<Event> events = new ArrayList<>();
+	private List<EventModel> events = new ArrayList<>();
 
 	public List<TimeBandModel> getAllTimeBands() {
 		List<TimeBandModel> allTimeBands = new ArrayList<>(ideaFlowBands);
@@ -68,7 +68,7 @@ public class BandTimelineSegment {
 		}
 	}
 
-	public void addEvent(Event event) {
+	public void addEvent(EventModel event) {
 		events.add(event);
 	}
 

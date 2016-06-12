@@ -64,7 +64,8 @@ public class TaskResource {
 		IdeaFlowStateMachine stateMachine = stateMachineFactory.createStateMachine(task.getId());
 		stateMachine.startTask();
 
-		return entityMapper.mapIfNotNull(task, Task.class);
+		Task apiTask = entityMapper.mapIfNotNull(task, Task.class);
+		return apiTask;
 	}
 
 	@GET

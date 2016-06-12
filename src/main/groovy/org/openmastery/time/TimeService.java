@@ -6,4 +6,6 @@ public interface TimeService {
 
 	LocalDateTime now();
 
+	org.joda.time.LocalDateTime jodaNow();
+
 }

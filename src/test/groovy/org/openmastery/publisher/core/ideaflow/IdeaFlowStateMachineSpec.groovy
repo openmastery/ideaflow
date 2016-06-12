@@ -22,6 +22,12 @@ class IdeaFlowStateMachineSpec extends Specification {
 			Thread.sleep(1)
 			LocalDateTime.now()
 		}
+
+		@Override
+		org.joda.time.LocalDateTime jodaNow() {
+			Thread.sleep(1)
+			org.joda.time.LocalDateTime.now()
+		}
 	}
 
 

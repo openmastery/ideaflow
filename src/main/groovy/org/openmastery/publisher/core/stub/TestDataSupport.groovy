@@ -7,6 +7,7 @@ import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine
 import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.time.TimeConverter
 import org.openmastery.time.TimeService
 
 import java.time.LocalDateTime
@@ -168,6 +169,11 @@ class TestDataSupport {
 		@Override
 		LocalDateTime now() {
 			return now
+		}
+
+		@Override
+		org.joda.time.LocalDateTime jodaNow() {
+			return TimeConverter.toJodaLocalDateTime(now())
 		}
 
 		MockTimeService plusHours(int hours) {

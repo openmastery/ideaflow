@@ -34,7 +34,7 @@ class TimelineSegmentValidator {
 
 	void assertEvent(BandTimelineSegment segment, int index, EventType expectedType, LocalDateTime expectedPosition) {
 		assert segment.events[index] != null
-		assert segment.events[index].eventType == expectedType
+		assert segment.events[index].type == expectedType
 		assert segment.events[index].position == expectedPosition
 		expectedEventCount++
 	}

@@ -2,6 +2,7 @@ package org.openmastery.publisher.resources
 
 import com.bancvue.rest.exception.ConflictingEntityException
 import com.bancvue.rest.exception.NotFoundException
+import org.joda.time.LocalDateTime
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
@@ -10,8 +11,6 @@ import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
-
-import java.time.LocalDateTime
 
 import static org.openmastery.publisher.ARandom.aRandom
 
@@ -31,7 +30,7 @@ class TaskResourceSpec extends Specification {
 		given:
 		String name = aRandom.text(10)
 		String description = "task description"
-		LocalDateTime creationDate = timeService.now()
+		LocalDateTime creationDate = timeService.jodaNow()
 
 		when:
 		Task createdTask = taskClient.createTask(name, description)
@@ -69,7 +68,7 @@ class TaskResourceSpec extends Specification {
 		Task expectedConflict = Task.builder()
 				.name("task")
 				.description("task description")
-				.creationDate(timeService.now()).build()
+				.creationDate(timeService.jodaNow()).build()
 		taskClient.createTask("task", "task description")
 
 		when:

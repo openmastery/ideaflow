@@ -34,6 +34,10 @@ public class EntityMapper {
         return dest;
     }
 
+    public <S, D> List<D> mapList(Iterable<S> source, Class<D> destType) {
+        return mapList(source, (entity) -> mapIfNotNull(entity, destType));
+    }
+
     public <S, D> List<D> mapList(Iterable<S> source, Function<S, D> function) {
         return toStream(source)
             .map(function)

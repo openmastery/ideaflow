@@ -68,7 +68,7 @@ class TimelineValidator {
 
 	void assertEvent(EventType expectedEventType) {
 		Event event = bandTimeline.events[eventIndex++]
-		assert event.eventType == expectedEventType
+		assert event.type == expectedEventType
 	}
 
 	void assertIdeaFlowBand(IdeaFlowStateType expectedType, Duration expectedDuration) {

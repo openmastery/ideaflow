@@ -1,6 +1,6 @@
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
@@ -70,22 +70,14 @@ class BandTimelineSegmentFactory {
 		return segment;
 	}
 
-	private List<Event> toEventList(List<EventEntity> eventEntityList) {
+	private List<EventModel> toEventList(List<EventEntity> eventEntityList) {
 		eventEntityList.collect { EventEntity eventEntity ->
 			toEvent(eventEntity)
 		}
 	}
 
-	private Event toEvent(EventEntity subtask) {
-		Event subtaskEvent = Event.builder()
-				.id(subtask.id)
-				.taskId(subtask.taskId)
-				.position(subtask.position)
-				.comment(subtask.comment)
-				.eventType(subtask.type)
-				.build()
-		subtaskEvent
+	private EventModel toEvent(EventEntity subtask) {
+		new EventModel(subtask)
 	}
-
 
 }

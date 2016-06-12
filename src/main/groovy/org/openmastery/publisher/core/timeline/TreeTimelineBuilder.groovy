@@ -1,11 +1,15 @@
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.api.timeline.TreeNode
 import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.publisher.api.timeline.TreeNodeType
+
+import java.time.LocalDateTime
+
+import static org.openmastery.time.TimeConverter.toJodaLocalDateTime
 
 public class TreeTimelineBuilder {
 
@@ -49,9 +53,9 @@ public class TreeTimelineBuilder {
 		}
 	}
 
-	private void addNonSubtaskEvents(List<Event> events) {
-		for (Event event : events) {
-			if (event.getEventType() != EventType.SUBTASK) {
+	private void addNonSubtaskEvents(List<EventModel> events) {
+		for (EventModel event : events) {
+			if (event.getType() != EventType.SUBTASK) {
 				TreeNode node = createTreeNode(event)
 				treeNodes.add(node)
 			}
@@ -87,8 +91,8 @@ public class TreeTimelineBuilder {
 				.id(segment.id as String)
 				.indentLevel(indentLevel)
 				.type(TreeNodeType.SEGMENT)
-				.start(segment.start)
-				.end(segment.end)
+				.start(toJodaLocalDateTime(segment.start))
+				.end(toJodaLocalDateTime(segment.end))
 				.relativeStart(segment.relativeStart)
 				.startingComment(segment.description)
 				.durationInSeconds(segment.duration.seconds)
@@ -100,8 +104,8 @@ public class TreeTimelineBuilder {
 				.id(ideaFlowBand.id as String)
 				.indentLevel(indentLevel)
 				.type(TreeNodeType.IDEA_FLOW_BAND)
-				.start(ideaFlowBand.start)
-				.end(ideaFlowBand.end)
+				.start(toJodaLocalDateTime(ideaFlowBand.start))
+				.end(toJodaLocalDateTime(ideaFlowBand.end))
 				.relativeStart(ideaFlowBand.relativeStart)
 				.startingComment(ideaFlowBand.startingComment)
 				.endingComment(ideaFlowBand.endingComent)
@@ -115,20 +119,20 @@ public class TreeTimelineBuilder {
 				.id(timeBand.id)
 				.indentLevel(indentLevel)
 				.type(TreeNodeType.TIME_BAND_GROUP)
-				.start(timeBand.start)
-				.end(timeBand.end)
+				.start(toJodaLocalDateTime(timeBand.start))
+				.end(toJodaLocalDateTime(timeBand.end))
 				.relativeStart(timeBand.relativeStart)
 				.durationInSeconds(timeBand.duration.seconds)
 				.build()
 	}
 
-	private TreeNode createTreeNode(Event event) {
+	private TreeNode createTreeNode(EventModel event) {
 		return TreeNode.builder()
 				.id(event.id as String)
 				.indentLevel(indentLevel)
 				.type(TreeNodeType.EVENT)
-				.start(event.position)
-				.end(event.position)
+				.start(toJodaLocalDateTime(event.position))
+				.end(toJodaLocalDateTime(event.position))
 				.relativeStart(event.relativeStart)
 				.startingComment(event.comment)
 				.build()

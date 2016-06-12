@@ -15,15 +15,21 @@
  */
 package org.openmastery.rest.config;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.io.IOException;
 
 @Provider
 public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
@@ -31,23 +37,27 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
 
 	static {
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-		mapper.registerModule(createJavaTimeModule());
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		mapper.registerModule(new JodaModule());
+		mapper.registerModule(createCustomLocalDateTimeFormatModule());
 	}
 
-	private static JavaTimeModule createJavaTimeModule() {
-		JavaTimeModule timeModule = new JavaTimeModule();
-		timeModule.addSerializer(Duration.class, TimeSerializationSupport.DURATION_SERIALIZER);
-		timeModule.addDeserializer(Duration.class, TimeSerializationSupport.DURATION_DESERIALIZER);
-		timeModule.addKeyDeserializer(Duration.class, TimeSerializationSupport.DURATION_KEY_DESERIALIZER);
-		timeModule.addSerializer(LocalDateTime.class, TimeSerializationSupport.LOCAL_DATE_TIME_SERIALIZER);
-		return timeModule;
+	private static SimpleModule createCustomLocalDateTimeFormatModule() {
+		final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+		SimpleModule module = new SimpleModule();
+		module.addSerializer(LocalDateTime.class, new StdSerializer<LocalDateTime>(LocalDateTime.class) {
+			@Override
+			public void serialize(LocalDateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+				jgen.writeString(value.toString(formatter));
+			}
+		});
+		return module;
 	}
 
 	@Override
 	public ObjectMapper getContext(Class<?> type) {
 		return mapper;
 	}
-
 
 }

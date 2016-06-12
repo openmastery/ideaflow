@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import org.joda.time.LocalDateTime;
 
 @Data
 @Builder
@@ -20,7 +19,7 @@ public class Event {
 	private LocalDateTime position;
 
 	private String comment;
-	private EventType eventType;
+	private EventType type;
 
 	private Long relativeStart;
 }
