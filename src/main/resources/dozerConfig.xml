@@ -16,4 +16,5 @@
 			<copy-by-reference>java.time.Duration</copy-by-reference>
 		</copy-by-references>
 	</configuration>
+
 </mappings>

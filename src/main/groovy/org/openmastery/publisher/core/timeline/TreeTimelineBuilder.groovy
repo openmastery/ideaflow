@@ -91,7 +91,7 @@ public class TreeTimelineBuilder {
 				.end(segment.end)
 				.relativeStart(segment.relativeStart)
 				.startingComment(segment.description)
-				.duration(segment.duration.seconds)
+				.durationInSeconds(segment.duration.seconds)
 				.build()
 	}
 
@@ -106,7 +106,7 @@ public class TreeTimelineBuilder {
 				.startingComment(ideaFlowBand.startingComment)
 				.endingComment(ideaFlowBand.endingComent)
 				.bandType(ideaFlowBand.type)
-				.duration(ideaFlowBand.duration.seconds)
+				.durationInSeconds(ideaFlowBand.duration.seconds)
 				.build()
 	}
 
@@ -118,7 +118,7 @@ public class TreeTimelineBuilder {
 				.start(timeBand.start)
 				.end(timeBand.end)
 				.relativeStart(timeBand.relativeStart)
-				.duration(timeBand.duration.seconds)
+				.durationInSeconds(timeBand.duration.seconds)
 				.build()
 	}
 

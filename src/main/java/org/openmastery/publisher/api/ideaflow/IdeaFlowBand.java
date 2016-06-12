@@ -1,5 +1,6 @@
 package org.openmastery.publisher.api.ideaflow;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class IdeaFlowBand {
 
 	private LocalDateTime start;
 	private LocalDateTime end;
-	private Long duration;
+	private Long durationInSeconds;
 
 	private String startingComment;
 	private String endingComent;
@@ -29,6 +30,19 @@ public class IdeaFlowBand {
 	private IdeaFlowStateType type;
 
 	private List<IdeaFlowBand> nestedBands = new ArrayList<IdeaFlowBand>();
+
+
+	// simplify dozer mapping
+
+	@JsonIgnore
+	public Long getDuration() {
+		return durationInSeconds;
+	}
+
+	@JsonIgnore
+	public void setDuration(Long duration) {
+		durationInSeconds = duration;
+	}
 
 }
 

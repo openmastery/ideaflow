@@ -20,7 +20,7 @@ public class TreeNode implements Comparable<TreeNode> {
 	private LocalDateTime start;
 	private LocalDateTime end;
 	private TreeNodeType type;
-	private Long duration;
+	private Long durationInSeconds;
 
 	private String startingComment;
 	private String endingComment;

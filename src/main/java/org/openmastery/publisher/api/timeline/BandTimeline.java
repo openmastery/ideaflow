@@ -1,5 +1,6 @@
 package org.openmastery.publisher.api.timeline;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,9 +21,22 @@ public class BandTimeline {
 	private Long relativeStart;
 	private LocalDateTime start;
 	private LocalDateTime end;
-	private Long duration;
+	private Long durationInSeconds;
 	private List<IdeaFlowBand> ideaFlowBands;
 	private List<TimeBandGroup> timeBandGroups;
 	private List<Event> events;
+
+
+	// simplify dozer mapping
+
+	@JsonIgnore
+	public Long getDuration() {
+		return durationInSeconds;
+	}
+
+	@JsonIgnore
+	public void setDuration(Long duration) {
+		durationInSeconds = duration;
+	}
 
 }

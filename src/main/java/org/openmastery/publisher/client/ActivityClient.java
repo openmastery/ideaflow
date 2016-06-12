@@ -15,7 +15,7 @@ public class ActivityClient extends CrudClient<EditorActivity, ActivityClient> {
 					.taskId(taskId)
 					.filePath(filePath)
 					.isModified(isModified)
-					.duration(durationInSeconds)
+					.durationInSeconds(durationInSeconds)
 					.build();
 
 		crudClientRequest.path(ResourcePaths.EDITOR_PATH)

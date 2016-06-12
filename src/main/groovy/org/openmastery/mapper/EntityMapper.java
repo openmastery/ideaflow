@@ -2,6 +2,7 @@ package org.openmastery.mapper;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
+import org.dozer.loader.api.BeanMappingBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

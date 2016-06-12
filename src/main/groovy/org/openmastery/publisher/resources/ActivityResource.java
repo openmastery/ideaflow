@@ -30,7 +30,7 @@ public class ActivityResource {
 	@Path(ResourcePaths.EDITOR_PATH)
 	public void addEditorActivity(EditorActivity editorActivity) {
 		LocalDateTime end = timeService.now();
-		LocalDateTime start = end.minusSeconds(editorActivity.getDuration());
+		LocalDateTime start = end.minusSeconds(editorActivity.getDurationInSeconds());
 		EditorActivityEntity entity = entityMapper.mapIfNotNull(editorActivity, EditorActivityEntity.class);
 		entity.setStart(start);
 		entity.setEnd(end);
