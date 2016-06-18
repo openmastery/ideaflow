@@ -3,6 +3,7 @@ package org.openmastery.publisher.core
 import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.IdleTimeBandEntity
 import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.springframework.dao.DataIntegrityViolationException
@@ -16,8 +17,8 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	private long taskId = 1L
 	private long activityId = 1L
 	private long idleTimeBandId = 1L
-	private IdeaFlowStateEntity activeState
-	private IdeaFlowStateEntity containingState
+	private IdeaFlowPartialStateEntity activeState
+	private IdeaFlowPartialStateEntity containingState
 	private List<IdeaFlowStateEntity> stateList = []
 	private List<IdleTimeBandEntity> idleTimeBandList = []
 	private List<EventEntity> eventList = []
@@ -25,12 +26,12 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	private List<TaskEntity> taskList = []
 
 	@Override
-	public IdeaFlowStateEntity getActiveState(long taskId) {
+	public IdeaFlowPartialStateEntity getActiveState(long taskId) {
 		activeState
 	}
 
 	@Override
-	public IdeaFlowStateEntity getContainingState(long taskId) {
+	public IdeaFlowPartialStateEntity getContainingState(long taskId) {
 		containingState
 	}
 
@@ -66,18 +67,18 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
-	public void saveActiveState(IdeaFlowStateEntity activeState) {
+	public void saveActiveState(IdeaFlowPartialStateEntity activeState) {
 		saveActiveState(activeState, null)
 	}
 
 	@Override
-	public void saveActiveState(IdeaFlowStateEntity activeState, IdeaFlowStateEntity containingState) {
+	public void saveActiveState(IdeaFlowPartialStateEntity activeState, IdeaFlowPartialStateEntity containingState) {
 		this.activeState = activeState
 		this.containingState = containingState
 	}
 
 	@Override
-	public void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowStateEntity activeState) {
+	public void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowPartialStateEntity activeState) {
 		stateToSave.id = ideaFlowStateId++
 		stateList.add(stateToSave)
 		saveActiveState(activeState)

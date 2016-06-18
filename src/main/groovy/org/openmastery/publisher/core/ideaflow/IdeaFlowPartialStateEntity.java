@@ -40,6 +40,15 @@ public class IdeaFlowPartialStateEntity {
 	private boolean isLinkedToPrevious;
 	private boolean isNested;
 
+	public boolean isOfType(IdeaFlowStateType... typesToCheck) {
+		for (IdeaFlowStateType typeToCheck : typesToCheck) {
+			if (typeToCheck == type) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	@Data
 	@Builder

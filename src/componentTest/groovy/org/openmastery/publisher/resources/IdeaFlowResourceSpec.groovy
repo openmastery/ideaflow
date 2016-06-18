@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.resources
 
+import org.openmastery.publisher.api.ideaflow.IdeaFlowPartialCompositeState
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.ideaflow.IdeaFlowState
@@ -42,11 +43,12 @@ class IdeaFlowResourceSpec extends Specification {
 				.type(expectedType)
 				.build()
 
-		IdeaFlowState actualState = ideaFlowClient.getActiveState(taskId)
-		ifmStateComparator.assertEquals(expectedState, actualState)
-		assert actualState.start != null
-		assert actualState.end == null
-		assert actualState.endingComment == null
+		IdeaFlowPartialCompositeState compositeState = ideaFlowClient.getActiveState(taskId)
+		IdeaFlowState activeState = compositeState.activeState
+		ifmStateComparator.assertEquals(expectedState, activeState)
+		assert activeState.start != null
+		assert activeState.end == null
+		assert activeState.endingComment == null
 	}
 
 	private void assertStateTransition(IdeaFlowStateType expectedType, String expectedStartingComment, String expectedEndingComment) {

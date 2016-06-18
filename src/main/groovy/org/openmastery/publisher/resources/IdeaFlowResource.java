@@ -17,10 +17,11 @@ package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.mapper.EntityMapper;
+import org.openmastery.publisher.api.ideaflow.IdeaFlowPartialCompositeState;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowState;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateTransition;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity;
+import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,9 +87,15 @@ public class IdeaFlowResource {
 
 	@GET
 	@Path(ResourcePaths.ACTIVE_STATE_PATH + "/{taskId}")
-	public IdeaFlowState activeState(@PathParam("taskId") Long taskId) {
-		IdeaFlowStateEntity entity = persistenceService.getActiveState(taskId);
-		return entityMapper.mapIfNotNull(entity, IdeaFlowState.class);
+	public IdeaFlowPartialCompositeState activeState(@PathParam("taskId") Long taskId) {
+		IdeaFlowPartialStateEntity activePartialState = persistenceService.getActiveState(taskId);
+		IdeaFlowPartialStateEntity containingPartialState = persistenceService.getContainingState(taskId);
+		IdeaFlowState activeState = entityMapper.mapIfNotNull(activePartialState, IdeaFlowState.class);
+		IdeaFlowState containingState = entityMapper.mapIfNotNull(containingPartialState, IdeaFlowState.class);
+		return IdeaFlowPartialCompositeState.builder()
+				.activeState(activeState)
+				.containingState(containingState)
+				.build();
 	}
 
 }

@@ -8,7 +8,6 @@ import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.event.EventRepository;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateRepository;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateScope;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateRepository;
 import org.openmastery.publisher.core.task.TaskEntity;
@@ -23,8 +22,8 @@ import java.util.Map;
 
 public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistenceService {
 
-	private Map<Long, IdeaFlowStateEntity> activeStateMap = new HashMap<>();
-	private Map<Long, IdeaFlowStateEntity> containingStateMap = new HashMap<>();
+	private Map<Long, IdeaFlowPartialStateEntity> activeStateMap = new HashMap<>();
+	private Map<Long, IdeaFlowPartialStateEntity> containingStateMap = new HashMap<>();
 
 	@Autowired
 	private IdeaFlowStateRepository ideaFlowStateRepository;
@@ -40,7 +39,7 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	private TaskRepository taskRepository;
 
 	@Override
-	public IdeaFlowStateEntity getActiveState(long taskId) {
+	public IdeaFlowPartialStateEntity getActiveState(long taskId) {
 //		IdeaFlowPartialStateEntity.PrimaryKey pk = IdeaFlowPartialStateEntity.PrimaryKey.builder()
 //				.taskId(taskId)
 //				.scope(IdeaFlowPartialStateScope.ACTIVE)
@@ -51,7 +50,7 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
-	public IdeaFlowStateEntity getContainingState(long taskId) {
+	public IdeaFlowPartialStateEntity getContainingState(long taskId) {
 		return containingStateMap.get(taskId);
 	}
 
@@ -82,12 +81,12 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
-	public void saveActiveState(IdeaFlowStateEntity activeState) {
+	public void saveActiveState(IdeaFlowPartialStateEntity activeState) {
 		saveActiveState(activeState, null);
 	}
 
 	@Override
-	public void saveActiveState(IdeaFlowStateEntity activeState, IdeaFlowStateEntity containingState) {
+	public void saveActiveState(IdeaFlowPartialStateEntity activeState, IdeaFlowPartialStateEntity containingState) {
 		activeStateMap.put(activeState.getTaskId(), activeState);
 		if (containingState != null) {
 			containingStateMap.put(containingState.getTaskId(), containingState);
@@ -98,7 +97,7 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 
 	@Override
 	@Transactional
-	public void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowStateEntity activeState) {
+	public void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowPartialStateEntity activeState) {
 		ideaFlowStateRepository.save(stateToSave);
 		saveActiveState(activeState);
 	}

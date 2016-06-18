@@ -46,13 +46,13 @@ public class IdeaFlowStateEntity implements Comparable<IdeaFlowStateEntity> {
 	private boolean isLinkedToPrevious;
 	private boolean isNested;
 
-	public boolean isOfType(IdeaFlowStateType... typesToCheck) {
-		for (IdeaFlowStateType typeToCheck : typesToCheck) {
-			if (typeToCheck == type) {
-				return true;
-			}
-		}
-		return false;
+	public static IdeaFlowStateEntity.IdeaFlowStateEntityBuilder from(IdeaFlowPartialStateEntity state) {
+		return builder().type(state.getType())
+				.start(state.getStart())
+				.startingComment(state.getStartingComment())
+				.isLinkedToPrevious(state.isLinkedToPrevious())
+				.isNested(state.isNested())
+				.taskId(state.getTaskId());
 	}
 
 	public static IdeaFlowStateEntity.IdeaFlowStateEntityBuilder from(IdeaFlowStateEntity state) {

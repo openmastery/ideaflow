@@ -16,10 +16,10 @@
 package org.openmastery.publisher.client;
 
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.ideaflow.IdeaFlowPartialCompositeState;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateTransition;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.rest.client.CrudClient;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowState;
 
 public class IdeaFlowClient extends CrudClient<IdeaFlowStateTransition, IdeaFlowClient> {
 
@@ -27,11 +27,11 @@ public class IdeaFlowClient extends CrudClient<IdeaFlowStateTransition, IdeaFlow
 		super(hostUri, ResourcePaths.IDEAFLOW_PATH, IdeaFlowStateTransition.class);
 	}
 
-	public IdeaFlowState getActiveState(Long taskId) {
-		return (IdeaFlowState) getUntypedCrudClientRequest()
+	public IdeaFlowPartialCompositeState getActiveState(Long taskId) {
+		return (IdeaFlowPartialCompositeState) getUntypedCrudClientRequest()
 				.path(ResourcePaths.ACTIVE_STATE_PATH)
 				.path(taskId)
-				.entity(IdeaFlowState.class)
+				.entity(IdeaFlowPartialCompositeState.class)
 				.find();
 	}
 

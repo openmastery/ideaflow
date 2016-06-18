@@ -3,6 +3,7 @@ package org.openmastery.publisher.core.timeline
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.publisher.core.activity.IdleTimeBandEntity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.task.TaskEntity
@@ -58,11 +59,11 @@ public class BandTimelineFactory {
 
 	private List<IdeaFlowStateEntity> getStateListWithActiveCompleted(long taskId) {
 		List<IdeaFlowStateEntity> stateList = new ArrayList(persistenceService.getStateList(taskId))
-		IdeaFlowStateEntity activeState = persistenceService.getActiveState(taskId)
+		IdeaFlowPartialStateEntity activeState = persistenceService.getActiveState(taskId)
 		if (activeState != null) {
 			LocalDateTime stateEndTime = persistenceService.getMostRecentActivityEnd(taskId)
 			addCompleteStateIfDurationNotZero(stateList, taskId, activeState, stateEndTime)
-			IdeaFlowStateEntity containingState = persistenceService.getContainingState(taskId)
+			IdeaFlowPartialStateEntity containingState = persistenceService.getContainingState(taskId)
 			if (containingState != null) {
 				addCompleteStateIfDurationNotZero(stateList, taskId, containingState, stateEndTime)
 			}
@@ -70,7 +71,7 @@ public class BandTimelineFactory {
 		stateList
 	}
 
-	private void addCompleteStateIfDurationNotZero(List<IdeaFlowStateEntity> stateList, long taskId, IdeaFlowStateEntity state, LocalDateTime endTime) {
+	private void addCompleteStateIfDurationNotZero(List<IdeaFlowStateEntity> stateList, long taskId, IdeaFlowPartialStateEntity state, LocalDateTime endTime) {
 		if (endTime != null && endTime != state.start) {
 			IdeaFlowStateEntity ideaFlowState = IdeaFlowStateEntity.from(state)
 					.taskId(taskId)

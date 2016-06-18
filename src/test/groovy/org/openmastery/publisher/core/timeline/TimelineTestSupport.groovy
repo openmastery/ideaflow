@@ -2,6 +2,7 @@ package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
+import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.time.MockTimeService
 import org.openmastery.publisher.core.activity.EditorActivityEntity
@@ -51,7 +52,7 @@ class TimelineTestSupport {
 		persistenceService.getEventList(taskId)
 	}
 
-	private void completeAndAddStateIfNotNull(List<IdeaFlowStateEntity> stateList, IdeaFlowStateEntity state) {
+	private void completeAndAddStateIfNotNull(List<IdeaFlowStateEntity> stateList, IdeaFlowPartialStateEntity state) {
 		if (state) {
 			stateList << IdeaFlowStateEntity.from(state)
 					.taskId(taskId)

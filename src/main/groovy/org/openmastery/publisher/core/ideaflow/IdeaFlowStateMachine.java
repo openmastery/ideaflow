@@ -1,5 +1,6 @@
 package org.openmastery.publisher.core.ideaflow;
 
+import org.openmastery.mapper.EntityMapper;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.openmastery.time.TimeService;
@@ -12,6 +13,7 @@ public class IdeaFlowStateMachine {
 	private Long taskId;
 	private TimeService timeService;
 	private IdeaFlowPersistenceService ideaFlowPersistenceService;
+	private EntityMapper entityMapper = new EntityMapper();
 
 	public IdeaFlowStateMachine(Long taskId, TimeService timeService, IdeaFlowPersistenceService ideaFlowPersistenceService) {
 		this.taskId = taskId;
@@ -19,32 +21,32 @@ public class IdeaFlowStateMachine {
 		this.ideaFlowPersistenceService = ideaFlowPersistenceService;
 	}
 
-	private IdeaFlowStateEntity getActiveState() {
-		IdeaFlowStateEntity state = ideaFlowPersistenceService.getActiveState(taskId);
+	private IdeaFlowPartialStateEntity getActiveState() {
+		IdeaFlowPartialStateEntity state = ideaFlowPersistenceService.getActiveState(taskId);
 		if (state == null) {
 			state = createStartProgress();
 		}
 		return state;
 	}
 
-	private IdeaFlowStateEntity getContainingState() {
+	private IdeaFlowPartialStateEntity getContainingState() {
 		return ideaFlowPersistenceService.getContainingState(taskId);
 	}
 
-	private IdeaFlowStateEntity createStartProgress() {
-		return IdeaFlowStateEntity.builder()
+	private IdeaFlowPartialStateEntity createStartProgress() {
+		return IdeaFlowPartialStateEntity.builder()
 				.taskId(taskId)
 				.type(IdeaFlowStateType.PROGRESS)
 				.start(timeService.now())
 				.build();
 	}
 
-	private IdeaFlowStateEntity createEndProgress(IdeaFlowStateEntity startState) {
+	private IdeaFlowStateEntity createEndProgress(IdeaFlowPartialStateEntity startState) {
 		return createEndState(startState, null);
 	}
 
-	private IdeaFlowStateEntity createStartState(IdeaFlowStateType type, String startingComment) {
-		return IdeaFlowStateEntity.builder()
+	private IdeaFlowPartialStateEntity createStartState(IdeaFlowStateType type, String startingComment) {
+		return IdeaFlowPartialStateEntity.builder()
 				.taskId(taskId)
 				.type(type)
 				.startingComment(startingComment)
@@ -52,7 +54,7 @@ public class IdeaFlowStateMachine {
 				.build();
 	}
 
-	private IdeaFlowStateEntity createEndState(IdeaFlowStateEntity startState, String endingComment) {
+	private IdeaFlowStateEntity createEndState(IdeaFlowPartialStateEntity startState, String endingComment) {
 		return IdeaFlowStateEntity.from(startState)
 				.taskId(startState.getTaskId())
 				.end(timeService.now())
@@ -65,8 +67,8 @@ public class IdeaFlowStateMachine {
 	}
 
 	public void startConflict(String question) {
-		IdeaFlowStateEntity oldActiveState = getActiveState();
-		IdeaFlowStateEntity newActiveState = createStartState(IdeaFlowStateType.CONFLICT, question);
+		IdeaFlowPartialStateEntity oldActiveState = getActiveState();
+		IdeaFlowPartialStateEntity newActiveState = createStartState(IdeaFlowStateType.CONFLICT, question);
 
 		if (oldActiveState.isOfType(IdeaFlowStateType.PROGRESS)) {
 			IdeaFlowStateEntity stateToSave = createEndProgress(oldActiveState);
@@ -81,12 +83,12 @@ public class IdeaFlowStateMachine {
 	}
 
 	public void endConflict(String resolution) {
-		IdeaFlowStateEntity oldActiveState = getActiveState();
+		IdeaFlowPartialStateEntity oldActiveState = getActiveState();
 
 		if (oldActiveState.isOfType(IdeaFlowStateType.CONFLICT)) {
 			IdeaFlowStateEntity stateToSave = createEndState(oldActiveState, resolution);
-			IdeaFlowStateEntity containingState = getContainingState();
-			IdeaFlowStateEntity newActiveState = containingState != null ? containingState : createStartProgress();
+			IdeaFlowPartialStateEntity containingState = getContainingState();
+			IdeaFlowPartialStateEntity newActiveState = containingState != null ? containingState : createStartProgress();
 			ideaFlowPersistenceService.saveTransition(stateToSave, newActiveState);
 		} else {
 			// TODO: log warning
@@ -111,8 +113,8 @@ public class IdeaFlowStateMachine {
 	}
 
 	private void startLearningOrRework(IdeaFlowStateType type, String comment) {
-		IdeaFlowStateEntity oldActiveState = getActiveState();
-		IdeaFlowStateEntity newActiveState = createStartState(type, comment);
+		IdeaFlowPartialStateEntity oldActiveState = getActiveState();
+		IdeaFlowPartialStateEntity newActiveState = createStartState(type, comment);
 
 		if (getContainingState() != null) {
 			// TODO: log warning
@@ -134,13 +136,13 @@ public class IdeaFlowStateMachine {
 	}
 
 	private void endLearningOrRework(IdeaFlowStateType type, String resolution) {
-		IdeaFlowStateEntity oldActiveState = getActiveState();
+		IdeaFlowPartialStateEntity oldActiveState = getActiveState();
 
 		if (oldActiveState.isOfType(type)) {
 			IdeaFlowStateEntity stateToSave = createEndState(oldActiveState, resolution);
 			ideaFlowPersistenceService.saveTransition(stateToSave, createStartProgress());
 		} else if (oldActiveState.isOfType(IdeaFlowStateType.CONFLICT)) {
-			IdeaFlowStateEntity containingState = getContainingState();
+			IdeaFlowPartialStateEntity containingState = getContainingState();
 			if (containingState != null) {
 				IdeaFlowStateEntity stateToSave = createEndState(containingState, resolution);
 				oldActiveState.setNested(false);

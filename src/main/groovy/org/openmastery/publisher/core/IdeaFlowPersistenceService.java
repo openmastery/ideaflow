@@ -3,6 +3,7 @@ package org.openmastery.publisher.core;
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
 import org.openmastery.publisher.core.activity.IdleTimeBandEntity;
 import org.openmastery.publisher.core.event.EventEntity;
+import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity;
 import org.openmastery.publisher.core.task.TaskEntity;
 
@@ -11,9 +12,9 @@ import java.util.List;
 
 public interface IdeaFlowPersistenceService {
 
-	IdeaFlowStateEntity getActiveState(long taskId);
+	IdeaFlowPartialStateEntity getActiveState(long taskId);
 
-	IdeaFlowStateEntity getContainingState(long taskId);
+	IdeaFlowPartialStateEntity getContainingState(long taskId);
 
 	List<IdeaFlowStateEntity> getStateList(long taskId);
 
@@ -25,11 +26,11 @@ public interface IdeaFlowPersistenceService {
 
 	LocalDateTime getMostRecentActivityEnd(long taskId);
 
-	void saveActiveState(IdeaFlowStateEntity activeState);
+	void saveActiveState(IdeaFlowPartialStateEntity activeState);
 
-	void saveActiveState(IdeaFlowStateEntity activeState, IdeaFlowStateEntity containingState);
+	void saveActiveState(IdeaFlowPartialStateEntity activeState, IdeaFlowPartialStateEntity containingState);
 
-	void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowStateEntity activeState);
+	void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowPartialStateEntity activeState);
 
 
 	IdleTimeBandEntity saveIdleActivity(IdleTimeBandEntity idleActivity);
