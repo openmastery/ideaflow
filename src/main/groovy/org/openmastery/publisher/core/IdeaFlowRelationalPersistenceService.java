@@ -6,6 +6,9 @@ import org.openmastery.publisher.core.activity.IdleTimeBandEntity;
 import org.openmastery.publisher.core.activity.IdleTimeBandRepository;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.event.EventRepository;
+import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
+import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateRepository;
+import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateScope;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateRepository;
 import org.openmastery.publisher.core.task.TaskEntity;
@@ -26,6 +29,8 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	@Autowired
 	private IdeaFlowStateRepository ideaFlowStateRepository;
 	@Autowired
+	private IdeaFlowPartialStateRepository ideaFlowPartialStateRepository;
+	@Autowired
 	private IdleTimeBandRepository idleTimeBandRepository;
 	@Autowired
 	private EventRepository eventRepository;
@@ -36,6 +41,12 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 
 	@Override
 	public IdeaFlowStateEntity getActiveState(long taskId) {
+//		IdeaFlowPartialStateEntity.PrimaryKey pk = IdeaFlowPartialStateEntity.PrimaryKey.builder()
+//				.taskId(taskId)
+//				.scope(IdeaFlowPartialStateScope.ACTIVE)
+//				.build();
+//
+//		ideaFlowPartialStateRepository.findOne()
 		return activeStateMap.get(taskId);
 	}
 
