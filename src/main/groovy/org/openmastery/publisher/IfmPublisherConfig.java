@@ -1,7 +1,7 @@
 package org.openmastery.publisher;
 
-import org.openmastery.publisher.core.IdeaFlowInMemoryPersistenceService;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
+import org.openmastery.publisher.core.IdeaFlowRelationalPersistenceService;
 import org.openmastery.time.LocalDateTimeService;
 import org.openmastery.time.TimeService;
 import org.springframework.boot.actuate.autoconfigure.ManagementWebSecurityAutoConfiguration;
@@ -20,7 +20,7 @@ public class IfmPublisherConfig {
 
 	@Bean
 	public IdeaFlowPersistenceService ideaFlowPersistenceService() {
-		return new IdeaFlowInMemoryPersistenceService();
+		return new IdeaFlowRelationalPersistenceService();
 	}
 
 	@Bean

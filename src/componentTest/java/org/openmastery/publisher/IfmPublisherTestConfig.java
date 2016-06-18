@@ -16,6 +16,9 @@
 package org.openmastery.publisher;
 
 import groovyx.net.http.RESTClient;
+import org.openmastery.publisher.core.IdeaFlowInMemoryPersistenceService;
+import org.openmastery.publisher.core.IdeaFlowPersistenceService;
+import org.openmastery.publisher.core.IdeaFlowRelationalPersistenceService;
 import org.openmastery.time.MockTimeService;
 import org.openmastery.publisher.client.ActivityClient;
 import org.openmastery.publisher.client.EventClient;

@@ -5,6 +5,8 @@ import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.rest.client.CrudClient;
 import org.openmastery.publisher.api.task.Task;
 
+import java.util.List;
+
 public class TaskClient extends CrudClient<Task, TaskClient> {
 
 	public TaskClient(String baseUrl) {
@@ -21,6 +23,13 @@ public class TaskClient extends CrudClient<Task, TaskClient> {
 
 	public Task findTaskWithName(String taskName) {
 		return crudClientRequest.queryParam("taskName", taskName).find();
+	}
+
+	public List<Task> findRecentTasks(int limit) {
+		return crudClientRequest
+				.path(ResourcePaths.RECENT_PATH)
+				.queryParam("limit", limit)
+				.findMany();
 	}
 
 }

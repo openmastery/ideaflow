@@ -6,8 +6,8 @@ class RandomTaskEntityBuilder extends TaskEntity.TaskEntityBuilder {
 
 	RandomTaskEntityBuilder() {
 		super.id(aRandom.id())
-				.name(aRandom.text(250))
-				.description(aRandom.optionalText(500))
+				.name(aRandom.text(10))
+				.description(aRandom.optionalText(50))
 	}
 
 }

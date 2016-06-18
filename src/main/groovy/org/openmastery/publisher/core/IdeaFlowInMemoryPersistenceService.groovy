@@ -129,4 +129,16 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 		}
 	}
 
+	@Override
+	List<TaskEntity> findRecentTasks(int limit) {
+		if (limit < 1) {
+			return []
+		} else if (limit >= taskList.size()) {
+			return taskList.asImmutable()
+		} else {
+			List<TaskEntity> sortedList = taskList.toSorted { a, b -> b.creationDate <=> a.creationDate }
+			return sortedList.subList(0, limit)
+		}
+	}
+
 }

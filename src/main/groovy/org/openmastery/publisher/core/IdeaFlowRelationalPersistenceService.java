@@ -122,4 +122,9 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 		return taskRepository.findByName(taskName);
 	}
 
+	@Override
+	public List<TaskEntity> findRecentTasks(int limit) {
+		return taskRepository.findRecent(limit);
+	}
+
 }

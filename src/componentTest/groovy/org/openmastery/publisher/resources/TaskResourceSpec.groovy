@@ -3,11 +3,13 @@ package org.openmastery.publisher.resources
 import com.bancvue.rest.exception.ConflictingEntityException
 import com.bancvue.rest.exception.NotFoundException
 import org.joda.time.LocalDateTime
-import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.testsupport.BeanCompare
+import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
@@ -22,7 +24,7 @@ class TaskResourceSpec extends Specification {
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
 	@Autowired
-	private TimeService timeService
+	private MockTimeService timeService
 
 	private BeanCompare taskComparator = new BeanCompare().excludeFields("id")
 
@@ -77,6 +79,24 @@ class TaskResourceSpec extends Specification {
 		then:
 		ConflictingEntityException ex = thrown()
 		taskComparator.assertEquals(ex.entity, expectedConflict)
+	}
+
+	def "SHOULD return recent task list"() {
+		given:
+		for (int i = 0; i < 10; i++) {
+			taskClient.createTask(aRandom.text(10), aRandom.text(50))
+			timeService.plusMinutes(10)
+		}
+		timeService.plusHours(1)
+		Task secondMostRecent = taskClient.createTask("recent1", "description")
+		timeService.plusHours(1)
+		Task mostRecent = taskClient.createTask("recent2", "description")
+
+		when:
+		List<Task> taskList = taskClient.findRecentTasks(2)
+
+		then:
+		assert taskList == [mostRecent, secondMostRecent]
 	}
 
 }

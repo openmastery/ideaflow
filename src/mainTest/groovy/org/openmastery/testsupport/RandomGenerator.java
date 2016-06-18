@@ -88,10 +88,11 @@ public class RandomGenerator {
     /**
      * Returns a string of random characters.
      */
-    public String text(int length) {
+    public String text(int maxLength) {
         // NOTE: we're using getRandomChars instead of getRandomText b/c the random text isn't so random.
         // they basically use a dictionary of words of specific lengths and the number of choices can be
         // very small (e.g. size 10 equates to 2 distinct words)
+        int length = intBetween(1, maxLength);
         return df.getRandomChars(length);
     }
 

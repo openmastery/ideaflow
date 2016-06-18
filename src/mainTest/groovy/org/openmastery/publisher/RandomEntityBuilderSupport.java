@@ -6,7 +6,7 @@ import org.openmastery.publisher.core.event.RandomEventEntityBuilder;
 import org.openmastery.publisher.core.ideaflow.RandomIdeaFlowStateEntityBuilder;
 import org.openmastery.publisher.core.task.RandomTaskEntityBuilder;
 
-public class RandomBuilderSupport {
+public class RandomEntityBuilderSupport {
 
 	public RandomEditorActivityEntityBuilder editorActivityEntity() {
 		return new RandomEditorActivityEntityBuilder();

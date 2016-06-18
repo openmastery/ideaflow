@@ -21,6 +21,7 @@ public class ResourcePaths {
 
 	// task paths
 	public static final String TASK_PATH = "/task";
+	public static final String RECENT_PATH = "/recent";
 	public static final String ACTIVATE_PATH = "/activate";
 
 	// ideaflow paths
@@ -48,6 +49,5 @@ public class ResourcePaths {
 	public static final String TIMELINE_BAND_PATH = "/band";
 	public static final String DAY_PATH = "/day";
 	public static final String USER_PATH = "/user";
-	public static final String RECENT_PATH = "/recent";
 	public static final String PROJECT_PATH = "/project";
 }

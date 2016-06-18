@@ -44,4 +44,6 @@ public interface IdeaFlowPersistenceService {
 
 	TaskEntity findTaskWithName(String taskName);
 
+	List<TaskEntity> findRecentTasks(int limit);
+
 }

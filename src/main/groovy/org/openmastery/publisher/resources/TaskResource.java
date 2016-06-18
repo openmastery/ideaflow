@@ -22,6 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Component
 @Path(ResourcePaths.TASK_PATH)
@@ -78,7 +79,6 @@ public class TaskResource {
 		return toApiTask(task);
 	}
 
-
 	@GET
 	public Task findTaskWithName(@QueryParam("taskName") String taskName) {
 		TaskEntity task = persistenceService.findTaskWithName(taskName);
@@ -86,6 +86,16 @@ public class TaskResource {
 			throw new NotFoundException();
 		}
 		return toApiTask(task);
+	}
+
+	@GET
+	@Path(ResourcePaths.RECENT_PATH)
+	public List<Task> findRecentTasks(@QueryParam("limit") Integer limit) {
+		if (limit == null) {
+			limit = 5;
+		}
+		List<TaskEntity> taskList = persistenceService.findRecentTasks(limit);
+		return entityMapper.mapList(taskList, Task.class);
 	}
 
 
