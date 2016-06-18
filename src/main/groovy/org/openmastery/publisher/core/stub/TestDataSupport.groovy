@@ -18,13 +18,23 @@ import static IdeaFlowStateType.REWORK
 
 class TestDataSupport {
 
+	private IdeaFlowPersistenceService persistenceService;
 	private TimelineTestSupport testSupport
 
 	TestDataSupport(IdeaFlowPersistenceService persistenceService) {
+		this.persistenceService = persistenceService
 		this.testSupport = new TimelineTestSupport(persistenceService)
 	}
 
+	private boolean doesTaskExist(String name) {
+		persistenceService.findTaskWithName(name)
+	}
+
 	void createBasicTimelineWithAllBandTypes() {
+		if (doesTaskExist("basic")) {
+			return
+		}
+
 		testSupport.startTask("basic", "Basic timeline with all band types")
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How should I break down this task?")
@@ -52,6 +62,10 @@ class TestDataSupport {
 	}
 
 	void createTrialAndErrorMap() {
+		if (doesTaskExist("trialAndError")) {
+			return
+		}
+
 		testSupport.startTask("trialAndError", "Trial and error timeline map")
 		testSupport.advanceTime(0, 0, 15)
 		testSupport.startBand(LEARNING, "How does the existing QueryBuilder work?")
@@ -101,6 +115,10 @@ class TestDataSupport {
 	}
 
 	void createLearningNestedConflictMap() {
+		if (doesTaskExist("nested")) {
+			return
+		}
+
 		testSupport.startTask("nested", "Learning nested conflict map")
 		testSupport.advanceTime(0, 1, 30)
 		testSupport.startBand(LEARNING, "Where do I need to change the ReportingEngine code? #LackOfFamiliarity")
@@ -120,6 +138,10 @@ class TestDataSupport {
 	}
 
 	void createDetailedConflictMap() {
+		if (doesTaskExist("detail")) {
+			return
+		}
+
 		testSupport.startTask("detail", "Detailed conflict map")
 		testSupport.advanceTime(0, 5, 10)
 		testSupport.startBand(LEARNING, "What's the plan?")
