@@ -10,18 +10,20 @@ git clone git@github.com:ideaflow/ifm-publisher.git
 ./gradlew bootRun
 ```
 
-There is one available endpoint:
+There are three available endpoints:
 
-http://localhost:8080/timeline/task/{taskId}
+http://localhost:8980/task/{taskId}
+http://localhost:8980/timeline/band?taskId={taskId}
+http://localhost:8980/timeline/tree?taskId={taskId}
 
 There are four available timelines with the taskId equal to the below options:
 
-* "basic" : A Timeline with three bands and a subtask (subtasks divide into multiple timeline segments)
-* "learning" : A timeline with nested bands within a learning band (red displayed on top of blue)
-* "trial" : A Timeline with trial and error linked together, thus contained within a TimelineGroup.  Grouped bands also contain nested bands.
-* "detailed" : A Timeline with an example detailed conflict (conflict linked to rework, then rework contains nested conflicts)
+* taskId:1, taskName: "basic" - A Timeline with three bands and a subtask (subtasks divide into multiple timeline segments)
+* taskId:2, taskName: "learning" - A timeline with nested bands within a learning band (red displayed on top of blue)
+* taskId:3, taskName: "trial" -  A Timeline with trial and error linked together, thus contained within a TimelineGroup.  Grouped bands also contain nested bands.
+* taskId:4, taskName: "detailed" - A Timeline with an example detailed conflict (conflict linked to rework, then rework contains nested conflicts)
 
-The current version does not yet include events in the timeline, we're still working on that.  However, the timeline is split into multiple segments according to subtask. 
+The current version does not yet include timeline detail APIs, but we've got support for the timeband visualization (band view), and support for the structured tree model (tree view) with band groups, nested bands, events, etc. The timeline is split into multiple segments according to subtask in the tree. 
 
 # To Build
 
@@ -113,3 +115,18 @@ If you get an error on starting up the app that looks like:
 
 That means the application is unable to connect to Docker.  
 Run through the docker setup/install steps.
+
+### After a Restart, SpringBoot Hangs
+
+After a restart SpringBoot will hang while it tries to connect to
+a non-existent VM.
+
+Run:
+
+```
+docker-machine start default
+eval "$(docker-machine env default)"
+docker start postgres
+```
+
+Then bounce the server.
