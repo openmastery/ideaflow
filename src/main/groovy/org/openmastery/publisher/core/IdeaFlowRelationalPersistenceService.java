@@ -66,8 +66,8 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 
 	@Override
 	public LocalDateTime getMostRecentActivityEnd(long taskId) {
-//		editorActivityRepository
-		throw new UnsupportedOperationException();
+		EditorActivityEntity editorActivity = editorActivityRepository.findMostRecentEditorActivityForTask(taskId);
+		return editorActivity != null ? editorActivity.getEnd() : null;
 	}
 
 	@Override
