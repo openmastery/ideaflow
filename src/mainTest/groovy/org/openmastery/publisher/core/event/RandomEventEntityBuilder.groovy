@@ -11,7 +11,7 @@ class RandomEventEntityBuilder extends EventEntity.EventEntityBuilder {
 				.taskId(aRandom.id())
 				.position(aRandom.dayOfYear())
 				.comment(aRandom.optionalWords(250))
-				.eventType(aRandom.item(EventType.values()))
+				.type(aRandom.item(EventType.values()))
 	}
 
 }

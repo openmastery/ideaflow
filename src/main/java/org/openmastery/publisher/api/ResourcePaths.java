@@ -37,6 +37,7 @@ public class ResourcePaths {
 	public static final String ACTIVITY_PATH = "/activity";
 	public static final String EDITOR_PATH = "/editor";
 	public static final String IDLE_PATH = "/idle";
+	public static final String EXTERNAL_PATH = "/external";
 
 	// event paths
 	public static final String EVENT_PATH = "/event";

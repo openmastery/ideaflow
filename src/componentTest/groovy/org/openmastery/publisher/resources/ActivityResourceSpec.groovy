@@ -1,5 +1,6 @@
 package org.openmastery.publisher.resources
 
+import org.openmastery.publisher.core.activity.IdleTimeBandEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.client.ActivityClient
@@ -11,6 +12,8 @@ import spock.lang.Specification
 
 import java.time.Duration
 
+import static org.openmastery.publisher.ARandom.aRandom
+
 @ComponentTest
 class ActivityResourceSpec extends Specification {
 
@@ -20,29 +23,40 @@ class ActivityResourceSpec extends Specification {
 	private IdeaFlowPersistenceService persistenceService
 	@Autowired
 	private TimeService timeService
-	private long taskId = 123
+	private BeanCompare comparator = new BeanCompare().excludeFields("id")
 
 	def "SHOULD post editor activity"() {
 		given:
-		BeanCompare comparator = new BeanCompare().excludeFields("id")
-		String filePath = "/some/file/path"
-		boolean isModified = true
-		Duration duration = Duration.ofMinutes(45)
-
-		when:
-		client.addEditorActivity(taskId, filePath, isModified, duration.seconds)
-
-		then:
-		EditorActivityEntity expectedEditorActivity = EditorActivityEntity.builder()
-				.taskId(taskId)
-				.filePath(filePath)
-				.isModified(isModified)
-				.start(timeService.now().minus(duration))
+		Duration expectedDuration = aRandom.duration()
+		EditorActivityEntity expectedActivity = aRandom.editorActivityEntity()
+				.start(timeService.now().minus(expectedDuration))
 				.end(timeService.now())
 				.build()
-		EditorActivityEntity actualEditorActivity = persistenceService.getEditorActivityList(taskId).last()
-		comparator.assertEquals(expectedEditorActivity, actualEditorActivity)
-		assert actualEditorActivity.id != null
+
+		when:
+		client.addEditorActivity(expectedActivity.taskId, expectedActivity.filePath, expectedActivity.modified, expectedDuration.seconds)
+
+		then:
+		List<EditorActivityEntity> activityEntities = persistenceService.getEditorActivityList(expectedActivity.taskId)
+		comparator.assertEquals(expectedActivity, activityEntities.last())
+		assert activityEntities.last().id != null
+	}
+
+	def "SHOULD post idle activity"() {
+		given:
+		Duration expectedDuration = aRandom.duration()
+		IdleTimeBandEntity expectedIdle = aRandom.idleTimeBandEntity()
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
+				.build()
+
+		when:
+		client.addIdleActivity(expectedIdle.taskId, expectedIdle.comment, expectedIdle.auto, expectedDuration.seconds)
+
+		then:
+		List<IdleTimeBandEntity> idleEntities = persistenceService.getIdleTimeBandList(expectedIdle.taskId)
+		comparator.assertEquals(expectedIdle, idleEntities.last())
+		assert idleEntities.last().id != null
 	}
 
 }

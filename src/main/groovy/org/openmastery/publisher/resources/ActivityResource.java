@@ -6,6 +6,7 @@ import org.openmastery.publisher.api.activity.NewEditorActivity;
 import org.openmastery.publisher.api.activity.NewIdleActivity;
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
 import org.openmastery.mapper.EntityMapper;
+import org.openmastery.publisher.core.activity.IdleTimeBandEntity;
 import org.openmastery.time.TimeService;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,17 @@ public class ActivityResource {
 		entity.setStart(start);
 		entity.setEnd(end);
 		persistenceService.saveEditorActivity(entity);
+	}
+
+	@POST
+	@Path(ResourcePaths.IDLE_PATH)
+	public void addIdleActivity(NewIdleActivity idleActivity) {
+		LocalDateTime end = timeService.now();
+		LocalDateTime start = end.minusSeconds(idleActivity.getDurationInSeconds());
+		IdleTimeBandEntity entity = entityMapper.mapIfNotNull(idleActivity, IdleTimeBandEntity.class);
+		entity.setStart(start);
+		entity.setEnd(end);
+		persistenceService.saveIdleActivity(entity);
 	}
 
 }
