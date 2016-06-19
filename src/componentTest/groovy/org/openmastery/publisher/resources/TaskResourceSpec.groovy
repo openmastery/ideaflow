@@ -99,4 +99,16 @@ class TaskResourceSpec extends Specification {
 		assert taskList == [mostRecent, secondMostRecent]
 	}
 
+	def "activate SHOULD create idle time on resume"() {
+		given:
+		Task recentTask = taskClient.createTask("recent", "description")
+		timeService.plusHours(5)
+
+		when:
+		taskClient.activate(recentTask.id)
+
+		then:
+		assert persistenceService.getIdleTimeBandList(recentTask.id).size() > 0
+	}
+
 }

@@ -32,4 +32,11 @@ public class TaskClient extends CrudClient<Task, TaskClient> {
 				.findMany();
 	}
 
+	public Task activate(Long taskId) {
+		return crudClientRequest
+				.path(ResourcePaths.ACTIVATE_PATH)
+				.path(taskId)
+				.updateWithPut("");
+	}
+
 }

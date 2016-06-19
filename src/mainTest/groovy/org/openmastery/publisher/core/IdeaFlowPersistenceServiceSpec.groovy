@@ -88,4 +88,14 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		assert mostRecentEditorActivity.end == persistenceService.getMostRecentActivityEnd(taskId)
 	}
 
+	def "getMostRecentActivityEnd SHOULD return task start WHEN there's no activity"() {
+		given:
+
+		TaskEntity task = saveTask(aRandom.taskEntity().creationDate(mockTimeService.now()))
+
+		expect:
+		assert task.creationDate == persistenceService.getMostRecentActivityEnd(task.id)
+
+	}
+
 }

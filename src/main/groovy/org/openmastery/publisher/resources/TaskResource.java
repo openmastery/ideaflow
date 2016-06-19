@@ -5,6 +5,7 @@ import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
+import org.openmastery.publisher.core.activity.IdleTimeBandEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.openmastery.publisher.core.task.TaskEntity;
@@ -14,15 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Component
 @Path(ResourcePaths.TASK_PATH)
@@ -67,6 +63,26 @@ public class TaskResource {
 
 		Task apiTask = entityMapper.mapIfNotNull(task, Task.class);
 		return apiTask;
+	}
+
+	@PUT
+	@Path(ResourcePaths.ACTIVATE_PATH + "/{id}")
+	public Task activate(@PathParam("id") Long taskId) {
+		TaskEntity task = persistenceService.findTaskWithId(taskId);
+		if (task == null) {
+			throw new NotFoundException();
+		}
+
+		LocalDateTime activityEnd = persistenceService.getMostRecentActivityEnd(taskId);
+		IdleTimeBandEntity idleTime = IdleTimeBandEntity.builder()
+				.taskId(taskId)
+				.start(activityEnd)
+				.end(timeService.now())
+				.auto(true)
+				.build();
+
+		persistenceService.saveIdleActivity(idleTime);
+		return toApiTask(task);
 	}
 
 	@GET
