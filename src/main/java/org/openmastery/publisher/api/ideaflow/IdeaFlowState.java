@@ -1,5 +1,6 @@
 package org.openmastery.publisher.api.ideaflow;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,12 @@ public class IdeaFlowState implements Comparable<IdeaFlowState> {
 	private boolean isLinkedToPrevious;
 	private boolean isNested;
 
+	@JsonIgnore
+	public boolean isConflict() {
+		return isOfType(IdeaFlowStateType.CONFLICT);
+	}
+
+	@JsonIgnore
 	public boolean isOfType(IdeaFlowStateType... typesToCheck) {
 		for (IdeaFlowStateType typeToCheck : typesToCheck) {
 			if (typeToCheck == type) {

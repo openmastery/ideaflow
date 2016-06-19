@@ -1,6 +1,5 @@
 package org.openmastery.publisher.core.ideaflow;
 
-import org.openmastery.mapper.EntityMapper;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.openmastery.time.TimeService;
@@ -13,7 +12,6 @@ public class IdeaFlowStateMachine {
 	private Long taskId;
 	private TimeService timeService;
 	private IdeaFlowPersistenceService ideaFlowPersistenceService;
-	private EntityMapper entityMapper = new EntityMapper();
 
 	public IdeaFlowStateMachine(Long taskId, TimeService timeService, IdeaFlowPersistenceService ideaFlowPersistenceService) {
 		this.taskId = taskId;
