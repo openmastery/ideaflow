@@ -2,6 +2,8 @@ package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.activity.EditorActivity;
+import org.openmastery.publisher.api.activity.NewEditorActivity;
+import org.openmastery.publisher.api.activity.NewIdleActivity;
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
 import org.openmastery.mapper.EntityMapper;
 import org.openmastery.time.TimeService;
@@ -28,7 +30,7 @@ public class ActivityResource {
 
 	@POST
 	@Path(ResourcePaths.EDITOR_PATH)
-	public void addEditorActivity(EditorActivity editorActivity) {
+	public void addEditorActivity(NewEditorActivity editorActivity) {
 		LocalDateTime end = timeService.now();
 		LocalDateTime start = end.minusSeconds(editorActivity.getDurationInSeconds());
 		EditorActivityEntity entity = entityMapper.mapIfNotNull(editorActivity, EditorActivityEntity.class);

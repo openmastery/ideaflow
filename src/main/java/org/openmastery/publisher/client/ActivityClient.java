@@ -2,6 +2,7 @@ package org.openmastery.publisher.client;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.activity.EditorActivity;
+import org.openmastery.publisher.api.activity.NewEditorActivity;
 import org.openmastery.rest.client.CrudClient;
 
 public class ActivityClient extends CrudClient<EditorActivity, ActivityClient> {
@@ -11,7 +12,7 @@ public class ActivityClient extends CrudClient<EditorActivity, ActivityClient> {
 	}
 
 	public void addEditorActivity(Long taskId, String filePath, boolean isModified, Long durationInSeconds) {
-		EditorActivity activity = EditorActivity.builder()
+		NewEditorActivity activity = NewEditorActivity.builder()
 					.taskId(taskId)
 					.filePath(filePath)
 					.isModified(isModified)
