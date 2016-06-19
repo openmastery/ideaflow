@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_FILE" value="logs/application.log"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- %mdc --- [%t] %class{20} : %m%n%wex"/>
+    <property name="CONSOLE_LOG_PATTERN" value="${LOG_PATTERN}"/>
+    <property name="FILE_LOG_PATTERN" value="${LOG_PATTERN}"/>
+
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <logger name="org.openmastery" level="DEBUG"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
