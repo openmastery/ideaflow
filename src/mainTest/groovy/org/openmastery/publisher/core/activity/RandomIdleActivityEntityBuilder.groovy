@@ -4,9 +4,9 @@ import java.time.LocalDateTime
 
 import static org.openmastery.publisher.ARandom.aRandom
 
-class RandomIdleTimeBandEntityBuilder extends IdleTimeBandEntity.IdleTimeBandEntityBuilder {
+class RandomIdleActivityEntityBuilder extends IdleActivityEntity.IdleActivityEntityBuilder {
 
-	public RandomIdleTimeBandEntityBuilder() {
+	public RandomIdleActivityEntityBuilder() {
 		LocalDateTime start = aRandom.dayOfYear()
 		super.id(aRandom.id())
 				.taskId(aRandom.id())

@@ -2,7 +2,7 @@ package org.openmastery.publisher.core.stub
 
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.core.activity.IdleTimeBandEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine
@@ -276,7 +276,7 @@ class TestDataSupport {
 		void idle(int hours) {
 			LocalDateTime start = timeService.now()
 			timeService.plusHours(hours)
-			IdleTimeBandEntity idleActivity = IdleTimeBandEntity.builder()
+			IdleActivityEntity idleActivity = IdleActivityEntity.builder()
 					.start(start)
 					.end(timeService.now()).build()
 			persistenceService.saveIdleActivity(idleActivity)

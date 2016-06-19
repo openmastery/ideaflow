@@ -5,7 +5,7 @@ import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
-import org.openmastery.publisher.core.activity.IdleTimeBandEntity;
+import org.openmastery.publisher.core.activity.IdleActivityEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.openmastery.publisher.core.task.TaskEntity;
@@ -74,7 +74,7 @@ public class TaskResource {
 		}
 
 		LocalDateTime activityEnd = persistenceService.getMostRecentActivityEnd(taskId);
-		IdleTimeBandEntity idleTime = IdleTimeBandEntity.builder()
+		IdleActivityEntity idleTime = IdleActivityEntity.builder()
 				.taskId(taskId)
 				.start(activityEnd)
 				.end(timeService.now())

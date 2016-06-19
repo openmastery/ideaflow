@@ -1,6 +1,6 @@
 package org.openmastery.publisher.resources
 
-import org.openmastery.publisher.core.activity.IdleTimeBandEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.client.ActivityClient
@@ -45,7 +45,7 @@ class ActivityResourceSpec extends Specification {
 	def "SHOULD post idle activity"() {
 		given:
 		Duration expectedDuration = aRandom.duration()
-		IdleTimeBandEntity expectedIdle = aRandom.idleTimeBandEntity()
+		IdleActivityEntity expectedIdle = aRandom.idleActivityEntity()
 				.start(timeService.now().minus(expectedDuration))
 				.end(timeService.now())
 				.build()
@@ -54,7 +54,7 @@ class ActivityResourceSpec extends Specification {
 		client.addIdleActivity(expectedIdle.taskId, expectedIdle.comment, expectedIdle.auto, expectedDuration.seconds)
 
 		then:
-		List<IdleTimeBandEntity> idleEntities = persistenceService.getIdleTimeBandList(expectedIdle.taskId)
+		List<IdleActivityEntity> idleEntities = persistenceService.getIdleActivityList(expectedIdle.taskId)
 		comparator.assertEquals(expectedIdle, idleEntities.last())
 		assert idleEntities.last().id != null
 	}

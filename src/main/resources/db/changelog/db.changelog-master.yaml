@@ -4,7 +4,7 @@ databaseChangeLog:
       file: db/create_idea_flow_state.sql
 
   - include:
-      file: db/create_idle_time_band.sql
+      file: db/create_idle_activity.sql
 
   - include:
       file: db/create_event.sql

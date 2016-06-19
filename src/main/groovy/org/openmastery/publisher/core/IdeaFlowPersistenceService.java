@@ -1,7 +1,7 @@
 package org.openmastery.publisher.core;
 
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
-import org.openmastery.publisher.core.activity.IdleTimeBandEntity;
+import org.openmastery.publisher.core.activity.IdleActivityEntity;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity;
@@ -18,7 +18,7 @@ public interface IdeaFlowPersistenceService {
 
 	List<IdeaFlowStateEntity> getStateList(long taskId);
 
-	List<IdleTimeBandEntity> getIdleTimeBandList(long taskId);
+	List<IdleActivityEntity> getIdleActivityList(long taskId);
 
 	List<EventEntity> getEventList(long taskId);
 
@@ -33,7 +33,7 @@ public interface IdeaFlowPersistenceService {
 	void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowPartialStateEntity activeState);
 
 
-	IdleTimeBandEntity saveIdleActivity(IdleTimeBandEntity idleActivity);
+	IdleActivityEntity saveIdleActivity(IdleActivityEntity idleActivity);
 
 	EventEntity saveEvent(EventEntity event);
 

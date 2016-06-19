@@ -5,7 +5,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.core.timeline.TimeBandGroupModel
 import org.openmastery.publisher.core.timeline.BandTimelineSegment
 import org.openmastery.time.MockTimeService
-import org.openmastery.publisher.core.activity.IdleTimeBandEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.timeline.IdleTimeProcessor
 
 import static IdeaFlowStateType.CONFLICT
@@ -16,7 +16,7 @@ class TestTimelineSegmentBuilder {
 	private TimeBandGroupModel activeTimeBandGroup = null
 	private List<IdeaFlowBandModel> ideaFlowBands = []
 	private List<TimeBandGroupModel> timeBandGroups = []
-	private List<IdleTimeBandEntity> idleTimeBands = []
+	private List<IdleActivityEntity> idleActivities = []
 	private MockTimeService timeService
 
 	TestTimelineSegmentBuilder() {
@@ -32,12 +32,12 @@ class TestTimelineSegmentBuilder {
 				.ideaFlowBands(ideaFlowBands)
 				.timeBandGroups(timeBandGroups)
 				.build()
-		new IdleTimeProcessor().collapseIdleTime(segment, idleTimeBands)
+		new IdleTimeProcessor().collapseIdleTime(segment, idleActivities)
 
 		activeIdeaFlowBand = null
 		activeTimeBandGroup = null
 		ideaFlowBands = []
-		idleTimeBands = []
+		idleActivities = []
 		segment
 	}
 
@@ -78,7 +78,7 @@ class TestTimelineSegmentBuilder {
 	}
 
 	TestTimelineSegmentBuilder idle(int startHour, int endHour) {
-		idleTimeBands << IdleTimeBandEntity.builder()
+		idleActivities << IdleActivityEntity.builder()
 				.start(timeService.inFuture(startHour))
 				.end(timeService.inFuture(endHour))
 				.build()

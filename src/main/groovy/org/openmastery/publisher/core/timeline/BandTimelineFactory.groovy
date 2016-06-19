@@ -1,7 +1,7 @@
 package org.openmastery.publisher.core.timeline
 
 import com.bancvue.rest.exception.NotFoundException
-import org.openmastery.publisher.core.activity.IdleTimeBandEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
@@ -37,7 +37,7 @@ public class BandTimelineFactory {
 	}
 
 	private BandTimelineSegment createTimelineSegment(TaskEntity task, List<IdeaFlowStateEntity> ideaFlowStates,
-	                                                  List<IdleTimeBandEntity> idleActivities, List<EventEntity> eventList) {
+	                                                  List<IdleActivityEntity> idleActivities, List<EventEntity> eventList) {
 		BandTimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates, eventList)
 		segment.setDescription(task.description)
 		idleTimeProcessor.collapseIdleTime(segment, idleActivities)
@@ -51,7 +51,7 @@ public class BandTimelineFactory {
 		}
 
 		List<IdeaFlowStateEntity> ideaFlowStates = getStateListWithActiveCompleted(taskId)
-		List<IdleTimeBandEntity> idleActivities = persistenceService.getIdleTimeBandList(taskId)
+		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(taskId)
 		List<EventEntity> eventList = persistenceService.getEventList(taskId)
 
 		createTimelineSegment(task, ideaFlowStates, idleActivities, eventList)

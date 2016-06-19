@@ -7,10 +7,8 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.time.MockTimeService
-import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
@@ -84,7 +82,7 @@ class TaskResourceSpec extends Specification {
 	def "SHOULD return recent task list"() {
 		given:
 		for (int i = 0; i < 10; i++) {
-			taskClient.createTask(aRandom.text(10), aRandom.text(50))
+			taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50))
 			timeService.plusMinutes(10)
 		}
 		timeService.plusHours(1)
@@ -108,7 +106,7 @@ class TaskResourceSpec extends Specification {
 		taskClient.activate(recentTask.id)
 
 		then:
-		assert persistenceService.getIdleTimeBandList(recentTask.id).size() > 0
+		assert persistenceService.getIdleActivityList(recentTask.id).size() > 0
 	}
 
 }

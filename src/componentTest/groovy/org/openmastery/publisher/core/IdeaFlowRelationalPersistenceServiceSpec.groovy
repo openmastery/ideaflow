@@ -2,7 +2,7 @@ package org.openmastery.publisher.core
 
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.core.activity.EditorActivityRepository
-import org.openmastery.publisher.core.activity.IdleTimeBandRepository
+import org.openmastery.publisher.core.activity.IdleActivityRepository
 import org.openmastery.publisher.core.event.EventRepository
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateRepository
 import org.openmastery.publisher.core.task.TaskRepository
@@ -15,7 +15,7 @@ class IdeaFlowRelationalPersistenceServiceSpec extends IdeaFlowPersistenceServic
 	@Autowired
 	private IdeaFlowStateRepository ideaFlowStateRepository
 	@Autowired
-	private IdleTimeBandRepository idleTimeBandRepository
+	private IdleActivityRepository idleActivityRepository
 	@Autowired
 	private EventRepository eventRepository
 	@Autowired
@@ -26,7 +26,7 @@ class IdeaFlowRelationalPersistenceServiceSpec extends IdeaFlowPersistenceServic
 	def setup() {
 		persistenceService = new IdeaFlowRelationalPersistenceService()
 		persistenceService.ideaFlowStateRepository = ideaFlowStateRepository
-		persistenceService.idleTimeBandRepository = idleTimeBandRepository
+		persistenceService.idleActivityRepository = idleActivityRepository
 		persistenceService.eventRepository = eventRepository
 		persistenceService.editorActivityRepository = editorActivityRepository
 		persistenceService.taskRepository = taskRepository

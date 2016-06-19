@@ -2,8 +2,8 @@ package org.openmastery.publisher.core;
 
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
 import org.openmastery.publisher.core.activity.EditorActivityRepository;
-import org.openmastery.publisher.core.activity.IdleTimeBandEntity;
-import org.openmastery.publisher.core.activity.IdleTimeBandRepository;
+import org.openmastery.publisher.core.activity.IdleActivityEntity;
+import org.openmastery.publisher.core.activity.IdleActivityRepository;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.event.EventRepository;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
@@ -30,7 +30,7 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	@Autowired
 	private IdeaFlowPartialStateRepository ideaFlowPartialStateRepository;
 	@Autowired
-	private IdleTimeBandRepository idleTimeBandRepository;
+	private IdleActivityRepository idleActivityRepository;
 	@Autowired
 	private EventRepository eventRepository;
 	@Autowired
@@ -60,8 +60,8 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
-	public List<IdleTimeBandEntity> getIdleTimeBandList(long taskId) {
-		return idleTimeBandRepository.findByTaskId(taskId);
+	public List<IdleActivityEntity> getIdleActivityList(long taskId) {
+		return idleActivityRepository.findByTaskId(taskId);
 	}
 
 	@Override
@@ -112,8 +112,8 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
-	public IdleTimeBandEntity saveIdleActivity(IdleTimeBandEntity idleActivity) {
-		return idleTimeBandRepository.save(idleActivity);
+	public IdleActivityEntity saveIdleActivity(IdleActivityEntity idleActivity) {
+		return idleActivityRepository.save(idleActivity);
 	}
 
 	@Override

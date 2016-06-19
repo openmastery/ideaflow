@@ -1,7 +1,7 @@
 package org.openmastery.publisher.core
 
 import org.openmastery.publisher.core.activity.EditorActivityEntity
-import org.openmastery.publisher.core.activity.IdleTimeBandEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
@@ -16,11 +16,11 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	private long eventId = 1L
 	private long taskId = 1L
 	private long activityId = 1L
-	private long idleTimeBandId = 1L
+	private long idleActivityId = 1L
 	private IdeaFlowPartialStateEntity activeState
 	private IdeaFlowPartialStateEntity containingState
 	private List<IdeaFlowStateEntity> stateList = []
-	private List<IdleTimeBandEntity> idleTimeBandList = []
+	private List<IdleActivityEntity> idleActivityList = []
 	private List<EventEntity> eventList = []
 	private List<EditorActivityEntity> editorActivityList = []
 	private List<TaskEntity> taskList = []
@@ -41,8 +41,8 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
-	public List<IdleTimeBandEntity> getIdleTimeBandList(long taskId) {
-		idleTimeBandList.findAll { it.taskId == taskId }
+	public List<IdleActivityEntity> getIdleActivityList(long taskId) {
+		idleActivityList.findAll { it.taskId == taskId }
 	}
 
 	@Override
@@ -90,9 +90,9 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
-	public IdleTimeBandEntity saveIdleActivity(IdleTimeBandEntity idleActivity) {
-		idleActivity.id = idleTimeBandId++
-		idleTimeBandList.add(idleActivity)
+	public IdleActivityEntity saveIdleActivity(IdleActivityEntity idleActivity) {
+		idleActivity.id = idleActivityId++
+		idleActivityList.add(idleActivity)
 		idleActivity
 	}
 

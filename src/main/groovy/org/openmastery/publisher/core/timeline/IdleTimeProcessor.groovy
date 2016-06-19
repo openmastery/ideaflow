@@ -1,14 +1,14 @@
 package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
-import org.openmastery.publisher.core.activity.IdleTimeBandEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity
 
 class IdleTimeProcessor {
 
 	private TimeBandIdleCalculator timeBandCalculator = new TimeBandIdleCalculator()
 
-	public void collapseIdleTime(BandTimelineSegment timelineSegment, List<IdleTimeBandEntity> idleActivities) {
-		for (IdleTimeBandEntity idle : idleActivities) {
+	public void collapseIdleTime(BandTimelineSegment timelineSegment, List<IdleActivityEntity> idleActivities) {
+		for (IdleActivityEntity idle : idleActivities) {
 			addIdleDuration(timelineSegment.ideaFlowBands, idle)
 
 			for (TimeBandGroupModel group : timelineSegment.timeBandGroups) {
@@ -17,7 +17,7 @@ class IdleTimeProcessor {
 		}
 	}
 
-	private void addIdleDuration(List<TimeBandModel> timeBands, IdleTimeBandEntity idleEntity) {
+	private void addIdleDuration(List<TimeBandModel> timeBands, IdleActivityEntity idleEntity) {
 		for (TimeBandModel timeBand : timeBands) {
 			if (timeBand instanceof IdeaFlowBandModel) {
 				IdleTimeBandModel idle = toIdleTimeBand(idleEntity)
@@ -30,7 +30,7 @@ class IdleTimeProcessor {
 		}
 	}
 
-	private IdleTimeBandModel toIdleTimeBand(IdleTimeBandEntity entity) {
+	private IdleTimeBandModel toIdleTimeBand(IdleActivityEntity entity) {
 		// TODO: use dozer
 		IdleTimeBandModel.builder()
 				.id(entity.id)

@@ -14,17 +14,17 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import java.time.LocalDateTime;
 
-@Entity(name = "idle_time_band")
+@Entity(name = "idle_activity")
 @Data
 @EqualsAndHashCode(of = "id")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdleTimeBandEntity {
+public class IdleActivityEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "idle_time_band_seq_gen")
-	@SequenceGenerator(name = "idle_time_band_seq_gen", sequenceName = "idle_time_band_seq")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "idle_activity_seq_gen")
+	@SequenceGenerator(name = "idle_activity_seq_gen", sequenceName = "idle_activity_seq")
 	private long id;
 	private long taskId;
 
