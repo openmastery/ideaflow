@@ -13,7 +13,7 @@ class RandomEditorActivityEntityBuilder extends EditorActivityEntity.EditorActiv
 				.start(start)
 				.end(start.plus(aRandom.duration()))
 				.filePath(aRandom.filePath())
-				.isModified(aRandom.coinFlip())
+				.modified(aRandom.coinFlip())
 	}
 
 }

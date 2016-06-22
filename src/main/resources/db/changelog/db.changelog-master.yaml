@@ -4,13 +4,10 @@ databaseChangeLog:
       file: db/create_idea_flow_state.sql
 
   - include:
-      file: db/create_idle_activity.sql
-
-  - include:
       file: db/create_event.sql
 
   - include:
-      file: db/create_editor_activity.sql
+      file: db/create_activity.sql
 
   - include:
       file: db/create_idea_flow_partial_state.sql
