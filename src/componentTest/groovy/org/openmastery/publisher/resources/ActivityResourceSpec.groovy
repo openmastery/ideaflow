@@ -23,7 +23,7 @@ class ActivityResourceSpec extends Specification {
 	private IdeaFlowPersistenceService persistenceService
 	@Autowired
 	private TimeService timeService
-	private BeanCompare comparator = new BeanCompare().excludeFields("id")
+	private BeanCompare comparator = new BeanCompare().excludeFields("id", "metadata", "metadataContainer")
 
 	def "SHOULD post editor activity"() {
 		given:

@@ -78,10 +78,10 @@ public class TaskResource {
 				.taskId(taskId)
 				.start(activityEnd)
 				.end(timeService.now())
-				.auto(true)
+				.isAuto(true)
 				.build();
 
-		persistenceService.saveIdleActivity(idleTime);
+		persistenceService.saveActivity(idleTime);
 		return toApiTask(task);
 	}
 

@@ -1,63 +1,70 @@
 package org.openmastery.publisher.core.activity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
-import java.io.File;
 import java.time.LocalDateTime;
 
-@Entity(name = "editor_activity")
+@Entity
+@DiscriminatorValue("editor")
 @Data
-@EqualsAndHashCode(of = "id")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class EditorActivityEntity {
+@EqualsAndHashCode(callSuper = true, of = {})
+public class EditorActivityEntity extends ActivityEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "editor_activity_seq_gen")
-	@SequenceGenerator(name = "editor_activity_seq_gen", sequenceName = "editor_activity_seq")
-	private long id;
-	private long taskId;
+	private static final String FILE_PATH_KEY = "comment";
+	private static final String MODIFIED_KEY = "auto";
 
-	@Column(name = "start_time")
-	private LocalDateTime start;
-	@Column(name = "end_time")
-	private LocalDateTime end;
+	private EditorActivityEntity() {}
 
-	private String filePath;
-	private boolean isModified;
-
-	@Transient
-	public String getFileName() {
-		return new File(filePath).getName();
+	private EditorActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end, String filePath, boolean modified) {
+		super(id, taskId, start, end);
+		setFilePath(filePath);
+		setModified(modified);
 	}
 
-//	@Transient
-//	private Duration duration;
-//
-//	@Column(name = "duration")
-//	private long durationInSeconds;
-//
-//	@PostLoad
-//	public void init() {
-//		duration = Duration.ofSeconds(durationInSeconds);
-//	}
-//
-//	public void setDuration(Duration duration) {
-//		this.duration = duration;
-//		if (duration != null) {
-//			durationInSeconds = duration.getSeconds();
-//		}
-//	}
+	public String getFilePath() {
+		return getMetadataValue(FILE_PATH_KEY);
+	}
+
+	public void setFilePath(String filePath) {
+		setMetadataField(FILE_PATH_KEY, filePath);
+	}
+
+	public boolean isModified() {
+		return getMetadataValueAsBoolean(MODIFIED_KEY);
+	}
+
+	public void setModified(boolean modified) {
+		setMetadataField(MODIFIED_KEY, modified);
+	}
+
+
+	public static EditorActivityEntityBuilder builder() {
+		return new EditorActivityEntityBuilder();
+	}
+
+	public static class EditorActivityEntityBuilder extends ActivityEntityBuilder<EditorActivityEntityBuilder> {
+
+		private String filePath;
+		private boolean modified;
+
+		public EditorActivityEntity build() {
+			return new EditorActivityEntity(id, taskId, start, end, filePath, modified);
+		}
+
+		public EditorActivityEntityBuilder filePath(String filePath) {
+			this.filePath = filePath;
+			return this;
+		}
+
+		public EditorActivityEntityBuilder isModified(boolean modified) {
+			this.modified = modified;
+			return this;
+		}
+	}
+
 }

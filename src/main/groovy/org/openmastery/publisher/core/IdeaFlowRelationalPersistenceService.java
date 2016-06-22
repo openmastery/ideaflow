@@ -1,9 +1,9 @@
 package org.openmastery.publisher.core;
 
+import org.openmastery.publisher.core.activity.ActivityEntity;
+import org.openmastery.publisher.core.activity.ActivityRepository;
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
-import org.openmastery.publisher.core.activity.EditorActivityRepository;
 import org.openmastery.publisher.core.activity.IdleActivityEntity;
-import org.openmastery.publisher.core.activity.IdleActivityRepository;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.event.EventRepository;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
@@ -30,11 +30,9 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	@Autowired
 	private IdeaFlowPartialStateRepository ideaFlowPartialStateRepository;
 	@Autowired
-	private IdleActivityRepository idleActivityRepository;
+	private ActivityRepository activityRepository;
 	@Autowired
 	private EventRepository eventRepository;
-	@Autowired
-	private EditorActivityRepository editorActivityRepository;
 	@Autowired
 	private TaskRepository taskRepository;
 
@@ -61,7 +59,7 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 
 	@Override
 	public List<IdleActivityEntity> getIdleActivityList(long taskId) {
-		return idleActivityRepository.findByTaskId(taskId);
+		return activityRepository.findIdleActivityByTaskId(taskId);
 	}
 
 	@Override
@@ -71,18 +69,18 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 
 	@Override
 	public List<EditorActivityEntity> getEditorActivityList(long taskId) {
-		return editorActivityRepository.findByTaskId(taskId);
+		return activityRepository.findEditorActivityByTaskId(taskId);
 	}
 
 	@Override
 	public LocalDateTime getMostRecentActivityEnd(long taskId) {
-		EditorActivityEntity editorActivity = editorActivityRepository.findMostRecentEditorActivityForTask(taskId);
+		ActivityEntity activity = activityRepository.findMostRecentActivityForTask(taskId);
 		TaskEntity taskEntity = taskRepository.findOne(taskId);
 
 		LocalDateTime mostRecentActivity = null;
 
-		if (editorActivity != null) {
-			mostRecentActivity = editorActivity.getEnd();
+		if (activity != null) {
+			mostRecentActivity = activity.getEnd();
 		} else if (taskEntity != null) {
 			mostRecentActivity = taskEntity.getCreationDate();
 		}
@@ -112,18 +110,13 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
-	public IdleActivityEntity saveIdleActivity(IdleActivityEntity idleActivity) {
-		return idleActivityRepository.save(idleActivity);
+	public <T extends ActivityEntity> T saveActivity(T activity) {
+		return activityRepository.save(activity);
 	}
 
 	@Override
 	public EventEntity saveEvent(EventEntity event) {
 		return eventRepository.save(event);
-	}
-
-	@Override
-	public EditorActivityEntity saveEditorActivity(EditorActivityEntity activity) {
-		return editorActivityRepository.save(activity);
 	}
 
 	@Override

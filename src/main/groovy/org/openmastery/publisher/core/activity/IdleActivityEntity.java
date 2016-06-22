@@ -1,40 +1,68 @@
 package org.openmastery.publisher.core.activity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import java.time.LocalDateTime;
 
-@Entity(name = "idle_activity")
+@Entity
+@DiscriminatorValue("idle")
 @Data
-@EqualsAndHashCode(of = "id")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class IdleActivityEntity {
+@EqualsAndHashCode(callSuper = true, of = {})
+public class IdleActivityEntity extends ActivityEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "idle_activity_seq_gen")
-	@SequenceGenerator(name = "idle_activity_seq_gen", sequenceName = "idle_activity_seq")
-	private long id;
-	private long taskId;
+	private static final String COMMENT_KEY = "comment";
+	private static final String AUTO_KEY = "auto";
 
-	@Column(name = "start_time")
-	private LocalDateTime start;
-	@Column(name = "end_time")
-	private LocalDateTime end;
+	private IdleActivityEntity() {}
 
-	private String comment;
+	private IdleActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end, String comment, boolean auto) {
+		super(id, taskId, start, end);
+		setComment(comment);
+		setAuto(auto);
+	}
 
-	private boolean auto;
+	public String getComment() {
+		return getMetadataValue(COMMENT_KEY);
+	}
+
+	public void setComment(String comment) {
+		setMetadataField(COMMENT_KEY, comment);
+	}
+
+	public boolean isAuto() {
+		return getMetadataValueAsBoolean(AUTO_KEY);
+	}
+
+	public void setAuto(boolean auto) {
+		setMetadataField(AUTO_KEY, auto);
+	}
+
+
+	public static IdleActivityEntityBuilder builder() {
+		return new IdleActivityEntityBuilder();
+	}
+
+	public static class IdleActivityEntityBuilder extends ActivityEntityBuilder<IdleActivityEntityBuilder> {
+
+		private String comment;
+		private boolean auto;
+
+		public IdleActivityEntity build() {
+			return new IdleActivityEntity(id, taskId, start, end, comment, auto);
+		}
+
+		public IdleActivityEntityBuilder comment(String comment) {
+			this.comment = comment;
+			return this;
+		}
+
+		public IdleActivityEntityBuilder isAuto(boolean auto) {
+			this.auto = auto;
+			return this;
+		}
+	}
 
 }

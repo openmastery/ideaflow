@@ -105,7 +105,7 @@ class TimelineTestSupport {
 				.taskId(taskId)
 				.start(start)
 				.end(timeService.now()).build()
-		persistenceService.saveIdleActivity(idleActivity)
+		persistenceService.saveActivity(idleActivity)
 	}
 
 	void editor() {
@@ -115,7 +115,7 @@ class TimelineTestSupport {
 				.end(timeService.now())
 				.filePath("/some/path")
 				.build()
-		persistenceService.saveEditorActivity(editorActivity)
+		persistenceService.saveActivity(editorActivity)
 	}
 
 	void note() {

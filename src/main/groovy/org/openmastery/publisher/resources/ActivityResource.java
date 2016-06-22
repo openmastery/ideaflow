@@ -2,6 +2,7 @@ package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.activity.NewEditorActivity;
+import org.openmastery.publisher.api.activity.NewExternalActivity;
 import org.openmastery.publisher.api.activity.NewIdleActivity;
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
 import org.openmastery.mapper.EntityMapper;
@@ -36,7 +37,7 @@ public class ActivityResource {
 		EditorActivityEntity entity = entityMapper.mapIfNotNull(editorActivity, EditorActivityEntity.class);
 		entity.setStart(start);
 		entity.setEnd(end);
-		persistenceService.saveEditorActivity(entity);
+		persistenceService.saveActivity(entity);
 	}
 
 	@POST
@@ -47,7 +48,15 @@ public class ActivityResource {
 		IdleActivityEntity entity = entityMapper.mapIfNotNull(idleActivity, IdleActivityEntity.class);
 		entity.setStart(start);
 		entity.setEnd(end);
-		persistenceService.saveIdleActivity(entity);
+		persistenceService.saveActivity(entity);
+	}
+
+	@POST
+	@Path(ResourcePaths.EXTERNAL_PATH)
+	public void addExternalActivity(NewExternalActivity externalActivity) {
+		LocalDateTime end = timeService.now();
+		LocalDateTime start = end.minusSeconds(externalActivity.getDurationInSeconds());
+//		External
 	}
 
 }

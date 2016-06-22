@@ -1,6 +1,8 @@
 package org.openmastery.publisher.core;
 
+import org.openmastery.publisher.core.activity.ActivityEntity;
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
+import org.openmastery.publisher.core.activity.ExternalActivityEntity;
 import org.openmastery.publisher.core.activity.IdleActivityEntity;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
@@ -33,11 +35,9 @@ public interface IdeaFlowPersistenceService {
 	void saveTransition(IdeaFlowStateEntity stateToSave, IdeaFlowPartialStateEntity activeState);
 
 
-	IdleActivityEntity saveIdleActivity(IdleActivityEntity idleActivity);
+	<T extends ActivityEntity> T saveActivity(T activity);
 
 	EventEntity saveEvent(EventEntity event);
-
-	EditorActivityEntity saveEditorActivity(EditorActivityEntity activity);
 
 	TaskEntity saveTask(TaskEntity task);
 

@@ -4,16 +4,14 @@ import java.time.LocalDateTime
 
 import static org.openmastery.publisher.ARandom.aRandom
 
-class RandomIdleActivityEntityBuilder extends IdleActivityEntity.IdleActivityEntityBuilder {
+class RandomExternalActivityEntityBuilder extends ExternalActivityEntity.ExternalActivityEntityBuilder {
 
-	public RandomIdleActivityEntityBuilder() {
+	public RandomExternalActivityEntityBuilder() {
 		LocalDateTime start = aRandom.dayOfYear()
 		super.id(aRandom.id())
 				.taskId(aRandom.id())
 				.start(start)
 				.end(start.plus(aRandom.duration()))
-				.comment(aRandom.optionalWords(250))
-				.isAuto(aRandom.coinFlip())
 	}
 
 }

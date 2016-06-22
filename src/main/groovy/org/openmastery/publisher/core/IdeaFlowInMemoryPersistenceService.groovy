@@ -1,5 +1,7 @@
 package org.openmastery.publisher.core
 
+import org.openmastery.publisher.api.activity.EditorActivity
+import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
@@ -16,13 +18,11 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	private long eventId = 1L
 	private long taskId = 1L
 	private long activityId = 1L
-	private long idleActivityId = 1L
 	private IdeaFlowPartialStateEntity activeState
 	private IdeaFlowPartialStateEntity containingState
 	private List<IdeaFlowStateEntity> stateList = []
-	private List<IdleActivityEntity> idleActivityList = []
+	private List<ActivityEntity> activityList = []
 	private List<EventEntity> eventList = []
-	private List<EditorActivityEntity> editorActivityList = []
 	private List<TaskEntity> taskList = []
 
 	@Override
@@ -42,18 +42,18 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 
 	@Override
 	public List<IdleActivityEntity> getIdleActivityList(long taskId) {
-		idleActivityList.findAll { it.taskId == taskId }
+		activityList.findAll { it instanceof IdleActivityEntity && it.taskId == taskId }
 	}
 
 	@Override
 	List<EditorActivityEntity> getEditorActivityList(long taskId) {
-		editorActivityList.findAll { it.taskId == taskId }
+		activityList.findAll { it instanceof EditorActivity && it.taskId == taskId }
 	}
 
 	@Override
 	LocalDateTime getMostRecentActivityEnd(long taskId) {
 		LocalDateTime mostRecentActivity = null
-		editorActivityList.each { EditorActivityEntity activity ->
+		activityList.each { ActivityEntity activity ->
 			if ((mostRecentActivity == null) || (mostRecentActivity.isBefore(activity.end))) {
 				mostRecentActivity = activity.end
 			}
@@ -90,10 +90,10 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
-	public IdleActivityEntity saveIdleActivity(IdleActivityEntity idleActivity) {
-		idleActivity.id = idleActivityId++
-		idleActivityList.add(idleActivity)
-		idleActivity
+	public <T extends ActivityEntity> T saveActivity(T activity) {
+		activity.id = activityId++
+		activityList.add(activity)
+		activity
 	}
 
 	@Override
@@ -101,13 +101,6 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 		event.id = eventId++
 		eventList.add(event)
 		event
-	}
-
-	@Override
-	public EditorActivityEntity saveEditorActivity(EditorActivityEntity activity) {
-		activity.id = activityId++
-		editorActivityList.add(activity)
-		activity
 	}
 
 	@Override

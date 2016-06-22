@@ -1,6 +1,13 @@
 package org.openmastery.publisher.core
 
+import org.openmastery.publisher.core.activity.ActivityEntity
+import org.openmastery.publisher.core.activity.ActivityEntity.ActivityEntityBuilder
 import org.openmastery.publisher.core.activity.EditorActivityEntity
+import org.openmastery.publisher.core.activity.EditorActivityEntity.EditorActivityEntityBuilder
+import org.openmastery.publisher.core.activity.ExternalActivityEntity
+import org.openmastery.publisher.core.activity.ExternalActivityEntity.ExternalActivityEntityBuilder
+import org.openmastery.publisher.core.activity.IdleActivityEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity.IdleActivityEntityBuilder
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.time.MockTimeService
 import org.springframework.dao.DataIntegrityViolationException
@@ -21,8 +28,24 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		persistenceService.saveTask(builder.build())
 	}
 
-	private EditorActivityEntity saveEditorActivity(EditorActivityEntity.EditorActivityEntityBuilder builder) {
-		persistenceService.saveEditorActivity(builder.taskId(taskId).build())
+	private ActivityEntity saveActivity(ActivityEntityBuilder builder) {
+		ActivityEntity entity = builder.taskId(taskId).build()
+		persistenceService.saveActivity(entity)
+	}
+
+	private EditorActivityEntity saveEditorActivity(EditorActivityEntityBuilder builder) {
+		EditorActivityEntity entity = builder.taskId(taskId).build()
+		persistenceService.saveActivity(entity)
+	}
+
+	private IdleActivityEntity saveIdleActivity(IdleActivityEntityBuilder builder) {
+		IdleActivityEntity entity = builder.taskId(taskId).build()
+		persistenceService.saveActivity(entity)
+	}
+
+	private ExternalActivityEntity saveExternalActivity(ExternalActivityEntityBuilder builder) {
+		ExternalActivityEntity entity = builder.taskId(taskId).build()
+		persistenceService.saveActivity(entity)
 	}
 
 	def "findRecentTasks should return empty list if no tasks"() {
@@ -69,33 +92,42 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "getMostRecentActivityEnd should return the most recent activity for a task"() {
 		given:
-		for (int i = 0; i < 2; i++) {
-			saveEditorActivity(
-					aRandom.editorActivityEntity().end(mockTimeService.inFuture(i))
+		for (int i = 0; i < 5; i++) {
+			saveActivity(
+					aRandom.activityEntity().end(mockTimeService.inFuture(i))
 			)
 		}
-		EditorActivityEntity mostRecentEditorActivity = saveEditorActivity(
-				aRandom.editorActivityEntity().end(mockTimeService.inFuture(24))
+		ActivityEntity mostRecentActivity = saveActivity(
+				aRandom.activityEntity().end(mockTimeService.inFuture(24))
 		)
-		for (int i = 0; i < 2; i++) {
-			saveEditorActivity(
-					aRandom.editorActivityEntity().end(mockTimeService.inFuture(i + 5))
+		for (int i = 0; i < 5; i++) {
+			saveActivity(
+					aRandom.activityEntity().end(mockTimeService.inFuture(i + 5))
 			)
 		}
 
 		expect:
-		println persistenceService.getEditorActivityList(taskId)
-		assert mostRecentEditorActivity.end == persistenceService.getMostRecentActivityEnd(taskId)
+		assert mostRecentActivity.end == persistenceService.getMostRecentActivityEnd(taskId)
 	}
 
 	def "getMostRecentActivityEnd SHOULD return task start WHEN there's no activity"() {
 		given:
-
 		TaskEntity task = saveTask(aRandom.taskEntity().creationDate(mockTimeService.now()))
 
 		expect:
 		assert task.creationDate == persistenceService.getMostRecentActivityEnd(task.id)
+	}
 
+	def "saveActivity should persist metadata"() {
+		given:
+		EditorActivityEntity activity = aRandom.editorActivityEntity().build()
+
+		when:
+		EditorActivityEntity savedActivity = persistenceService.saveActivity(activity)
+
+		then:
+		assert activity.metadata == savedActivity.metadata
+		assert activity.metadata.length() > 2
 	}
 
 }
