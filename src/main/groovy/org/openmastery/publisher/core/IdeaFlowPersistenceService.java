@@ -20,11 +20,13 @@ public interface IdeaFlowPersistenceService {
 
 	List<IdeaFlowStateEntity> getStateList(long taskId);
 
+	List<ActivityEntity> getActivityList(long taskId);
+
 	List<IdleActivityEntity> getIdleActivityList(long taskId);
 
-	List<EventEntity> getEventList(long taskId);
-
 	List<EditorActivityEntity> getEditorActivityList(long taskId);
+
+	List<EventEntity> getEventList(long taskId);
 
 	LocalDateTime getMostRecentActivityEnd(long taskId);
 

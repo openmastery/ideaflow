@@ -12,6 +12,7 @@ class RandomExternalActivityEntityBuilder extends ExternalActivityEntity.Externa
 				.taskId(aRandom.id())
 				.start(start)
 				.end(start.plus(aRandom.duration()))
+				.comment(aRandom.text(20))
 	}
 
 }

@@ -15,10 +15,21 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true, of = {})
 public class ExternalActivityEntity extends ActivityEntity {
 
+	private static final String COMMENT_KEY = "comment";
+
 	private ExternalActivityEntity() {}
 
-	private ExternalActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end) {
+	private ExternalActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end, String comment) {
 		super(id, taskId, start, end);
+		setComment(comment);
+	}
+
+	public String getComment() {
+		return getMetadataValue(COMMENT_KEY);
+	}
+
+	public void setComment(String comment) {
+		setMetadataField(COMMENT_KEY, comment);
 	}
 
 
@@ -28,8 +39,15 @@ public class ExternalActivityEntity extends ActivityEntity {
 
 	public static class ExternalActivityEntityBuilder extends ActivityEntityBuilder<ExternalActivityEntityBuilder> {
 
+		private String comment;
+
 		public ExternalActivityEntity build() {
-			return new ExternalActivityEntity(id, taskId, start, end);
+			return new ExternalActivityEntity(id, taskId, start, end, comment);
+		}
+
+		public ExternalActivityEntityBuilder comment(String comment) {
+			this.comment = comment;
+			return this;
 		}
 
 	}

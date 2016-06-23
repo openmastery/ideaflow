@@ -7,9 +7,10 @@ import java.util.List;
 
 public interface ActivityRepository extends PagingAndSortingRepository<ActivityEntity, Long> {
 
+	List<ActivityEntity> findByTaskId(long taskId);
+
 	@Query(nativeQuery = true, value = "select * from activity where task_id = ?1 order by end_time desc limit 1")
 	ActivityEntity findMostRecentActivityForTask(long taskId);
-
 
 	@Query(nativeQuery = true, value = "select * from activity where type = 'idle' and task_id = ?1")
 	List<IdleActivityEntity> findIdleActivityByTaskId(long taskId);

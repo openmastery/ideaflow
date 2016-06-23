@@ -1,5 +1,7 @@
 package org.openmastery.publisher.resources
 
+import org.openmastery.publisher.core.activity.ActivityEntity
+import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
@@ -34,7 +36,7 @@ class ActivityResourceSpec extends Specification {
 				.build()
 
 		when:
-		client.addEditorActivity(expectedActivity.taskId, expectedActivity.filePath, expectedActivity.modified, expectedDuration.seconds)
+		client.addEditorActivity(expectedActivity.taskId, expectedDuration.seconds, expectedActivity.filePath, expectedActivity.modified)
 
 		then:
 		List<EditorActivityEntity> activityEntities = persistenceService.getEditorActivityList(expectedActivity.taskId)
@@ -51,12 +53,28 @@ class ActivityResourceSpec extends Specification {
 				.build()
 
 		when:
-		client.addIdleActivity(expectedIdle.taskId, expectedIdle.comment, expectedIdle.auto, expectedDuration.seconds)
+		client.addIdleActivity(expectedIdle.taskId, expectedDuration.seconds, expectedIdle.comment, expectedIdle.auto)
 
 		then:
 		List<IdleActivityEntity> idleEntities = persistenceService.getIdleActivityList(expectedIdle.taskId)
 		comparator.assertEquals(expectedIdle, idleEntities.last())
 		assert idleEntities.last().id != null
+	}
+
+	def "SHOULD post external activity"() {
+		Duration expectedDuration = aRandom.duration()
+		ExternalActivityEntity expectedExternal = aRandom.externalActivityEntity()
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
+				.build()
+
+		when:
+		client.addExternalActivity(expectedExternal.taskId, expectedDuration.seconds, expectedExternal.comment)
+
+		then:
+		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExternal.taskId)
+		comparator.assertEquals(expectedExternal, entities.last())
+		assert entities.last().id != null
 	}
 
 }

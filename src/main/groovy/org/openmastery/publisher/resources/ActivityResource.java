@@ -6,6 +6,7 @@ import org.openmastery.publisher.api.activity.NewExternalActivity;
 import org.openmastery.publisher.api.activity.NewIdleActivity;
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
 import org.openmastery.mapper.EntityMapper;
+import org.openmastery.publisher.core.activity.ExternalActivityEntity;
 import org.openmastery.publisher.core.activity.IdleActivityEntity;
 import org.openmastery.time.TimeService;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
@@ -56,7 +57,10 @@ public class ActivityResource {
 	public void addExternalActivity(NewExternalActivity externalActivity) {
 		LocalDateTime end = timeService.now();
 		LocalDateTime start = end.minusSeconds(externalActivity.getDurationInSeconds());
-//		External
+		ExternalActivityEntity entity = entityMapper.mapIfNotNull(externalActivity, ExternalActivityEntity.class);
+		entity.setStart(start);
+		entity.setEnd(end);
+		persistenceService.saveActivity(entity);
 	}
 
 }

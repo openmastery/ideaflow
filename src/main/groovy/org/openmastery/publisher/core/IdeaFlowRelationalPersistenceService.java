@@ -58,6 +58,11 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
+	public List<ActivityEntity> getActivityList(long taskId) {
+		return activityRepository.findByTaskId(taskId);
+	}
+
+	@Override
 	public List<IdleActivityEntity> getIdleActivityList(long taskId) {
 		return activityRepository.findIdleActivityByTaskId(taskId);
 	}

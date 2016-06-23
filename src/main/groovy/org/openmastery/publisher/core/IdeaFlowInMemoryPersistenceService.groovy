@@ -41,6 +41,11 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
+	public List<ActivityEntity> getActivityList(long taskId) {
+		activityList.findAll { it.taskId == taskId }
+	}
+
+	@Override
 	public List<IdleActivityEntity> getIdleActivityList(long taskId) {
 		activityList.findAll { it instanceof IdleActivityEntity && it.taskId == taskId }
 	}
