@@ -9,9 +9,3 @@ Bugs in UI caused by API changes that were missed in tests:
 4. UI depends on all ids being unique across timeBands and timeGroups, events must be unique across events
 
 5. TimeSegment ids are expected to have an id matching an event id, or be null (first segment)
-
-
-
-Other BUGS
-
-1. start ifm-publisher; create ifm and start band; restart ifm-publisher and end band - InvalidTransitionException is thrown

@@ -27,6 +27,7 @@ public class IdeaFlowPartialStateEntity {
 	private long taskId;
 
 	@Id
+	@Enumerated(EnumType.STRING)
 	private IdeaFlowPartialStateScope scope;
 
 	@Enumerated(EnumType.STRING)
@@ -52,9 +53,10 @@ public class IdeaFlowPartialStateEntity {
 
 	@Data
 	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class PrimaryKey implements Serializable {
 		private long taskId;
-		@Enumerated(EnumType.STRING)
 		private IdeaFlowPartialStateScope scope;
 	}
 

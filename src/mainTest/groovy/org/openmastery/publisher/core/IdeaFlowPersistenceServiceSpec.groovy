@@ -8,6 +8,7 @@ import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity.ExternalActivityEntityBuilder
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity.IdleActivityEntityBuilder
+import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.time.MockTimeService
 import org.springframework.dao.DataIntegrityViolationException
@@ -128,6 +129,27 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		then:
 		assert activity.metadata == savedActivity.metadata
 		assert activity.metadata.length() > 2
+	}
+
+	def "saveActiveState should save active and containing state"() {
+		given:
+		IdeaFlowPartialStateEntity activeState = aRandom.ideaFlowPartialStateEntity().build()
+		IdeaFlowPartialStateEntity containingState = aRandom.ideaFlowPartialStateEntity()
+				.taskId(activeState.taskId)
+				.build()
+
+		when:
+		persistenceService.saveActiveState(activeState, containingState)
+
+		then:
+		assert activeState == persistenceService.getActiveState(activeState.taskId)
+		assert containingState == persistenceService.getContainingState(containingState.taskId)
+
+		when:
+		persistenceService.saveActiveState(activeState, null)
+
+		then:
+		assert persistenceService.getContainingState(containingState.taskId) == null
 	}
 
 }
