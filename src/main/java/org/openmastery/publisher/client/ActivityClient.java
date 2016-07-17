@@ -25,11 +25,9 @@ public class ActivityClient extends CrudClient<EditorActivity, ActivityClient> {
 				.createWithPost(activity);
 	}
 
-	public void addIdleActivity(Long taskId, Long durationInSeconds, String comment, boolean auto) {
+	public void addIdleActivity(Long taskId, Long durationInSeconds) {
 		NewIdleActivity activity = NewIdleActivity.builder()
 				.taskId(taskId)
-				.comment(comment)
-				.auto(auto)
 				.durationInSeconds(durationInSeconds)
 				.build();
 

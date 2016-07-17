@@ -12,8 +12,6 @@ class RandomIdleActivityEntityBuilder extends IdleActivityEntity.IdleActivityEnt
 				.taskId(aRandom.id())
 				.start(start)
 				.end(start.plus(aRandom.duration()))
-				.comment(aRandom.optionalWords(250))
-				.isAuto(aRandom.coinFlip())
 	}
 
 }

@@ -13,7 +13,5 @@ public class NewIdleActivity {
 
 	private Long taskId;
 	private Long durationInSeconds;
-	private String comment;
-	private boolean auto;
 
 }

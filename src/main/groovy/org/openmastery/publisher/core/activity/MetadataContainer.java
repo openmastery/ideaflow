@@ -29,9 +29,17 @@ public class MetadataContainer {
 
 	public void fromJson(String metadata) {
 		try {
-			container = mapper.readValue(metadata, HashMap.class);
+			container = toMetadataMap(metadata);
 		} catch (IOException ex) {
 			log.error("Failed to convert metadata into map, json=" + metadata, ex);
+		}
+	}
+
+	private HashMap toMetadataMap(String metadata) throws IOException {
+		if (metadata == null) {
+			return new HashMap();
+		} else {
+			return mapper.readValue(metadata, HashMap.class);
 		}
 	}
 

@@ -37,8 +37,6 @@ class IdleTimeProcessor {
 				.taskId(entity.taskId)
 				.start(entity.start)
 				.end(entity.end)
-				.comment(entity.comment)
-				.auto(entity.auto)
 				.build()
 	}
 

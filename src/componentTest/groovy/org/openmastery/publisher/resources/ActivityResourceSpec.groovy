@@ -53,7 +53,7 @@ class ActivityResourceSpec extends Specification {
 				.build()
 
 		when:
-		client.addIdleActivity(expectedIdle.taskId, expectedDuration.seconds, expectedIdle.comment, expectedIdle.auto)
+		client.addIdleActivity(expectedIdle.taskId, expectedDuration.seconds)
 
 		then:
 		List<IdleActivityEntity> idleEntities = persistenceService.getIdleActivityList(expectedIdle.taskId)

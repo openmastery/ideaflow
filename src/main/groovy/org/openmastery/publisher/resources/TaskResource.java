@@ -78,7 +78,6 @@ public class TaskResource {
 				.taskId(taskId)
 				.start(activityEnd)
 				.end(timeService.now())
-				.isAuto(true)
 				.build();
 
 		persistenceService.saveActivity(idleTime);

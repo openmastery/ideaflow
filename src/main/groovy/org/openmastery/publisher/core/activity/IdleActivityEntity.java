@@ -13,31 +13,10 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true, of = {})
 public class IdleActivityEntity extends ActivityEntity {
 
-	private static final String COMMENT_KEY = "comment";
-	private static final String AUTO_KEY = "auto";
-
 	private IdleActivityEntity() {}
 
-	private IdleActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end, String comment, boolean auto) {
+	private IdleActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end) {
 		super(id, taskId, start, end);
-		setComment(comment);
-		setAuto(auto);
-	}
-
-	public String getComment() {
-		return getMetadataValue(COMMENT_KEY);
-	}
-
-	public void setComment(String comment) {
-		setMetadataField(COMMENT_KEY, comment);
-	}
-
-	public boolean isAuto() {
-		return getMetadataValueAsBoolean(AUTO_KEY);
-	}
-
-	public void setAuto(boolean auto) {
-		setMetadataField(AUTO_KEY, auto);
 	}
 
 
@@ -47,22 +26,10 @@ public class IdleActivityEntity extends ActivityEntity {
 
 	public static class IdleActivityEntityBuilder extends ActivityEntityBuilder<IdleActivityEntityBuilder> {
 
-		private String comment;
-		private boolean auto;
-
 		public IdleActivityEntity build() {
-			return new IdleActivityEntity(id, taskId, start, end, comment, auto);
+			return new IdleActivityEntity(id, taskId, start, end);
 		}
 
-		public IdleActivityEntityBuilder comment(String comment) {
-			this.comment = comment;
-			return this;
-		}
-
-		public IdleActivityEntityBuilder isAuto(boolean auto) {
-			this.auto = auto;
-			return this;
-		}
 	}
 
 }
