@@ -87,9 +87,20 @@ public abstract class TimeBandModel<T extends TimeBandModel> {
 	public static Duration sumDuration(List<? extends TimeBandModel> ideaFlowBands) {
 		Duration duration = Duration.ZERO;
 		for (TimeBandModel ideaFlowBand : ideaFlowBands) {
-			duration = duration.plus(ideaFlowBand.getDuration());
+			Duration bandDuration = ideaFlowBand.getDuration();
+			if (bandDuration.isNegative()) {
+				throw new BandDurationIsNegativeException(ideaFlowBand);
+			}
+			duration = duration.plus(bandDuration);
 		}
 		return duration;
 	}
 
+
+	private static class BandDurationIsNegativeException extends RuntimeException {
+
+		public BandDurationIsNegativeException(TimeBandModel ideaFlowBand) {
+			super(ideaFlowBand.toString());
+		}
+	}
 }
