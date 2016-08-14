@@ -129,7 +129,7 @@ class RelativeTimeProcessorTest extends Specification {
 	def "TODO add event test"() {
 		given:
 		LocalDateTime now = LocalDateTime.now()
-		boolean shouldFail = now.year != 2016 || now.monthValue > 7
+		boolean shouldFail = now.year != 2016
 
 		expect:
 		assert shouldFail == false
