@@ -79,16 +79,7 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	@Override
 	public LocalDateTime getMostRecentActivityEnd(long taskId) {
 		ActivityEntity activity = activityRepository.findMostRecentActivityForTask(taskId);
-		TaskEntity taskEntity = taskRepository.findOne(taskId);
-
-		LocalDateTime mostRecentActivity = null;
-
-		if (activity != null) {
-			mostRecentActivity = activity.getEnd();
-		} else if (taskEntity != null) {
-			mostRecentActivity = taskEntity.getCreationDate();
-		}
-		return mostRecentActivity;
+		return activity != null ? activity.getEnd() : null;
 	}
 
 	@Override

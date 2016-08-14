@@ -7,6 +7,8 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.activity.ActivityEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -97,7 +99,28 @@ class TaskResourceSpec extends Specification {
 		assert taskList == [mostRecent, secondMostRecent]
 	}
 
-	def "activate SHOULD create idle time on resume"() {
+	def "activate SHOULD create idle time on resume with start time as the most recent file activity end time"() {
+		given:
+		java.time.LocalDateTime fileActivityStart = timeService.now()
+		java.time.LocalDateTime fileActivityEnd = fileActivityStart.plusHours(1)
+		Task recentTask = taskClient.createTask("recent", "description")
+		ActivityEntity fileActivity = aRandom.activityEntity()
+				.taskId(recentTask.id)
+				.start(fileActivityStart)
+				.end(fileActivityEnd)
+				.build()
+		persistenceService.saveActivity(fileActivity)
+		timeService.plusHours(5)
+
+		when:
+		taskClient.activate(recentTask.id)
+
+		then:
+		IdleActivityEntity idleActivityEntity = persistenceService.getIdleActivityList(recentTask.id)[0]
+		assert idleActivityEntity.start == fileActivityEnd
+	}
+
+	def "activate SHOULD NOT create idle time on resume if there is no file activity associated with task"() {
 		given:
 		Task recentTask = taskClient.createTask("recent", "description")
 		timeService.plusHours(5)
@@ -106,7 +129,7 @@ class TaskResourceSpec extends Specification {
 		taskClient.activate(recentTask.id)
 
 		then:
-		assert persistenceService.getIdleActivityList(recentTask.id).size() > 0
+		assert persistenceService.getIdleActivityList(recentTask.id).size() == 0
 	}
 
 }

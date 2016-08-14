@@ -74,13 +74,15 @@ public class TaskResource {
 		}
 
 		LocalDateTime activityEnd = persistenceService.getMostRecentActivityEnd(taskId);
-		IdleActivityEntity idleTime = IdleActivityEntity.builder()
-				.taskId(taskId)
-				.start(activityEnd)
-				.end(timeService.now())
-				.build();
+		if (activityEnd != null) {
+			IdleActivityEntity idleTime = IdleActivityEntity.builder()
+					.taskId(taskId)
+					.start(activityEnd)
+					.end(timeService.now())
+					.build();
+			persistenceService.saveActivity(idleTime);
+		}
 
-		persistenceService.saveActivity(idleTime);
 		return toApiTask(task);
 	}
 

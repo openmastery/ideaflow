@@ -111,12 +111,12 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		assert mostRecentActivity.end == persistenceService.getMostRecentActivityEnd(taskId)
 	}
 
-	def "getMostRecentActivityEnd SHOULD return task start WHEN there's no activity"() {
+	def "getMostRecentActivityEnd SHOULD return null WHEN there's no activity"() {
 		given:
 		TaskEntity task = saveTask(aRandom.taskEntity().creationDate(mockTimeService.now()))
 
 		expect:
-		assert task.creationDate == persistenceService.getMostRecentActivityEnd(task.id)
+		assert null == persistenceService.getMostRecentActivityEnd(task.id)
 	}
 
 	def "saveActivity should persist metadata"() {

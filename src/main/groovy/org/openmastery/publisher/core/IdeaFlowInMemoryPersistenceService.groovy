@@ -63,11 +63,6 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 				mostRecentActivity = activity.end
 			}
 		}
-		if (mostRecentActivity == null) {
-			TaskEntity taskEntity = findTaskWithId(taskId);
-			mostRecentActivity = taskEntity.creationDate
-		}
-
 		mostRecentActivity
 	}
 
