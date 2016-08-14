@@ -46,6 +46,8 @@ Import project or module into IDEA and get to coding.
 
 ## Install/Setup Docker
 
+If you've got Docker for Mac, or Docker for Windows installed, you can *skip these section* completely.  If you get any errors when running Gradle build commands for postgres, run `docker ps` to make sure docker is on your path.
+
 To install, follow instructions here:
 
 https://docs.docker.com/machine/install-machine/
