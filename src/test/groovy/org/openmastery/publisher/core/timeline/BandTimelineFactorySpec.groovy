@@ -15,7 +15,7 @@ import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 class BandTimelineFactorySpec extends Specification {
 
 	@Autowired
-	BandTimelineFactory factory
+	TimelineGenerator factory
 	TimelineSegmentValidator validator = new TimelineSegmentValidator()
 	TimelineTestSupport testSupport = new TimelineTestSupport()
 	LocalDateTime start
@@ -26,7 +26,7 @@ class BandTimelineFactorySpec extends Specification {
 	}
 
 	private List<BandTimelineSegment> createBandTimelineSegments() {
-		BandTimelineFactory factory = new BandTimelineFactory()
+		TimelineGenerator factory = new TimelineGenerator()
 		factory.persistenceService = testSupport.persistenceService
 		factory.createAndSplitBandTimelineSegmentForTask(testSupport.taskId)
 	}
