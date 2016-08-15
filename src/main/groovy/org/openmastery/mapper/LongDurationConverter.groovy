@@ -16,7 +16,7 @@ class LongDurationConverter implements CustomConverter {
 
 		if (destinationClass == Long.class && sourceClass == Duration.class) {
 			return ((Duration) source).seconds
-		} else if (destinationClass == Number.class && sourceClass == Long.class) {
+		} else if (destinationClass == Duration.class && sourceClass == Long.class) {
 			return Duration.ofSeconds((Long) source)
 		} else {
 			throw new MappingException("Converter LongDurationConverter used incorrectly, destination=${destination}, source=${source}")
