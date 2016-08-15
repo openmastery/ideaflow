@@ -4,10 +4,11 @@ package org.openmastery.publisher.core.event;
 import lombok.Getter;
 import lombok.Setter;
 import org.openmastery.publisher.api.event.EventType;
+import org.openmastery.publisher.core.Positionable;
 
 import java.time.LocalDateTime;
 
-public class EventModel {
+public class EventModel implements Positionable {
 
 	private EventEntity delegate;
 	@Getter

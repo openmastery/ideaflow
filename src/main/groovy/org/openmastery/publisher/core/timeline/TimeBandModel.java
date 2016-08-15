@@ -1,20 +1,27 @@
 package org.openmastery.publisher.core.timeline;
 
+import org.openmastery.publisher.core.Positionable;
+
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TimeBandModel<T extends TimeBandModel> {
+public abstract class TimeBandModel<T extends TimeBandModel> implements Positionable {
 
-	private long relativePositionInSeconds;
+	private Long relativePositionInSeconds;
 
-	public long getRelativePositionInSeconds() {
+	public Long getRelativePositionInSeconds() {
 		return relativePositionInSeconds;
 	}
 
-	public void setRelativePositionInSeconds(long relativePositionInSeconds) {
+	public void setRelativePositionInSeconds(Long relativePositionInSeconds) {
 		this.relativePositionInSeconds = relativePositionInSeconds;
+	}
+
+	public LocalDateTime getPosition() {
+		return getStart();
 	}
 
 	public abstract LocalDateTime getStart();

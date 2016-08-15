@@ -1,102 +1,59 @@
 package org.openmastery.publisher.core.timeline
 
+import org.openmastery.publisher.core.Positionable
+import org.openmastery.publisher.core.PositionableComparator
 import org.openmastery.publisher.core.event.EventModel
 
 import java.time.Duration
-import java.time.LocalDateTime
 
 class RelativeTimeProcessor {
 
 	public void computeRelativeTime(List<BandTimelineSegment> segments) {
-		Set<TimeBandModel> allTimeBands = getFlattenedSortedTimeBandSet(segments);
-		TimeBandModel previousTimeBand = null
+		Set<Positionable> allSegmentPositionables = getFlattenedSortedSegmentContentSet(segments);
+		Positionable previousPositionable = null
 		long relativeTime = 0
 
-		for (int i = 0; i < allTimeBands.size(); i++) {
-			TimeBandModel timeBand = allTimeBands[i]
+		for (int i = 0; i < allSegmentPositionables.size(); i++) {
+			Positionable positionable = allSegmentPositionables[i]
 
-			if (previousTimeBand != null) {
+			if (previousPositionable != null) {
 				Duration duration
-				if (previousTimeBand instanceof IdleTimeBandModel) {
-					duration = Duration.between(previousTimeBand.end, timeBand.start)
+				if (previousPositionable instanceof IdleTimeBandModel) {
+					duration = Duration.between(previousPositionable.end, positionable.getPosition())
 				} else {
-					duration = Duration.between(previousTimeBand.start, timeBand.start)
+					duration = Duration.between(previousPositionable.getPosition(), positionable.getPosition())
 				}
 				if (duration.isNegative() == false) {
 					relativeTime += duration.seconds
 				}
 			}
 
-			timeBand.relativePositionInSeconds = relativeTime
-			previousTimeBand = timeBand
+			positionable.relativePositionInSeconds = relativeTime
+			previousPositionable = positionable
 		}
 	}
 
-	private Set<TimeBandModel> getFlattenedSortedTimeBandSet(List<BandTimelineSegment> segments) {
-		ArrayList<TimeBandModel> allTimeBands = new ArrayList<>();
+	private Set<Positionable> getFlattenedSortedSegmentContentSet(List<BandTimelineSegment> segments) {
+		ArrayList<Positionable> allTimeBands = new ArrayList<>();
 		for (BandTimelineSegment segment : segments) {
 			addTimeBands(allTimeBands, segment.allTimeBands)
-			addEventAdapters(allTimeBands, segment.events)
+			addEvents(allTimeBands, segment.events)
 		}
-		Collections.sort(allTimeBands, TimeBandComparator.INSTANCE);
+		Collections.sort(allTimeBands, PositionableComparator.INSTANCE);
 		// convert to a set b/c we could have duplicate idle bands (e.g. if idle is w/in nested conflict)
 		return allTimeBands as Set;
 	}
 
-	private void addTimeBands(List<TimeBandModel> targetList, List<TimeBandModel> bandsToAdd) {
+	private void addTimeBands(List<Positionable> targetList, List<TimeBandModel> bandsToAdd) {
 		for (TimeBandModel bandToAdd : bandsToAdd) {
 			targetList.add(bandToAdd);
 			addTimeBands(targetList, bandToAdd.getContainedBands());
 		}
 	}
 
-	private void addEventAdapters(List<TimeBandModel> targetList, List<EventModel> eventsToAdd) {
+	private void addEvents(List<Positionable> targetList, List<EventModel> eventsToAdd) {
 		for (EventModel eventToAdd : eventsToAdd) {
-			targetList.add(new EventTimeBandAdapter(eventToAdd))
-		}
-	}
-
-
-	private static class EventTimeBandAdapter extends TimeBandModel<EventTimeBandAdapter> {
-
-		private EventModel event
-
-		EventTimeBandAdapter(EventModel event) {
-			this.event = event
-		}
-
-		public void setRelativePositionInSeconds(long relativePositionInSeconds) {
-			event.relativePositionInSeconds = relativePositionInSeconds
-		}
-
-		@Override
-		LocalDateTime getStart() {
-			event.position
-		}
-
-		@Override
-		LocalDateTime getEnd() {
-			event.position
-		}
-
-		@Override
-		Duration getDuration() {
-			Duration.ZERO
-		}
-
-		@Override
-		List<? extends TimeBandModel> getContainedBands() {
-			return []
-		}
-
-		@Override
-		protected EventTimeBandAdapter internalSplitAndReturnLeftSide(LocalDateTime position) {
-			this
-		}
-
-		@Override
-		protected EventTimeBandAdapter internalSplitAndReturnRightSide(LocalDateTime position) {
-			this
+			targetList.add(eventToAdd)
 		}
 	}
 

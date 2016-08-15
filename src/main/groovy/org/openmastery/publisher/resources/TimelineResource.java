@@ -4,6 +4,7 @@ import com.bancvue.rest.exception.NotFoundException;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.timeline.BandTimeline;
 import org.openmastery.publisher.api.timeline.TreeTimeline;
+import org.openmastery.publisher.api.timeline.ActivityTimeline;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.openmastery.publisher.core.task.TaskEntity;
 import org.openmastery.publisher.core.timeline.TimelineGenerator;
@@ -38,6 +39,13 @@ public class TimelineResource {
 	public TreeTimeline getTreeTimelineTreeForTask(@QueryParam("taskId") Long optionalTaskId, @QueryParam("taskName") String optionalTaskName) {
 		Long taskId = getTaskId(optionalTaskId, optionalTaskName);
 		return timelineGenerator.createTreeTimelineForTask(taskId);
+	}
+
+	@GET
+	@Path(ResourcePaths.TIMELINE_ACTIVITY_PATH)
+	public ActivityTimeline getActivityTimelineForTask(@QueryParam("taskId") Long optionalTaskId, @QueryParam("taskName") String optionalTaskName) {
+		Long taskId = getTaskId(optionalTaskId, optionalTaskName);
+		return timelineGenerator.createActivityTimelineForTask(taskId);
 	}
 
 	private Long getTaskId(Long optionalTaskId, String optionalTaskName) {

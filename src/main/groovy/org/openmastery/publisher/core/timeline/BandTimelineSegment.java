@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openmastery.publisher.core.PositionableComparator;
 import org.openmastery.publisher.core.event.EventModel;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel;
 
@@ -34,7 +35,7 @@ public class BandTimelineSegment {
 
 	public List<TimeBandModel> getAllTimeBandsSortedByStartTime() {
 		List<TimeBandModel> allTimeBands = getAllTimeBands();
-		Collections.sort(allTimeBands, TimeBandComparator.INSTANCE);
+		Collections.sort(allTimeBands, PositionableComparator.INSTANCE);
 		return allTimeBands;
 	}
 

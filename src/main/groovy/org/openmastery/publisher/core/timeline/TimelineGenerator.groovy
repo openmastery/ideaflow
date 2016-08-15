@@ -1,6 +1,7 @@
 package org.openmastery.publisher.core.timeline
 
 import com.bancvue.rest.exception.NotFoundException
+import org.openmastery.publisher.api.timeline.ActivityTimeline
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.mapper.EntityMapper
@@ -31,18 +32,24 @@ class TimelineGenerator {
 		mapper.mapIfNotNull(segment, BandTimeline.class)
 	}
 
-	private BandTimelineSegment createBandTimelineSegmentForTask(long taskId) {
-		BandTimelineSegment segment = createTimelineSegmentAndCollapseIdleTime(taskId)
-		List<BandTimelineSegment> segments = [segment]
-		relativeTimeProcessor.computeRelativeTime(segments)
-		segments[0]
-	}
-
 	public TreeTimeline createTreeTimelineForTask(long taskId) {
 		List<BandTimelineSegment> segments = createAndSplitBandTimelineSegmentForTask(taskId)
 		new TreeTimelineBuilder()
 				.addTimelineSegments(segments)
 				.build()
+	}
+
+	public ActivityTimeline createActivityTimelineForTask(long taskId) {
+		BandTimelineSegment segment = createBandTimelineSegmentForTask(taskId)
+
+		null
+	}
+
+	private BandTimelineSegment createBandTimelineSegmentForTask(long taskId) {
+		BandTimelineSegment segment = createTimelineSegmentAndCollapseIdleTime(taskId)
+		List<BandTimelineSegment> segments = [segment]
+		relativeTimeProcessor.computeRelativeTime(segments)
+		segments[0]
 	}
 
 	private List<BandTimelineSegment> createAndSplitBandTimelineSegmentForTask(long taskId) {

@@ -1,5 +1,6 @@
 package org.openmastery.publisher.core.timeline
 
+import org.openmastery.publisher.core.PositionableComparator
 import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.api.event.EventType
 
@@ -12,7 +13,7 @@ class BandTimelineSplitter {
 		}
 
 		List timeBands = segment.getAllTimeBands()
-		Collections.sort(timeBands, TimeBandComparator.INSTANCE);
+		Collections.sort(timeBands, PositionableComparator.INSTANCE);
 		List<BandTimelineSegment> splitSegments = []
 		BandTimelineSegment activeSegment = new BandTimelineSegment()
 		activeSegment.id = segment.id
