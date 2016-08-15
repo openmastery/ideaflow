@@ -6,6 +6,7 @@ import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.Positionable
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
@@ -47,16 +48,24 @@ class TimelineGenerator {
 
 	private BandTimelineSegment createBandTimelineSegmentForTask(long taskId) {
 		BandTimelineSegment segment = createTimelineSegmentAndCollapseIdleTime(taskId)
-		List<BandTimelineSegment> segments = [segment]
-		relativeTimeProcessor.computeRelativeTime(segments)
-		segments[0]
+		relativeTimeProcessor.computeRelativeTime(segment.getAllContentsFlattenedAsPositionableList())
+		segment
 	}
 
 	private List<BandTimelineSegment> createAndSplitBandTimelineSegmentForTask(long taskId) {
 		BandTimelineSegment segment = createTimelineSegmentAndCollapseIdleTime(taskId)
 		List<BandTimelineSegment> segments = timelineSplitter.splitTimelineSegment(segment)
-		relativeTimeProcessor.computeRelativeTime(segments)
+		List<Positionable> positionables = getAllContentsFlattenedAsPositionableList(segments)
+		relativeTimeProcessor.computeRelativeTime(positionables)
 		segments
+	}
+
+	private List<Positionable> getAllContentsFlattenedAsPositionableList(List<BandTimelineSegment> segments) {
+		List<Positionable> positionables = []
+		for (BandTimelineSegment segment : segments) {
+			positionables.addAll(segment.getAllContentsFlattenedAsPositionableList())
+		}
+		positionables
 	}
 
 	private BandTimelineSegment createTimelineSegmentAndCollapseIdleTime(Long taskId) {

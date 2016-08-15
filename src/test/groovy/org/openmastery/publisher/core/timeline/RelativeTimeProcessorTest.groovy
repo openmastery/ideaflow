@@ -1,6 +1,7 @@
 package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.api.TestTimelineSegmentBuilder
+import org.openmastery.publisher.core.Positionable
 import spock.lang.Specification
 
 import java.time.Duration
@@ -21,7 +22,8 @@ class RelativeTimeProcessorTest extends Specification {
 
 	private BandTimelineSegment processRelativeTime() {
 		BandTimelineSegment segment = builder.build()
-		new RelativeTimeProcessor().computeRelativeTime([segment])
+		List<Positionable> positionables = segment.getAllContentsFlattenedAsPositionableList()
+		new RelativeTimeProcessor().computeRelativeTime(positionables)
 		segment
 	}
 
@@ -37,7 +39,7 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0
+		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0l
 		assert segment.ideaFlowBands[0].nestedBands[0].relativePositionInSeconds == Duration.ofHours(1).seconds
 		assert segment.ideaFlowBands[1].relativePositionInSeconds == Duration.ofHours(5).seconds
 		assert segment.timeBandGroups[0].relativePositionInSeconds == Duration.ofHours(7).seconds
@@ -57,7 +59,7 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0
+		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0l
 		assert segment.ideaFlowBands[0].nestedBands[0].relativePositionInSeconds == Duration.ofHours(2).seconds
 		assert segment.ideaFlowBands[0].nestedBands[1].relativePositionInSeconds == Duration.ofHours(4).seconds
 		assert segment.ideaFlowBands[1].relativePositionInSeconds == Duration.ofHours(6).seconds
@@ -78,7 +80,7 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0
+		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0l
 		assert segment.ideaFlowBands[0].nestedBands[0].relativePositionInSeconds == Duration.ofHours(2).seconds
 		assert segment.ideaFlowBands[0].nestedBands[1].relativePositionInSeconds == Duration.ofHours(4).seconds
 		assert segment.ideaFlowBands[1].relativePositionInSeconds == Duration.ofHours(6).seconds
@@ -97,8 +99,8 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.timeBandGroups[0].relativePositionInSeconds == 0
-		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == 0
+		assert segment.timeBandGroups[0].relativePositionInSeconds == 0l
+		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == 0l
 		assert segment.timeBandGroups[0].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(2).seconds
 		assert segment.ideaFlowBands[0].relativePositionInSeconds == Duration.ofHours(4).seconds
 	}
@@ -117,8 +119,8 @@ class RelativeTimeProcessorTest extends Specification {
 		BandTimelineSegment segment = processRelativeTime()
 
 		then:
-		assert segment.timeBandGroups[0].relativePositionInSeconds == 0
-		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == 0
+		assert segment.timeBandGroups[0].relativePositionInSeconds == 0l
+		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == 0l
 		assert segment.timeBandGroups[0].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(4).seconds
 		assert segment.ideaFlowBands[0].relativePositionInSeconds == Duration.ofHours(6).seconds
 		assert segment.timeBandGroups[1].relativePositionInSeconds == Duration.ofHours(7).seconds

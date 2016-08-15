@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openmastery.publisher.core.Positionable;
 import org.openmastery.publisher.core.PositionableComparator;
 import org.openmastery.publisher.core.event.EventModel;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel;
@@ -12,7 +13,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -37,6 +40,22 @@ public class BandTimelineSegment {
 		List<TimeBandModel> allTimeBands = getAllTimeBands();
 		Collections.sort(allTimeBands, PositionableComparator.INSTANCE);
 		return allTimeBands;
+	}
+
+	public List<Positionable> getAllContentsFlattenedAsPositionableList() {
+		// use a set b/c we could have duplicate idle bands (e.g. if idle is w/in nested conflict)
+		// TODO: there's no test that fails if this is a List... either make it a list or add a test that proves the above statement
+		HashSet<Positionable> positionables = new HashSet<>();
+		addTimeBandsAndContainedBandsToTargetList(positionables, getAllTimeBands());
+		positionables.addAll(events);
+		return new ArrayList<>(positionables);
+	}
+
+	private void addTimeBandsAndContainedBandsToTargetList(Set<Positionable> targetSet, List<TimeBandModel> bandsToAdd) {
+		for (TimeBandModel bandToAdd : bandsToAdd) {
+			targetSet.add(bandToAdd);
+			addTimeBandsAndContainedBandsToTargetList(targetSet, bandToAdd.getContainedBands());
+		}
 	}
 
 	public LocalDateTime getStart() {

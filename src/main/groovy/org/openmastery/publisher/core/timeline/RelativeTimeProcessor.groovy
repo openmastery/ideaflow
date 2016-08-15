@@ -1,21 +1,35 @@
 package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.core.Positionable
-import org.openmastery.publisher.core.PositionableComparator
-import org.openmastery.publisher.core.event.EventModel
 
 import java.time.Duration
 
 class RelativeTimeProcessor {
 
-	public void computeRelativeTime(List<BandTimelineSegment> segments) {
-		Set<Positionable> allSegmentPositionables = getFlattenedSortedSegmentContentSet(segments);
-		Positionable previousPositionable = null
+	private static final Comparator<Positionable> IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE = new Comparator<Positionable>() {
+		@Override
+		public int compare(Positionable o1, Positionable o2) {
+			int comparison = o1.getPosition().compareTo(o2.getPosition());
+
+			if (comparison == 0) {
+				if (o1 instanceof IdleTimeBandModel) {
+					if ((o2 instanceof IdleTimeBandModel) == false) {
+						comparison = 1
+					}
+				} else if (o2 instanceof IdleTimeBandModel) {
+					comparison = -1
+				}
+			}
+			comparison
+		}
+	}
+
+	public void computeRelativeTime(List<Positionable> positionables) {
+		positionables = positionables.sort(false, IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE)
+
 		long relativeTime = 0
-
-		for (int i = 0; i < allSegmentPositionables.size(); i++) {
-			Positionable positionable = allSegmentPositionables[i]
-
+		Positionable previousPositionable = null
+		for (Positionable positionable : positionables) {
 			if (previousPositionable != null) {
 				Duration duration
 				if (previousPositionable instanceof IdleTimeBandModel) {
@@ -30,30 +44,6 @@ class RelativeTimeProcessor {
 
 			positionable.relativePositionInSeconds = relativeTime
 			previousPositionable = positionable
-		}
-	}
-
-	private Set<Positionable> getFlattenedSortedSegmentContentSet(List<BandTimelineSegment> segments) {
-		ArrayList<Positionable> allTimeBands = new ArrayList<>();
-		for (BandTimelineSegment segment : segments) {
-			addTimeBands(allTimeBands, segment.allTimeBands)
-			addEvents(allTimeBands, segment.events)
-		}
-		Collections.sort(allTimeBands, PositionableComparator.INSTANCE);
-		// convert to a set b/c we could have duplicate idle bands (e.g. if idle is w/in nested conflict)
-		return allTimeBands as Set;
-	}
-
-	private void addTimeBands(List<Positionable> targetList, List<TimeBandModel> bandsToAdd) {
-		for (TimeBandModel bandToAdd : bandsToAdd) {
-			targetList.add(bandToAdd);
-			addTimeBands(targetList, bandToAdd.getContainedBands());
-		}
-	}
-
-	private void addEvents(List<Positionable> targetList, List<EventModel> eventsToAdd) {
-		for (EventModel eventToAdd : eventsToAdd) {
-			targetList.add(eventToAdd)
 		}
 	}
 
