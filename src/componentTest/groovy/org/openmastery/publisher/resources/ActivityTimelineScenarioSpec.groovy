@@ -46,12 +46,15 @@ class ActivityTimelineScenarioSpec  extends Specification {
 		ideaFlowClient.startLearning(taskId, "How does this code work?")
 
 		addEditorActivityAndAdvanceTime(taskId, 10, "second.txt", false)
-		addEditorActivityAndAdvanceTime(taskId, 20, "third.txt", false)
 
+		ideaFlowClient.startConflict(taskId, "What is this dependency?")
+		addEditorActivityAndAdvanceTime(taskId, 20, "third.txt", false)
+		ideaFlowClient.endConflict(taskId, "Red Herring.")
+		addEditorActivityAndAdvanceTime(taskId, 5, "fourth.txt", false)
 		ideaFlowClient.endLearning(taskId, null)
 
-		addEditorActivityAndAdvanceTime(taskId, 50, "fourth.txt", true)
-		addEditorActivityAndAdvanceTime(taskId, 15, "fifth.txt", true)
+		addEditorActivityAndAdvanceTime(taskId, 50, "fifth.txt", true)
+		addEditorActivityAndAdvanceTime(taskId, 15, "sixth.txt", true)
 
 		when:
 		ActivityTimeline activityTimeline = timelineClient.getActivityTimelineForTask(taskId)
@@ -63,10 +66,13 @@ class ActivityTimelineScenarioSpec  extends Specification {
 		validator.assertFileActivity(0, "first.txt", false, Duration.ofSeconds(15))
 		validator.assertBandStart(15, LEARNING, "How does this code work?")
 		validator.assertFileActivity(15, "second.txt", false, Duration.ofSeconds(10))
+		validator.assertBandStart(25, CONFLICT, "What is this dependency?")
 		validator.assertFileActivity(25, "third.txt", false, Duration.ofSeconds(20))
-		validator.assertBandEnd(45, LEARNING, null)
-		validator.assertFileActivity(45, "fourth.txt", true, Duration.ofSeconds(50))
-		validator.assertFileActivity(95, "fifth.txt", true, Duration.ofSeconds(15))
+		validator.assertBandEnd(45, CONFLICT, "Red Herring.")
+		validator.assertFileActivity(45, "fourth.txt", false, Duration.ofSeconds(5))
+		validator.assertBandEnd(50, LEARNING, null)
+		validator.assertFileActivity(50, "fifth.txt", true, Duration.ofSeconds(50))
+		validator.assertFileActivity(100, "sixth.txt", true, Duration.ofSeconds(15))
 		validator.assertValidationComplete()
 	}
 
@@ -140,6 +146,45 @@ class ActivityTimelineScenarioSpec  extends Specification {
 
 		validator.assertValidationComplete()
 	}
+
+	def "activity timeline SHOULD sort events into position when events overlap with the file activity"() {
+
+		Task task = taskClient.createTask("basic", "create basic timeline with events")
+		Long taskId = task.id
+
+		addEditorActivityAndAdvanceTime(taskId, 15, "first.txt", false)
+
+		ideaFlowClient.startLearning(taskId, "How does this work?")
+
+		//event in the middle of a file activity
+		timeService.advanceTime(0, 0, 5)
+		eventClient.addUserNote(taskId, "Exploring the email engine...")
+		timeService.advanceTime(0, 0, 10)
+		activityClient.addEditorActivity(taskId, 15, "second.txt", false)
+
+		eventClient.startSubtask(taskId, "my subtask")
+		addEditorActivityAndAdvanceTime(taskId, 10, "third.txt", false)
+		ideaFlowClient.endLearning(taskId, null)
+
+		when:
+		ActivityTimeline activityTimeline = timelineClient.getActivityTimelineForTask(taskId)
+
+		then:
+		TimelinePrettyPrinter.printTimeline(activityTimeline)
+
+		ActivityTimelineValidator validator = new ActivityTimelineValidator(activityTimeline)
+		validator.assertFileActivity(0, "first.txt", false, Duration.ofSeconds(15))
+		validator.assertBandStart(15, LEARNING,  "How does this work?")
+		validator.assertFileActivity(15, "second.txt", false, Duration.ofSeconds(15))
+		validator.assertEvent(20, "Exploring the email engine...")
+		validator.assertEvent(30, "my subtask")
+		validator.assertFileActivity(30, "third.txt", false, Duration.ofSeconds(10))
+
+		validator.assertBandEnd(40, LEARNING, null)
+
+		validator.assertValidationComplete()
+	}
+
 
 	void addEditorActivityAndAdvanceTime (Long taskId, Long durationInSeconds, String fileName, boolean isModified) {
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())

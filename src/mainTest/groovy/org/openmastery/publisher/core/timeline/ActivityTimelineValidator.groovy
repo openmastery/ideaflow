@@ -72,6 +72,15 @@ class ActivityTimelineValidator {
 		assert getActivityNode(index).relativePositionInSeconds == relativePosition
 	}
 
+	void assertEvent(Long relativePosition, String comment) {
+		int index = activityNodeIndex++
+
+		assert getActivityNode(index).type == ActivityNodeType.EVENT
+		assert getActivityNode(index).eventComment == comment
+		assert getActivityNode(index).relativePositionInSeconds == relativePosition
+	}
+
+
 	ActivityNode getActivityNode(int index) {
 		return activityTimeline.activityNodes[index]
 	}
