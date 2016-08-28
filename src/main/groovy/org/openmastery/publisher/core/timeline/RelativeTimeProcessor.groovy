@@ -1,6 +1,7 @@
 package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.core.Positionable
+import org.openmastery.publisher.core.PositionableComparator
 
 import java.time.Duration
 
@@ -9,7 +10,7 @@ class RelativeTimeProcessor {
 	private static final Comparator<Positionable> IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE = new Comparator<Positionable>() {
 		@Override
 		public int compare(Positionable o1, Positionable o2) {
-			int comparison = o1.getPosition().compareTo(o2.getPosition());
+			int comparison = PositionableComparator.INSTANCE.compare(o1, o2)
 
 			if (comparison == 0) {
 				if (o1 instanceof IdleTimeBandModel) {
