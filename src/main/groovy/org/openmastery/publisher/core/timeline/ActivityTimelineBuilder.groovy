@@ -47,9 +47,10 @@ class ActivityTimelineBuilder {
 						.build()
 			} else if (activity instanceof ExternalActivityModel) {
 				ExternalActivityModel externalActivity = (ExternalActivityModel) activity
-				activityNode = createActivityNodeBuilder(activity, ActivityNodeType.EDITOR)
+				activityNode = createActivityNodeBuilder(activity, ActivityNodeType.EXTERNAL)
 						.externalIdle(false)
 						.externalDurationInSeconds(externalActivity.duration.seconds)
+						.externalComment(externalActivity.comment)
 						.build()
 			} else {
 				throw new RuntimeException("Application error - unexpected activity type=${activity}")

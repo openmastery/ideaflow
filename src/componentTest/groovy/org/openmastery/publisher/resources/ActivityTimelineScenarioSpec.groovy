@@ -13,6 +13,7 @@ import spock.lang.Specification
 import java.time.Duration
 import java.time.LocalDateTime
 
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 
 @ComponentTest
@@ -71,7 +72,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 
 	def "activity timeline SHOULD extract idle activity AND sort with file activity"() {
 		given:
-		Task task = taskClient.createTask("basic", "create basic timeline with file activity")
+		Task task = taskClient.createTask("basic", "create basic timeline with idles")
 		Long taskId = task.id
 
 		ideaFlowClient.startLearning(taskId, "How does this code work?")
@@ -106,7 +107,39 @@ class ActivityTimelineScenarioSpec  extends Specification {
 		validator.assertValidationComplete()
 	}
 
+	def "activity timeline SHOULD treat non-idle exteral activity as positive time like file activity"() {
 
+		Task task = taskClient.createTask("basic", "create basic timeline with external activity")
+		Long taskId = task.id
+
+		addEditorActivityAndAdvanceTime(taskId, 15, "first.txt", false)
+
+		ideaFlowClient.startConflict(taskId, "Why is the screen blank?")
+
+		addEditorActivityAndAdvanceTime(taskId, 10, "second.txt", false)
+		addExternalActivityAndAdvanceTime(taskId, 15, "browser-stuff")
+		addEditorActivityAndAdvanceTime(taskId, 20, "third.txt", false)
+		addExternalActivityAndAdvanceTime(taskId, 30, "browser-stuff")
+
+		ideaFlowClient.endConflict(taskId, "I forgot to redeploy the code.")
+
+		when:
+		ActivityTimeline activityTimeline = timelineClient.getActivityTimelineForTask(taskId)
+
+		then:
+		TimelinePrettyPrinter.printTimeline(activityTimeline)
+
+		ActivityTimelineValidator validator = new ActivityTimelineValidator(activityTimeline)
+		validator.assertFileActivity(0, "first.txt", false, Duration.ofSeconds(15))
+		validator.assertBandStart(15, CONFLICT, "Why is the screen blank?")
+		validator.assertFileActivity(15, "second.txt", false, Duration.ofSeconds(10))
+		validator.assertExternalActivity(25, "browser-stuff", Duration.ofSeconds(15))
+		validator.assertFileActivity(40, "third.txt", false, Duration.ofSeconds(20))
+		validator.assertExternalActivity(60, "browser-stuff", Duration.ofSeconds(30))
+		validator.assertBandEnd(90, CONFLICT, "I forgot to redeploy the code.")
+
+		validator.assertValidationComplete()
+	}
 
 	void addEditorActivityAndAdvanceTime (Long taskId, Long durationInSeconds, String fileName, boolean isModified) {
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
@@ -116,7 +149,12 @@ class ActivityTimelineScenarioSpec  extends Specification {
 
 	void addIdleActivityAndAdvanceTime(Long taskId, Long durationInSeconds) {
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
-		activityClient.addIdleActivity(taskId, 30)
+		activityClient.addIdleActivity(taskId, durationInSeconds)
+	}
+
+	void addExternalActivityAndAdvanceTime(Long taskId, Long durationInSeconds, String comment) {
+		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
+		activityClient.addExternalActivity(taskId, durationInSeconds, comment)
 	}
 
 }

@@ -33,6 +33,16 @@ class ActivityTimelineValidator {
 		assert getActivityNode(index).relativePositionInSeconds == relativePosition
 	}
 
+	void assertExternalActivity(Long relativePosition, String comment, Duration durationInSeconds) {
+		int index = activityNodeIndex++
+
+		assert getActivityNode(index).type == ActivityNodeType.EXTERNAL
+		assert getActivityNode(index).externalIdle == false
+		assert getActivityNode(index).externalComment == comment
+		assert getActivityNode(index).externalDurationInSeconds == durationInSeconds.seconds
+		assert getActivityNode(index).relativePositionInSeconds == relativePosition
+	}
+
 	void assertBandStart(Long relativePosition, IdeaFlowStateType bandType, String bandComment) {
 		int index = activityNodeIndex++
 

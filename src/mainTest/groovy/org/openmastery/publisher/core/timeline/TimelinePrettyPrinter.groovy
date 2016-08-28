@@ -17,10 +17,13 @@ class TimelinePrettyPrinter {
 				println "{name='${activityNode.editorFileName}', isModified=${activityNode.editorFileIsModified}, path='${activityNode.editorFilePath}', duration=${activityNode.editorDurationInSeconds}}"
 			}
 			else if (activityNode.type == ActivityNodeType.EXTERNAL) {
-				println "{isIdle=${activityNode.externalIdle}, duration=${activityNode.externalDurationInSeconds}}"
+				println "{isIdle=${activityNode.externalIdle}, duration=${activityNode.externalDurationInSeconds}, comment=${activityNode.externalComment}"
 			}
 			else if (activityNode.type == ActivityNodeType.EVENT) {
 				println "(comment='${activityNode.eventComment}'}"
+			}
+			else {
+				throw new Exception("Can't print unsupported type = "+activityNode.type)
 			}
 		}
 	}

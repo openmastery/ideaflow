@@ -33,6 +33,7 @@ public class ActivityNode implements Comparable<ActivityNode> {
 
 	// External
 	private Boolean externalIdle;
+	private String externalComment;
 	private Long externalDurationInSeconds;
 
 	@Override
