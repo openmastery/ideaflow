@@ -24,6 +24,8 @@ public interface IdeaFlowPersistenceService {
 
 	List<IdleActivityEntity> getIdleActivityList(long taskId);
 
+	List<ExternalActivityEntity> getExternalActivityList(long taskId);
+
 	List<EditorActivityEntity> getEditorActivityList(long taskId);
 
 	List<EventEntity> getEventList(long taskId);

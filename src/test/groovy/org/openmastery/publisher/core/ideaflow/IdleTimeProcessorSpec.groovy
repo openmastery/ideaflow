@@ -27,7 +27,9 @@ class IdleTimeProcessorSpec extends Specification {
 	private BandTimelineSegment createTimelineSegmentAndParseIdleTime() {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
 
-		BandTimelineSegment segment = new BandTimelineSegmentBuilder(stateList, testSupport.getEventList()).build()
+		BandTimelineSegment segment = new BandTimelineSegmentBuilder(stateList)
+				.events(testSupport.getEventList())
+				.build()
 
 		IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 		idleTimeProcessor.collapseIdleTime(segment, testSupport.getIdleActivityList())

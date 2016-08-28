@@ -6,6 +6,9 @@ import org.openmastery.publisher.api.timeline.ActivityTimeline
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.activity.ActivityEntity
+import org.openmastery.publisher.core.activity.EditorActivityEntity
+import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
@@ -50,9 +53,14 @@ class TimelineGenerator {
 
 		List<IdeaFlowStateEntity> ideaFlowStates = getStateListWithActiveCompleted(taskId)
 		List<EventEntity> eventList = persistenceService.getEventList(taskId)
+		List<EditorActivityEntity> editorActivityList = persistenceService.getEditorActivityList(taskId)
+		List<ExternalActivityEntity> externalActivityList = persistenceService.getExternalActivityList(taskId)
 		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(taskId)
-		new BandTimelineSegmentBuilder(ideaFlowStates, eventList)
+		new BandTimelineSegmentBuilder(ideaFlowStates)
 				.description(task.description)
+				.events(eventList)
+				.editorActivities(editorActivityList)
+				.externalActivities(externalActivityList)
 				.collapseIdleTime(idleActivities)
 	}
 

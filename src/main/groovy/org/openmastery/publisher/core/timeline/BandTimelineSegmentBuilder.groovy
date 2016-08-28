@@ -1,12 +1,15 @@
 package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.core.Positionable
+import org.openmastery.publisher.core.activity.EditorActivityEntity
+import org.openmastery.publisher.core.activity.EditorActivityModel
+import org.openmastery.publisher.core.activity.ExternalActivityEntity
+import org.openmastery.publisher.core.activity.ExternalActivityModel
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
-
 
 class BandTimelineSegmentBuilder {
 
@@ -14,10 +17,11 @@ class BandTimelineSegmentBuilder {
 	private List<IdeaFlowStateEntity> ideaFlowStates
 	private List<EventEntity> events
 	private List<IdleActivityEntity> idleActivities
+	private List<EditorActivityEntity> editorActivities
+	private List<ExternalActivityEntity> externalActivities
 
-	BandTimelineSegmentBuilder(List<IdeaFlowStateEntity> ideaFlowStates, List<EventEntity> events) {
+	BandTimelineSegmentBuilder(List<IdeaFlowStateEntity> ideaFlowStates) {
 		this.ideaFlowStates = ideaFlowStates
-		this.events = events
 	}
 
 	BandTimelineSegmentBuilder description(String description) {
@@ -27,6 +31,21 @@ class BandTimelineSegmentBuilder {
 
 	BandTimelineSegmentBuilder collapseIdleTime(List<IdleActivityEntity> idleActivities) {
 		this.idleActivities = idleActivities
+		this
+	}
+
+	BandTimelineSegmentBuilder events(List<EventEntity> events) {
+		this.events = events
+		this
+	}
+
+	BandTimelineSegmentBuilder editorActivities(List<EditorActivityEntity> editorActivities) {
+		this.editorActivities = editorActivities
+		this
+	}
+
+	BandTimelineSegmentBuilder externalActivities(List<ExternalActivityEntity> externalActivities) {
+		this.externalActivities = externalActivities
 		this
 	}
 
@@ -58,7 +77,7 @@ class BandTimelineSegmentBuilder {
 	}
 
 	private BandTimelineSegment createTimelineSegmentAndCollapseIdleTime() {
-		BandTimelineSegment segment = createTimelineSegment(ideaFlowStates, events)
+		BandTimelineSegment segment = createTimelineSegment()
 		if (idleActivities) {
 			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 			idleTimeProcessor.collapseIdleTime(segment, idleActivities)
@@ -69,9 +88,8 @@ class BandTimelineSegmentBuilder {
 
 	// TODO: refactor... AAHHHHH!!!!!
 
-	private BandTimelineSegment createTimelineSegment(List<IdeaFlowStateEntity> ideaFlowStates, List<EventEntity> events) {
-		ideaFlowStates = new ArrayList<>(ideaFlowStates)
-		Collections.sort(ideaFlowStates)
+	private BandTimelineSegment createTimelineSegment() {
+		ideaFlowStates = ideaFlowStates.sort(false)
 
 		IdeaFlowBandModel previousBand = null
 		TimeBandGroupModel activeTimeBandGroup = null
@@ -111,11 +129,16 @@ class BandTimelineSegmentBuilder {
 			}
 		}
 
+		List<EventModel> eventModels = toEventModelList(events)
+		List<EditorActivityModel> editorActivityModels = toEditorActivityList(editorActivities)
+		List<ExternalActivityModel> externalActivityModels = toExternalActivityList(externalActivities)
+
 		BandTimelineSegment segment = BandTimelineSegment.builder()
 				.description(description)
 				.ideaFlowBands(ideaFlowBands)
 				.timeBandGroups(ideaFlowBandGroups)
-				.events(toEventList(events))
+				.events(eventModels)
+				.activities(editorActivityModels + externalActivityModels)
 				.build()
 
 		return segment;
@@ -135,14 +158,34 @@ class BandTimelineSegmentBuilder {
 				.build()
 	}
 
-	private List<EventModel> toEventList(List<EventEntity> eventEntityList) {
+	private List<EventModel> toEventModelList(List<EventEntity> eventEntityList) {
+		if (eventEntityList == null) {
+			return []
+		}
+
 		eventEntityList.collect { EventEntity eventEntity ->
-			toEvent(eventEntity)
+			new EventModel(eventEntity)
 		}
 	}
 
-	private EventModel toEvent(EventEntity subtask) {
-		new EventModel(subtask)
+	private List<EditorActivityModel> toEditorActivityList(List<EditorActivityEntity> editorActivityList) {
+		if (editorActivityList == null) {
+			return []
+		}
+
+		editorActivityList.collect { EditorActivityEntity editorActivityEntity ->
+			new EditorActivityModel(editorActivityEntity)
+		}
+	}
+
+	private List<ExternalActivityModel> toExternalActivityList(List<ExternalActivityEntity> externalActivityList) {
+		if (externalActivityList == null) {
+			return []
+		}
+
+		externalActivityList.collect { ExternalActivityEntity externalActivityEntity ->
+			new ExternalActivityModel(externalActivityEntity)
+		}
 	}
 
 }

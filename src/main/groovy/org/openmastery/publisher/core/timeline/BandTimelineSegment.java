@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.openmastery.publisher.core.Positionable;
 import org.openmastery.publisher.core.PositionableComparator;
+import org.openmastery.publisher.core.activity.ActivityModel;
 import org.openmastery.publisher.core.event.EventModel;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel;
 
@@ -29,6 +30,7 @@ public class BandTimelineSegment {
 	private List<IdeaFlowBandModel> ideaFlowBands = new ArrayList<>();
 	private List<TimeBandGroupModel> timeBandGroups = new ArrayList<>();
 	private List<EventModel> events = new ArrayList<>();
+	private List<ActivityModel> activities = new ArrayList<>();
 
 	public List<TimeBandModel> getAllTimeBands() {
 		List<TimeBandModel> allTimeBands = new ArrayList<>(ideaFlowBands);
@@ -48,6 +50,7 @@ public class BandTimelineSegment {
 		HashSet<Positionable> positionables = new HashSet<>();
 		addTimeBandsAndContainedBandsToTargetList(positionables, getAllTimeBands());
 		positionables.addAll(events);
+		positionables.addAll(activities);
 		return new ArrayList<>(positionables);
 	}
 
@@ -90,6 +93,10 @@ public class BandTimelineSegment {
 
 	public void addEvent(EventModel event) {
 		events.add(event);
+	}
+
+	public void addActivity(ActivityModel activity) {
+		activities.add(activity);
 	}
 
 }

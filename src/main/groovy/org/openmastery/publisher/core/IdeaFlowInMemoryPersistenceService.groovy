@@ -1,8 +1,8 @@
 package org.openmastery.publisher.core
 
-import org.openmastery.publisher.api.activity.EditorActivity
 import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.EditorActivityEntity
+import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
@@ -47,12 +47,21 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 
 	@Override
 	public List<IdleActivityEntity> getIdleActivityList(long taskId) {
-		activityList.findAll { it instanceof IdleActivityEntity && it.taskId == taskId }
+		findAllActivitiesOfType(IdleActivityEntity, taskId)
+	}
+
+	@Override
+	public List<ExternalActivityEntity> getExternalActivityList(long taskId) {
+		findAllActivitiesOfType(ExternalActivityEntity, taskId)
 	}
 
 	@Override
 	List<EditorActivityEntity> getEditorActivityList(long taskId) {
-		activityList.findAll { it instanceof EditorActivity && it.taskId == taskId }
+		findAllActivitiesOfType(EditorActivityEntity, taskId)
+	}
+
+	private <T> List<T> findAllActivitiesOfType(Class<T> type, long taskId) {
+		activityList.findAll { type.isInstance(it) && it.taskId == taskId }
 	}
 
 	@Override

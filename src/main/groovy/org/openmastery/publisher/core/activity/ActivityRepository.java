@@ -15,6 +15,8 @@ public interface ActivityRepository extends PagingAndSortingRepository<ActivityE
 	@Query(nativeQuery = true, value = "select * from activity where type = 'idle' and task_id = ?1")
 	List<IdleActivityEntity> findIdleActivityByTaskId(long taskId);
 
+	@Query(nativeQuery = true, value = "select * from activity where type = 'external' and task_id = ?1")
+	List<ExternalActivityEntity> findExternalActivityByTaskId(long taskId);
 
 	@Query(nativeQuery = true, value = "select * from activity where type = 'editor' and task_id = ?1")
 	List<EditorActivityEntity> findEditorActivityByTaskId(long taskId);

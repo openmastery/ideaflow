@@ -3,6 +3,7 @@ package org.openmastery.publisher.core;
 import org.openmastery.publisher.core.activity.ActivityEntity;
 import org.openmastery.publisher.core.activity.ActivityRepository;
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
+import org.openmastery.publisher.core.activity.ExternalActivityEntity;
 import org.openmastery.publisher.core.activity.IdleActivityEntity;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.event.EventRepository;
@@ -64,6 +65,11 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	@Override
 	public List<IdleActivityEntity> getIdleActivityList(long taskId) {
 		return activityRepository.findIdleActivityByTaskId(taskId);
+	}
+
+	@Override
+	public List<ExternalActivityEntity> getExternalActivityList(long taskId) {
+		return activityRepository.findExternalActivityByTaskId(taskId);
 	}
 
 	@Override

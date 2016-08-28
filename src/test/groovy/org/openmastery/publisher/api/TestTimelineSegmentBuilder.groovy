@@ -30,6 +30,7 @@ class TestTimelineSegmentBuilder {
 	BandTimelineSegment build() {
 		BandTimelineSegment segment = BandTimelineSegment.builder()
 				.events([])
+				.activities([])
 				.ideaFlowBands(ideaFlowBands)
 				.timeBandGroups(timeBandGroups)
 				.build()

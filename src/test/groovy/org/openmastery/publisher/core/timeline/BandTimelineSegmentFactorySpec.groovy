@@ -22,7 +22,9 @@ class BandTimelineSegmentFactorySpec extends Specification {
 
 	private BandTimelineSegment generatePrimaryTimeline() {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
-		new BandTimelineSegmentBuilder(stateList, testSupport.getEventList()).build()
+		new BandTimelineSegmentBuilder(stateList)
+				.events(testSupport.getEventList())
+				.build()
 	}
 
 	def "SHOULD calculate duration for all TimeBands"() {

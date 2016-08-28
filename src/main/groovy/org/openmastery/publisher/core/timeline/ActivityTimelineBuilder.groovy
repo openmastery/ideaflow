@@ -5,6 +5,9 @@ import org.openmastery.publisher.api.timeline.ActivityNode
 import org.openmastery.publisher.api.timeline.ActivityNodeType
 import org.openmastery.publisher.api.timeline.ActivityTimeline
 import org.openmastery.publisher.core.Positionable
+import org.openmastery.publisher.core.activity.ActivityModel
+import org.openmastery.publisher.core.activity.EditorActivityModel
+import org.openmastery.publisher.core.activity.ExternalActivityModel
 import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 
@@ -26,7 +29,34 @@ class ActivityTimelineBuilder {
 		addIdeaFlowBandActivityNodes(segment.ideaFlowBands)
 		addTimeBandGroupActivityNodes(segment.timeBandGroups)
 		addEventActivityNodes(segment.events)
+		addActivityNodes(segment.activities)
 		this
+	}
+
+	private void addActivityNodes(List<ActivityModel> activities) {
+		for (ActivityModel activity : activities) {
+			ActivityNode activityNode
+
+			if (activity instanceof EditorActivityModel) {
+				EditorActivityModel editorActivity = (EditorActivityModel) activity
+				activityNode = createActivityNodeBuilder(activity, ActivityNodeType.EDITOR)
+						.editorFilePath(editorActivity.filePath)
+						.editorFileName(editorActivity.fileName)
+						.editorFileIsModified(editorActivity.modified)
+						.editorDurationInSeconds(editorActivity.duration.seconds)
+						.build()
+			} else if (activity instanceof ExternalActivityModel) {
+				ExternalActivityModel externalActivity = (ExternalActivityModel) activity
+				activityNode = createActivityNodeBuilder(activity, ActivityNodeType.EDITOR)
+						.externalIdle(false)
+						.externalDurationInSeconds(externalActivity.duration.seconds)
+						.build()
+			} else {
+				throw new RuntimeException("Application error - unexpected activity type=${activity}")
+			}
+
+			activityNodes << activityNode
+		}
 	}
 
 	private void addEventActivityNodes(List<EventModel> events) {
