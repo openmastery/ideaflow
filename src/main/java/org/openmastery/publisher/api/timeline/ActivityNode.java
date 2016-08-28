@@ -11,7 +11,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivityNode {
+public class ActivityNode implements Comparable<ActivityNode> {
 
 	private LocalDateTime position;
 	private Long relativePositionInSeconds;
@@ -23,15 +23,21 @@ public class ActivityNode {
 	// Band
 	private String bandComment;
 	private IdeaFlowStateType bandStateType;
-	private boolean bandStart;
+	private Boolean bandStart;
 
 	// File
 	private String fileName;
 	private String filePath;
 	private Long fileDurationInSeconds;
+	private Boolean fileIsModified;
 
 	// External
-	private boolean externalIdle;
+	private Boolean externalIdle;
 	private Long externalDurationInSeconds;
+
+	@Override
+	public int compareTo(ActivityNode other) {
+		return position.compareTo(other.position);
+	}
 
 }

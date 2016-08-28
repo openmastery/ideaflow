@@ -1,10 +1,10 @@
 package org.openmastery.publisher.core.timeline
 
 import com.bancvue.rest.exception.NotFoundException
+import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.timeline.ActivityTimeline
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.api.timeline.TreeTimeline
-import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.Positionable
 import org.openmastery.publisher.core.activity.IdleActivityEntity
@@ -40,8 +40,9 @@ class TimelineGenerator {
 
 	public ActivityTimeline createActivityTimelineForTask(long taskId) {
 		BandTimelineSegment segment = createBandTimelineSegmentForTask(taskId)
-
-		null
+		new ActivityTimelineBuilder()
+				.addTimelineSegment(segment)
+				.build()
 	}
 
 	private BandTimelineSegment createBandTimelineSegmentForTask(long taskId) {

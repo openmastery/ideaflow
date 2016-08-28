@@ -1,5 +1,6 @@
 package org.openmastery.publisher.client;
 
+import org.openmastery.publisher.api.timeline.ActivityTimeline;
 import org.openmastery.publisher.api.timeline.TreeTimeline;
 import org.openmastery.rest.client.CrudClient;
 import org.openmastery.publisher.api.ResourcePaths;
@@ -24,6 +25,14 @@ public class TimelineClient extends CrudClient<Object, TimelineClient> {
 				.path(ResourcePaths.TIMELINE_TREE_PATH)
 				.queryParam("taskId", taskId)
 				.entity(TreeTimeline.class)
+				.find();
+	}
+
+	public ActivityTimeline getActivityTimelineForTask(long taskId) {
+		return (ActivityTimeline) getUntypedCrudClientRequest()
+				.path(ResourcePaths.TIMELINE_ACTIVITY_PATH)
+				.queryParam("taskId", taskId)
+				.entity(ActivityTimeline.class)
 				.find();
 	}
 
