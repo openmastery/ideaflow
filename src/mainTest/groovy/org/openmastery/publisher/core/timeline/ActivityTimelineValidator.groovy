@@ -23,37 +23,51 @@ class ActivityTimelineValidator {
 	}
 
 	void assertFileActivity(Long relativePosition, String filePath, boolean isModified, Duration durationInSeconds) {
-		ActivityNode activityNode = activityTimeline.activityNodes[activityNodeIndex++]
+		int index = activityNodeIndex++
 
-		assert activityNode.type == ActivityNodeType.EDITOR
-		assert activityNode.editorFilePath == filePath
-		assert activityNode.editorFileName == new File(filePath).name
-		assert activityNode.editorFileIsModified == isModified
-		assert activityNode.editorDurationInSeconds == durationInSeconds.seconds
-		assert activityNode.relativePositionInSeconds == relativePosition
+		assert getActivityNode(index).type == ActivityNodeType.EDITOR
+		assert getActivityNode(index).editorFilePath == filePath
+		assert getActivityNode(index).editorFileName == new File(filePath).name
+		assert getActivityNode(index).editorFileIsModified == isModified
+		assert getActivityNode(index).editorDurationInSeconds == durationInSeconds.seconds
+		assert getActivityNode(index).relativePositionInSeconds == relativePosition
 	}
 
 	void assertBandStart(Long relativePosition, IdeaFlowStateType bandType, String bandComment) {
-		ActivityNode activityNode = activityTimeline.activityNodes[activityNodeIndex++]
+		int index = activityNodeIndex++
 
-		assert activityNode.type == ActivityNodeType.BAND
-		assert activityNode.bandStart == true
-		assert activityNode.bandStateType == bandType
-		assert activityNode.bandComment == bandComment
-		assert activityNode.relativePositionInSeconds == relativePosition
+		assert getActivityNode(index).type == ActivityNodeType.BAND
+		assert getActivityNode(index).bandStart == true
+		assert getActivityNode(index).bandStateType == bandType
+		assert getActivityNode(index).bandComment == bandComment
+		assert getActivityNode(index).relativePositionInSeconds == relativePosition
 	}
 
 	void assertBandEnd(Long relativePosition, IdeaFlowStateType bandType, String bandComment) {
-		ActivityNode activityNode = activityTimeline.activityNodes[activityNodeIndex++]
+		int index = activityNodeIndex++
 
-		assert activityNode.type == ActivityNodeType.BAND
-		assert activityNode.bandStart == false
-		assert activityNode.bandStateType == bandType
-		assert activityNode.bandComment == bandComment
-		assert activityNode.relativePositionInSeconds == relativePosition
+		assert getActivityNode(index).type == ActivityNodeType.BAND
+		assert getActivityNode(index).bandStart == false
+		assert getActivityNode(index).bandStateType == bandType
+		assert getActivityNode(index).bandComment == bandComment
+		assert getActivityNode(index).relativePositionInSeconds == relativePosition
+	}
+
+	void assertIdleActivity(Long relativePosition, Duration durationInSeconds) {
+		int index = activityNodeIndex++
+
+		assert getActivityNode(index).type == ActivityNodeType.EXTERNAL
+		assert getActivityNode(index).externalIdle == true
+		assert getActivityNode(index).externalDurationInSeconds == durationInSeconds.seconds
+		assert getActivityNode(index).relativePositionInSeconds == relativePosition
+	}
+
+	ActivityNode getActivityNode(int index) {
+		return activityTimeline.activityNodes[index]
 	}
 
 	void assertValidationComplete() {
 		assert activityTimeline.activityNodes.size() == activityNodeIndex
 	}
+
 }
