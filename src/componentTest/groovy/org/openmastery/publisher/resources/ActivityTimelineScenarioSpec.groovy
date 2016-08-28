@@ -67,8 +67,9 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	}
 
 	void addEditorActivityAndAdvanceTime (Long taskId, Long durationInSeconds, String fileName, boolean isModified) {
-		activityClient.addEditorActivity(taskId, durationInSeconds, fileName, isModified)
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
+		// editor activity is submitted at the end time rather than the start time
+		activityClient.addEditorActivity(taskId, durationInSeconds, fileName, isModified)
 	}
 
 }

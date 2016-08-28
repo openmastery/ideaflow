@@ -25,10 +25,11 @@ class ActivityTimelineValidator {
 	void assertFileActivity(Long relativePosition, String filePath, boolean isModified, Duration durationInSeconds) {
 		ActivityNode activityNode = activityTimeline.activityNodes[activityNodeIndex++]
 
-		assert activityNode.type == ActivityNodeType.FILE
-		assert activityNode.filePath == filePath
-		assert activityNode.fileIsModified == isModified
-		assert activityNode.fileDurationInSeconds == durationInSeconds.seconds
+		assert activityNode.type == ActivityNodeType.EDITOR
+		assert activityNode.editorFilePath == filePath
+		assert activityNode.editorFileName == new File(filePath).name
+		assert activityNode.editorFileIsModified == isModified
+		assert activityNode.editorDurationInSeconds == durationInSeconds.seconds
 		assert activityNode.relativePositionInSeconds == relativePosition
 	}
 
