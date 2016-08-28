@@ -25,11 +25,11 @@ public class ActivityNode implements Comparable<ActivityNode> {
 	private IdeaFlowStateType bandStateType;
 	private Boolean bandStart;
 
-	// File
-	private String fileName;
-	private String filePath;
-	private Long fileDurationInSeconds;
-	private Boolean fileIsModified;
+	// Editor
+	private String editorFileName;
+	private String editorFilePath;
+	private Boolean editorFileIsModified;
+	private Long editorDurationInSeconds;
 
 	// External
 	private Boolean externalIdle;

@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true, of = {})
 public class EditorActivityEntity extends ActivityEntity {
 
-	private static final String FILE_PATH_KEY = "comment";
-	private static final String MODIFIED_KEY = "auto";
+	private static final String FILE_PATH_KEY = "filePath";
+	private static final String MODIFIED_KEY = "modified";
 
 	private EditorActivityEntity() {}
 
