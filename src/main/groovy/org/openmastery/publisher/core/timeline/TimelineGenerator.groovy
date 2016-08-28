@@ -6,7 +6,6 @@ import org.openmastery.publisher.api.timeline.ActivityTimeline
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.core.Positionable
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
@@ -22,52 +21,28 @@ class TimelineGenerator {
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
-	private BandTimelineSplitter timelineSplitter = new BandTimelineSplitter()
-	private RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 
 	public BandTimeline createBandTimelineForTask(long taskId) {
-		BandTimelineSegment segment = createBandTimelineSegmentForTask(taskId)
+		BandTimelineSegment segment = createBandTimelineSegmentBuilder(taskId).build()
 		EntityMapper mapper = new EntityMapper()
 		mapper.mapIfNotNull(segment, BandTimeline.class)
 	}
 
 	public TreeTimeline createTreeTimelineForTask(long taskId) {
-		List<BandTimelineSegment> segments = createAndSplitBandTimelineSegmentForTask(taskId)
+		List<BandTimelineSegment> segments = createBandTimelineSegmentBuilder(taskId).buildAndSplit()
 		new TreeTimelineBuilder()
 				.addTimelineSegments(segments)
 				.build()
 	}
 
 	public ActivityTimeline createActivityTimelineForTask(long taskId) {
-		BandTimelineSegment segment = createBandTimelineSegmentForTask(taskId)
+		BandTimelineSegment segment = createBandTimelineSegmentBuilder(taskId).build()
 		new ActivityTimelineBuilder()
 				.addTimelineSegment(segment)
 				.build()
 	}
 
-	private BandTimelineSegment createBandTimelineSegmentForTask(long taskId) {
-		BandTimelineSegment segment = createTimelineSegmentAndCollapseIdleTime(taskId)
-		relativeTimeProcessor.computeRelativeTime(segment.getAllContentsFlattenedAsPositionableList())
-		segment
-	}
-
-	private List<BandTimelineSegment> createAndSplitBandTimelineSegmentForTask(long taskId) {
-		BandTimelineSegment segment = createTimelineSegmentAndCollapseIdleTime(taskId)
-		List<BandTimelineSegment> segments = timelineSplitter.splitTimelineSegment(segment)
-		List<Positionable> positionables = getAllContentsFlattenedAsPositionableList(segments)
-		relativeTimeProcessor.computeRelativeTime(positionables)
-		segments
-	}
-
-	private List<Positionable> getAllContentsFlattenedAsPositionableList(List<BandTimelineSegment> segments) {
-		List<Positionable> positionables = []
-		for (BandTimelineSegment segment : segments) {
-			positionables.addAll(segment.getAllContentsFlattenedAsPositionableList())
-		}
-		positionables
-	}
-
-	private BandTimelineSegment createTimelineSegmentAndCollapseIdleTime(Long taskId) {
+	private BandTimelineSegmentBuilder createBandTimelineSegmentBuilder(Long taskId) {
 		TaskEntity task = persistenceService.findTaskWithId(taskId)
 		if (task == null) {
 			throw new NotFoundException("No task with id=" + taskId);
@@ -79,7 +54,6 @@ class TimelineGenerator {
 		new BandTimelineSegmentBuilder(ideaFlowStates, eventList)
 				.description(task.description)
 				.collapseIdleTime(idleActivities)
-				.build()
 	}
 
 	private List<IdeaFlowStateEntity> getStateListWithActiveCompleted(long taskId) {

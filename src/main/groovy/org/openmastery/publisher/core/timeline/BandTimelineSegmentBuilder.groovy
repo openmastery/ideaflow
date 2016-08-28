@@ -1,5 +1,6 @@
 package org.openmastery.publisher.core.timeline
 
+import org.openmastery.publisher.core.Positionable
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.event.EventModel
@@ -30,17 +31,40 @@ class BandTimelineSegmentBuilder {
 	}
 
 	BandTimelineSegment build() {
-		BandTimelineSegment segment = createTimelineSegment(ideaFlowStates, events)
-		if (description) {
-			segment.setDescription(description)
+		BandTimelineSegment segment = createTimelineSegmentAndCollapseIdleTime()
+		computeRelativeTime(segment.getAllContentsFlattenedAsPositionableList())
+		segment
+	}
+
+	List<BandTimelineSegment> buildAndSplit() {
+		BandTimelineSegment segment = createTimelineSegmentAndCollapseIdleTime()
+		BandTimelineSplitter timelineSplitter = new BandTimelineSplitter()
+		List<BandTimelineSegment> segments = timelineSplitter.splitTimelineSegment(segment)
+		computeRelativeTime(getAllContentsFlattenedAsPositionableList(segments))
+		segments
+	}
+
+	private void computeRelativeTime(List<Positionable> positionables) {
+		RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
+		relativeTimeProcessor.computeRelativeTime(positionables)
+	}
+
+	private List<Positionable> getAllContentsFlattenedAsPositionableList(List<BandTimelineSegment> segments) {
+		List<Positionable> positionables = []
+		for (BandTimelineSegment segment : segments) {
+			positionables.addAll(segment.getAllContentsFlattenedAsPositionableList())
 		}
+		positionables
+	}
+
+	private BandTimelineSegment createTimelineSegmentAndCollapseIdleTime() {
+		BandTimelineSegment segment = createTimelineSegment(ideaFlowStates, events)
 		if (idleActivities) {
 			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 			idleTimeProcessor.collapseIdleTime(segment, idleActivities)
 		}
 		segment
 	}
-
 
 
 	// TODO: refactor... AAHHHHH!!!!!
@@ -88,6 +112,7 @@ class BandTimelineSegmentBuilder {
 		}
 
 		BandTimelineSegment segment = BandTimelineSegment.builder()
+				.description(description)
 				.ideaFlowBands(ideaFlowBands)
 				.timeBandGroups(ideaFlowBandGroups)
 				.events(toEventList(events))

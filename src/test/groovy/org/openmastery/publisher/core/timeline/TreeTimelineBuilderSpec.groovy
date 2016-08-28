@@ -21,9 +21,9 @@ class TreeTimelineBuilderSpec extends Specification {
 	}
 
 	private List<BandTimelineSegment> createBandTimelineSegments() {
-		TimelineGenerator factory = new TimelineGenerator()
-		factory.persistenceService = testSupport.persistenceService
-		factory.createAndSplitBandTimelineSegmentForTask(testSupport.taskId)
+		TimelineGenerator generator = new TimelineGenerator()
+		generator.persistenceService = testSupport.persistenceService
+		generator.createBandTimelineSegmentBuilder(testSupport.taskId).buildAndSplit()
 	}
 
 	private TreeTimelineValidator createTreeTimelineAndValidator() {
