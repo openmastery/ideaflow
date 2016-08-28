@@ -22,8 +22,6 @@ class TimelineGenerator {
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
-	private BandTimelineSegmentFactory segmentFactory = new BandTimelineSegmentFactory()
-	private IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 	private BandTimelineSplitter timelineSplitter = new BandTimelineSplitter()
 	private RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 
@@ -75,13 +73,12 @@ class TimelineGenerator {
 		}
 
 		List<IdeaFlowStateEntity> ideaFlowStates = getStateListWithActiveCompleted(taskId)
-		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(taskId)
 		List<EventEntity> eventList = persistenceService.getEventList(taskId)
-
-		BandTimelineSegment segment = segmentFactory.createTimelineSegment(ideaFlowStates, eventList)
-		segment.setDescription(task.description)
-		idleTimeProcessor.collapseIdleTime(segment, idleActivities)
-		segment
+		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(taskId)
+		new BandTimelineSegmentBuilder(ideaFlowStates, eventList)
+				.description(task.description)
+				.collapseIdleTime(idleActivities)
+				.build()
 	}
 
 	private List<IdeaFlowStateEntity> getStateListWithActiveCompleted(long taskId) {

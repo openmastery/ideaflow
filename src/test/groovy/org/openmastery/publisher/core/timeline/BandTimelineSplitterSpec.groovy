@@ -27,9 +27,9 @@ class BandTimelineSplitterSpec extends Specification {
 	private List<BandTimelineSegment> createTimelineSegmentAndSplit() {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
 
-		BandTimelineSegmentFactory segmentFactory = new BandTimelineSegmentFactory()
-		inputSegment = segmentFactory.createTimelineSegment(stateList, testSupport.getEventList())
-		inputSegment.description = "initial segment"
+		inputSegment = new BandTimelineSegmentBuilder(stateList, testSupport.getEventList())
+				.description("initial segment")
+				.build()
 
 		BandTimelineSplitter splitter = new BandTimelineSplitter()
 		splitter.splitTimelineSegment(inputSegment)

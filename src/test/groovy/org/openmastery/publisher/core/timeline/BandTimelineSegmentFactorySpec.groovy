@@ -13,7 +13,6 @@ import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
 class BandTimelineSegmentFactorySpec extends Specification {
 
-	BandTimelineSegmentFactory factory = new BandTimelineSegmentFactory()
 	TimelineSegmentValidator validator = new TimelineSegmentValidator()
 	TimelineTestSupport testSupport = new TimelineTestSupport()
 
@@ -23,7 +22,7 @@ class BandTimelineSegmentFactorySpec extends Specification {
 
 	private BandTimelineSegment generatePrimaryTimeline() {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
-		factory.createTimelineSegment(stateList, testSupport.getEventList())
+		new BandTimelineSegmentBuilder(stateList, testSupport.getEventList()).build()
 	}
 
 	def "SHOULD calculate duration for all TimeBands"() {

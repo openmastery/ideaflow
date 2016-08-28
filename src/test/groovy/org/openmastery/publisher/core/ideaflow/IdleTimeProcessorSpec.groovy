@@ -1,10 +1,10 @@
 package org.openmastery.publisher.core.ideaflow
 
+import org.openmastery.publisher.core.timeline.BandTimelineSegmentBuilder
 import org.openmastery.publisher.core.timeline.TimeBandModel
 import org.openmastery.publisher.core.timeline.BandTimelineSegment
 import org.openmastery.publisher.core.timeline.TimelineSegmentValidator
 import org.openmastery.publisher.core.timeline.IdleTimeProcessor
-import org.openmastery.publisher.core.timeline.BandTimelineSegmentFactory
 import org.openmastery.publisher.core.timeline.TimelineTestSupport
 import spock.lang.Specification
 
@@ -27,8 +27,7 @@ class IdleTimeProcessorSpec extends Specification {
 	private BandTimelineSegment createTimelineSegmentAndParseIdleTime() {
 		List<IdeaFlowStateEntity> stateList = testSupport.getStateListWithActiveCompleted()
 
-		BandTimelineSegmentFactory segmentFactory = new BandTimelineSegmentFactory()
-		BandTimelineSegment segment = segmentFactory.createTimelineSegment(stateList, testSupport.getEventList())
+		BandTimelineSegment segment = new BandTimelineSegmentBuilder(stateList, testSupport.getEventList()).build()
 
 		IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 		idleTimeProcessor.collapseIdleTime(segment, testSupport.getIdleActivityList())
