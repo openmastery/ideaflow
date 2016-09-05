@@ -20,6 +20,9 @@ apply plugin: "net.jokubasdargis.build-timer"
 repositories {
 	mavenLocal()
 	mavenCentral()
+	maven {
+		url "https://dl.bintray.com/openmastery/maven"
+	}
 }
 
 configurations {
@@ -42,7 +45,7 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-actuator"
 	compile "org.springframework.boot:spring-boot-starter-jersey"
 	compile "org.codehaus.groovy:groovy-all:2.4.3"
-	compile "com.bancvue:common-rest:2.+"
+	compile "org.openmastery:common-rest:0.1"
 	compile 'joda-time:joda-time:2.9.4'
 	compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.7.5'
 
@@ -58,7 +61,7 @@ dependencies {
 	compile "com.google.guava:guava:18.0"
 	compile "org.projectlombok:lombok:1.16.4"
 
-	clientCompile "com.bancvue:common-rest:2.+"
+	clientCompile "org.openmastery:common-rest:0.1"
 	clientCompile "org.projectlombok:lombok:1.16.4"
 	clientCompile 'joda-time:joda-time:2.9.4'
 	clientCompile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.7.5'
