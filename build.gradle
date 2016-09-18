@@ -3,11 +3,14 @@ buildscript {
 		springBootVersion = "1.3.5.RELEASE"
 	}
 	repositories {
-		mavenCentral()
+		jcenter()
+		maven {
+			url "https://dl.bintray.com/openmastery/maven"
+		}
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath "com.bancvue:gradle-core:1+"
+		classpath "com.bancvue:gradle-core:1.4-om.0"
 		classpath "net.jokubasdargis.buildtimer:gradle-plugin:0.1.1"
 	}
 }
@@ -19,7 +22,7 @@ apply plugin: "net.jokubasdargis.build-timer"
 
 repositories {
 	mavenLocal()
-	mavenCentral()
+	jcenter()
 	maven {
 		url "https://dl.bintray.com/openmastery/maven"
 	}
@@ -45,7 +48,7 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-actuator"
 	compile "org.springframework.boot:spring-boot-starter-jersey"
 	compile "org.codehaus.groovy:groovy-all:2.4.3"
-	compile "org.openmastery:common-rest:0.1"
+	compile "com.bancvue:common-rest:2.0-om.0"
 	compile 'joda-time:joda-time:2.9.4'
 	compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.7.5'
 
@@ -88,6 +91,12 @@ compileClientJava {
 
 publishing_ext {
 	publication('client')
+}
+
+license {
+	sourceSets = sourceSets.matching { it.name == "main" }
+	excludes(["**/*.properties", "**/*.xml", "db/**", "licenses/**"])
+	excludes(["org/openmastery/rest/**", "org/openmastery/publisher/api/**", "org/openmastery/publisher/client/**"])
 }
 
 task pullPostgres(type: Exec) {
