@@ -120,3 +120,15 @@ task startPostgres(type: Exec) {
 
 
 task refreshPostgres(dependsOn: [removePostgres, createPostgres, startPostgres])
+
+task setSkipTestsTrue << {
+	project.ext.skipTests = true
+}
+test.onlyIf { project.hasProperty("skipTests") == false }
+test.mustRunAfter setSkipTestsTrue
+componentTest.onlyIf { project.hasProperty("skipTests") == false }
+componentTest.mustRunAfter setSkipTestsTrue
+
+task stage {
+	dependsOn setSkipTestsTrue, build
+}
