@@ -122,3 +122,29 @@ docker start postgres
 ```
 
 Then bounce the server.
+
+
+## Heroku
+
+Install heroku cli (google)
+
+Log into heroku
+
+`heroku login`
+
+Create the heroku application
+
+`heroku create ifm-publisher`
+
+Or, if the application has already been created, initialize the remote
+
+`heroku git:remote -a ifm-publisher`
+
+Create the database (can upgrade to hobby-basic just by associating credit card w/ account)
+
+`heroku addons:create heroku-postgresql:hobby-dev`
+
+Deploy the application on heroku
+
+`git push heroku master`
+
