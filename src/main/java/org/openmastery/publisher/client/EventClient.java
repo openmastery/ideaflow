@@ -1,7 +1,7 @@
 package org.openmastery.publisher.client;
 
+import com.bancvue.rest.client.crud.CrudClient;
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.rest.client.CrudClient;
 import org.openmastery.publisher.api.event.NewEvent;
 
 public class EventClient extends CrudClient<NewEvent, EventClient> {

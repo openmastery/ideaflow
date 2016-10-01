@@ -1,8 +1,8 @@
 package org.openmastery.publisher.client;
 
+import com.bancvue.rest.client.crud.CrudClient;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
-import org.openmastery.rest.client.CrudClient;
 import org.openmastery.publisher.api.task.Task;
 
 import java.util.List;

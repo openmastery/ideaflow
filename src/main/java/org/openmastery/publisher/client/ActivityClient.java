@@ -1,11 +1,11 @@
 package org.openmastery.publisher.client;
 
+import com.bancvue.rest.client.crud.CrudClient;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.activity.EditorActivity;
 import org.openmastery.publisher.api.activity.NewEditorActivity;
 import org.openmastery.publisher.api.activity.NewExternalActivity;
 import org.openmastery.publisher.api.activity.NewIdleActivity;
-import org.openmastery.rest.client.CrudClient;
 
 public class ActivityClient extends CrudClient<EditorActivity, ActivityClient> {
 

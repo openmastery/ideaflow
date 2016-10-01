@@ -1,8 +1,8 @@
 package org.openmastery.publisher.client;
 
+import com.bancvue.rest.client.crud.CrudClient;
 import org.openmastery.publisher.api.timeline.ActivityTimeline;
 import org.openmastery.publisher.api.timeline.TreeTimeline;
-import org.openmastery.rest.client.CrudClient;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.timeline.BandTimeline;
 

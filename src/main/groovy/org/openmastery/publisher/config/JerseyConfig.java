@@ -15,10 +15,10 @@
  */
 package org.openmastery.publisher.config;
 
+import com.bancvue.rest.config.ObjectMapperContextResolver;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.openmastery.logging.LoggingFilter;
-import org.openmastery.rest.config.ObjectMapperContextResolver;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
