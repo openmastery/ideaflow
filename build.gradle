@@ -65,10 +65,8 @@ dependencies {
 	compile "com.google.guava:guava:18.0"
 	compile "org.projectlombok:lombok:1.16.4"
 
-	clientCompile "com.bancvue:common-rest:${commonRestVersion}"
+	clientCompile "com.bancvue:common-rest-client:${commonRestVersion}"
 	clientCompile "org.projectlombok:lombok:1.16.4"
-	clientCompile 'joda-time:joda-time:2.9.4'
-	clientCompile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.7.5'
 
 	mainTestCompile 'com.thedeanda:lorem:2.0'
 	mainTestCompile "org.fluttercode.datafactory:datafactory:0.8"
