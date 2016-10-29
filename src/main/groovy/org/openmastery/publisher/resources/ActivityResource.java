@@ -16,6 +16,7 @@
 package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.activity.NewActivityBatch;
 import org.openmastery.publisher.api.activity.NewEditorActivity;
 import org.openmastery.publisher.api.activity.NewExternalActivity;
 import org.openmastery.publisher.api.activity.NewIdleActivity;
@@ -76,6 +77,11 @@ public class ActivityResource {
 		entity.setStart(start);
 		entity.setEnd(end);
 		persistenceService.saveActivity(entity);
+	}
+
+	@POST
+	public void addActivityBatch(NewActivityBatch batch) {
+		// TODO: fill me in
 	}
 
 }
