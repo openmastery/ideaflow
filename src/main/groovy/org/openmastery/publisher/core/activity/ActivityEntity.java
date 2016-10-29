@@ -18,6 +18,7 @@ package org.openmastery.publisher.core.activity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Column;
@@ -38,6 +39,7 @@ import java.time.LocalDateTime;
 @DiscriminatorColumn(name = "type")
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode(of = "id")
 public abstract class ActivityEntity {
 

@@ -17,6 +17,7 @@ package org.openmastery.publisher.core.activity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
@@ -27,7 +28,8 @@ import java.time.LocalDateTime;
 @Entity
 @DiscriminatorValue("editor")
 @Data
-@EqualsAndHashCode(callSuper = true, of = {})
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class EditorActivityEntity extends ActivityEntity {
 
 	private static final String FILE_PATH_KEY = "filePath";

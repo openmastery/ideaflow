@@ -36,7 +36,7 @@ class ActivityResourceSpec extends Specification {
 				.build()
 
 		when:
-		client.addEditorActivity(expectedActivity.taskId, expectedDuration.seconds, expectedActivity.filePath, expectedActivity.modified)
+		client.addEditorActivity(expectedActivity.taskId, timeService.jodaNow(), expectedDuration.seconds, expectedActivity.filePath, expectedActivity.modified)
 
 		then:
 		List<EditorActivityEntity> activityEntities = persistenceService.getEditorActivityList(expectedActivity.taskId)
@@ -53,7 +53,7 @@ class ActivityResourceSpec extends Specification {
 				.build()
 
 		when:
-		client.addIdleActivity(expectedIdle.taskId, expectedDuration.seconds)
+		client.addIdleActivity(expectedIdle.taskId, timeService.jodaNow(), expectedDuration.seconds)
 
 		then:
 		List<IdleActivityEntity> idleEntities = persistenceService.getIdleActivityList(expectedIdle.taskId)
@@ -69,7 +69,7 @@ class ActivityResourceSpec extends Specification {
 				.build()
 
 		when:
-		client.addExternalActivity(expectedExternal.taskId, expectedDuration.seconds, expectedExternal.comment)
+		client.addExternalActivity(expectedExternal.taskId, timeService.jodaNow(), expectedDuration.seconds, expectedExternal.comment)
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExternal.taskId)
