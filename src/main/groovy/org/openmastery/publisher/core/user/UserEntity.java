@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.core.task;
-
+package org.openmastery.publisher.core.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,23 +26,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
-import java.time.LocalDateTime;
 
-@Entity(name = "task")
+@Entity(name = "om_user")
 @Data
 @EqualsAndHashCode(of = "id")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskEntity {
+public class UserEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "task_seq_gen")
-	@SequenceGenerator(name = "task_seq_gen", sequenceName = "task_seq")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "user_seq_gen")
+	@SequenceGenerator(name = "user_seq_gen", sequenceName = "user_seq")
 	private Long id;
-	private Long ownerId;
-	private String name;
-	private String description;
-	private LocalDateTime creationDate;
+	private String email;
+	private String apiKey;
 
 }

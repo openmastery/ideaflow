@@ -19,6 +19,8 @@ import com.bancvue.rest.config.ObjectMapperContextResolver;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.openmastery.logging.LoggingFilter;
+import org.openmastery.publisher.security.AuthorizationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +30,9 @@ import javax.ws.rs.ApplicationPath;
 @ApplicationPath("/")
 public class JerseyConfig extends ResourceConfig {
 
+	@Autowired
+	protected AuthorizationFilter authorizationFilter;
+
 	@PostConstruct
 	public void initialize() {
 		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
@@ -35,6 +40,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(LoggingFilter.class);
 		register(CORSResponseFilter.class);
 		register(ObjectMapperContextResolver.class);
+		register(authorizationFilter);
 	}
 
 }

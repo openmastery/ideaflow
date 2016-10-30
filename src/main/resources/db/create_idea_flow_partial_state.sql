@@ -1,8 +1,9 @@
 --liquibase formatted sql
 
---changeset ideaflow:10
+--changeset ideaflowpartialstate:1
 create table idea_flow_partial_state (
   task_id bigint,
+  owner_id bigint not null,
   scope varchar(15),
   type varchar(15),
   start_time timestamp without time zone,

@@ -13,27 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher;
+package org.openmastery.publisher.security;
 
-import org.openmastery.publisher.security.AuthorizationFilter;
-import org.openmastery.publisher.security.InvocationContext;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.Bean;
+public interface UserIdResolver {
 
-public class IfmPublisher {
+	Long findUserIdByApiKey(String apiKey);
 
-	public static void main(String[] args) {
-		SpringApplication.run(IfmPublisherConfig.class, args);
-	}
-
-	@Bean
-	public InvocationContext authenticationDetails() {
-		return new InvocationContext();
-	}
-
-	@Bean
-	public AuthorizationFilter authorizationFilter() {
-		return new AuthorizationFilter();
-	}
+	Long findUserIdByEmail(String email);
 
 }

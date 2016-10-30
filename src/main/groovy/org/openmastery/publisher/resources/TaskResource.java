@@ -25,6 +25,7 @@ import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.openmastery.publisher.core.task.TaskEntity;
 import org.openmastery.mapper.EntityMapper;
+import org.openmastery.publisher.security.InvocationContext;
 import org.openmastery.time.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -46,6 +47,8 @@ public class TaskResource {
 	private IdeaFlowPersistenceService persistenceService;
 	@Autowired
 	private TimeService timeService;
+	@Autowired
+	private InvocationContext invocationContext;
 
 	private EntityMapper entityMapper = new EntityMapper();
 
@@ -56,6 +59,7 @@ public class TaskResource {
 	@POST
 	public Task create(NewTask newTask) {
 		TaskEntity task = TaskEntity.builder()
+				.ownerId(invocationContext.getUserId())
 				.name(newTask.getName())
 				.description(newTask.getDescription())
 				.creationDate(timeService.now())

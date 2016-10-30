@@ -16,22 +16,26 @@
 package org.openmastery.publisher;
 
 import groovyx.net.http.RESTClient;
-import org.openmastery.publisher.core.IdeaFlowInMemoryPersistenceService;
-import org.openmastery.publisher.core.IdeaFlowPersistenceService;
-import org.openmastery.publisher.core.IdeaFlowRelationalPersistenceService;
-import org.openmastery.time.MockTimeService;
 import org.openmastery.publisher.client.ActivityClient;
 import org.openmastery.publisher.client.EventClient;
 import org.openmastery.publisher.client.IdeaFlowClient;
 import org.openmastery.publisher.client.TaskClient;
 import org.openmastery.publisher.client.TimelineClient;
+import org.openmastery.publisher.core.user.UserEntity;
+import org.openmastery.publisher.core.user.UserRepository;
+import org.openmastery.publisher.security.AuthorizationFilter;
+import org.openmastery.publisher.security.UserIdResolver;
+import org.openmastery.time.MockTimeService;
 import org.openmastery.time.TimeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import javax.annotation.PostConstruct;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 @Configuration
 public class IfmPublisherTestConfig {
@@ -40,30 +44,46 @@ public class IfmPublisherTestConfig {
 	private String serverBaseUrl;
 	@Value("${test-server.base_url:http://localhost}:${server.port}")
 	private String hostUri;
+	private UserEntity testUser = UserEntity.builder()
+			.id(42L)
+			.apiKey(UUID.randomUUID().toString())
+			.email("test-user@openmastery.org")
+			.build();
+
+	@Bean
+	@Primary
+	public UserIdResolver userIdResolver() {
+		return new StubUserIdResolver(testUser);
+	}
 
 	@Bean
 	public IdeaFlowClient ideaFlowClient() {
-		return new IdeaFlowClient(hostUri);
+		return new IdeaFlowClient(hostUri)
+				.apiKey(testUser.getApiKey());
 	}
 
 	@Bean
 	public EventClient eventClient() {
-		return new EventClient(hostUri);
+		return new EventClient(hostUri)
+				.apiKey(testUser.getApiKey());
 	}
 
 	@Bean
 	public ActivityClient activityClient() {
-		return new ActivityClient(hostUri);
+		return new ActivityClient(hostUri)
+				.apiKey(testUser.getApiKey());
 	}
 
 	@Bean
 	public TaskClient taskClient() {
-		return new TaskClient(hostUri);
+		return new TaskClient(hostUri)
+				.apiKey(testUser.getApiKey());
 	}
 
 	@Bean
 	public TimelineClient timelineClient() {
-		return new TimelineClient(hostUri);
+		return new TimelineClient(hostUri)
+				.apiKey(testUser.getApiKey());
 	}
 
 	@Bean
@@ -83,6 +103,26 @@ public class IfmPublisherTestConfig {
 	public RESTClient managementRestClient(@Value("${management.port}") String managementPort) throws URISyntaxException {
 		RESTClient client = new RESTClient(serverBaseUrl + ":" + managementPort);
 		return client;
+	}
+
+
+	private static class StubUserIdResolver implements UserIdResolver {
+
+		private UserEntity user;
+
+		public StubUserIdResolver(UserEntity user) {
+			this.user = user;
+		}
+
+		@Override
+		public Long findUserIdByApiKey(String apiKey) {
+			return user.getApiKey().equals(apiKey) ? user.getId() : null;
+		}
+
+		@Override
+		public Long findUserIdByEmail(String email) {
+			return user.getEmail().equals(email) ? user.getId() : null;
+		}
 	}
 
 }

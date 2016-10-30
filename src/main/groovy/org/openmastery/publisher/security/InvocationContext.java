@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher;
+package org.openmastery.publisher.security;
 
-import org.openmastery.publisher.security.AuthorizationFilter;
-import org.openmastery.publisher.security.InvocationContext;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.Bean;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
-public class IfmPublisher {
+import javax.inject.Named;
+import java.util.UUID;
 
-	public static void main(String[] args) {
-		SpringApplication.run(IfmPublisherConfig.class, args);
-	}
+@Named
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class InvocationContext {
 
-	@Bean
-	public InvocationContext authenticationDetails() {
-		return new InvocationContext();
-	}
-
-	@Bean
-	public AuthorizationFilter authorizationFilter() {
-		return new AuthorizationFilter();
-	}
+    private long userId;
 
 }

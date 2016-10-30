@@ -31,6 +31,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	private ActivityEntity saveActivity(ActivityEntityBuilder builder) {
 		ActivityEntity entity = builder.taskId(taskId).build()
+		println "ENTITY: ${entity}"
 		persistenceService.saveActivity(entity)
 	}
 

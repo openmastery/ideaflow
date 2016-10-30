@@ -9,6 +9,7 @@ class RandomExternalActivityEntityBuilder extends ExternalActivityEntity.Externa
 	public RandomExternalActivityEntityBuilder() {
 		LocalDateTime start = aRandom.dayOfYear()
 		super.id(aRandom.id())
+				.ownerId(aRandom.id())
 				.taskId(aRandom.id())
 				.start(start)
 				.end(start.plus(aRandom.duration()))

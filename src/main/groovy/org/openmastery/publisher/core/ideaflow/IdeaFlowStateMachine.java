@@ -17,6 +17,7 @@ package org.openmastery.publisher.core.ideaflow;
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
+import org.openmastery.publisher.security.InvocationContext;
 import org.openmastery.time.TimeService;
 
 /**
@@ -27,10 +28,12 @@ public class IdeaFlowStateMachine {
 	private Long taskId;
 	private TimeService timeService;
 	private IdeaFlowPersistenceService ideaFlowPersistenceService;
+	private InvocationContext invocationContext;
 
-	public IdeaFlowStateMachine(Long taskId, TimeService timeService, IdeaFlowPersistenceService ideaFlowPersistenceService) {
+	public IdeaFlowStateMachine(Long taskId, TimeService timeService, InvocationContext invocationContext, IdeaFlowPersistenceService ideaFlowPersistenceService) {
 		this.taskId = taskId;
 		this.timeService = timeService;
+		this.invocationContext = invocationContext;
 		this.ideaFlowPersistenceService = ideaFlowPersistenceService;
 	}
 
@@ -48,6 +51,7 @@ public class IdeaFlowStateMachine {
 
 	private IdeaFlowPartialStateEntity createStartProgress() {
 		return IdeaFlowPartialStateEntity.builder()
+				.ownerId(invocationContext.getUserId())
 				.taskId(taskId)
 				.type(IdeaFlowStateType.PROGRESS)
 				.start(timeService.now())
@@ -60,6 +64,7 @@ public class IdeaFlowStateMachine {
 
 	private IdeaFlowPartialStateEntity createStartState(IdeaFlowStateType type, String startingComment) {
 		return IdeaFlowPartialStateEntity.builder()
+				.ownerId(invocationContext.getUserId())
 				.taskId(taskId)
 				.type(type)
 				.startingComment(startingComment)
@@ -69,6 +74,7 @@ public class IdeaFlowStateMachine {
 
 	private IdeaFlowStateEntity createEndState(IdeaFlowPartialStateEntity startState, String endingComment) {
 		return IdeaFlowStateEntity.from(startState)
+				.ownerId(invocationContext.getUserId())
 				.taskId(startState.getTaskId())
 				.end(timeService.now())
 				.endingComment(endingComment)

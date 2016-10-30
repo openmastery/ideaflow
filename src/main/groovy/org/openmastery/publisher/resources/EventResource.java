@@ -19,6 +19,7 @@ import org.openmastery.publisher.api.event.NewEvent;
 import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.core.event.EventEntity;
+import org.openmastery.publisher.security.InvocationContext;
 import org.openmastery.time.TimeService;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,13 @@ public class EventResource {
 	private TimeService timeService;
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService;
+	@Autowired
+	private InvocationContext invocationContext;
 
 	private EventEntity toEventEntity(NewEvent event, EventType type) {
 		return EventEntity.builder()
 				.id(null)
+				.ownerId(invocationContext.getUserId())
 				.position(timeService.now())
 				.taskId(event.getTaskId())
 				.comment(event.getComment())

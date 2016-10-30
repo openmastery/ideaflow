@@ -23,6 +23,7 @@ import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.core.user.UserEntity
 import org.springframework.dao.DataIntegrityViolationException
 
 import java.time.LocalDateTime

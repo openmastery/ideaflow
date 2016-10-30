@@ -4,6 +4,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.MockTimeService
 import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
@@ -75,7 +76,8 @@ class TimelineTestSupport {
 
 		task = persistenceService.saveTask(task)
 		taskId = task.id
-		stateMachine = new IdeaFlowStateMachine(taskId, timeService, persistenceService)
+		InvocationContext invocationContext = new InvocationContext(userId: -1L)
+		stateMachine = new IdeaFlowStateMachine(taskId, timeService, invocationContext, persistenceService)
 		stateMachine.startTask()
 	}
 

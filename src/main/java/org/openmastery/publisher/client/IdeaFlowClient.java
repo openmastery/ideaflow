@@ -15,13 +15,12 @@
  */
 package org.openmastery.publisher.client;
 
-import com.bancvue.rest.client.crud.CrudClient;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowPartialCompositeState;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateTransition;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 
-public class IdeaFlowClient extends CrudClient<IdeaFlowStateTransition, IdeaFlowClient> {
+public class IdeaFlowClient extends OpenMasteryClient<IdeaFlowStateTransition, IdeaFlowClient> {
 
 	public IdeaFlowClient(String hostUri) {
 		super(hostUri, ResourcePaths.IDEAFLOW_PATH, IdeaFlowStateTransition.class);

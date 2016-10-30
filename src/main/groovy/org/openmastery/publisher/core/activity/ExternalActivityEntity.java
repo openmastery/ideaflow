@@ -34,8 +34,8 @@ public class ExternalActivityEntity extends ActivityEntity {
 
 	private ExternalActivityEntity() {}
 
-	private ExternalActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end, String comment) {
-		super(id, taskId, start, end);
+	private ExternalActivityEntity(long id, long ownerId, long taskId, LocalDateTime start, LocalDateTime end, String comment) {
+		super(id, ownerId, taskId, start, end);
 		setComment(comment);
 	}
 
@@ -57,7 +57,7 @@ public class ExternalActivityEntity extends ActivityEntity {
 		private String comment;
 
 		public ExternalActivityEntity build() {
-			return new ExternalActivityEntity(id, taskId, start, end, comment);
+			return new ExternalActivityEntity(id, ownerId, taskId, start, end, comment);
 		}
 
 		public ExternalActivityEntityBuilder comment(String comment) {

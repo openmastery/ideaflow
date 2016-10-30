@@ -46,8 +46,9 @@ public abstract class ActivityEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "activity_seq_gen")
 	@SequenceGenerator(name = "activity_seq_gen", sequenceName = "activity_seq")
-	private long id;
-	private long taskId;
+	private Long id;
+	private Long taskId;
+	private Long ownerId;
 
 	@Column(name = "start_time")
 	private LocalDateTime start;
@@ -61,8 +62,9 @@ public abstract class ActivityEntity {
 	public ActivityEntity() {
 	}
 
-	protected ActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end) {
+	protected ActivityEntity(long id, long ownerId, long taskId, LocalDateTime start, LocalDateTime end) {
 		this.id = id;
+		this.ownerId = ownerId;
 		this.taskId = taskId;
 		this.start = start;
 		this.end = end;
@@ -93,12 +95,18 @@ public abstract class ActivityEntity {
 	public static abstract class ActivityEntityBuilder<T extends ActivityEntityBuilder> {
 
 		protected long id;
+		protected long ownerId;
 		protected long taskId;
 		protected LocalDateTime start;
 		protected LocalDateTime end;
 
 		public T id(long id) {
 			this.id = id;
+			return (T) this;
+		}
+
+		public T ownerId(long ownerId) {
+			this.ownerId = ownerId;
 			return (T) this;
 		}
 

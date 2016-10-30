@@ -13,27 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher;
+package org.openmastery.publisher.core.user;
 
-import org.openmastery.publisher.security.AuthorizationFilter;
-import org.openmastery.publisher.security.InvocationContext;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public class IfmPublisher {
+public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
 
-	public static void main(String[] args) {
-		SpringApplication.run(IfmPublisherConfig.class, args);
-	}
+	UserEntity findByApiKey(String apiKey);
 
-	@Bean
-	public InvocationContext authenticationDetails() {
-		return new InvocationContext();
-	}
-
-	@Bean
-	public AuthorizationFilter authorizationFilter() {
-		return new AuthorizationFilter();
-	}
+	UserEntity findByEmail(String email);
 
 }

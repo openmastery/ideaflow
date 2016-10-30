@@ -45,6 +45,7 @@ public class EventEntity {
 	@SequenceGenerator(name = "event_seq_gen", sequenceName = "event_seq")
 	private Long id;
 	private Long taskId;
+	private Long ownerId;
 
 	private LocalDateTime position;
 

@@ -1,10 +1,9 @@
 package org.openmastery.publisher.client;
 
-import com.bancvue.rest.client.crud.CrudClient;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.event.NewEvent;
 
-public class EventClient extends CrudClient<NewEvent, EventClient> {
+public class EventClient extends OpenMasteryClient<NewEvent, EventClient> {
 
 	public EventClient(String baseUrl) {
 		super(baseUrl, ResourcePaths.EVENT_PATH, NewEvent.class);

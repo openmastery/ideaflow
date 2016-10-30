@@ -16,7 +16,7 @@ class EventResourceSpec extends Specification {
 	private EventClient eventClient
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
-	private BeanCompare eventComparator = new BeanCompare().excludeFields("id", "position")
+	private BeanCompare eventComparator = new BeanCompare().excludeFields("id", "ownerId", "position")
 	private long taskId = 123
 
 	private void assertEventPosted(EventType expectedType, String comment) {

@@ -2,7 +2,6 @@ package org.openmastery.publisher.resources
 
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
-import org.openmastery.publisher.api.timeline.ActivityTimeline
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.publisher.client.ActivityClient

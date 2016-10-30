@@ -1,13 +1,16 @@
 package org.openmastery.publisher.client;
 
-import com.bancvue.rest.client.crud.CrudClient;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.publisher.api.activity.*;
+import org.openmastery.publisher.api.activity.EditorActivity;
+import org.openmastery.publisher.api.activity.NewActivityBatch;
+import org.openmastery.publisher.api.activity.NewEditorActivity;
+import org.openmastery.publisher.api.activity.NewExternalActivity;
+import org.openmastery.publisher.api.activity.NewIdleActivity;
 
 import java.util.Arrays;
 
-public class ActivityClient extends CrudClient<EditorActivity, ActivityClient> {
+public class ActivityClient extends OpenMasteryClient<EditorActivity, ActivityClient> {
 
 	public ActivityClient(String baseUrl) {
 		super(baseUrl, ResourcePaths.ACTIVITY_PATH, EditorActivity.class);

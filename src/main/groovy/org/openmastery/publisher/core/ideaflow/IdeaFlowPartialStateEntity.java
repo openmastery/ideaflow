@@ -39,11 +39,13 @@ import java.time.LocalDateTime;
 public class IdeaFlowPartialStateEntity {
 
 	@Id
-	private long taskId;
+	private Long taskId;
 
 	@Id
 	@Enumerated(EnumType.STRING)
 	private IdeaFlowPartialStateScope scope;
+
+	private Long ownerId;
 
 	@Enumerated(EnumType.STRING)
 	private IdeaFlowStateType type;

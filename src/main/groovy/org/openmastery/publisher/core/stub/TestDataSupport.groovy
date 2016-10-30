@@ -22,6 +22,7 @@ import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine
 import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeConverter
 import org.openmastery.time.TimeService
 
@@ -258,7 +259,8 @@ class TestDataSupport {
 
 			task = persistenceService.saveTask(task)
 			taskId = task.id
-			stateMachine = new IdeaFlowStateMachine(taskId, timeService, persistenceService)
+			InvocationContext invocationContext = new InvocationContext(userId: -1L)
+			stateMachine = new IdeaFlowStateMachine(taskId, timeService, invocationContext, persistenceService)
 			stateMachine.startTask()
 		}
 

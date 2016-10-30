@@ -26,7 +26,7 @@ class TaskResourceSpec extends Specification {
 	@Autowired
 	private MockTimeService timeService
 
-	private BeanCompare taskComparator = new BeanCompare().excludeFields("id")
+	private BeanCompare taskComparator = new BeanCompare().excludeFields("id", "ownerId")
 
 	def "SHOULD create task"() {
 		given:

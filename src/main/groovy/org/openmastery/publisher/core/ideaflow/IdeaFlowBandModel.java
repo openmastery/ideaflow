@@ -38,7 +38,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class IdeaFlowBandModel extends TimeBandModel<IdeaFlowBandModel> {
 
-	private long id;
+	private Long id;
 	private Long taskId;
 
 	private LocalDateTime start;

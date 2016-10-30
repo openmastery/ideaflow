@@ -8,6 +8,7 @@ class RandomEventEntityBuilder extends EventEntity.EventEntityBuilder {
 
 	RandomEventEntityBuilder() {
 		super.id(aRandom.id())
+				.ownerId(aRandom.id())
 				.taskId(aRandom.id())
 				.position(aRandom.dayOfYear())
 				.comment(aRandom.optionalWords(250))

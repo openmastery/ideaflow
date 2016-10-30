@@ -37,8 +37,8 @@ public class EditorActivityEntity extends ActivityEntity {
 
 	private EditorActivityEntity() {}
 
-	private EditorActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end, String filePath, boolean modified) {
-		super(id, taskId, start, end);
+	private EditorActivityEntity(long id, long ownerId, long taskId, LocalDateTime start, LocalDateTime end, String filePath, boolean modified) {
+		super(id, ownerId, taskId, start, end);
 		setFilePath(filePath);
 		setModified(modified);
 	}
@@ -70,7 +70,7 @@ public class EditorActivityEntity extends ActivityEntity {
 		private boolean modified;
 
 		public EditorActivityEntity build() {
-			return new EditorActivityEntity(id, taskId, start, end, filePath, modified);
+			return new EditorActivityEntity(id, ownerId, taskId, start, end, filePath, modified);
 		}
 
 		public EditorActivityEntityBuilder filePath(String filePath) {

@@ -19,6 +19,7 @@ import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.activity.NewActivity
 import org.openmastery.publisher.api.activity.NewActivityBatch
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeConverter
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,6 +35,8 @@ class ActivityService {
 	private IdeaFlowPersistenceService persistenceService;
 	@Autowired
 	private TimeService timeService;
+	@Autowired
+	private InvocationContext invocationContext;
 	private EntityMapper entityMapper = new EntityMapper();
 
 	Duration determineTimeAdjustment(LocalDateTime messageSentAt) {
@@ -64,6 +67,7 @@ class ActivityService {
 		LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(activity.endTime)
 		entity.setStart( endTime.plus(adjustment).minusSeconds(activity.getDurationInSeconds()))
 		entity.setEnd( endTime.plus(adjustment))
+		entity.setOwnerId(invocationContext.getUserId());
 		return entity
 	}
 

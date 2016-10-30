@@ -2,6 +2,7 @@ package org.openmastery.publisher.core.ideaflow
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.core.IdeaFlowInMemoryPersistenceService
+import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeService
 import spock.lang.Specification
 
@@ -36,7 +37,8 @@ class IdeaFlowStateMachineSpec extends Specification {
 
 	def setup() {
 		persistenceService = new IdeaFlowInMemoryPersistenceService()
-		stateMachine = new IdeaFlowStateMachine(123L, new TestTimeService(), persistenceService)
+		InvocationContext invocationContext = new InvocationContext(userId: -1L)
+		stateMachine = new IdeaFlowStateMachine(123L, new TestTimeService(), invocationContext, persistenceService)
 	}
 
 	private IdeaFlowStateEntity getPersistedState(IdeaFlowStateType type) {

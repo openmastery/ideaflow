@@ -1,12 +1,11 @@
 package org.openmastery.publisher.client;
 
-import com.bancvue.rest.client.crud.CrudClient;
-import org.openmastery.publisher.api.timeline.ActivityTimeline;
-import org.openmastery.publisher.api.timeline.TreeTimeline;
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.timeline.ActivityTimeline;
 import org.openmastery.publisher.api.timeline.BandTimeline;
+import org.openmastery.publisher.api.timeline.TreeTimeline;
 
-public class TimelineClient extends CrudClient<Object, TimelineClient> {
+public class TimelineClient extends OpenMasteryClient<Object, TimelineClient> {
 
 	public TimelineClient(String baseUrl) {
 		super(baseUrl, ResourcePaths.TIMELINE_PATH, Object.class);

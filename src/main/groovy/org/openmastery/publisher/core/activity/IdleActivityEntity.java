@@ -30,8 +30,8 @@ public class IdleActivityEntity extends ActivityEntity {
 
 	private IdleActivityEntity() {}
 
-	private IdleActivityEntity(long id, long taskId, LocalDateTime start, LocalDateTime end) {
-		super(id, taskId, start, end);
+	private IdleActivityEntity(long id, long ownerId, long taskId, LocalDateTime start, LocalDateTime end) {
+		super(id, ownerId, taskId, start, end);
 	}
 
 
@@ -42,7 +42,7 @@ public class IdleActivityEntity extends ActivityEntity {
 	public static class IdleActivityEntityBuilder extends ActivityEntityBuilder<IdleActivityEntityBuilder> {
 
 		public IdleActivityEntity build() {
-			return new IdleActivityEntity(id, taskId, start, end);
+			return new IdleActivityEntity(id, ownerId, taskId, start, end);
 		}
 
 	}

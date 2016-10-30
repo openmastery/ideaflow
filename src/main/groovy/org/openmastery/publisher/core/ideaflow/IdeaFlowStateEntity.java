@@ -43,9 +43,9 @@ public class IdeaFlowStateEntity implements Comparable<IdeaFlowStateEntity> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "idea_flow_state_seq_gen")
 	@SequenceGenerator(name = "idea_flow_state_seq_gen", sequenceName = "idea_flow_state_seq")
-	private long id;
-
-	private long taskId;
+	private Long id;
+	private Long taskId;
+	private Long ownerId;
 
 	@Enumerated(EnumType.STRING)
 	private IdeaFlowStateType type;

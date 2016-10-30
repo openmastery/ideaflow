@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.core.ideaflow;
+package org.openmastery.publisher.core.user;
 
-import org.openmastery.publisher.core.IdeaFlowPersistenceService;
-import org.openmastery.publisher.security.InvocationContext;
-import org.openmastery.time.TimeService;
+import org.openmastery.publisher.security.UserIdResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IdeaFlowStateMachineFactory {
+public class UserIdRepositoryResolver implements UserIdResolver {
 
 	@Autowired
-	private TimeService timeService;
-	@Autowired
-	private IdeaFlowPersistenceService ideaFlowPersistenceService;
-	@Autowired
-	private InvocationContext invocationContext;
+	private UserRepository userRepository;
 
-	public IdeaFlowStateMachine createStateMachine(Long taskId) {
-		return new IdeaFlowStateMachine(taskId, timeService, invocationContext, ideaFlowPersistenceService);
+	@Override
+	public Long findUserIdByApiKey(String apiKey) {
+		UserEntity user = userRepository.findByApiKey(apiKey);
+		return user == null ? null : user.getId();
+	}
+
+	@Override
+	public Long findUserIdByEmail(String email) {
+		UserEntity user = userRepository.findByEmail(email);
+		return user == null ? null : user.getId();
 	}
 
 }

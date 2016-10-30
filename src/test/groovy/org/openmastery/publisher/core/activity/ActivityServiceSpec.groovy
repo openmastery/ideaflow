@@ -1,6 +1,7 @@
 package org.openmastery.publisher.core.activity
 
 import org.openmastery.publisher.api.activity.NewEditorActivity
+import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeConverter
 import spock.lang.Specification
@@ -19,6 +20,7 @@ class ActivityServiceSpec extends Specification {
 		activityService = new ActivityService()
 		mockTimeService = new MockTimeService()
 		activityService.timeService = mockTimeService
+		activityService.invocationContext = Mock(InvocationContext)
 	}
 
 	def "determineTimeAdjustment SHOULD adjust for local clock being behind"() {
