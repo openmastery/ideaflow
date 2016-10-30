@@ -234,6 +234,7 @@ class TestDataSupport {
 	static class TimelineTestSupport {
 
 		private Long taskId
+		private Long ownerId = -1L
 		private IdeaFlowStateMachine stateMachine
 		private IdeaFlowPersistenceService persistenceService
 		private MockTimeService timeService = new MockTimeService()
@@ -252,6 +253,7 @@ class TestDataSupport {
 
 		void startTask(String name, String description) {
 			TaskEntity task = TaskEntity.builder()
+					.ownerId(ownerId)
 					.name(name)
 					.description(description)
 					.creationDate(timeService.now())
@@ -259,13 +261,14 @@ class TestDataSupport {
 
 			task = persistenceService.saveTask(task)
 			taskId = task.id
-			InvocationContext invocationContext = new InvocationContext(userId: -1L)
+			InvocationContext invocationContext = new InvocationContext(userId: ownerId)
 			stateMachine = new IdeaFlowStateMachine(taskId, timeService, invocationContext, persistenceService)
 			stateMachine.startTask()
 		}
 
 		void startSubtask(String comment) {
 			EventEntity event = EventEntity.builder()
+					.ownerId(ownerId)
 					.taskId(taskId)
 					.type(EventType.SUBTASK)
 					.position(timeService.now())
@@ -282,6 +285,7 @@ class TestDataSupport {
 
 		void note(String comment) {
 			EventEntity note = EventEntity.builder()
+					.ownerId(ownerId)
 					.taskId(taskId)
 					.type(EventType.NOTE)
 					.position(timeService.now())
@@ -294,9 +298,10 @@ class TestDataSupport {
 			LocalDateTime start = timeService.now()
 			timeService.plusHours(hours)
 			IdleActivityEntity idleActivity = IdleActivityEntity.builder()
+					.ownerId(ownerId)
 					.start(start)
 					.end(timeService.now()).build()
-			persistenceService.saveIdleActivity(idleActivity)
+			persistenceService.saveActivity(idleActivity)
 		}
 
 		void startBand(IdeaFlowStateType type, String comment) {

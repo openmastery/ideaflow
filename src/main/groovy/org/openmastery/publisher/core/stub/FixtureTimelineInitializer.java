@@ -16,11 +16,14 @@
 package org.openmastery.publisher.core.stub;
 
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
+import org.openmastery.publisher.core.user.UserEntity;
+import org.openmastery.publisher.core.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.UUID;
 
 @Component
 @ConditionalOnMissingClass("org.openmastery.publisher.ComponentTest")
@@ -28,6 +31,8 @@ public class FixtureTimelineInitializer {
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService;
+	@Autowired
+	private UserRepository userRepository;
 
 	@PostConstruct
 	private void init() {
@@ -36,6 +41,25 @@ public class FixtureTimelineInitializer {
 		support.createDetailedConflictMap();
 		support.createLearningNestedConflictMap();
 		support.createTrialAndErrorMap();
+
+		String userEmail = "everything-is-awesome@openmastery.org";
+		UserEntity user = userRepository.findByEmail(userEmail);
+		if (user == null) {
+			user = UserEntity.builder()
+					.email(userEmail)
+					.apiKey(UUID.randomUUID().toString())
+					.build();
+			userRepository.save(user);
+		}
+
+		System.out.println("************************************************************************************************");
+		System.out.println("************************************************************************************************");
+		System.out.println("************************************************************************************************");
+		System.out.println("Email   : " + user.getEmail());
+		System.out.println("API Key : " + user.getApiKey());
+		System.out.println("************************************************************************************************");
+		System.out.println("************************************************************************************************");
+		System.out.println("************************************************************************************************");
 	}
 
 }
