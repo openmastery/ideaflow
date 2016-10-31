@@ -19,6 +19,7 @@ public class NewExecutionActivity implements NewActivity {
 	private String processName;
 	private int exitCode;
 	private String executionTaskType;
+	private boolean isDebug;
 
 	@NotNull
 	private LocalDateTime endTime;
