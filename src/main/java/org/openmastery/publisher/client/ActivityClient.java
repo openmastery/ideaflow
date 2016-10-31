@@ -29,7 +29,7 @@ public class ActivityClient extends OpenMasteryClient<EditorActivity, ActivityCl
 					.endTime(endTime)
 					.build();
 
-		NewActivityBatch batch = new NewActivityBatch(endTime, Arrays.asList(activity), null, null);
+		NewActivityBatch batch = new NewActivityBatch(endTime, Arrays.asList(activity), null, null, null, null);
 		addActivityBatch(batch);
 	}
 
@@ -40,7 +40,7 @@ public class ActivityClient extends OpenMasteryClient<EditorActivity, ActivityCl
 				.endTime(endTime)
 				.build();
 
-		NewActivityBatch batch = new NewActivityBatch(endTime, null, null , Arrays.asList(activity));
+		NewActivityBatch batch = new NewActivityBatch(endTime, null, null , Arrays.asList(activity), null, null);
 		addActivityBatch(batch);
 	}
 
@@ -52,7 +52,7 @@ public class ActivityClient extends OpenMasteryClient<EditorActivity, ActivityCl
 				.endTime(endTime)
 				.build();
 
-		NewActivityBatch batch = new NewActivityBatch(endTime, null, Arrays.asList(activity), null);
+		NewActivityBatch batch = new NewActivityBatch(endTime, null, Arrays.asList(activity), null, null, null);
 		addActivityBatch(batch);
 	}
 
