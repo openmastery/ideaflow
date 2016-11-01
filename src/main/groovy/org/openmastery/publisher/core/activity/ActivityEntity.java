@@ -82,6 +82,10 @@ public abstract class ActivityEntity {
 		return metadataContainer.getMetadataValueAsBoolean(key);
 	}
 
+	protected int getMetadataValueAsInteger(String key) {
+		return metadataContainer.getMetadataValueAsInteger(key);
+	}
+
 	protected String getMetadataValue(String key) {
 		return metadataContainer.getMetadataValue(key);
 	}

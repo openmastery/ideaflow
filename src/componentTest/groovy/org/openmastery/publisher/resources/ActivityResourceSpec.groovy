@@ -1,6 +1,10 @@
 package org.openmastery.publisher.resources
 
+import org.openmastery.mapper.EntityMapper
+import org.openmastery.publisher.api.activity.NewActivityBatch
+import org.openmastery.publisher.api.activity.NewExecutionActivity
 import org.openmastery.publisher.core.activity.ActivityEntity
+import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.testsupport.BeanCompare
@@ -26,6 +30,7 @@ class ActivityResourceSpec extends Specification {
 	@Autowired
 	private TimeService timeService
 	private BeanCompare comparator = new BeanCompare().excludeFields("id", "ownerId", "metadata", "metadataContainer")
+	private EntityMapper entityMapper = new EntityMapper()
 
 	def "SHOULD post editor activity"() {
 		given:
@@ -74,6 +79,33 @@ class ActivityResourceSpec extends Specification {
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExternal.taskId)
 		comparator.assertEquals(expectedExternal, entities.last())
+		assert entities.last().id != null
+	}
+
+	def "SHOULD post execution activity"() {
+		Duration expectedDuration = aRandom.duration()
+		ExecutionActivityEntity expectedExecution = aRandom.executionActivityEntity()
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
+				.build()
+
+		when:
+		// TODO: punted on this before - need to figure out how to best handle activity tests...
+		// add methods for all activity types?
+		// a better batch builder?
+		NewExecutionActivity newExecutionActivity = entityMapper.mapIfNotNull(expectedExecution, NewExecutionActivity)
+		newExecutionActivity.endTime = timeService.jodaNow()
+		newExecutionActivity.durationInSeconds = expectedDuration.seconds
+
+		NewActivityBatch batch = NewActivityBatch.builder()
+				.timeSent(timeService.jodaNow())
+				.executionActivityList([newExecutionActivity])
+				.build()
+		client.addActivityBatch(batch)
+
+		then:
+		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExecution.taskId)
+		comparator.assertEquals(expectedExecution, entities.last())
 		assert entities.last().id != null
 	}
 

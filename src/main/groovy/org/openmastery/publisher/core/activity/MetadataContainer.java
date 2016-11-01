@@ -37,6 +37,11 @@ public class MetadataContainer {
 		return value != null ? (Boolean) value : false;
 	}
 
+	public int getMetadataValueAsInteger(String key) {
+		Object value = container.get(key);
+		return value != null ? (Integer) value : Integer.MIN_VALUE;
+	}
+
 	public String getMetadataValue(String key) {
 		Object value = container.get(key);
 		return value != null ? value.toString() : null;

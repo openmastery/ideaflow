@@ -2,8 +2,10 @@ package org.openmastery.publisher;
 
 import org.openmastery.publisher.core.activity.ActivityEntity;
 import org.openmastery.publisher.core.activity.RandomEditorActivityEntityBuilder;
+import org.openmastery.publisher.core.activity.RandomExecutionActivityEntityBuilder;
 import org.openmastery.publisher.core.activity.RandomExternalActivityEntityBuilder;
 import org.openmastery.publisher.core.activity.RandomIdleActivityEntityBuilder;
+import org.openmastery.publisher.core.activity.RandomModificationActivityEntityBuilder;
 import org.openmastery.publisher.core.event.RandomEventEntityBuilder;
 import org.openmastery.publisher.core.ideaflow.RandomIdeaFlowPartialStateBuilder;
 import org.openmastery.publisher.core.ideaflow.RandomIdeaFlowStateEntityBuilder;
@@ -33,6 +35,14 @@ public class RandomEntityBuilderSupport {
 
 	public RandomExternalActivityEntityBuilder externalActivityEntity() {
 		return new RandomExternalActivityEntityBuilder();
+	}
+
+	public RandomExecutionActivityEntityBuilder executionActivityEntity() {
+		return new RandomExecutionActivityEntityBuilder();
+	}
+
+	public RandomModificationActivityEntityBuilder modificationActivityEntity() {
+		return new RandomModificationActivityEntityBuilder();
 	}
 
 	public RandomEventEntityBuilder eventEntity() {

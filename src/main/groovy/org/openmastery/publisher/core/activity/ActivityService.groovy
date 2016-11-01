@@ -18,6 +18,7 @@ package org.openmastery.publisher.core.activity
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.activity.NewActivity
 import org.openmastery.publisher.api.activity.NewActivityBatch
+import org.openmastery.publisher.api.activity.NewExecutionActivity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeConverter
@@ -52,6 +53,8 @@ class ActivityService {
 		saveActivities(batch.editorActivityList, adjustment, EditorActivityEntity.class)
 		saveActivities(batch.externalActivityList, adjustment, ExternalActivityEntity.class)
 		saveActivities(batch.idleActivityList, adjustment, IdleActivityEntity.class)
+		saveActivities(batch.executionActivityList, adjustment, ExecutionActivityEntity.class)
+		saveActivities(batch.modificationActivityList, adjustment, ModificationActivityEntity.class)
 	}
 
 	public void saveActivities(List<NewActivity> activityList, Duration adjustment, Class clazz) {
