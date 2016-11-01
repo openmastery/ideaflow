@@ -91,7 +91,7 @@ public class TimelineResource {
 //	}
 //
 //	@GET
-//	@Path(ResourcePaths.USER_PATH + ResourcePaths.RECENT_PATH)
+//	@Path(ResourcePaths.TIMELINE_USER_PATH + ResourcePaths.RECENT_PATH)
 //	public List<Timeline> getRecentTimelinesForUser(@QueryParam("userId") String userId) {
 //		return Collections.emptyList();
 //	}

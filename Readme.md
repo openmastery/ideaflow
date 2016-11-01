@@ -25,6 +25,19 @@ There are four available timelines with the taskId equal to the below options:
 
 The current version does not yet include timeline detail APIs, but we've got support for the timeband visualization (band view), and support for the structured tree model (tree view) with band groups, nested bands, events, etc. The timeline is split into multiple segments according to subtask in the tree. 
 
+# User Access
+
+All APIs require access using an API-KEY header.  When you access the API
+via the plugin, you need to configure preferences to use the API Key.
+
+To generate an API-Key for a user:
+
+```
+curl -X POST -H "X-API-KEY: <api-key>" <server-url>/user?email=abc@gmail.com
+```
+
+Where <api-key> is the default user API-KEY between the *******'s on ifm-publisher startup
+
 # To Build
 
 This project requires 
