@@ -7,6 +7,7 @@ import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
+import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.client.ActivityClient
@@ -90,22 +91,31 @@ class ActivityResourceSpec extends Specification {
 				.build()
 
 		when:
-		// TODO: punted on this before - need to figure out how to best handle activity tests...
-		// add methods for all activity types?
-		// a better batch builder?
-		NewExecutionActivity newExecutionActivity = entityMapper.mapIfNotNull(expectedExecution, NewExecutionActivity)
-		newExecutionActivity.endTime = timeService.jodaNow()
-		newExecutionActivity.durationInSeconds = expectedDuration.seconds
-
-		NewActivityBatch batch = NewActivityBatch.builder()
-				.timeSent(timeService.jodaNow())
-				.executionActivityList([newExecutionActivity])
-				.build()
-		client.addActivityBatch(batch)
+		// TODO: move this stuff to use test client instead of putting test methods in actual client
+		client.addExecutionActivity(expectedExecution.taskId, timeService.jodaNow(), expectedDuration.seconds,
+								expectedExecution.processName, expectedExecution.executionTaskType, expectedExecution.exitCode, expectedExecution.isDebug())
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExecution.taskId)
 		comparator.assertEquals(expectedExecution, entities.last())
+		assert entities.last().id != null
+	}
+
+	def "SHOULD post modification activity"() {
+		Duration expectedDuration = aRandom.duration()
+		ModificationActivityEntity expectedModification = aRandom.modificationActivityEntity()
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
+				.build()
+
+		when:
+		// TODO: move this stuff to use test client instead of putting test methods in actual client
+		client.addModificationActivity(expectedModification.taskId, timeService.jodaNow(), expectedDuration.seconds,
+				expectedModification.fileModificationCount)
+
+		then:
+		List<ActivityEntity> entities = persistenceService.getActivityList(expectedModification.taskId)
+		comparator.assertEquals(expectedModification, entities.last())
 		assert entities.last().id != null
 	}
 
