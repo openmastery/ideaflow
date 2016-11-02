@@ -22,9 +22,21 @@ public class EventClient extends OpenMasteryClient<NewEvent, EventClient> {
 				.createWithPost(event);
 	}
 
-	public void startSubtask(Long taskId, String message) {
+	public void createSubtask(Long taskId, String message) {
 		NewEvent event = createNewEvent(taskId, message);
 		crudClientRequest.path(ResourcePaths.SUBTASK_PATH)
+				.createWithPost(event);
+	}
+
+	public void createWTF(Long taskId, String message) {
+		NewEvent event = createNewEvent(taskId, message);
+		crudClientRequest.path(ResourcePaths.WTF_PATH)
+				.createWithPost(event);
+	}
+
+	public void createAwesome(Long taskId, String message) {
+		NewEvent event = createNewEvent(taskId, message);
+		crudClientRequest.path(ResourcePaths.AWESOME_PATH)
 				.createWithPost(event);
 	}
 

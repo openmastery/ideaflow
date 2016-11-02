@@ -67,6 +67,21 @@ public class EventResource {
 		persistenceService.saveEvent(eventEntity);
 	}
 
+	@POST
+	@Path(ResourcePaths.WTF_PATH)
+	public void addWTF(NewEvent event) {
+		EventEntity eventEntity = toEventEntity(event, EventType.WTF);
+		persistenceService.saveEvent(eventEntity);
+	}
+
+	@POST
+	@Path(ResourcePaths.AWESOME_PATH)
+	public void addAwesome(NewEvent event) {
+		EventEntity eventEntity = toEventEntity(event, EventType.AWESOME);
+		persistenceService.saveEvent(eventEntity);
+	}
+
+
 	//Developers have been creating "note types" manually using [Subtask] and [Prediction] as prefixes in their comments.
 	//Subtask events in particular I'm using to derive a "Subtask band" and collapse all the details of events/bands
 	// that happen within a subtask, so you can "drill in" on one subtask at a time ford a complex IFM.

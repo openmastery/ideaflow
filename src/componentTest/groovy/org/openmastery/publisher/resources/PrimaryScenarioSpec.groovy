@@ -54,14 +54,14 @@ class PrimaryScenarioSpec extends Specification {
 		ideaFlowClient.endLearning(taskId, "Starting with the RangeBuilder class")
 		timeService.advanceTime(0, 1, 0)
 
-		eventClient.startSubtask(taskId, "Write up test cases for RangeBuilder")
+		eventClient.createSubtask(taskId, "Write up test cases for RangeBuilder")
 		timeService.advanceTime(1, 13, 0)
 		ideaFlowClient.startRework(taskId, "Refactoring RangeBuilder")
 		timeService.advanceTime(0, 40, 12)
 		ideaFlowClient.endRework(taskId, "")
 		timeService.advanceTime(1, 15, 30)
 
-		eventClient.startSubtask(taskId, "Final Validation")
+		eventClient.createSubtask(taskId, "Final Validation")
 		timeService.advanceTime(0, 15, 10)
 		ideaFlowClient.startConflict(taskId, "Why is the chart throwing a NPE?")
 		timeService.advanceTime(0, 10, 43)
@@ -105,7 +105,7 @@ class PrimaryScenarioSpec extends Specification {
 		ideaFlowClient.endLearning(taskId, "QueryBuilder is sliced by filter types, lots of duplication")
 		timeService.advanceTime(0, 14, 0)
 
-		eventClient.startSubtask(taskId, "Implement new QueryBuilder replacement")
+		eventClient.createSubtask(taskId, "Implement new QueryBuilder replacement")
 		timeService.advanceTime(2, 15, 10)
 
 		ideaFlowClient.startConflict(taskId, "This isn't going to work... Filter types overlap")
@@ -138,7 +138,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 50, 3)
 
 		//final validation
-		eventClient.startSubtask(taskId, "Final Validation")
+		eventClient.createSubtask(taskId, "Final Validation")
 		timeService.advanceTime(0, 0, 10)
 		ideaFlowClient.startConflict(taskId, "Why isn't the dropdown populating?")
 		timeService.advanceTime(0, 30, 43)
@@ -194,7 +194,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(1, 23, 30)
 		ideaFlowClient.endLearning(taskId, "Need to update the NotificationTemplate")
 		timeService.advanceTime(0, 15, 30)
-		eventClient.startSubtask(taskId, "Final Validation")
+		eventClient.createSubtask(taskId, "Final Validation")
 		timeService.advanceTime(0, 32, 3)
 		activityClient.addEditorActivity(taskId, timeService.jodaNow(), 10l, "/some/path", true)
 
@@ -224,9 +224,9 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 20, 22)
 		ideaFlowClient.endLearning(taskId, "Rework the ChartVisualizer to use TimeBand abstraction")
 		timeService.advanceTime(0, 2, 10)
-		eventClient.startSubtask(taskId, "Extract TimeBand class")
+		eventClient.createSubtask(taskId, "Extract TimeBand class")
 		timeService.advanceTime(0, 35, 5)
-		eventClient.startSubtask(taskId, "Refactor ChartVisualizer to use new TimeBand")
+		eventClient.createSubtask(taskId, "Refactor ChartVisualizer to use new TimeBand")
 		timeService.advanceTime(1, 15, 0)
 
 		ideaFlowClient.startConflict(taskId, "Why isn't the RangeBuilder working anymore?")
@@ -244,7 +244,7 @@ class PrimaryScenarioSpec extends Specification {
 		ideaFlowClient.endRework(taskId, "Okay, RangeBuilder is working again.")
 		timeService.advanceTime(0, 3, 5)
 
-		eventClient.startSubtask(taskId, "Final Validation")
+		eventClient.createSubtask(taskId, "Final Validation")
 		timeService.advanceTime(0, 0, 30)
 		ideaFlowClient.startConflict(taskId, "Why isn't the chart showing up?")
 		timeService.advanceTime(0, 15, 43)

@@ -162,7 +162,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 		timeService.advanceTime(0, 0, 10)
 		activityClient.addEditorActivity(taskId, timeService.jodaNow(), 15, "second.txt", false)
 
-		eventClient.startSubtask(taskId, "my subtask")
+		eventClient.createSubtask(taskId, "my subtask")
 		addEditorActivityAndAdvanceTime(taskId, 10, "third.txt", false)
 		ideaFlowClient.endLearning(taskId, null)
 
