@@ -3,7 +3,6 @@ package org.openmastery.publisher.client;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.activity.*;
-import org.openmastery.publisher.core.activity.ExecutionActivityEntity;
 
 import java.util.Arrays;
 
