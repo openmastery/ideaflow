@@ -30,36 +30,36 @@ import java.time.LocalDateTime;
 @ToString(callSuper = true)
 public class ModificationActivityEntity extends ActivityEntity {
 
-	private static final String FILE_MODIFICATION_COUNT_KEY = "fileModificationCount";
+	private static final String MODIFICATION_COUNT_KEY = "modificationCount";
 
 	private ModificationActivityEntity() {
 	}
 
 	private ModificationActivityEntity(long id, long ownerId, long taskId, LocalDateTime start, LocalDateTime end,
-	                                   int fileModificationCount) {
+	                                   int modificationCount) {
 		super(id, ownerId, taskId, start, end);
-		setFileModificationCount(fileModificationCount);
+		setModificationCount(modificationCount);
 	}
 
-	public void setFileModificationCount(int fileModificationCount) {
-		setMetadataField(FILE_MODIFICATION_COUNT_KEY, fileModificationCount);
+	public void setModificationCount(int modificationCount) {
+		setMetadataField(MODIFICATION_COUNT_KEY, modificationCount);
 	}
 
-	public int getFileModificationCount() {
-		return getMetadataValueAsInteger(FILE_MODIFICATION_COUNT_KEY);
+	public int getModificationCount() {
+		return getMetadataValueAsInteger(MODIFICATION_COUNT_KEY);
 	}
 
 
 	public static class ModificationActivityEntityBuilder extends ActivityEntityBuilder<ModificationActivityEntityBuilder> {
 
-		private int fileModificationCount;
+		private int modificationCount;
 
 		public ModificationActivityEntity build() {
-			return new ModificationActivityEntity(id, ownerId, taskId, start, end, fileModificationCount);
+			return new ModificationActivityEntity(id, ownerId, taskId, start, end, modificationCount);
 		}
 
-		public ModificationActivityEntityBuilder fileModificationCount(int fileModificationCount) {
-			this.fileModificationCount = fileModificationCount;
+		public ModificationActivityEntityBuilder modificationCount(int modificationCount) {
+			this.modificationCount = modificationCount;
 			return this;
 		}
 	}

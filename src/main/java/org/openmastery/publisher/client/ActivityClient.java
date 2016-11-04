@@ -71,11 +71,11 @@ public class ActivityClient extends OpenMasteryClient<EditorActivity, ActivityCl
 		addActivityBatch(batch);
 	}
 
-	public void addModificationActivity(Long taskId, LocalDateTime endTime, Long durationInSeconds, Integer fileModificationCount) {
+	public void addModificationActivity(Long taskId, LocalDateTime endTime, Long durationInSeconds, Integer modificationCount) {
 		NewModificationActivity newModificationActivity = NewModificationActivity.builder()
 				.taskId(taskId)
 				.durationInSeconds(durationInSeconds)
-				.fileModificationCount(fileModificationCount)
+				.modificationCount(modificationCount)
 				.endTime(endTime)
 				.build();
 

@@ -13,7 +13,7 @@ class RandomModificationActivityEntityBuilder extends ModificationActivityEntity
 				.taskId(aRandom.id())
 				.start(start)
 				.end(start.plus(aRandom.duration()))
-				.fileModificationCount(aRandom.intBetween(0, 20))
+				.modificationCount(aRandom.intBetween(0, 20))
 	}
 
 }

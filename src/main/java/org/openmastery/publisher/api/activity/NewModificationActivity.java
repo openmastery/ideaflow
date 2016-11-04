@@ -16,7 +16,7 @@ public class NewModificationActivity implements NewActivity {
 
 	private Long taskId;
 	private Long durationInSeconds;
-	private int fileModificationCount;
+	private int modificationCount;
 
 	@NotNull
 	private LocalDateTime endTime;

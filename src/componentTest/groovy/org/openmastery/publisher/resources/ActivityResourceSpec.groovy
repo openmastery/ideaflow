@@ -1,8 +1,6 @@
 package org.openmastery.publisher.resources
 
 import org.openmastery.mapper.EntityMapper
-import org.openmastery.publisher.api.activity.NewActivityBatch
-import org.openmastery.publisher.api.activity.NewExecutionActivity
 import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
@@ -111,7 +109,7 @@ class ActivityResourceSpec extends Specification {
 		when:
 		// TODO: move this stuff to use test client instead of putting test methods in actual client
 		client.addModificationActivity(expectedModification.taskId, timeService.jodaNow(), expectedDuration.seconds,
-				expectedModification.fileModificationCount)
+				expectedModification.modificationCount)
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedModification.taskId)
