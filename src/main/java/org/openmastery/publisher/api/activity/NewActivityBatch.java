@@ -21,7 +21,7 @@ public class NewActivityBatch {
 	private List<NewExecutionActivity> executionActivityList;
 	private List<NewModificationActivity> modificationActivityList;
 
-	boolean isEmpty() {
+	public boolean isEmpty() {
 		return editorActivityList.isEmpty() && externalActivityList.isEmpty() && idleActivityList.isEmpty()
 				&& executionActivityList.isEmpty() && modificationActivityList.isEmpty();
 	}
