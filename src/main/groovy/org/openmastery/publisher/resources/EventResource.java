@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.resources;
 
+import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.api.event.NewEvent;
 import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.ResourcePaths;
@@ -25,10 +26,12 @@ import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Component
 @Path(ResourcePaths.EVENT_PATH)
@@ -55,31 +58,36 @@ public class EventResource {
 
 	@POST
 	@Path(ResourcePaths.NOTE_PATH)
-	public void addUserNote(NewEvent event) {
+	public void createNote(NewEvent event) {
 		EventEntity eventEntity = toEventEntity(event, EventType.NOTE);
 		persistenceService.saveEvent(eventEntity);
 	}
 
 	@POST
 	@Path(ResourcePaths.SUBTASK_PATH)
-	public void addSubtask(NewEvent event) {
+	public void createSubtask(NewEvent event) {
 		EventEntity eventEntity = toEventEntity(event, EventType.SUBTASK);
 		persistenceService.saveEvent(eventEntity);
 	}
 
 	@POST
 	@Path(ResourcePaths.WTF_PATH)
-	public void addWTF(NewEvent event) {
+	public void createWTF(NewEvent event) {
 		EventEntity eventEntity = toEventEntity(event, EventType.WTF);
 		persistenceService.saveEvent(eventEntity);
 	}
 
 	@POST
 	@Path(ResourcePaths.AWESOME_PATH)
-	public void addAwesome(NewEvent event) {
+	public void createAwesome(NewEvent event) {
 		EventEntity eventEntity = toEventEntity(event, EventType.AWESOME);
 		persistenceService.saveEvent(eventEntity);
 	}
+
+//	@GET
+//	public List<NewBatchEvent> getLatestEvents() {
+//
+//	}
 
 
 	//Developers have been creating "note types" manually using [Subtask] and [Prediction] as prefixes in their comments.

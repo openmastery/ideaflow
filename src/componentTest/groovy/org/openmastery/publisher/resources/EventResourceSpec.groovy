@@ -34,7 +34,7 @@ class EventResourceSpec extends Specification {
 
 	def "SHOULD post user note"() {
 		when:
-		eventClient.addUserNote(taskId, "user note")
+		eventClient.createEvent(taskId, EventType.NOTE, "user note")
 
 		then:
 		assertEventPosted(EventType.NOTE, "user note")
@@ -42,7 +42,7 @@ class EventResourceSpec extends Specification {
 
 	def "SHOULD post subtask"() {
 		when:
-		eventClient.createSubtask(taskId, "subtask")
+		eventClient.createEvent(taskId, EventType.SUBTASK, "subtask")
 
 		then:
 		assertEventPosted(EventType.SUBTASK, "subtask")
@@ -50,7 +50,7 @@ class EventResourceSpec extends Specification {
 
 	def "SHOULD post WTF"() {
 		when:
-		eventClient.createWTF(taskId, "WTF?!")
+		eventClient.createEvent(taskId, EventType.WTF, "WTF?!")
 
 		then:
 		assertEventPosted(EventType.WTF, "WTF?!")
@@ -58,7 +58,7 @@ class EventResourceSpec extends Specification {
 
 	def "SHOULD post awesome"() {
 		when:
-		eventClient.createAwesome(taskId, "YAY!")
+		eventClient.createEvent(taskId, EventType.AWESOME, "YAY!")
 
 		then:
 		assertEventPosted(EventType.AWESOME, "YAY!")

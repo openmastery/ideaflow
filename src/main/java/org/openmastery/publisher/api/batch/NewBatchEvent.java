@@ -17,6 +17,6 @@ public class NewBatchEvent {
 	private String comment;
 	private EventType type;
 
-	private LocalDateTime endTime;
+	private LocalDateTime position;
 
 }

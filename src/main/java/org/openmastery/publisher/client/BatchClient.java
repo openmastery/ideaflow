@@ -28,7 +28,7 @@ public class BatchClient extends OpenMasteryClient<EditorActivity, BatchClient> 
 					.endTime(endTime)
 					.build();
 
-		NewIFMBatch batch = new NewIFMBatch(endTime, Arrays.asList(activity), null, null, null, null, null);
+		NewIFMBatch batch = NewIFMBatch.builder().timeSent(endTime).editorActivityList(Arrays.asList(activity)).build();
 		addIFMBatch(batch);
 	}
 
@@ -39,7 +39,7 @@ public class BatchClient extends OpenMasteryClient<EditorActivity, BatchClient> 
 				.endTime(endTime)
 				.build();
 
-		NewIFMBatch batch = new NewIFMBatch(endTime, null, null , Arrays.asList(activity), null, null, null);
+		NewIFMBatch batch = NewIFMBatch.builder().timeSent(endTime).idleActivityList(Arrays.asList(activity)).build();
 		addIFMBatch(batch);
 	}
 
@@ -51,7 +51,7 @@ public class BatchClient extends OpenMasteryClient<EditorActivity, BatchClient> 
 				.endTime(endTime)
 				.build();
 
-		NewIFMBatch batch = new NewIFMBatch(endTime, null, Arrays.asList(activity), null, null, null, null);
+		NewIFMBatch batch = NewIFMBatch.builder().timeSent(endTime).externalActivityList(Arrays.asList(activity)).build();
 		addIFMBatch(batch);
 	}
 
@@ -89,16 +89,16 @@ public class BatchClient extends OpenMasteryClient<EditorActivity, BatchClient> 
 		addIFMBatch(batch);
 	}
 
-	public void addBatchEvent(Long taskId, LocalDateTime endTime, EventType eventType, String comment) {
+	public void addBatchEvent(Long taskId, LocalDateTime position, EventType eventType, String comment) {
 		NewBatchEvent event = NewBatchEvent.builder()
 				.taskId(taskId)
-				.endTime(endTime)
+				.position(position)
 				.type(eventType)
 				.comment(comment)
 				.build();
 
 		NewIFMBatch batch = NewIFMBatch.builder()
-				.timeSent(endTime)
+				.timeSent(position)
 				.eventList(Arrays.asList(event))
 				.build();
 		addIFMBatch(batch);

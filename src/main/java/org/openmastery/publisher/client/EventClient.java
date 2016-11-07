@@ -23,13 +23,13 @@ public class EventClient extends OpenMasteryClient<NewEvent, EventClient> {
 		} else if (eventType == EventType.SUBTASK) {
 			createSubtask(taskId, message);
 		} else if (eventType == EventType.NOTE) {
-			addUserNote(taskId, message);
+			createNote(taskId, message);
 		} else if (eventType == EventType.WTF) {
 			createWTF(taskId, message);
 		}
 	}
 
-	public void addUserNote(Long taskId, String message) {
+	public void createNote(Long taskId, String message) {
 		NewEvent event = createNewEvent(taskId, message);
 		crudClientRequest.path(ResourcePaths.NOTE_PATH)
 				.createWithPost(event);

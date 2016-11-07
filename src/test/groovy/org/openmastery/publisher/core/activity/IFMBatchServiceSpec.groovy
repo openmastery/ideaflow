@@ -61,7 +61,7 @@ class IFMBatchServiceSpec extends Specification {
 	def "buildEvent SHOULD adjust position of event for lagging clock"() {
 		given:
 		LocalDateTime laggingClock = mockTimeService.now().minusSeconds(15)
-		NewBatchEvent event = aRandom.newBatchEvent().endTime(TimeConverter.toJodaLocalDateTime(laggingClock)).build()
+		NewBatchEvent event = aRandom.newBatchEvent().position(TimeConverter.toJodaLocalDateTime(laggingClock)).build()
 
 		when:
 		EventEntity eventEntity =

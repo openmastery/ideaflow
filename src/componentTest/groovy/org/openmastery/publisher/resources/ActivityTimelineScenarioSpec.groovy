@@ -28,7 +28,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	@Autowired
 	private EventClient eventClient
 	@Autowired
-	private BatchClient activityClient
+	private BatchClient batchClient
 	@Autowired
 	private TimelineClient timelineClient
 	private LocalDateTime start
@@ -158,9 +158,9 @@ class ActivityTimelineScenarioSpec  extends Specification {
 
 		//event in the middle of a file activity
 		timeService.advanceTime(0, 0, 5)
-		eventClient.addUserNote(taskId, "Exploring the email engine...")
+		eventClient.createNote(taskId, "Exploring the email engine...")
 		timeService.advanceTime(0, 0, 10)
-		activityClient.addEditorActivity(taskId, timeService.jodaNow(), 15, "second.txt", false)
+		batchClient.addEditorActivity(taskId, timeService.jodaNow(), 15, "second.txt", false)
 
 		eventClient.createSubtask(taskId, "my subtask")
 		addEditorActivityAndAdvanceTime(taskId, 10, "third.txt", false)
@@ -189,17 +189,17 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	void addEditorActivityAndAdvanceTime (Long taskId, Long durationInSeconds, String fileName, boolean isModified) {
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
 		// editor activity is submitted at the end time rather than the start time
-		activityClient.addEditorActivity(taskId, timeService.jodaNow(), durationInSeconds, fileName, isModified)
+		batchClient.addEditorActivity(taskId, timeService.jodaNow(), durationInSeconds, fileName, isModified)
 	}
 
 	void addIdleActivityAndAdvanceTime(Long taskId, Long durationInSeconds) {
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
-		activityClient.addIdleActivity(taskId, timeService.jodaNow(), durationInSeconds)
+		batchClient.addIdleActivity(taskId, timeService.jodaNow(), durationInSeconds)
 	}
 
 	void addExternalActivityAndAdvanceTime(Long taskId, Long durationInSeconds, String comment) {
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
-		activityClient.addExternalActivity(taskId, timeService.jodaNow(), durationInSeconds, comment)
+		batchClient.addExternalActivity(taskId, timeService.jodaNow(), durationInSeconds, comment)
 	}
 
 }

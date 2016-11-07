@@ -86,7 +86,7 @@ class IFMBatchService {
 	public EventEntity buildEventEntity ( NewBatchEvent event, Duration adjustment) {
 		EventEntity entity = entityMapper.mapIfNotNull(event, EventEntity.class)
 
-		LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(event.endTime)
+		LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(event.position)
 		entity.setPosition(endTime.plus(adjustment))
 		entity.setOwnerId(invocationContext.getUserId())
 		return entity

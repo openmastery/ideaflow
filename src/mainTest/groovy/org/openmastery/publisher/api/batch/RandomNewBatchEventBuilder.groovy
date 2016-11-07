@@ -10,6 +10,6 @@ class RandomNewBatchEventBuilder extends NewBatchEvent.NewBatchEventBuilder {
 		super.taskId(ARandom.aRandom.nextLong())
 				.type(EventType.AWESOME)
 				.comment(ARandom.aRandom.text(20))
-				.endTime(TimeConverter.toJodaLocalDateTime(ARandom.aRandom.dayOfYear()))
+				.position(TimeConverter.toJodaLocalDateTime(ARandom.aRandom.dayOfYear()))
 	}
 }
