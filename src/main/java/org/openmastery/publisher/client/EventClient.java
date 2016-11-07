@@ -1,6 +1,7 @@
 package org.openmastery.publisher.client;
 
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.event.NewEvent;
 
 public class EventClient extends OpenMasteryClient<NewEvent, EventClient> {
@@ -14,6 +15,18 @@ public class EventClient extends OpenMasteryClient<NewEvent, EventClient> {
 					.taskId(taskId)
 					.comment(message)
 					.build();
+	}
+
+	public void createEvent(Long taskId, EventType eventType, String message) {
+		if (eventType == EventType.AWESOME) {
+			createAwesome(taskId, message);
+		} else if (eventType == EventType.SUBTASK) {
+			createSubtask(taskId, message);
+		} else if (eventType == EventType.NOTE) {
+			addUserNote(taskId, message);
+		} else if (eventType == EventType.WTF) {
+			createWTF(taskId, message);
+		}
 	}
 
 	public void addUserNote(Long taskId, String message) {
