@@ -1,8 +1,12 @@
 package org.openmastery.publisher.client;
 
+import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.event.NewEvent;
+
+import java.util.List;
 
 public class EventClient extends OpenMasteryClient<NewEvent, EventClient> {
 
@@ -31,26 +35,34 @@ public class EventClient extends OpenMasteryClient<NewEvent, EventClient> {
 
 	public void createNote(Long taskId, String message) {
 		NewEvent event = createNewEvent(taskId, message);
-		crudClientRequest.path(ResourcePaths.NOTE_PATH)
+		crudClientRequest.path(ResourcePaths.EVENT_NOTE_PATH)
 				.createWithPost(event);
 	}
 
 	public void createSubtask(Long taskId, String message) {
 		NewEvent event = createNewEvent(taskId, message);
-		crudClientRequest.path(ResourcePaths.SUBTASK_PATH)
+		crudClientRequest.path(ResourcePaths.EVENT_SUBTASK_PATH)
 				.createWithPost(event);
 	}
 
 	public void createWTF(Long taskId, String message) {
 		NewEvent event = createNewEvent(taskId, message);
-		crudClientRequest.path(ResourcePaths.WTF_PATH)
+		crudClientRequest.path(ResourcePaths.EVENT_WTF_PATH)
 				.createWithPost(event);
 	}
 
 	public void createAwesome(Long taskId, String message) {
 		NewEvent event = createNewEvent(taskId, message);
-		crudClientRequest.path(ResourcePaths.AWESOME_PATH)
+		crudClientRequest.path(ResourcePaths.EVENT_AWESOME_PATH)
 				.createWithPost(event);
+	}
+
+	public List<NewBatchEvent> getRecentEvents(LocalDateTime afterDate, Integer limit) {
+		return (List<NewBatchEvent>) getUntypedCrudClientRequest()
+				.path(ResourcePaths.EVENT_BATCH_PATH)
+				.queryParam("afterDate", afterDate)
+				.queryParam("limit", limit)
+				.findMany();
 	}
 
 }

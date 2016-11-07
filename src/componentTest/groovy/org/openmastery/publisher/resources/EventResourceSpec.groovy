@@ -1,5 +1,7 @@
 package org.openmastery.publisher.resources
 
+import org.joda.time.LocalDateTime
+import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.event.EventType
@@ -62,6 +64,17 @@ class EventResourceSpec extends Specification {
 
 		then:
 		assertEventPosted(EventType.AWESOME, "YAY!")
+	}
+
+	def "Should retrieve recent events equal or after the specified afterDate"() {
+		given:
+		eventClient.createAwesome(taskId, "YAY!")
+		eventClient.createWTF(taskId, "WTF?!")
+		when:
+		List<NewBatchEvent> eventList = eventClient.getRecentEvents(LocalDateTime.now().minusDays(2), 5)
+
+		then:
+		assert eventList.size() == 2
 	}
 
 }

@@ -154,6 +154,19 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
+	List<EventEntity> findRecentEvents(Long userId, LocalDateTime afterDate, Integer limit) {
+		List<EventEntity> eventList = eventList.findAll() { EventEntity event ->
+			event.position.equals(afterDate) || event.position.isAfter( afterDate )
+		}.sort {
+			eventList.position
+		}
+		if (eventList.size() > limit) {
+			eventList = eventList.subList(0, limit)
+		}
+		return eventList
+	}
+
+	@Override
 	List<TaskEntity> findRecentTasks(int limit) {
 		if (limit < 1) {
 			return []

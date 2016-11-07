@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.core;
 
+import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.core.activity.ActivityEntity;
 import org.openmastery.publisher.core.activity.ActivityRepository;
 import org.openmastery.publisher.core.activity.EditorActivityEntity;
@@ -149,6 +150,11 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	@Override
 	public TaskEntity findTaskWithName(String taskName) {
 		return taskRepository.findByName(taskName);
+	}
+
+	@Override
+	public List<EventEntity> findRecentEvents(Long userId, LocalDateTime afterDate, Integer limit) {
+		return eventRepository.findRecentEvents(userId, afterDate, limit);
 	}
 
 	@Override
