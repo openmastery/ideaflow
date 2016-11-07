@@ -5,9 +5,9 @@ import org.openmastery.publisher.api.task.NewTask
 
 import static org.openmastery.publisher.ARandom.aRandom
 
-class RandomNewActivityBuilder extends NewEditorActivity.NewEditorActivityBuilder {
+class RandomNewEditorActivityBuilder extends NewEditorActivity.NewEditorActivityBuilder {
 
-	RandomNewActivityBuilder() {
+	RandomNewEditorActivityBuilder() {
 		super.taskId(aRandom.nextLong())
 				.filePath(aRandom.filePath())
 				.isModified(aRandom.coinFlip())

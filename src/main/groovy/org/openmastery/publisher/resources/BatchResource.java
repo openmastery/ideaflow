@@ -16,8 +16,8 @@
 package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.publisher.api.activity.NewActivityBatch;
-import org.openmastery.publisher.core.activity.ActivityService;
+import org.openmastery.publisher.api.batch.NewIFMBatch;
+import org.openmastery.publisher.core.activity.IFMBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,16 +27,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Component
-@Path(ResourcePaths.ACTIVITY_PATH)
+@Path(ResourcePaths.BATCH_PATH)
 @Produces(MediaType.APPLICATION_JSON)
-public class ActivityResource {
+public class BatchResource {
 
 	@Autowired
-	private ActivityService activityService;
+	private IFMBatchService ifmBatchService;
 
 	@POST
-	public void addActivityBatch(NewActivityBatch batch) {
-		activityService.addActivityBatch(batch);
+	public void addIFMBatch(NewIFMBatch batch) {
+		ifmBatchService.addIFMBatch(batch);
 	}
+
 
 }

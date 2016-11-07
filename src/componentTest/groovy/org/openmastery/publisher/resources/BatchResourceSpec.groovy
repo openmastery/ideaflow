@@ -6,9 +6,10 @@ import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
+import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
-import org.openmastery.publisher.client.ActivityClient
+import org.openmastery.publisher.client.BatchClient
 import org.openmastery.time.TimeService
 import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
@@ -20,10 +21,10 @@ import java.time.Duration
 import static org.openmastery.publisher.ARandom.aRandom
 
 @ComponentTest
-class ActivityResourceSpec extends Specification {
+class BatchResourceSpec extends Specification {
 
 	@Autowired
-	private ActivityClient client
+	private BatchClient client
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
 	@Autowired
@@ -115,6 +116,22 @@ class ActivityResourceSpec extends Specification {
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedModification.taskId)
 		comparator.assertEquals(expectedModification, entities.last())
 		assert entities.last().id != null
+	}
+
+	def "SHOULD post events"() {
+		given:
+		EventEntity expectedEvent = aRandom.eventEntity()
+			.position(timeService.now())
+			.build()
+
+		when:
+		client.addBatchEvent(expectedEvent.taskId, timeService.jodaNow(), expectedEvent.type, expectedEvent.comment)
+
+		then:
+		List<EventEntity> entities = persistenceService.getEventList(expectedEvent.taskId)
+		comparator.assertEquals(expectedEvent, entities.last())
+		assert entities.last().id != null
+
 	}
 
 }

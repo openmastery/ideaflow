@@ -28,7 +28,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	@Autowired
 	private EventClient eventClient
 	@Autowired
-	private ActivityClient activityClient
+	private BatchClient activityClient
 	@Autowired
 	private TimelineClient timelineClient
 	private LocalDateTime start

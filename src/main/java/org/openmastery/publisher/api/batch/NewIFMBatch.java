@@ -1,10 +1,11 @@
-package org.openmastery.publisher.api.activity;
+package org.openmastery.publisher.api.batch;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
+import org.openmastery.publisher.api.activity.*;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewActivityBatch {
+public class NewIFMBatch {
 
 	private LocalDateTime timeSent;
 	private List<NewEditorActivity> editorActivityList;
@@ -21,9 +22,11 @@ public class NewActivityBatch {
 	private List<NewExecutionActivity> executionActivityList;
 	private List<NewModificationActivity> modificationActivityList;
 
+	private List<NewBatchEvent> eventList;
+
 	boolean isEmpty() {
 		return editorActivityList.isEmpty() && externalActivityList.isEmpty() && idleActivityList.isEmpty()
-				&& executionActivityList.isEmpty() && modificationActivityList.isEmpty();
+				&& executionActivityList.isEmpty() && modificationActivityList.isEmpty() && eventList.isEmpty();
 	}
 
 }

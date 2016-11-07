@@ -59,4 +59,7 @@ public class ResourcePaths {
 
 	//user paths
 	public static final String USER_PATH = "/user";
+
+	//batch paths
+	public static final String BATCH_PATH = "/batch";
 }

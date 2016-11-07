@@ -16,24 +16,20 @@
 package org.openmastery.publisher;
 
 import groovyx.net.http.RESTClient;
-import org.openmastery.publisher.client.ActivityClient;
+import org.openmastery.publisher.client.BatchClient;
 import org.openmastery.publisher.client.EventClient;
 import org.openmastery.publisher.client.IdeaFlowClient;
 import org.openmastery.publisher.client.TaskClient;
 import org.openmastery.publisher.client.TimelineClient;
 import org.openmastery.publisher.core.user.UserEntity;
-import org.openmastery.publisher.core.user.UserRepository;
-import org.openmastery.publisher.security.AuthorizationFilter;
 import org.openmastery.publisher.security.UserIdResolver;
 import org.openmastery.time.MockTimeService;
 import org.openmastery.time.TimeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import javax.annotation.PostConstruct;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
@@ -69,8 +65,8 @@ public class IfmPublisherTestConfig {
 	}
 
 	@Bean
-	public ActivityClient activityClient() {
-		return new ActivityClient(hostUri)
+	public BatchClient activityClient() {
+		return new BatchClient(hostUri)
 				.apiKey(testUser.getApiKey());
 	}
 

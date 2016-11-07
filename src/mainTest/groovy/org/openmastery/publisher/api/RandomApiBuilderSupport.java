@@ -1,6 +1,7 @@
 package org.openmastery.publisher.api;
 
-import org.openmastery.publisher.api.activity.RandomNewActivityBuilder;
+import org.openmastery.publisher.api.activity.RandomNewEditorActivityBuilder;
+import org.openmastery.publisher.api.batch.RandomNewBatchEventBuilder;
 import org.openmastery.publisher.api.task.RandomNewTaskBuilder;
 
 public class RandomApiBuilderSupport {
@@ -9,10 +10,12 @@ public class RandomApiBuilderSupport {
 		return new RandomNewTaskBuilder();
 	}
 
-	public RandomNewActivityBuilder newActivity() {
-		return new RandomNewActivityBuilder();
+	public RandomNewEditorActivityBuilder newEditorActivity() {
+		return new RandomNewEditorActivityBuilder();
 	}
 
-
+	public RandomNewBatchEventBuilder newBatchEvent() {
+		return new RandomNewBatchEventBuilder();
+	}
 
 }

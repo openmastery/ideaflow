@@ -17,9 +17,10 @@ package org.openmastery.publisher.core.activity
 
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.activity.NewActivity
-import org.openmastery.publisher.api.activity.NewActivityBatch
-import org.openmastery.publisher.api.activity.NewExecutionActivity
+import org.openmastery.publisher.api.batch.NewBatchEvent
+import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeConverter
 import org.openmastery.time.TimeService
@@ -30,7 +31,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 @Component
-class ActivityService {
+class IFMBatchService {
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService;
@@ -46,8 +47,7 @@ class ActivityService {
 		Duration.between(messageSentAt, now)
 	}
 
-
-	public void addActivityBatch(NewActivityBatch batch) {
+	public void addIFMBatch(NewIFMBatch batch) {
 		Duration adjustment = determineTimeAdjustment(TimeConverter.toJavaLocalDateTime(batch.timeSent))
 
 		saveActivities(batch.editorActivityList, adjustment, EditorActivityEntity.class)
@@ -55,22 +55,40 @@ class ActivityService {
 		saveActivities(batch.idleActivityList, adjustment, IdleActivityEntity.class)
 		saveActivities(batch.executionActivityList, adjustment, ExecutionActivityEntity.class)
 		saveActivities(batch.modificationActivityList, adjustment, ModificationActivityEntity.class)
+
+		saveEvents(batch.eventList, adjustment)
 	}
 
 	public void saveActivities(List<NewActivity> activityList, Duration adjustment, Class clazz) {
 		activityList.each { NewActivity activity ->
-			ActivityEntity entity = buildEntity(activity, adjustment, clazz)
+			ActivityEntity entity = buildActivityEntity(activity, adjustment, clazz)
 			persistenceService.saveActivity(entity)
 		}
 	}
 
-	public ActivityEntity buildEntity( NewActivity activity, Duration adjustment, Class clazz) {
+	public void saveEvents(List<NewBatchEvent> eventList, Duration adjustment) {
+		eventList.each {  NewBatchEvent event ->
+			EventEntity entity = buildEventEntity(event, adjustment);
+			persistenceService.saveEvent(entity)
+		}
+	}
+
+	public ActivityEntity buildActivityEntity( NewActivity activity, Duration adjustment, Class clazz) {
 		ActivityEntity entity = entityMapper.mapIfNotNull(activity, clazz) as ActivityEntity
 
 		LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(activity.endTime)
 		entity.setStart( endTime.plus(adjustment).minusSeconds(activity.getDurationInSeconds()))
 		entity.setEnd( endTime.plus(adjustment))
 		entity.setOwnerId(invocationContext.getUserId());
+		return entity
+	}
+
+	public EventEntity buildEventEntity ( NewBatchEvent event, Duration adjustment) {
+		EventEntity entity = entityMapper.mapIfNotNull(event, EventEntity.class)
+
+		LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(event.endTime)
+		entity.setPosition(endTime.plus(adjustment))
+		entity.setOwnerId(invocationContext.getUserId())
 		return entity
 	}
 

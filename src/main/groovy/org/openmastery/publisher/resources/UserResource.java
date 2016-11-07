@@ -17,7 +17,6 @@ package org.openmastery.publisher.resources;
 
 
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.publisher.api.activity.NewActivityBatch;
 import org.openmastery.publisher.core.user.UserEntity;
 import org.openmastery.publisher.core.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

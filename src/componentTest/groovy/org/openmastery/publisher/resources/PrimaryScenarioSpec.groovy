@@ -4,7 +4,7 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.api.timeline.TreeTimeline
-import org.openmastery.publisher.client.ActivityClient
+import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.EventClient
 import org.openmastery.publisher.client.IdeaFlowClient
 import org.openmastery.publisher.client.TaskClient
@@ -34,7 +34,7 @@ class PrimaryScenarioSpec extends Specification {
 	@Autowired
 	private EventClient eventClient
 	@Autowired
-	private ActivityClient activityClient
+	private BatchClient activityClient
 	@Autowired
 	private TimelineClient timelineClient
 	private LocalDateTime start

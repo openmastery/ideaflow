@@ -1,6 +1,8 @@
 package org.openmastery.publisher.core.activity
 
 import org.openmastery.publisher.api.activity.NewEditorActivity
+import org.openmastery.publisher.api.batch.NewBatchEvent
+import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeConverter
@@ -11,22 +13,22 @@ import java.time.LocalDateTime
 
 import static org.openmastery.publisher.ARandom.aRandom
 
-class ActivityServiceSpec extends Specification {
+class IFMBatchServiceSpec extends Specification {
 
-	ActivityService activityService
+	IFMBatchService ifmBatchService
 	MockTimeService mockTimeService
 
 	def setup() {
-		activityService = new ActivityService()
+		ifmBatchService = new IFMBatchService()
 		mockTimeService = new MockTimeService()
-		activityService.timeService = mockTimeService
-		activityService.invocationContext = Mock(InvocationContext)
+		ifmBatchService.timeService = mockTimeService
+		ifmBatchService.invocationContext = Mock(InvocationContext)
 	}
 
 	def "determineTimeAdjustment SHOULD adjust for local clock being behind"() {
 		when:
 		LocalDateTime laggingClock = mockTimeService.now().minusSeconds(15)
-		Duration adjustment = activityService.determineTimeAdjustment(laggingClock)
+		Duration adjustment = ifmBatchService.determineTimeAdjustment(laggingClock)
 
 		then:
 		assert adjustment == Duration.ofSeconds(15)
@@ -36,7 +38,7 @@ class ActivityServiceSpec extends Specification {
 	def "determineTimeAdjustment SHOULD adjust for local clock being ahead"() {
 		when:
 		LocalDateTime aheadClock = mockTimeService.now().plusSeconds(15)
-		Duration adjustment = activityService.determineTimeAdjustment(aheadClock)
+		Duration adjustment = ifmBatchService.determineTimeAdjustment(aheadClock)
 
 		then:
 		assert adjustment == Duration.ofSeconds(-15)
@@ -45,14 +47,28 @@ class ActivityServiceSpec extends Specification {
 	def "buildEntity SHOULD adjust start and end time on entity for lagging clock"() {
 		given:
 		LocalDateTime laggingClock = mockTimeService.now().minusSeconds(15)
-		NewEditorActivity newActivity = aRandom.newActivity().endTime(TimeConverter.toJodaLocalDateTime(laggingClock)).build()
+		NewEditorActivity newActivity = aRandom.newEditorActivity().endTime(TimeConverter.toJodaLocalDateTime(laggingClock)).build()
 
 		when:
 		EditorActivityEntity actualEntity =
-				activityService.buildEntity(newActivity, activityService.determineTimeAdjustment(laggingClock), EditorActivityEntity.class)
+				ifmBatchService.buildActivityEntity(newActivity, ifmBatchService.determineTimeAdjustment(laggingClock), EditorActivityEntity.class)
 
 		then:
 		assert actualEntity.start == mockTimeService.now().minusSeconds(newActivity.durationInSeconds)
 		assert actualEntity.end == mockTimeService.now()
+	}
+
+	def "buildEvent SHOULD adjust position of event for lagging clock"() {
+		given:
+		LocalDateTime laggingClock = mockTimeService.now().minusSeconds(15)
+		NewBatchEvent event = aRandom.newBatchEvent().endTime(TimeConverter.toJodaLocalDateTime(laggingClock)).build()
+
+		when:
+		EventEntity eventEntity =
+				ifmBatchService.buildEventEntity(event, ifmBatchService.determineTimeAdjustment(laggingClock))
+
+		then:
+		assert eventEntity.position == mockTimeService.now()
+
 	}
 }
