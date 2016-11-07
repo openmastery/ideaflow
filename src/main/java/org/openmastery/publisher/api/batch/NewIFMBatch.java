@@ -24,7 +24,7 @@ public class NewIFMBatch {
 
 	private List<NewBatchEvent> eventList;
 
-	boolean isEmpty() {
+	public boolean isEmpty() {
 		return editorActivityList.isEmpty() && externalActivityList.isEmpty() && idleActivityList.isEmpty()
 				&& executionActivityList.isEmpty() && modificationActivityList.isEmpty() && eventList.isEmpty();
 	}
