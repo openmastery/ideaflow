@@ -1,6 +1,8 @@
 package org.openmastery.publisher.client;
 
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.api.event.EventType;
@@ -58,9 +60,10 @@ public class EventClient extends OpenMasteryClient<NewEvent, EventClient> {
 	}
 
 	public List<NewBatchEvent> getRecentEvents(LocalDateTime afterDate, Integer limit) {
+
 		return (List<NewBatchEvent>) getUntypedCrudClientRequest()
 				.path(ResourcePaths.EVENT_BATCH_PATH)
-				.queryParam("afterDate", afterDate)
+				.queryParam("afterDate", afterDate.toString("yyyyMMdd_HHmmss"))
 				.queryParam("limit", limit)
 				.findMany();
 	}

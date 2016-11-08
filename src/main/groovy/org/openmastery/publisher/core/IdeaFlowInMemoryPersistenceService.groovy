@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.core
 
+import org.apache.tomcat.jni.Local
 import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
@@ -24,8 +25,10 @@ import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.core.user.UserEntity
+import org.openmastery.time.TimeConverter
 import org.springframework.dao.DataIntegrityViolationException
 
+import java.sql.Timestamp
 import java.time.LocalDateTime
 
 public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceService {
@@ -156,7 +159,8 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	@Override
 	List<EventEntity> findRecentEvents(Long userId, LocalDateTime afterDate, Integer limit) {
 		List<EventEntity> eventList = eventList.findAll() { EventEntity event ->
-			event.position.equals(afterDate) || event.position.isAfter( afterDate )
+			event.position.equals(TimeConverter.toJavaLocalDateTime(afterDate)
+					|| event.position.isAfter(TimeConverter.toJavaLocalDateTime(afterDate)))
 		}.sort {
 			eventList.position
 		}

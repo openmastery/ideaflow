@@ -17,7 +17,7 @@ class EventService {
 
 
 	public List<NewBatchEvent> getLatestEvents(Long userId, LocalDateTime afterDate, Integer limit) {
-		List<EventEntity> eventEntityList = persistenceService.findRecentEvents(userId, TimeConverter.toJavaLocalDateTime(afterDate), limit)
+		List<EventEntity> eventEntityList = persistenceService.findRecentEvents(userId, TimeConverter.toSqlTimestamp(afterDate), limit)
 
 		List<NewBatchEvent> eventList = eventEntityList.collect() { EventEntity entity ->
 			EntityMapper mapper = new EntityMapper()

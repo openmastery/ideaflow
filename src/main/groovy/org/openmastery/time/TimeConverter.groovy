@@ -15,6 +15,7 @@
  */
 package org.openmastery.time
 
+import java.sql.Timestamp
 import java.time.LocalDateTime
 
 
@@ -30,6 +31,20 @@ class TimeConverter {
 				localDateTime.getSecond())
 	}
 
+	public static org.joda.time.LocalDateTime toJodaLocalDateTime(Timestamp timestamp) {
+		new org.joda.time.LocalDateTime(timestamp.time)
+	}
+
+	public static LocalDateTime toJavaLocalDateTime(Timestamp timestamp) {
+		LocalDateTime.of(timestamp.getYear(),
+				timestamp.getMonthOfYear(),
+				timestamp.getDayOfMonth(),
+				timestamp.getHourOfDay(),
+				timestamp.getMinuteOfHour(),
+				timestamp.getSecondOfMinute())
+	}
+
+
 	public static LocalDateTime toJavaLocalDateTime(org.joda.time.LocalDateTime localDateTime) {
 		LocalDateTime.of(
 				localDateTime.getYear(),
@@ -38,6 +53,15 @@ class TimeConverter {
 				localDateTime.getHourOfDay(),
 				localDateTime.getMinuteOfHour(),
 				localDateTime.getSecondOfMinute())
+	}
+
+	public static Timestamp toSqlTimestamp(org.joda.time.LocalDateTime localDateTime) {
+		new Timestamp(localDateTime.getYear(),
+				localDateTime.getMonthOfYear(),
+				localDateTime.getDayOfMonth(),
+				localDateTime.getHourOfDay(),
+				localDateTime.getMinuteOfHour(),
+				localDateTime.getSecondOfMinute(), 0)
 	}
 
 }

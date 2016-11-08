@@ -16,6 +16,8 @@
 package org.openmastery.publisher.resources;
 
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.api.event.NewEvent;
 import org.openmastery.publisher.api.event.EventType;
@@ -88,9 +90,11 @@ public class EventResource {
 
 	@GET
 	@Path(ResourcePaths.EVENT_BATCH_PATH)
-	public List<NewBatchEvent> getLatestEvents(@QueryParam("afterDate") LocalDateTime afterDate, @QueryParam("limit") Integer limit) {
+	public List<NewBatchEvent> getLatestEvents(@QueryParam("afterDate") String afterDate, @QueryParam("limit") Integer limit) {
 		Long userId = invocationContext.getUserId();
-		return eventService.getLatestEvents(userId, afterDate, limit);
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd_HHmmss");
+		LocalDateTime jodaAfterDate = formatter.parseLocalDateTime(afterDate);
+		return eventService.getLatestEvents(userId, jodaAfterDate, limit);
 	}
 
 

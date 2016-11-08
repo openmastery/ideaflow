@@ -20,6 +20,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +29,6 @@ public interface EventRepository extends PagingAndSortingRepository<EventEntity,
 	List<EventEntity> findByTaskId(long taskId);
 
 
-	@Query(nativeQuery = true, value = "select * from event where ownerId=:ownerId and position >= :position order by position asc limit :limit")
+	@Query(nativeQuery = true, value = "select * from event where owner_id=:ownerId and position >= :position order by position asc limit :limit")
 	List<EventEntity> findRecentEvents(@Param("ownerId") Long userId, @Param("position") LocalDateTime afterDate,  @Param("limit") Integer limit);
 }
