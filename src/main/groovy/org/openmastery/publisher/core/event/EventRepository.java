@@ -17,11 +17,15 @@ package org.openmastery.publisher.core.event;
 
 import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Temporal;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.TemporalType;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface EventRepository extends PagingAndSortingRepository<EventEntity, Long> {
@@ -30,5 +34,5 @@ public interface EventRepository extends PagingAndSortingRepository<EventEntity,
 
 
 	@Query(nativeQuery = true, value = "select * from event where owner_id=:ownerId and position >= :position order by position asc limit :limit")
-	List<EventEntity> findRecentEvents(@Param("ownerId") Long userId, @Param("position") LocalDateTime afterDate,  @Param("limit") Integer limit);
+	List<EventEntity> findRecentEvents(@Param("ownerId") Long userId, @Param("position") Timestamp afterDate,  @Param("limit") Integer limit);
 }

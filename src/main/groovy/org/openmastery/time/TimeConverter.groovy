@@ -17,6 +17,8 @@ package org.openmastery.time
 
 import java.sql.Timestamp
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 
 class TimeConverter {
@@ -55,9 +57,14 @@ class TimeConverter {
 				localDateTime.getSecondOfMinute())
 	}
 
+	public static ZonedDateTime toJavaDateTime(org.joda.time.LocalDateTime localDateTime) {
+		LocalDateTime javaDateTime = toJavaLocalDateTime(localDateTime)
+		ZonedDateTime.of(javaDateTime.toLocalDate(), javaDateTime.toLocalTime(), ZoneId.of("UTC"));
+	}
+
 	public static Timestamp toSqlTimestamp(org.joda.time.LocalDateTime localDateTime) {
-		new Timestamp(localDateTime.getYear(),
-				localDateTime.getMonthOfYear(),
+		new Timestamp(localDateTime.getYear() -1900,
+				localDateTime.getMonthOfYear()-1,
 				localDateTime.getDayOfMonth(),
 				localDateTime.getHourOfDay(),
 				localDateTime.getMinuteOfHour(),

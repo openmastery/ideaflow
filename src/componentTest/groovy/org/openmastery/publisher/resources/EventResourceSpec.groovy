@@ -8,6 +8,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.client.EventClient
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
@@ -18,6 +19,10 @@ class EventResourceSpec extends Specification {
 	private EventClient eventClient
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
+
+	@Autowired
+	private TimeService timeService
+
 	private BeanCompare eventComparator = new BeanCompare().excludeFields("id", "ownerId", "position")
 	private long taskId = 123
 
@@ -71,7 +76,7 @@ class EventResourceSpec extends Specification {
 		eventClient.createAwesome(taskId, "YAY!")
 		eventClient.createWTF(taskId, "WTF?!")
 		when:
-		List<NewBatchEvent> eventList = eventClient.getRecentEvents(LocalDateTime.now().minusDays(2), 5)
+		List<NewBatchEvent> eventList = eventClient.getRecentEvents(timeService.jodaNow().minusDays(2), 5)
 
 		then:
 		assert eventList.size() == 2

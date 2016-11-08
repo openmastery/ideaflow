@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Transactional
@@ -154,7 +155,7 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
-	public List<EventEntity> findRecentEvents(Long userId, LocalDateTime afterDate, Integer limit) {
+	public List<EventEntity> findRecentEvents(Long userId, Timestamp afterDate, Integer limit) {
 		return eventRepository.findRecentEvents(userId, afterDate, limit);
 	}
 

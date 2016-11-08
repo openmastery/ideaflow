@@ -28,6 +28,7 @@ import org.openmastery.publisher.core.user.UserEntity;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface IdeaFlowPersistenceService {
@@ -67,7 +68,7 @@ public interface IdeaFlowPersistenceService {
 
 	TaskEntity findTaskWithName(String taskName);
 
-	List<EventEntity> findRecentEvents(Long userId, LocalDateTime afterDate, Integer limit);
+	List<EventEntity> findRecentEvents(Long userId, Timestamp afterDate, Integer limit);
 
 	List<TaskEntity> findRecentTasks(int limit);
 

@@ -30,6 +30,7 @@ import org.springframework.dao.DataIntegrityViolationException
 
 import java.sql.Timestamp
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceService {
 
@@ -157,10 +158,10 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
-	List<EventEntity> findRecentEvents(Long userId, LocalDateTime afterDate, Integer limit) {
+	List<EventEntity> findRecentEvents(Long userId, Timestamp afterDate, Integer limit) {
 		List<EventEntity> eventList = eventList.findAll() { EventEntity event ->
-			event.position.equals(TimeConverter.toJavaLocalDateTime(afterDate)
-					|| event.position.isAfter(TimeConverter.toJavaLocalDateTime(afterDate)))
+			event.position.equals(TimeConverter.toJavaLocalDateTime(afterDate)) ||
+					event.position.isAfter(TimeConverter.toJavaLocalDateTime(afterDate))
 		}.sort {
 			eventList.position
 		}
