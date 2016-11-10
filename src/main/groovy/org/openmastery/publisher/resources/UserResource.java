@@ -22,10 +22,7 @@ import org.openmastery.publisher.core.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.UUID;
 
@@ -47,5 +44,16 @@ public class UserResource {
 		userRepository.save(user);
 
 		return user.getApiKey() + "\n";
+	}
+
+	@GET
+	@Path(ResourcePaths.APIKEY_PATH)
+	public String getAPIKey(@QueryParam("email") String userEmail) {
+		String apiKey = null;
+		UserEntity user = userRepository.findByEmail(userEmail);
+		if (user != null) {
+			apiKey = user.getApiKey() + "\n";
+		}
+		return apiKey;
 	}
 }

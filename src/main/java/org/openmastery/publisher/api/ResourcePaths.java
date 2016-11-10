@@ -60,6 +60,7 @@ public class ResourcePaths {
 
 	//user paths
 	public static final String USER_PATH = "/user";
+	public static final String APIKEY_PATH = "/apikey";
 
 	//batch paths
 	public static final String BATCH_PATH = "/batch";
