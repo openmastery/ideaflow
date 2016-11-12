@@ -14,6 +14,7 @@ public class Task {
 
 	private Long id;
 	private LocalDateTime creationDate;
+	private LocalDateTime lastModifiedDate;
 
 	private String name;
 	private String description;
