@@ -100,6 +100,24 @@ class TaskResourceSpec extends Specification {
 		assert taskList == [mostRecent, secondMostRecent]
 	}
 
+	@Ignore //TODO implement paging on server side
+	def "SHOULD return page 2 of tasks"() {
+		given:
+		List<Task> expectedTasks = []
+		for (int i = 0; i < 10; i++) {
+			Task task = taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50))
+			expectedTasks.add(task)
+			timeService.plusMinutes(10)
+		}
+		expectedTasks = expectedTasks.reverse()
+		when:
+		List<Task> taskList = taskClient.findRecentTasks(2, 5)
+
+		then:
+		assert expectedTasks.subList(5, 10) == taskList
+	}
+
+
 	@Ignore //this is failing intermittently because 2 idles exist for the task, and it randomly grabs the other one.
 	//not sure why there are two, but ignoring for now since we're abandoning the activation strategy for the time being
 	def "activate SHOULD create idle time on resume with start time as the most recent file activity end time"() {
