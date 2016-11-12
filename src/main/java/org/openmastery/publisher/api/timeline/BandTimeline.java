@@ -29,7 +29,7 @@ public class BandTimeline {
 	private List<ModificationActivity> modificationActivities;
 	private List<ExecutionEvent> executionEvents;
 	private List<CalendarEvent> calendarEvents;
-	private List<Event> notes;
+	private List<Event> events;
 
 
 	// simplify dozer mapping

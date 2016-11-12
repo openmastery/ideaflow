@@ -19,14 +19,6 @@ public class TimelineClient extends OpenMasteryClient<Object, TimelineClient> {
 				.find();
 	}
 
-	public TreeTimeline getTreeTimelineForTask(long taskId) {
-		return (TreeTimeline) getUntypedCrudClientRequest()
-				.path(ResourcePaths.TIMELINE_TREE_PATH)
-				.queryParam("taskId", taskId)
-				.entity(TreeTimeline.class)
-				.find();
-	}
-
 	public ActivityTimeline getActivityTimelineForTask(long taskId) {
 		return (ActivityTimeline) getUntypedCrudClientRequest()
 				.path(ResourcePaths.TIMELINE_ACTIVITY_PATH)

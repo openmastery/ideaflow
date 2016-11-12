@@ -50,12 +50,6 @@ public class TimelineResource {
 		return timelineGenerator.createBandTimelineForTask(taskId);
 	}
 
-	@GET
-	@Path(ResourcePaths.TIMELINE_TREE_PATH)
-	public TreeTimeline getTreeTimelineTreeForTask(@QueryParam("taskId") Long optionalTaskId, @QueryParam("taskName") String optionalTaskName) {
-		Long taskId = getTaskId(optionalTaskId, optionalTaskName);
-		return timelineGenerator.createTreeTimelineForTask(taskId);
-	}
 
 	@GET //TODO implement me
 	@Path(ResourcePaths.TIMELINE_SUMMARY_PATH)

@@ -75,11 +75,9 @@ class PrimaryScenarioSpec extends Specification {
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
-		TreeTimeline treeTimeline = timelineClient.getTreeTimelineForTask(taskId)
 
 		then:
-		TimelineValidator validator = new TimelineValidator(bandTimeline, treeTimeline)
-		validator.assertFirstSegment("create basic timeline with all band types")
+		TimelineValidator validator = new TimelineValidator(bandTimeline)
 		validator.assertIdeaFlowBand(PROGRESS, Duration.ofSeconds(15))
 		validator.assertIdeaFlowBand(LEARNING, Duration.ofMinutes(45), "How should I break down this task?", "Starting with the RangeBuilder class")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1h14m"))
@@ -148,16 +146,13 @@ class PrimaryScenarioSpec extends Specification {
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
-		TreeTimeline treeTimeline = timelineClient.getTreeTimelineForTask(taskId)
 
 		then:
-		TimelineValidator validator = new TimelineValidator(bandTimeline, treeTimeline)
-		validator.assertFirstSegment("create trial and error map")
+		TimelineValidator validator = new TimelineValidator(bandTimeline)
 		validator.assertIdeaFlowBand(PROGRESS, Duration.ofSeconds(15))
 		validator.assertIdeaFlowBand(LEARNING, Duration.ofMinutes(45), "How does the existing QueryBuilder work?", "QueryBuilder is sliced by filter types, lots of duplication")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT2h29m10s"))
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT2h15m10s"), "Implement new QueryBuilder replacement")
-		validator.assertTimeBandGroupNode(Duration.parse("PT5h2m50s"))
 		validator.assertLinkedBand(CONFLICT, Duration.ofMinutes(15), "This isn't going to work... Filter types overlap", "How can I make the overlapping filters work?")
 		validator.assertLinkedBand(LEARNING, Duration.ofMinutes(42), "How can I make the overlapping filters work?", "Creating a factory for assembling composite filters")
 		validator.assertLinkedBand(REWORK, Duration.parse("PT1h18m"), "Creating a factory for assembling composite filters", "")
@@ -200,11 +195,9 @@ class PrimaryScenarioSpec extends Specification {
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
-		TreeTimeline treeTimeline = timelineClient.getTreeTimelineForTask(taskId)
 
 		then:
-		TimelineValidator validator = new TimelineValidator(bandTimeline, treeTimeline)
-		validator.assertFirstSegment("create learning nested conflict map")
+		TimelineValidator validator = new TimelineValidator(bandTimeline)
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1m30s"))
 		validator.assertIdeaFlowBand(LEARNING, Duration.parse("PT5h44m2s"), "Where do I need to change the ReportingEngine code? #LackOfFamiliarity", "Need to update the NotificationTemplate")
 		validator.assertNestedTimeBand(CONFLICT, Duration.ofMinutes(35), "Why is the ReportingEngine sending notifications to Dispatch service?", "Dispatch emails the reports out to users.")
@@ -254,17 +247,14 @@ class PrimaryScenarioSpec extends Specification {
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
-		TreeTimeline treeTimeline = timelineClient.getTreeTimelineForTask(taskId)
 
 		then:
-		TimelineValidator validator = new TimelineValidator(bandTimeline, treeTimeline)
-		validator.assertFirstSegment("create detailed conflict map")
+		TimelineValidator validator = new TimelineValidator(bandTimeline)
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT5m10s"))
 		validator.assertIdeaFlowBand(LEARNING, Duration.parse("PT20m22s"), "What's the plan?", "Rework the ChartVisualizer to use TimeBand abstraction")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1h52m15s"))
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT35m5s"), "Extract TimeBand class")
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT1h15m"), "Refactor ChartVisualizer to use new TimeBand")
-		validator.assertTimeBandGroupNode(Duration.parse("PT1h28m47s"))
 		validator.assertLinkedBand(CONFLICT, Duration.parse("PT14m9s"), "Why isn't the RangeBuilder working anymore?", "Range builder uses the duration details to calculate range.  Need to refactor.")
 		validator.assertLinkedBand(REWORK, Duration.parse("PT1h14m38s"), "Range builder uses the duration details to calculate range.  Need to refactor.", "Okay, RangeBuilder is working again.")
 		validator.assertLinkedNestedTimeBand(CONFLICT, Duration.parse("PT15m43s"), "Why isn't the RangeBuilder working NOW?", "Flipped || with && in the duration code #TranspositionMistake")

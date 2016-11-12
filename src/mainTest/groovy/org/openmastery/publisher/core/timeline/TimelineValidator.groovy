@@ -20,31 +20,17 @@ class TimelineValidator {
 	private int ideaFlowBandIndex = 0
 	private int timeBandGroupIndex = 0
 	private int eventIndex = 0
-	private TreeTimeline treeTimeline
 	private int treeNodeIndex = 0
 
 	private IdeaFlowBand activeTimeBand
 	private List<IdeaFlowBand> activeNestedTimeBands = []
 	private List<IdeaFlowBand> activeLinkedTimeBands = []
 
-	TimelineValidator(BandTimeline bandTimeline, TreeTimeline treeTimeline) {
+	TimelineValidator(BandTimeline bandTimeline) {
 		this.bandTimeline = bandTimeline
-		this.treeTimeline = treeTimeline
+
 	}
 
-	private TreeNode assertTreeNode(TreeNodeType expectedType, int expectedIndentLevel, String startingComment,
-	                                String endingComment) {
-		TreeNode treeNode = treeTimeline.treeNodes[treeNodeIndex++]
-		assert treeNode.type == expectedType
-		assert treeNode.indentLevel == expectedIndentLevel
-		assert treeNode.relativePositionInSeconds != null
-		assert treeNode.startingComment == startingComment
-		assert treeNode.endingComment == endingComment
-		if (treeNodeIndex > 2) {
-			assert treeNode.relativePositionInSeconds > 0
-		}
-		treeNode
-	}
 
 	private void assertTimeBandValues(IdeaFlowBand actualBand, IdeaFlowStateType expectedType, Duration expectedDuration,
 	                                  String startingComment, String endingComment) {
@@ -67,21 +53,15 @@ class TimelineValidator {
 		assert bandTimeline.ideaFlowBands.size() == ideaFlowBandIndex
 		assert bandTimeline.timeBandGroups.size() == timeBandGroupIndex
 		assert bandTimeline.events.size() == eventIndex
-		assert treeTimeline.treeNodes.size() == treeNodeIndex
 	}
 
-	void assertFirstSegment(String expectedComment) {
-		assertTreeNode(TreeNodeType.SEGMENT, 0, expectedComment, null)
-	}
 
 	void assertSegmentStart(String expectedComment) {
-		assertTreeNode(TreeNodeType.SEGMENT, 0, expectedComment, null)
 		assertEvent(EventType.SUBTASK, expectedComment)
 	}
 
 	void assertSegmentStartAndProgressNode(Duration expectedDuration, String expectedComment) {
 		assertSegmentStart(expectedComment)
-		assertIdeaFlowNode(PROGRESS, expectedDuration)
 	}
 
 	void assertEvent(EventType expectedEventType, String expectedComment) {
@@ -101,32 +81,14 @@ class TimelineValidator {
 		assertTimeBandValues(ideaFlowBand, expectedType, expectedDuration, startingComment, endingComment)
 		activeTimeBand = ideaFlowBand
 		activeNestedTimeBands = [] + ideaFlowBand.nestedBands
-		assertIdeaFlowNodeInternal(ideaFlowBand, 1)
 	}
 
-	private void assertIdeaFlowNodeInternal(IdeaFlowBand ideaFlowBand, int expectedIndentLevel) {
-		TreeNode treeNode = assertTreeNode(TreeNodeType.IDEA_FLOW_BAND, expectedIndentLevel,
-		                                   ideaFlowBand.startingComment, ideaFlowBand.endingComent)
-		assert treeNode.bandType == ideaFlowBand.type
-	}
-
-	void assertIdeaFlowNode(IdeaFlowStateType expectedType, Duration expectedDuration) {
-		TreeNode treeNode = assertTreeNode(TreeNodeType.IDEA_FLOW_BAND, 1, null, null)
-		assert treeNode.bandType == expectedType
-		assert Duration.ofSeconds(treeNode.durationInSeconds) == expectedDuration
-	}
-
-	void assertTimeBandGroupNode(Duration expectedDuration) {
-		TreeNode treeNode = assertTreeNode(TreeNodeType.TIME_BAND_GROUP, 1, null, null)
-		assert Duration.ofSeconds(treeNode.durationInSeconds) == expectedDuration
-	}
 
 	void assertNestedTimeBand(IdeaFlowStateType expectedType, Duration expectedDuration, String startingComment, String endingComment) {
 		assert activeLinkedTimeBands.isEmpty()
 		assert activeNestedTimeBands.isEmpty() == false
 		IdeaFlowBand ideaFlowBand = activeNestedTimeBands.remove(0)
 		assertTimeBandValues(ideaFlowBand, expectedType, expectedDuration, startingComment, endingComment)
-		assertIdeaFlowNodeInternal(ideaFlowBand, 2)
 	}
 
 	void assertLinkedBand(IdeaFlowStateType expectedType, Duration expectedDuration, String startingComment, String endingComment) {
@@ -146,14 +108,12 @@ class TimelineValidator {
 		assertTimeBandValues(ideaFlowBand, expectedType, expectedDuration, startingComment, endingComment)
 		activeNestedTimeBands = [] + ideaFlowBand.nestedBands
 
-		assertIdeaFlowNodeInternal(ideaFlowBand, 2)
 	}
 
 	void assertLinkedNestedTimeBand(IdeaFlowStateType expectedType, Duration expectedDuration, String startingComment, String endingComment) {
 		assert activeNestedTimeBands.isEmpty() == false
 		IdeaFlowBand ideaFlowBand = activeNestedTimeBands.remove(0)
 		assertTimeBandValues(ideaFlowBand, expectedType, expectedDuration, startingComment, endingComment)
-		assertIdeaFlowNodeInternal(ideaFlowBand, 3)
 	}
 
 }

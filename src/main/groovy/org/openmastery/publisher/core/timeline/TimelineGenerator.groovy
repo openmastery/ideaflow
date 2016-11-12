@@ -46,13 +46,6 @@ class TimelineGenerator {
 		mapper.mapIfNotNull(segment, BandTimeline.class)
 	}
 
-	public TreeTimeline createTreeTimelineForTask(long taskId) {
-		List<BandTimelineSegment> segments = createBandTimelineSegmentBuilder(taskId).buildAndSplit()
-		new TreeTimelineBuilder()
-				.addTimelineSegments(segments)
-				.build()
-	}
-
 	public ActivityTimeline createActivityTimelineForTask(long taskId) {
 		BandTimelineSegment segment = createBandTimelineSegmentBuilder(taskId).build()
 		new ActivityTimelineBuilder()
