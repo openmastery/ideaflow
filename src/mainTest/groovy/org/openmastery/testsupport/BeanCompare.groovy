@@ -67,9 +67,9 @@ class BeanCompare {
         assert (lhs == null && rhs == null) || (lhs != null && rhs != null)
 
         if (lhs.equals(rhs) == false) {
-            Map rhsProperties = getPropertiesToCompare(rhs)
-            Map lhsProperties = getPropertiesToCompare(lhs)
-            assert lhsProperties == rhsProperties
+            Map actualProperties = getPropertiesToCompare(rhs)
+            Map expectedProperties = getPropertiesToCompare(lhs)
+            assert expectedProperties == actualProperties
         }
     }
 

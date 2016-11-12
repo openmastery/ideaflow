@@ -116,7 +116,8 @@ public class TaskResource {
 	}
 
 	@GET
-	public Task findTaskWithName(@QueryParam("taskName") String taskName) {
+	@Path(ResourcePaths.TASK_NAME_PATH + "/{name}")
+	public Task findTaskWithName(@PathParam("name") String taskName) {
 		TaskEntity task = persistenceService.findTaskWithName(taskName);
 		if (task == null) {
 			throw new NotFoundException();
@@ -124,15 +125,19 @@ public class TaskResource {
 		return toApiTask(task);
 	}
 
-	@GET
-	@Path(ResourcePaths.RECENT_PATH)
-	public List<Task> findRecentTasks(@QueryParam("limit") Integer limit) {
-		if (limit == null) {
-			limit = 5;
-		}
-		List<TaskEntity> taskList = persistenceService.findRecentTasks(limit);
+	@GET //TODO implement me
+	public List<Task> findRecentTasksWithNameOrDescription(@QueryParam("query") String searchString,
+													@QueryParam("page") Integer page,
+													@QueryParam("per_page") Integer perPage) {
+
+		//Needs to sort tasks with most recently activated at the top.
+		//On task activation, update a recent timestamp so recent stuff bubbles to the top
+		//the functionality below is no longer being used, so change to this new behavior
+
+		List<TaskEntity> taskList = persistenceService.findRecentTasks(perPage);
 		return entityMapper.mapList(taskList, Task.class);
 	}
+
 
 
 	class ConflictingTaskException extends ConflictingEntityException {

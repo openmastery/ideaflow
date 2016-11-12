@@ -1,5 +1,6 @@
 package org.openmastery.publisher.client;
 
+import com.bancvue.rest.client.crud.CrudClientRequest;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
@@ -21,14 +22,15 @@ public class TaskClient extends OpenMasteryClient<Task, TaskClient> {
 	}
 
 	public Task findTaskWithName(String taskName) {
-		return crudClientRequest.queryParam("taskName", taskName).find();
+		return crudClientRequest.path(ResourcePaths.TASK_NAME_PATH)
+				.path(taskName).find();
 	}
 
-	public List<Task> findRecentTasks(int limit) {
+	public List<Task> findRecentTasksWithNameOrDescription(String query, Integer page, Integer perPage) {
 		return crudClientRequest
-				.path(ResourcePaths.RECENT_PATH)
-				.queryParam("limit", limit)
-				.findMany();
+				.queryParam("query", query)
+				.queryParam("page", page)
+				.queryParam("per_page", perPage).findMany();
 	}
 
 	public Task activate(Long taskId) {

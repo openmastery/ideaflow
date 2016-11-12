@@ -82,7 +82,7 @@ class TaskResourceSpec extends Specification {
 		taskComparator.assertEquals(ex.entity, expectedConflict)
 	}
 
-	def "SHOULD return recent task list"() {
+	def "SHOULD return most recent tasks"() {
 		given:
 		for (int i = 0; i < 10; i++) {
 			taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50))
@@ -94,7 +94,7 @@ class TaskResourceSpec extends Specification {
 		Task mostRecent = taskClient.createTask("recent2", "description")
 
 		when:
-		List<Task> taskList = taskClient.findRecentTasks(2)
+		List<Task> taskList = taskClient.findRecentTasksWithNameOrDescription("recent", 1, 2)
 
 		then:
 		assert taskList == [mostRecent, secondMostRecent]
