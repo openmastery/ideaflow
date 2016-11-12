@@ -94,7 +94,7 @@ class TaskResourceSpec extends Specification {
 		Task mostRecent = taskClient.createTask("recent2", "description")
 
 		when:
-		List<Task> taskList = taskClient.findRecentTasksWithNameOrDescription("recent", 1, 2)
+		List<Task> taskList = taskClient.findRecentTasks(1, 2)
 
 		then:
 		assert taskList == [mostRecent, secondMostRecent]

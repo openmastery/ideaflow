@@ -26,9 +26,8 @@ public class TaskClient extends OpenMasteryClient<Task, TaskClient> {
 				.path(taskName).find();
 	}
 
-	public List<Task> findRecentTasksWithNameOrDescription(String query, Integer page, Integer perPage) {
+	public List<Task> findRecentTasks(Integer page, Integer perPage) {
 		return crudClientRequest
-				.queryParam("query", query)
 				.queryParam("page", page)
 				.queryParam("per_page", perPage).findMany();
 	}

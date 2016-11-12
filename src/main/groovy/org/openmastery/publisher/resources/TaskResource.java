@@ -125,12 +125,11 @@ public class TaskResource {
 		return toApiTask(task);
 	}
 
-	@GET //TODO implement me
-	public List<Task> findRecentTasksWithNameOrDescription(@QueryParam("query") String searchString,
-													@QueryParam("page") Integer page,
-													@QueryParam("per_page") Integer perPage) {
+	@GET //TODO implement paging
+	public List<Task> findRecentTasks(@QueryParam("page") Integer page,
+									  @QueryParam("per_page") Integer perPage) {
 
-		//Needs to sort tasks with most recently activated at the top.
+		//TODO Needs to sort tasks with most recently activated at the top.
 		//On task activation, update a recent timestamp so recent stuff bubbles to the top
 		//the functionality below is no longer being used, so change to this new behavior
 
