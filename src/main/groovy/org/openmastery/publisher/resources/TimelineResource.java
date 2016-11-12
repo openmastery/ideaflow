@@ -20,6 +20,7 @@ import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.timeline.BandTimeline;
 import org.openmastery.publisher.api.timeline.TreeTimeline;
 import org.openmastery.publisher.api.timeline.ActivityTimeline;
+import org.openmastery.publisher.api.timeline.summary.TimelineSummary;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.openmastery.publisher.core.task.TaskEntity;
 import org.openmastery.publisher.core.timeline.TimelineGenerator;
@@ -54,6 +55,13 @@ public class TimelineResource {
 	public TreeTimeline getTreeTimelineTreeForTask(@QueryParam("taskId") Long optionalTaskId, @QueryParam("taskName") String optionalTaskName) {
 		Long taskId = getTaskId(optionalTaskId, optionalTaskName);
 		return timelineGenerator.createTreeTimelineForTask(taskId);
+	}
+
+	@GET //TODO implement me
+	@Path(ResourcePaths.TIMELINE_SUMMARY_PATH)
+	public TimelineSummary getTimelineSummaryForTask(@QueryParam("taskId") Long optionalTaskId, @QueryParam("taskName") String optionalTaskName) {
+		Long taskId = getTaskId(optionalTaskId, optionalTaskName);
+		return new TimelineSummary();
 	}
 
 	@GET

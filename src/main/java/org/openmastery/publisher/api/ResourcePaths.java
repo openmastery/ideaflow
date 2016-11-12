@@ -54,7 +54,10 @@ public class ResourcePaths {
 	public static final String TIMELINE_PATH = "/timeline";
 	public static final String TIMELINE_TREE_PATH = "/tree";
 	public static final String TIMELINE_BAND_PATH = "/band";
+	public static final String TIMELINE_SUMMARY_PATH = "/summary";
+
 	public static final String TIMELINE_ACTIVITY_PATH = "/activity";
+
 	public static final String TIMELINE_DAY_PATH = "/day";
 	public static final String TIMELINE_USER_PATH = "/user";
 	public static final String TIMELINE_PROJECT_PATH = "/project";
