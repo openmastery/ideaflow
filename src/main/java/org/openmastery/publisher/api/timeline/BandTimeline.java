@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
+import org.openmastery.publisher.api.activity.NewModificationActivity;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
 
@@ -24,7 +25,11 @@ public class BandTimeline {
 	private Long relativePositionInSeconds;
 	private List<IdeaFlowBand> ideaFlowBands;
 	private List<TimeBandGroup> timeBandGroups;
-	private List<Event> events;
+
+	private List<ModificationActivity> modificationActivities;
+	private List<ExecutionEvent> executionEvents;
+	private List<CalendarEvent> calendarEvents;
+	private List<Event> notes;
 
 
 	// simplify dozer mapping
