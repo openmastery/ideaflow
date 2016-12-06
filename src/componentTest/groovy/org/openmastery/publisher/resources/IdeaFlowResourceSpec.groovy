@@ -74,13 +74,13 @@ class IdeaFlowResourceSpec extends Specification {
 		ideaFlowClient.startConflict(taskId, question)
 
 		then:
-		assertActiveState(IdeaFlowStateType.CONFLICT, question)
+		assertActiveState(IdeaFlowStateType.TROUBLESHOOTING, question)
 
 		when:
 		ideaFlowClient.endConflict(taskId, answer)
 
 		then:
-		assertStateTransition(IdeaFlowStateType.CONFLICT, question, answer)
+		assertStateTransition(IdeaFlowStateType.TROUBLESHOOTING, question, answer)
 		assertActiveState(IdeaFlowStateType.PROGRESS, null)
 	}
 

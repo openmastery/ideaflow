@@ -28,7 +28,7 @@ import org.openmastery.time.TimeService
 
 import java.time.LocalDateTime
 
-import static IdeaFlowStateType.CONFLICT
+import static IdeaFlowStateType.TROUBLESHOOTING
 import static IdeaFlowStateType.LEARNING
 import static IdeaFlowStateType.REWORK
 
@@ -67,13 +67,13 @@ class TestDataSupport {
 
 		testSupport.startSubtask("Final Validation")
 		testSupport.advanceTime(0, 15, 10)
-		testSupport.startBand(CONFLICT, "Why is the chart throwing a NPE?")
+		testSupport.startBand(TROUBLESHOOTING, "Why is the chart throwing a NPE?")
 		testSupport.advanceTime(0, 10, 43)
-		testSupport.endBand(CONFLICT, "chartData wasn't initialized.")
+		testSupport.endBand(TROUBLESHOOTING, "chartData wasn't initialized.")
 		testSupport.advanceTime(0, 05, 45)
-		testSupport.startBand(CONFLICT, "Why is the chart not displaying?")
+		testSupport.startBand(TROUBLESHOOTING, "Why is the chart not displaying?")
 		testSupport.advanceTime(0, 10, 43)
-		testSupport.endBand(CONFLICT, "jqPlot parameters were wrong.  Passing in [] instead of [[]]")
+		testSupport.endBand(TROUBLESHOOTING, "jqPlot parameters were wrong.  Passing in [] instead of [[]]")
 		testSupport.advanceTime(0, 5, 4)
 	}
 
@@ -92,7 +92,7 @@ class TestDataSupport {
 		testSupport.note("Implement new QueryBuilder replacement")
 		testSupport.advanceTime(2, 15, 10)
 
-		testSupport.startBand(CONFLICT, "This isn't going to work... Filter types overlap")
+		testSupport.startBand(TROUBLESHOOTING, "This isn't going to work... Filter types overlap")
 		testSupport.advanceTime(0, 15, 0)
 		testSupport.startBand(LEARNING, "How can I make the overlapping filters work?")
 		testSupport.advanceTime(0, 42, 0)
@@ -100,7 +100,7 @@ class TestDataSupport {
 		testSupport.advanceTime(1, 18, 0)
 
 		//unnest this conflict, then link to next trial
-		testSupport.startBand(CONFLICT, "Crap, this isn't going to work either.")
+		testSupport.startBand(TROUBLESHOOTING, "Crap, this isn't going to work either.")
 		testSupport.advanceTime(0, 0, 10)
 		testSupport.endBand(REWORK)
 		testSupport.advanceTime(0, 5, 16)
@@ -110,7 +110,7 @@ class TestDataSupport {
 		testSupport.advanceTime(1, 14, 34)
 
 		//unnest this conflict, then link to next trial
-		testSupport.startBand(CONFLICT, "The CompositeFilterChain won't support the LagFilter")
+		testSupport.startBand(TROUBLESHOOTING, "The CompositeFilterChain won't support the LagFilter")
 		testSupport.advanceTime(0, 0, 10)
 		testSupport.endBand(REWORK)
 		testSupport.advanceTime(0, 15, 0)
@@ -124,9 +124,9 @@ class TestDataSupport {
 		//final validation
 		testSupport.startSubtask("Final Validation")
 		testSupport.advanceTime(0, 0, 10)
-		testSupport.startBand(CONFLICT, "Why isn't the dropdown populating?")
+		testSupport.startBand(TROUBLESHOOTING, "Why isn't the dropdown populating?")
 		testSupport.advanceTime(0, 30, 43)
-		testSupport.endBand(CONFLICT, "Bunch of little bugs.")
+		testSupport.endBand(TROUBLESHOOTING, "Bunch of little bugs.")
 		testSupport.advanceTime(0, 0, 10)
 	}
 
@@ -139,13 +139,13 @@ class TestDataSupport {
 		testSupport.advanceTime(0, 1, 30)
 		testSupport.startBand(LEARNING, "Where do I need to change the ReportingEngine code? #LackOfFamiliarity")
 		testSupport.advanceTime(1, 45, 0)
-		testSupport.startBand(CONFLICT, "Why is the ReportingEngine sending notifications to Dispatch service?")
+		testSupport.startBand(TROUBLESHOOTING, "Why is the ReportingEngine sending notifications to Dispatch service?")
 		testSupport.advanceTime(0, 35, 0)
-		testSupport.endBand(CONFLICT, "Dispatch emails the reports out to users.")
+		testSupport.endBand(TROUBLESHOOTING, "Dispatch emails the reports out to users.")
 		testSupport.advanceTime(1, 14, 2)
-		testSupport.startBand(CONFLICT, "Why is the ReportingEngine dependent on ProdDB?  Should only be ReportingDB")
+		testSupport.startBand(TROUBLESHOOTING, "Why is the ReportingEngine dependent on ProdDB?  Should only be ReportingDB")
 		testSupport.advanceTime(0, 46, 30)
-		testSupport.endBand(CONFLICT, "Looks like dependency was added for real-time dashboard. hmm.")
+		testSupport.endBand(TROUBLESHOOTING, "Looks like dependency was added for real-time dashboard. hmm.")
 		testSupport.advanceTime(1, 23, 30)
 		testSupport.endBand(LEARNING, "Need to update the NotificationTemplate")
 		testSupport.advanceTime(0, 15, 30)
@@ -170,28 +170,28 @@ class TestDataSupport {
 
 		testSupport.startSubtask("Refactor ChartVisualizer to use new TimeBand")
 		testSupport.advanceTime(1, 15, 0)
-		testSupport.startBand(CONFLICT, "Why isn't the RangeBuilder working anymore?")
+		testSupport.startBand(TROUBLESHOOTING, "Why isn't the RangeBuilder working anymore?")
 		testSupport.advanceTime(0, 14, 9)
 		testSupport.startBand(REWORK, "Range builder uses the duration details to calculate range.  Need to refactor.")
 		testSupport.advanceTime(0, 45, 14)
-		testSupport.startBand(CONFLICT, "Why isn't the RangeBuilder working NOW?")
+		testSupport.startBand(TROUBLESHOOTING, "Why isn't the RangeBuilder working NOW?")
 		testSupport.advanceTime(0, 15, 43)
-		testSupport.endBand(CONFLICT, "Flipped || with && in the duration code #TranspositionMistake")
+		testSupport.endBand(TROUBLESHOOTING, "Flipped || with && in the duration code #TranspositionMistake")
 		testSupport.advanceTime(0, 1, 12)
-		testSupport.startBand(CONFLICT, "Why is the duration 5?")
+		testSupport.startBand(TROUBLESHOOTING, "Why is the duration 5?")
 		testSupport.advanceTime(0, 15, 43)
 		testSupport.note("Checking out dependencies...")
 		testSupport.advanceTime(0, 05, 10)
-		testSupport.endBand(CONFLICT, "Missing a condition for excluding out of range values.")
+		testSupport.endBand(TROUBLESHOOTING, "Missing a condition for excluding out of range values.")
 		testSupport.advanceTime(0, 5, 3)
 		testSupport.endBand(REWORK, "Okay, RangeBuilder is working again.")
 		testSupport.advanceTime(0, 3, 5)
 
 		testSupport.startSubtask("Final Validation")
 		testSupport.advanceTime(0, 0, 30)
-		testSupport.startBand(CONFLICT, "Why isn't the chart showing up?")
+		testSupport.startBand(TROUBLESHOOTING, "Why isn't the chart showing up?")
 		testSupport.advanceTime(0, 15, 43)
-		testSupport.endBand(CONFLICT, "Flipped if/else condition. #TranspositionMistake")
+		testSupport.endBand(TROUBLESHOOTING, "Flipped if/else condition. #TranspositionMistake")
 		testSupport.advanceTime(0, 30, 3)
 	}
 
@@ -309,7 +309,7 @@ class TestDataSupport {
 				stateMachine.startLearning(comment)
 			} else if (type == REWORK) {
 				stateMachine.startRework(comment)
-			} else if (type == CONFLICT) {
+			} else if (type == TROUBLESHOOTING) {
 				stateMachine.startConflict(comment)
 			} else {
 				throw new RuntimeException("Unknown type: ${type}")
@@ -325,7 +325,7 @@ class TestDataSupport {
 				stateMachine.endLearning(comment)
 			} else if (type == REWORK) {
 				stateMachine.endRework(comment)
-			} else if (type == CONFLICT) {
+			} else if (type == TROUBLESHOOTING) {
 				stateMachine.endConflict(comment)
 			} else {
 				throw new RuntimeException("Unknown type: ${type}")

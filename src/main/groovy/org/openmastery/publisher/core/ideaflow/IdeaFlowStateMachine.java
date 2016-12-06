@@ -87,7 +87,7 @@ public class IdeaFlowStateMachine {
 
 	public void startConflict(String question) {
 		IdeaFlowPartialStateEntity oldActiveState = getActiveState();
-		IdeaFlowPartialStateEntity newActiveState = createStartState(IdeaFlowStateType.CONFLICT, question);
+		IdeaFlowPartialStateEntity newActiveState = createStartState(IdeaFlowStateType.TROUBLESHOOTING, question);
 
 		if (oldActiveState.isOfType(IdeaFlowStateType.PROGRESS)) {
 			IdeaFlowStateEntity stateToSave = createEndProgress(oldActiveState);
@@ -104,7 +104,7 @@ public class IdeaFlowStateMachine {
 	public void endConflict(String resolution) {
 		IdeaFlowPartialStateEntity oldActiveState = getActiveState();
 
-		if (oldActiveState.isOfType(IdeaFlowStateType.CONFLICT)) {
+		if (oldActiveState.isOfType(IdeaFlowStateType.TROUBLESHOOTING)) {
 			IdeaFlowStateEntity stateToSave = createEndState(oldActiveState, resolution);
 			IdeaFlowPartialStateEntity containingState = getContainingState();
 			IdeaFlowPartialStateEntity newActiveState = containingState != null ? containingState : createStartProgress();
@@ -144,7 +144,7 @@ public class IdeaFlowStateMachine {
 		if (oldActiveState.isOfType(IdeaFlowStateType.PROGRESS)) {
 			IdeaFlowStateEntity stateToSave = createEndProgress(oldActiveState);
 			ideaFlowPersistenceService.saveTransition(stateToSave, newActiveState);
-		} else if (oldActiveState.isOfType(IdeaFlowStateType.CONFLICT, otherNonConflictType)) {
+		} else if (oldActiveState.isOfType(IdeaFlowStateType.TROUBLESHOOTING, otherNonConflictType)) {
 			IdeaFlowStateEntity previousState = createEndState(oldActiveState, comment);
 			newActiveState.setLinkedToPrevious(true);
 			ideaFlowPersistenceService.saveTransition(previousState, newActiveState);
@@ -160,7 +160,7 @@ public class IdeaFlowStateMachine {
 		if (oldActiveState.isOfType(type)) {
 			IdeaFlowStateEntity stateToSave = createEndState(oldActiveState, resolution);
 			ideaFlowPersistenceService.saveTransition(stateToSave, createStartProgress());
-		} else if (oldActiveState.isOfType(IdeaFlowStateType.CONFLICT)) {
+		} else if (oldActiveState.isOfType(IdeaFlowStateType.TROUBLESHOOTING)) {
 			IdeaFlowPartialStateEntity containingState = getContainingState();
 			if (containingState != null) {
 				IdeaFlowStateEntity stateToSave = createEndState(containingState, resolution);

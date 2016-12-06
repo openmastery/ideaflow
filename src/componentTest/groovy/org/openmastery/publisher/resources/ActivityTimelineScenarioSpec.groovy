@@ -13,7 +13,7 @@ import spock.lang.Specification
 import java.time.Duration
 import java.time.LocalDateTime
 
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 
 @ComponentTest
@@ -66,9 +66,9 @@ class ActivityTimelineScenarioSpec  extends Specification {
 		validator.assertFileActivity(0, "first.txt", false, Duration.ofSeconds(15))
 		validator.assertBandStart(15, LEARNING, "How does this code work?")
 		validator.assertFileActivity(15, "second.txt", false, Duration.ofSeconds(10))
-		validator.assertBandStart(25, CONFLICT, "What is this dependency?")
+		validator.assertBandStart(25, TROUBLESHOOTING, "What is this dependency?")
 		validator.assertFileActivity(25, "third.txt", false, Duration.ofSeconds(20))
-		validator.assertBandEnd(45, CONFLICT, "Red Herring.")
+		validator.assertBandEnd(45, TROUBLESHOOTING, "Red Herring.")
 		validator.assertFileActivity(45, "fourth.txt", false, Duration.ofSeconds(5))
 		validator.assertBandEnd(50, LEARNING, null)
 		validator.assertFileActivity(50, "fifth.txt", true, Duration.ofSeconds(50))
@@ -137,12 +137,12 @@ class ActivityTimelineScenarioSpec  extends Specification {
 
 		ActivityTimelineValidator validator = new ActivityTimelineValidator(activityTimeline)
 		validator.assertFileActivity(0, "first.txt", false, Duration.ofSeconds(15))
-		validator.assertBandStart(15, CONFLICT, "Why is the screen blank?")
+		validator.assertBandStart(15, TROUBLESHOOTING, "Why is the screen blank?")
 		validator.assertFileActivity(15, "second.txt", false, Duration.ofSeconds(10))
 		validator.assertExternalActivity(25, "browser-stuff", Duration.ofSeconds(15))
 		validator.assertFileActivity(40, "third.txt", false, Duration.ofSeconds(20))
 		validator.assertExternalActivity(60, "browser-stuff", Duration.ofSeconds(30))
-		validator.assertBandEnd(90, CONFLICT, "I forgot to redeploy the code.")
+		validator.assertBandEnd(90, TROUBLESHOOTING, "I forgot to redeploy the code.")
 
 		validator.assertValidationComplete()
 	}

@@ -21,6 +21,7 @@ public class NewIFMBatch {
 	private List<NewIdleActivity> idleActivityList;
 	private List<NewExecutionActivity> executionActivityList;
 	private List<NewModificationActivity> modificationActivityList;
+	private List<NewBlockActivity> blockActivityList;
 
 	private List<NewBatchEvent> eventList;
 
@@ -30,7 +31,9 @@ public class NewIFMBatch {
 		hasContent |= idleActivityList != null && !idleActivityList.isEmpty();
 		hasContent |= executionActivityList != null && !executionActivityList.isEmpty();
 		hasContent |= modificationActivityList != null && !modificationActivityList.isEmpty();
+		hasContent |= blockActivityList != null && !blockActivityList.isEmpty();
 		hasContent |= eventList != null && !eventList.isEmpty();
+
 
 		return !hasContent;
 	}

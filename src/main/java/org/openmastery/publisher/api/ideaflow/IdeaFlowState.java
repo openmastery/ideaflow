@@ -28,7 +28,7 @@ public class IdeaFlowState implements Comparable<IdeaFlowState> {
 
 	@JsonIgnore
 	public boolean isConflict() {
-		return isOfType(IdeaFlowStateType.CONFLICT);
+		return isOfType(IdeaFlowStateType.TROUBLESHOOTING);
 	}
 
 	@JsonIgnore

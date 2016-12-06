@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static IdeaFlowStateType.CONFLICT
+import static IdeaFlowStateType.TROUBLESHOOTING
 import static IdeaFlowStateType.LEARNING
 import static IdeaFlowStateType.PROGRESS
 import static IdeaFlowStateType.REWORK
@@ -80,7 +80,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.endConflict("resolution")
 
 		then:
-		assertExpectedStates(PROGRESS, CONFLICT)
+		assertExpectedStates(PROGRESS, TROUBLESHOOTING)
 	}
 
 	def "WHEN Learning then start Rework SHOULD link Rework state to previous Learning state"() {
@@ -117,9 +117,9 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.endLearning("learning")
 
 		then:
-		assertExpectedStates(PROGRESS, CONFLICT, LEARNING)
+		assertExpectedStates(PROGRESS, TROUBLESHOOTING, LEARNING)
 		assert getPersistedState(LEARNING).isLinkedToPrevious()
-		assert getPersistedState(CONFLICT).endingComment == "learning" //TODO is this what we want? conflict resolution is learning comment
+		assert getPersistedState(TROUBLESHOOTING).endingComment == "learning" //TODO is this what we want? conflict resolution is learning comment
 	}
 
 	def "WHEN Conflict then start Rework SHOULD link Rework state to previous Conflict state"() {
@@ -130,7 +130,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.endRework("rework")
 
 		then:
-		assertExpectedStates(PROGRESS, CONFLICT, REWORK)
+		assertExpectedStates(PROGRESS, TROUBLESHOOTING, REWORK)
 		assert getPersistedState(REWORK).isLinkedToPrevious()
 	}
 
@@ -142,15 +142,15 @@ class IdeaFlowStateMachineSpec extends Specification {
 
 		then:
 		assertExpectedStates(PROGRESS)
-		assertActiveState(CONFLICT)
+		assertActiveState(TROUBLESHOOTING)
 		assertContainingState(LEARNING)
 
 		when:
 		stateMachine.endConflict("conflict stop")
 
 		then:
-		assertExpectedStates(PROGRESS, CONFLICT)
-		assert getPersistedState(CONFLICT).isNested()
+		assertExpectedStates(PROGRESS, TROUBLESHOOTING)
+		assert getPersistedState(TROUBLESHOOTING).isNested()
 		assertActiveState(LEARNING)
 		assertContainingState(null)
 	}
@@ -163,9 +163,9 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.endConflict("conflict")
 
 		then:
-		assertExpectedStates(PROGRESS, CONFLICT)
+		assertExpectedStates(PROGRESS, TROUBLESHOOTING)
 		assertActiveState(REWORK)
-		assert getPersistedState(CONFLICT).isNested()
+		assert getPersistedState(TROUBLESHOOTING).isNested()
 
 		when:
 		stateMachine.startConflict("conflict")
@@ -173,7 +173,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.endRework("rework")
 
 		then:
-		assertExpectedStates(PROGRESS, REWORK, CONFLICT, CONFLICT)
+		assertExpectedStates(PROGRESS, REWORK, TROUBLESHOOTING, TROUBLESHOOTING)
 		assertActiveState(PROGRESS)
 		assertContainingState(null)
 	}
@@ -211,7 +211,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.endConflict("conflict")
 
 		then:
-		assertExpectedStates(PROGRESS, CONFLICT)
+		assertExpectedStates(PROGRESS, TROUBLESHOOTING)
 		assertActiveState(PROGRESS)
 	}
 
@@ -223,7 +223,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.endConflict("conflict")
 
 		then:
-		assertExpectedStates(PROGRESS, CONFLICT)
+		assertExpectedStates(PROGRESS, TROUBLESHOOTING)
 		assertActiveState(LEARNING)
 	}
 
@@ -235,7 +235,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		stateMachine.endConflict("conflict")
 
 		then:
-		assertExpectedStates(PROGRESS, CONFLICT)
+		assertExpectedStates(PROGRESS, TROUBLESHOOTING)
 		assertActiveState(REWORK)
 	}
 
@@ -247,7 +247,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 
 		then:
 		assertContainingState(LEARNING)
-		assertActiveState(CONFLICT)
+		assertActiveState(TROUBLESHOOTING)
 		assert persistenceService.activeState.isNested()
 
 		when:
@@ -255,7 +255,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 
 		then:
 		assertExpectedStates(PROGRESS, LEARNING)
-		assertActiveState(CONFLICT)
+		assertActiveState(TROUBLESHOOTING)
 		assertContainingState(null);
 		assert persistenceService.activeState.isNested() == false
 		assert persistenceService.activeState.isLinkedToPrevious() == true
@@ -270,7 +270,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 
 		then:
 		assertContainingState(REWORK)
-		assertActiveState(CONFLICT)
+		assertActiveState(TROUBLESHOOTING)
 		assert persistenceService.activeState.isNested()
 
 		when:
@@ -278,7 +278,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 
 		then:
 		assertExpectedStates(PROGRESS, REWORK)
-		assertActiveState(CONFLICT)
+		assertActiveState(TROUBLESHOOTING)
 		assertContainingState(null);
 		assert persistenceService.activeState.isNested() == false
 		assert persistenceService.activeState.isLinkedToPrevious() == true

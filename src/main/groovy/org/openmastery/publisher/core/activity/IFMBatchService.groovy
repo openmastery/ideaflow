@@ -55,7 +55,8 @@ class IFMBatchService {
 		saveActivities(batch.idleActivityList, adjustment, IdleActivityEntity.class)
 		saveActivities(batch.executionActivityList, adjustment, ExecutionActivityEntity.class)
 		saveActivities(batch.modificationActivityList, adjustment, ModificationActivityEntity.class)
-
+//No such property: BlockActivityEntity.. is this because the field is blank?  Eh?
+		saveActivities(batch.blockActivityList, adjustment, BlockActivityEntity.class)
 		saveEvents(batch.eventList, adjustment)
 	}
 

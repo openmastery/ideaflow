@@ -1,6 +1,6 @@
-package org.openmastery.publisher.api.timeline
+package org.openmastery.publisher.api.timeline;
 
-class ModificationActivity {
+public class ModificationActivity {
 
 	private Long taskId;
 	private Long durationInSeconds;

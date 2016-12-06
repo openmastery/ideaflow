@@ -8,7 +8,7 @@ import org.openmastery.time.MockTimeService
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.timeline.IdleTimeProcessor
 
-import static IdeaFlowStateType.CONFLICT
+import static IdeaFlowStateType.TROUBLESHOOTING
 
 class TestTimelineSegmentBuilder {
 
@@ -61,7 +61,7 @@ class TestTimelineSegmentBuilder {
 	}
 
 	TestTimelineSegmentBuilder nestedConflict(int startHour, int endHour) {
-		IdeaFlowBandModel nestedBand = createIdeaFlowBand(CONFLICT, startHour, endHour)
+		IdeaFlowBandModel nestedBand = createIdeaFlowBand(TROUBLESHOOTING, startHour, endHour)
 		activeIdeaFlowBand.addNestedBand(nestedBand)
 		this
 	}

@@ -18,11 +18,15 @@ import java.util.List;
 @AllArgsConstructor
 public class BandTimeline {
 
+	private String taskName; //TODO populate me
 	private String description;
 	private LocalDateTime start;
 	private LocalDateTime end;
 	private Long durationInSeconds;
 	private Long relativePositionInSeconds;
+
+
+	//TODO can we delete timeBandGroups?
 	private List<IdeaFlowBand> ideaFlowBands;
 	private List<TimeBandGroup> timeBandGroups;
 

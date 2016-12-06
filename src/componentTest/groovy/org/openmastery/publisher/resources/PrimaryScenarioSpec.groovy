@@ -3,7 +3,6 @@ package org.openmastery.publisher.resources
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.api.timeline.BandTimeline
-import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.EventClient
 import org.openmastery.publisher.client.IdeaFlowClient
@@ -17,7 +16,7 @@ import spock.lang.Specification
 import java.time.Duration
 import java.time.LocalDateTime
 
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
@@ -85,9 +84,9 @@ class PrimaryScenarioSpec extends Specification {
 		validator.assertIdeaFlowBand(REWORK, Duration.parse("PT40m12s"), "Refactoring RangeBuilder", "")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1h30m40s"))
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT15m10s"), "Final Validation")
-		validator.assertIdeaFlowBand(CONFLICT, Duration.parse("PT10m43s"), "Why is the chart throwing a NPE?", "chartData wasn't initialized.")
+		validator.assertIdeaFlowBand(TROUBLESHOOTING, Duration.parse("PT10m43s"), "Why is the chart throwing a NPE?", "chartData wasn't initialized.")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT5m45s"))
-		validator.assertIdeaFlowBand(CONFLICT, Duration.parse("PT10m43s"), "Why is the chart not displaying?", "jqPlot parameters were wrong.  Passing in [] instead of [[]]")
+		validator.assertIdeaFlowBand(TROUBLESHOOTING, Duration.parse("PT10m43s"), "Why is the chart not displaying?", "jqPlot parameters were wrong.  Passing in [] instead of [[]]")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT5m4s"))
 		validator.assertValidationComplete()
 	}
@@ -153,20 +152,20 @@ class PrimaryScenarioSpec extends Specification {
 		validator.assertIdeaFlowBand(LEARNING, Duration.ofMinutes(45), "How does the existing QueryBuilder work?", "QueryBuilder is sliced by filter types, lots of duplication")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT2h29m10s"))
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT2h15m10s"), "Implement new QueryBuilder replacement")
-		validator.assertLinkedBand(CONFLICT, Duration.ofMinutes(15), "This isn't going to work... Filter types overlap", "How can I make the overlapping filters work?")
+		validator.assertLinkedBand(TROUBLESHOOTING, Duration.ofMinutes(15), "This isn't going to work... Filter types overlap", "How can I make the overlapping filters work?")
 		validator.assertLinkedBand(LEARNING, Duration.ofMinutes(42), "How can I make the overlapping filters work?", "Creating a factory for assembling composite filters")
 		validator.assertLinkedBand(REWORK, Duration.parse("PT1h18m"), "Creating a factory for assembling composite filters", "")
-		validator.assertLinkedBand(CONFLICT, Duration.parse("PT5m26s"), "Crap, this isn't going to work either.", "How can I make the composite filters work?")
+		validator.assertLinkedBand(TROUBLESHOOTING, Duration.parse("PT5m26s"), "Crap, this isn't going to work either.", "How can I make the composite filters work?")
 		// TODO: there's 10 seconds of the rework band that disappears, is that expected?
 		validator.assertLinkedBand(LEARNING, Duration.parse("PT35m4s"), "How can I make the composite filters work?", "Refactoring to use a CompositeFilterChain")
 		validator.assertLinkedBand(REWORK, Duration.parse("PT1h14m34s"), "Refactoring to use a CompositeFilterChain", "")
-		validator.assertLinkedBand(CONFLICT, Duration.parse("PT15m10s"), "The CompositeFilterChain won't support the LagFilter", "How can I support the LagFilter?")
+		validator.assertLinkedBand(TROUBLESHOOTING, Duration.parse("PT15m10s"), "The CompositeFilterChain won't support the LagFilter", "How can I support the LagFilter?")
 		// TODO: there's 10 seconds of the rework band that disappears, is that expected?
 		validator.assertLinkedBand(LEARNING, Duration.parse("PT5m24s"), "How can I support the LagFilter?", "LagFilter won't be a composite.  Refactoring")
 		validator.assertLinkedBand(REWORK, Duration.parse("PT32m12s"), "LagFilter won't be a composite.  Refactoring", "Ended up with a customized composite filter.")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT50m13s"))
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT10s"), "Final Validation")
-		validator.assertIdeaFlowBand(CONFLICT, Duration.parse("PT30m43s"), "Why isn't the dropdown populating?", "Bunch of little bugs.")
+		validator.assertIdeaFlowBand(TROUBLESHOOTING, Duration.parse("PT30m43s"), "Why isn't the dropdown populating?", "Bunch of little bugs.")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.ofSeconds(10))
 		validator.assertValidationComplete()
 	}
@@ -200,8 +199,8 @@ class PrimaryScenarioSpec extends Specification {
 		TimelineValidator validator = new TimelineValidator(bandTimeline)
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1m30s"))
 		validator.assertIdeaFlowBand(LEARNING, Duration.parse("PT5h44m2s"), "Where do I need to change the ReportingEngine code? #LackOfFamiliarity", "Need to update the NotificationTemplate")
-		validator.assertNestedTimeBand(CONFLICT, Duration.ofMinutes(35), "Why is the ReportingEngine sending notifications to Dispatch service?", "Dispatch emails the reports out to users.")
-		validator.assertNestedTimeBand(CONFLICT, Duration.parse("PT46m30s"), "Why is the ReportingEngine dependent on ProdDB?  Should only be ReportingDB", "Looks like dependency was added for real-time dashboard. hmm.")
+		validator.assertNestedTimeBand(TROUBLESHOOTING, Duration.ofMinutes(35), "Why is the ReportingEngine sending notifications to Dispatch service?", "Dispatch emails the reports out to users.")
+		validator.assertNestedTimeBand(TROUBLESHOOTING, Duration.parse("PT46m30s"), "Why is the ReportingEngine dependent on ProdDB?  Should only be ReportingDB", "Looks like dependency was added for real-time dashboard. hmm.")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT47m33s"))
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT32m3s"), "Final Validation")
 		validator.assertValidationComplete()
@@ -255,13 +254,13 @@ class PrimaryScenarioSpec extends Specification {
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT1h52m15s"))
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT35m5s"), "Extract TimeBand class")
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT1h15m"), "Refactor ChartVisualizer to use new TimeBand")
-		validator.assertLinkedBand(CONFLICT, Duration.parse("PT14m9s"), "Why isn't the RangeBuilder working anymore?", "Range builder uses the duration details to calculate range.  Need to refactor.")
+		validator.assertLinkedBand(TROUBLESHOOTING, Duration.parse("PT14m9s"), "Why isn't the RangeBuilder working anymore?", "Range builder uses the duration details to calculate range.  Need to refactor.")
 		validator.assertLinkedBand(REWORK, Duration.parse("PT1h14m38s"), "Range builder uses the duration details to calculate range.  Need to refactor.", "Okay, RangeBuilder is working again.")
-		validator.assertLinkedNestedTimeBand(CONFLICT, Duration.parse("PT15m43s"), "Why isn't the RangeBuilder working NOW?", "Flipped || with && in the duration code #TranspositionMistake")
-		validator.assertLinkedNestedTimeBand(CONFLICT, Duration.parse("PT7m26s"), "Why is the duration 5?", "Missing a condition for excluding out of range values.")
+		validator.assertLinkedNestedTimeBand(TROUBLESHOOTING, Duration.parse("PT15m43s"), "Why isn't the RangeBuilder working NOW?", "Flipped || with && in the duration code #TranspositionMistake")
+		validator.assertLinkedNestedTimeBand(TROUBLESHOOTING, Duration.parse("PT7m26s"), "Why is the duration 5?", "Missing a condition for excluding out of range values.")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT3m35s"))
 		validator.assertSegmentStartAndProgressNode(Duration.parse("PT30s"), "Final Validation")
-		validator.assertIdeaFlowBand(CONFLICT, Duration.parse("PT15m43s"), "Why isn't the chart showing up?", "Flipped if/else condition. #TranspositionMistake")
+		validator.assertIdeaFlowBand(TROUBLESHOOTING, Duration.parse("PT15m43s"), "Why isn't the chart showing up?", "Flipped if/else condition. #TranspositionMistake")
 		validator.assertIdeaFlowBand(PROGRESS, Duration.parse("PT30m3s"))
 		validator.assertValidationComplete()
 	}

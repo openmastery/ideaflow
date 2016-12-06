@@ -7,7 +7,7 @@ import spock.lang.Specification
 import java.time.Duration
 import java.time.LocalDateTime
 
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
@@ -102,9 +102,9 @@ class BandTimelineSplitterSpec extends Specification {
 	def "WHEN subtask start is within nested Timeband SHOULD split containing and nested bands across TimelineSegments"() {
 		given:
 		testSupport.startBandAndAdvanceHours(LEARNING, 2)
-		testSupport.startBandAndAdvanceHours(CONFLICT, 1)
-		testSupport.endBandAndAdvanceHours(CONFLICT, 1)
-		testSupport.startBandAndAdvanceHours(CONFLICT, 2)
+		testSupport.startBandAndAdvanceHours(TROUBLESHOOTING, 1)
+		testSupport.endBandAndAdvanceHours(TROUBLESHOOTING, 1)
+		testSupport.startBandAndAdvanceHours(TROUBLESHOOTING, 2)
 		testSupport.startSubtaskAndAdvanceHours(1)
 
 		when:
@@ -113,21 +113,21 @@ class BandTimelineSplitterSpec extends Specification {
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(6))
-		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, CONFLICT, Duration.ofHours(1))
-		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 1, CONFLICT, Duration.ofHours(2))
+		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(1))
+		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 1, TROUBLESHOOTING, Duration.ofHours(2))
 		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(7))
 		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(1))
-		validator.assertNestedTimeBand(segments[1].ideaFlowBands[0].nestedBands, 0, CONFLICT, Duration.ofHours(1))
+		validator.assertNestedTimeBand(segments[1].ideaFlowBands[0].nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(1))
 		validator.assertValidationComplete(segments, 2)
 	}
 
 	def "WHEN subtask is between two nested Timebands SHOULD split containing and nested bands across TimelineSegments"() {
 		given:
 		testSupport.startBandAndAdvanceHours(LEARNING, 2)
-		testSupport.startBandAndAdvanceHours(CONFLICT, 1)
-		testSupport.endBandAndAdvanceHours(CONFLICT, 1)
+		testSupport.startBandAndAdvanceHours(TROUBLESHOOTING, 1)
+		testSupport.endBandAndAdvanceHours(TROUBLESHOOTING, 1)
 		testSupport.startSubtaskAndAdvanceHours(1)
-		testSupport.startBandAndAdvanceHours(CONFLICT, 2)
+		testSupport.startBandAndAdvanceHours(TROUBLESHOOTING, 2)
 
 		when:
 		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
@@ -135,10 +135,10 @@ class BandTimelineSplitterSpec extends Specification {
 		then:
 		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(4))
-		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, CONFLICT, Duration.ofHours(1))
+		validator.assertNestedTimeBand(segments[0].ideaFlowBands[1].nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(1))
 		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(5))
 		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(3))
-		validator.assertNestedTimeBand(segments[1].ideaFlowBands[0].nestedBands, 0, CONFLICT, Duration.ofHours(2))
+		validator.assertNestedTimeBand(segments[1].ideaFlowBands[0].nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(2))
 		validator.assertValidationComplete(segments, 2)
 	}
 

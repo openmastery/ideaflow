@@ -55,6 +55,19 @@ public class BatchClient extends OpenMasteryClient<EditorActivity, BatchClient> 
 		addIFMBatch(batch);
 	}
 
+	public void addBlockActivity(Long taskId, LocalDateTime endTime, Long durationInSeconds, String comment) {
+		NewBlockActivity activity = NewBlockActivity.builder()
+				.taskId(taskId)
+				.durationInSeconds(durationInSeconds)
+				.comment(comment)
+				.endTime(endTime)
+				.build();
+
+		NewIFMBatch batch = NewIFMBatch.builder().timeSent(endTime).blockActivityList(Arrays.asList(activity)).build();
+		addIFMBatch(batch);
+	}
+
+
 	public void addExecutionActivity(Long taskId, LocalDateTime endTime, Long durationInSeconds, String processName, String executionTaskType,
 									 int exitCode, boolean isDebug) {
 		NewExecutionActivity newExecutionActivity = NewExecutionActivity.builder()
@@ -88,6 +101,8 @@ public class BatchClient extends OpenMasteryClient<EditorActivity, BatchClient> 
 				.build();
 		addIFMBatch(batch);
 	}
+
+
 
 	public void addBatchEvent(Long taskId, LocalDateTime position, EventType eventType, String comment) {
 		NewBatchEvent event = NewBatchEvent.builder()

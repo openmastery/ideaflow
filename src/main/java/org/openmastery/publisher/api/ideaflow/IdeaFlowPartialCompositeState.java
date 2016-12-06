@@ -33,7 +33,7 @@ public class IdeaFlowPartialCompositeState {
 	}
 
 	public IdeaFlowState getActiveConflict() {
-		return isStateOfType(activeState, IdeaFlowStateType.CONFLICT) ? activeState : null;
+		return isStateOfType(activeState, IdeaFlowStateType.TROUBLESHOOTING) ? activeState : null;
 	}
 
 	public IdeaFlowState getActiveLearningOrRework() {

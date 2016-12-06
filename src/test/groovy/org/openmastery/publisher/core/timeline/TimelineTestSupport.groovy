@@ -15,7 +15,7 @@ import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine
 
 import java.time.LocalDateTime
 
-import static IdeaFlowStateType.CONFLICT
+import static IdeaFlowStateType.TROUBLESHOOTING
 import static IdeaFlowStateType.LEARNING
 import static IdeaFlowStateType.REWORK
 
@@ -139,7 +139,7 @@ class TimelineTestSupport {
 			stateMachine.startLearning(comment)
 		} else if (type == REWORK) {
 			stateMachine.startRework(comment)
-		} else if (type == CONFLICT) {
+		} else if (type == TROUBLESHOOTING) {
 			stateMachine.startConflict(comment)
 		} else {
 			throw new RuntimeException("Unknown type: ${type}")
@@ -164,7 +164,7 @@ class TimelineTestSupport {
 			stateMachine.endLearning(comment)
 		} else if (type == REWORK) {
 			stateMachine.endRework(comment)
-		} else if (type == CONFLICT) {
+		} else if (type == TROUBLESHOOTING) {
 			stateMachine.endConflict(comment)
 		} else {
 			throw new RuntimeException("Unknown type: ${type}")

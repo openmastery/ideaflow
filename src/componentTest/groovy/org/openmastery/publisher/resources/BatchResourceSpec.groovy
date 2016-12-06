@@ -2,6 +2,7 @@ package org.openmastery.publisher.resources
 
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.activity.ActivityEntity
+import org.openmastery.publisher.core.activity.BlockActivityEntity
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
@@ -79,6 +80,22 @@ class BatchResourceSpec extends Specification {
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExternal.taskId)
 		comparator.assertEquals(expectedExternal, entities.last())
+		assert entities.last().id != null
+	}
+
+	def "SHOULD post block activity"() {
+		Duration expectedDuration = aRandom.duration()
+		BlockActivityEntity expectedActivity = aRandom.blockActivityEntity()
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
+				.build()
+
+		when:
+		client.addExternalActivity(expectedActivity.taskId, timeService.jodaNow(), expectedDuration.seconds, expectedActivity.comment)
+
+		then:
+		List<ActivityEntity> entities = persistenceService.getActivityList(expectedActivity.taskId)
+		comparator.assertEquals(expectedActivity, entities.last())
 		assert entities.last().id != null
 	}
 

@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 import java.time.Duration
 
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.CONFLICT
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
@@ -38,8 +38,8 @@ class IdleTimeProcessorSpec extends Specification {
 
 	def "WHEN idle time is within a Timeband SHOULD subtract relative time from band"() {
 		given:
-		testSupport.startBandAndAdvanceHours(CONFLICT, 1)
-		testSupport.endBandAndAdvanceHours(CONFLICT, 2)
+		testSupport.startBandAndAdvanceHours(TROUBLESHOOTING, 1)
+		testSupport.endBandAndAdvanceHours(TROUBLESHOOTING, 2)
 		testSupport.startBandAndAdvanceHours(LEARNING, 1)
 		testSupport.idle(3)
 		testSupport.advanceHours(1)
@@ -49,7 +49,7 @@ class IdleTimeProcessorSpec extends Specification {
 
 		then:
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.ideaFlowBands, 1, CONFLICT, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, TROUBLESHOOTING, Duration.ofHours(1))
 		validator.assertTimeBand(segment.ideaFlowBands, 2, PROGRESS, Duration.ofHours(2))
 		validator.assertTimeBand(segment.ideaFlowBands, 3, LEARNING, Duration.ofHours(2), Duration.ofHours(3))
 		validator.assertValidationComplete(segment)
@@ -59,7 +59,7 @@ class IdleTimeProcessorSpec extends Specification {
 	def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {
 		given:
 		testSupport.startBandAndAdvanceHours(LEARNING, 1)
-		testSupport.startBandAndAdvanceHours(CONFLICT, 2)
+		testSupport.startBandAndAdvanceHours(TROUBLESHOOTING, 2)
 		testSupport.idle(4)
 		testSupport.advanceHours(1)
 
@@ -70,7 +70,7 @@ class IdleTimeProcessorSpec extends Specification {
 		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
 		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.ofHours(4), Duration.ofHours(4))
 		List nestedBands = segment.ideaFlowBands[1].nestedBands
-		validator.assertNestedTimeBand(nestedBands, 0, CONFLICT, Duration.ofHours(3), Duration.ofHours(4))
+		validator.assertNestedTimeBand(nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(3), Duration.ofHours(4))
 		validator.assertValidationComplete(segment)
 		assert segment.duration == Duration.ofHours(5)
 	}

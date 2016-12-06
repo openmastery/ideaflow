@@ -62,7 +62,7 @@ public class IdeaFlowClient extends OpenMasteryClient<IdeaFlowStateTransition, I
 				return ResourcePaths.REWORK_PATH;
 			case LEARNING:
 				return ResourcePaths.LEARNING_PATH;
-			case CONFLICT:
+			case TROUBLESHOOTING:
 				return ResourcePaths.CONFLICT_PATH;
 			default:
 				throw new RuntimeException("Unknown band type=" + type);

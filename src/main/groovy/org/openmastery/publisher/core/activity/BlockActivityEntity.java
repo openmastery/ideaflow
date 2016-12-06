@@ -15,26 +15,27 @@
  */
 package org.openmastery.publisher.core.activity;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Entity
-@DiscriminatorValue("external")
+@DiscriminatorValue("block")
 @Data
-@Builder
-@EqualsAndHashCode(callSuper = true, of = {})
-public class ExternalActivityEntity extends ActivityEntity {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class BlockActivityEntity extends ActivityEntity {
 
 	private static final String COMMENT_KEY = "comment";
 
-	private ExternalActivityEntity() {}
+	private BlockActivityEntity() {
+	}
 
-	private ExternalActivityEntity(long id, long ownerId, long taskId, LocalDateTime start, LocalDateTime end, String comment) {
+	private BlockActivityEntity(long id, long ownerId, long taskId, LocalDateTime start, LocalDateTime end, String comment) {
 		super(id, ownerId, taskId, start, end);
 		setComment(comment);
 	}
@@ -47,19 +48,20 @@ public class ExternalActivityEntity extends ActivityEntity {
 		setMetadataField(COMMENT_KEY, comment);
 	}
 
-	public static class ExternalActivityEntityBuilder extends ActivityEntityBuilder<ExternalActivityEntityBuilder> {
+	public static class BlockActivityEntityBuilder extends ActivityEntityBuilder<BlockActivityEntityBuilder> {
 
 		private String comment;
 
-		public ExternalActivityEntity build() {
-			return new ExternalActivityEntity(id, ownerId, taskId, start, end, comment);
+		public BlockActivityEntity build() {
+			return new BlockActivityEntity(id, ownerId, taskId, start, end, comment);
 		}
 
-		public ExternalActivityEntityBuilder comment(String comment) {
+		public BlockActivityEntityBuilder comment(String comment) {
 			this.comment = comment;
 			return this;
 		}
 
 	}
-	
+
 }
+
