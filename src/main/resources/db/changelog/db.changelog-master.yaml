@@ -17,3 +17,6 @@ databaseChangeLog:
 
   - include:
       file: db/create_user.sql
+
+  - include:
+       file: db/add_task_columns_project_and_last_modified.sql
