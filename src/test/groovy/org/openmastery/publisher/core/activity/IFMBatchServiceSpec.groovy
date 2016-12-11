@@ -16,10 +16,12 @@ import static org.openmastery.publisher.ARandom.aRandom
 class IFMBatchServiceSpec extends Specification {
 
 	IFMBatchService ifmBatchService
+	IFMBatchService.EntityBuilder entityBuilder
 	MockTimeService mockTimeService
 
 	def setup() {
 		ifmBatchService = new IFMBatchService()
+		entityBuilder = new IFMBatchService.EntityBuilder(-1)
 		mockTimeService = new MockTimeService()
 		ifmBatchService.timeService = mockTimeService
 		ifmBatchService.invocationContext = Mock(InvocationContext)
@@ -50,8 +52,7 @@ class IFMBatchServiceSpec extends Specification {
 		NewEditorActivity newActivity = aRandom.newEditorActivity().endTime(TimeConverter.toJodaLocalDateTime(laggingClock)).build()
 
 		when:
-		EditorActivityEntity actualEntity =
-				ifmBatchService.buildActivityEntity(newActivity, ifmBatchService.determineTimeAdjustment(laggingClock), EditorActivityEntity.class)
+		EditorActivityEntity actualEntity = entityBuilder.buildActivityEntity(newActivity, ifmBatchService.determineTimeAdjustment(laggingClock), EditorActivityEntity.class)
 
 		then:
 		assert actualEntity.start == mockTimeService.now().minusSeconds(newActivity.durationInSeconds)
@@ -65,10 +66,55 @@ class IFMBatchServiceSpec extends Specification {
 
 		when:
 		EventEntity eventEntity =
-				ifmBatchService.buildEventEntity(event, ifmBatchService.determineTimeAdjustment(laggingClock))
+				entityBuilder.buildEventEntity(event, ifmBatchService.determineTimeAdjustment(laggingClock))
 
 		then:
 		assert eventEntity.position == mockTimeService.now()
 
+	}
+
+	def "buildActivity SHOULD record modification times"() {
+		given:
+		NewEditorActivity newActivity = aRandom.newEditorActivity().endTime(mockTimeService.jodaNow()).build()
+
+		when:
+		entityBuilder.buildActivityEntity(newActivity, Duration.ofSeconds(0), EditorActivityEntity.class)
+
+		then:
+		assert entityBuilder.taskModificationDates.get(newActivity.taskId) != newActivity.endTime
+	}
+
+	def "buildEvent SHOULD record modification times"() {
+		given:
+		NewBatchEvent event = aRandom.newBatchEvent().position(mockTimeService.jodaNow()).build()
+
+		when:
+		entityBuilder.buildEventEntity(event, Duration.ofSeconds(0))
+
+		then:
+		assert entityBuilder.taskModificationDates.get(event.taskId) != event.position
+	}
+
+	def "recordTaskModification SHOULD save the most recent modifications"() {
+		given:
+		LocalDateTime oldest = mockTimeService.now().minusMinutes(30)
+		LocalDateTime newest = mockTimeService.now()
+
+		when:
+		entityBuilder.recordTaskModification(5L, newest)
+		entityBuilder.recordTaskModification(5L, oldest)
+
+		then:
+		assert entityBuilder.taskModificationDates.get(5L) == newest
+
+	}
+
+	def "recordTaskModification SHOULD throw an exception on modification once the list is retrieved"() {
+		when:
+		entityBuilder.taskModificationDates
+		entityBuilder.recordTaskModification(5L, mockTimeService.now())
+
+		then:
+		thrown(UnsupportedOperationException)
 	}
 }

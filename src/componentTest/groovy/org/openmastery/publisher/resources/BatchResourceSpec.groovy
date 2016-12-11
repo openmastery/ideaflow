@@ -8,6 +8,7 @@ import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.client.BatchClient
@@ -33,12 +34,20 @@ class BatchResourceSpec extends Specification {
 	private BeanCompare comparator = new BeanCompare().excludeFields("id", "ownerId", "metadata", "metadataContainer")
 	private EntityMapper entityMapper = new EntityMapper()
 
+	private Long taskId
+
+	def setup() {
+		TaskEntity taskEntity = aRandom.taskEntity().build()
+		taskId = persistenceService.saveTask(taskEntity).id
+	}
+
 	def "SHOULD post editor activity"() {
 		given:
 		Duration expectedDuration = aRandom.duration()
 		EditorActivityEntity expectedActivity = aRandom.editorActivityEntity()
 				.start(timeService.now().minus(expectedDuration))
 				.end(timeService.now())
+				.taskId(taskId)
 				.build()
 
 		when:
@@ -56,6 +65,7 @@ class BatchResourceSpec extends Specification {
 		IdleActivityEntity expectedIdle = aRandom.idleActivityEntity()
 				.start(timeService.now().minus(expectedDuration))
 				.end(timeService.now())
+				.taskId(taskId)
 				.build()
 
 		when:
@@ -72,6 +82,7 @@ class BatchResourceSpec extends Specification {
 		ExternalActivityEntity expectedExternal = aRandom.externalActivityEntity()
 				.start(timeService.now().minus(expectedDuration))
 				.end(timeService.now())
+				.taskId(taskId)
 				.build()
 
 		when:
@@ -88,6 +99,7 @@ class BatchResourceSpec extends Specification {
 		BlockActivityEntity expectedActivity = aRandom.blockActivityEntity()
 				.start(timeService.now().minus(expectedDuration))
 				.end(timeService.now())
+				.taskId(taskId)
 				.build()
 
 		when:
@@ -104,6 +116,7 @@ class BatchResourceSpec extends Specification {
 		ExecutionActivityEntity expectedExecution = aRandom.executionActivityEntity()
 				.start(timeService.now().minus(expectedDuration))
 				.end(timeService.now())
+				.taskId(taskId)
 				.build()
 
 		when:
@@ -122,6 +135,7 @@ class BatchResourceSpec extends Specification {
 		ModificationActivityEntity expectedModification = aRandom.modificationActivityEntity()
 				.start(timeService.now().minus(expectedDuration))
 				.end(timeService.now())
+				.taskId(taskId)
 				.build()
 
 		when:
@@ -139,6 +153,7 @@ class BatchResourceSpec extends Specification {
 		given:
 		EventEntity expectedEvent = aRandom.eventEntity()
 			.position(timeService.now())
+			.taskId(taskId)
 			.build()
 
 		when:

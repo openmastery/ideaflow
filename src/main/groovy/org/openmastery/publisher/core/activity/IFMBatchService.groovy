@@ -21,6 +21,7 @@ import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeConverter
 import org.openmastery.time.TimeService
@@ -39,7 +40,7 @@ class IFMBatchService {
 	private TimeService timeService;
 	@Autowired
 	private InvocationContext invocationContext;
-	private EntityMapper entityMapper = new EntityMapper();
+
 
 	Duration determineTimeAdjustment(LocalDateTime messageSentAt) {
 		LocalDateTime now = timeService.now()
@@ -50,48 +51,109 @@ class IFMBatchService {
 	public void addIFMBatch(NewIFMBatch batch) {
 		Duration adjustment = determineTimeAdjustment(TimeConverter.toJavaLocalDateTime(batch.timeSent))
 
-		saveActivities(batch.editorActivityList, adjustment, EditorActivityEntity.class)
-		saveActivities(batch.externalActivityList, adjustment, ExternalActivityEntity.class)
-		saveActivities(batch.idleActivityList, adjustment, IdleActivityEntity.class)
-		saveActivities(batch.executionActivityList, adjustment, ExecutionActivityEntity.class)
-		saveActivities(batch.modificationActivityList, adjustment, ModificationActivityEntity.class)
-//No such property: BlockActivityEntity.. is this because the field is blank?  Eh?
-		saveActivities(batch.blockActivityList, adjustment, BlockActivityEntity.class)
-		saveEvents(batch.eventList, adjustment)
+		EntityBuilder entityBuilder = new EntityBuilder(invocationContext.getUserId())
+		List<ActivityEntity> activityEntities = entityBuilder.buildActivities(batch, adjustment)
+		List<EventEntity> eventEntities = entityBuilder.buildEvents(batch, adjustment)
+
+		saveActivities(activityEntities)
+		saveEvents(eventEntities)
+		saveTaskModifyDates(entityBuilder.getTaskModificationDates())
+
 	}
 
-	public void saveActivities(List<NewActivity> activityList, Duration adjustment, Class clazz) {
-		activityList.each { NewActivity activity ->
-			ActivityEntity entity = buildActivityEntity(activity, adjustment, clazz)
+	private void saveActivities(List<ActivityEntity> activityList) {
+		activityList.each { ActivityEntity entity ->
 			persistenceService.saveActivity(entity)
 		}
 	}
 
-	public void saveEvents(List<NewBatchEvent> eventList, Duration adjustment) {
-		eventList.each {  NewBatchEvent event ->
-			EventEntity entity = buildEventEntity(event, adjustment);
+	private void saveEvents(List<EventEntity> eventEntityList) {
+		eventEntityList.each { EventEntity entity ->
 			persistenceService.saveEvent(entity)
 		}
 	}
 
-	public ActivityEntity buildActivityEntity( NewActivity activity, Duration adjustment, Class clazz) {
-		ActivityEntity entity = entityMapper.mapIfNotNull(activity, clazz) as ActivityEntity
-
-		LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(activity.endTime)
-		entity.setStart( endTime.plus(adjustment).minusSeconds(activity.getDurationInSeconds()))
-		entity.setEnd( endTime.plus(adjustment))
-		entity.setOwnerId(invocationContext.getUserId());
-		return entity
+	private void saveTaskModifyDates(Map<Long, LocalDateTime> taskModifyDates) {
+		taskModifyDates.each { Long taskId, LocalDateTime modifyDate ->
+			TaskEntity taskEntity = persistenceService.findTaskWithId(taskId)
+			taskEntity.modifyDate = modifyDate
+			persistenceService.saveTask(taskEntity)
+		}
 	}
 
-	public EventEntity buildEventEntity ( NewBatchEvent event, Duration adjustment) {
-		EventEntity entity = entityMapper.mapIfNotNull(event, EventEntity.class)
+	static class EntityBuilder {
 
-		LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(event.position)
-		entity.setPosition(endTime.plus(adjustment))
-		entity.setOwnerId(invocationContext.getUserId())
-		return entity
+		private EntityMapper entityMapper = new EntityMapper()
+		private long userId
+
+		private Map<Long, LocalDateTime> taskModificationDates = [:]
+
+		EntityBuilder(long userId) {
+			this.userId = userId
+		}
+
+
+		List<ActivityEntity> buildActivities(NewIFMBatch batch, Duration adjustment) {
+			List<ActivityEntity> activities = (
+				build(batch.editorActivityList, adjustment, EditorActivityEntity.class) +
+				build(batch.externalActivityList, adjustment, ExternalActivityEntity.class) +
+				build(batch.idleActivityList, adjustment, IdleActivityEntity.class) +
+				build(batch.executionActivityList, adjustment, ExecutionActivityEntity.class) +
+				build(batch.modificationActivityList, adjustment, ModificationActivityEntity.class)
+			)
+
+			return activities
+		}
+
+		List<EventEntity> buildEvents(NewIFMBatch batch, Duration adjustment) {
+			batch.eventList.collect {  NewBatchEvent event ->
+				buildEventEntity(event, adjustment);
+			}
+		}
+
+		Map<Long, LocalDateTime> getTaskModificationDates() {
+			Map<Long, LocalDateTime> taskModificationDates = taskModificationDates
+			this.taskModificationDates = Collections.unmodifiableMap(taskModificationDates)
+			return taskModificationDates
+		}
+
+		private List<ActivityEntity> build(List<NewActivity> activityList, Duration adjustment, Class clazz) {
+			activityList.collect { NewActivity activity ->
+				buildActivityEntity(activity, adjustment, clazz)
+			}
+		}
+
+		private ActivityEntity buildActivityEntity( NewActivity activity, Duration adjustment, Class clazz) {
+			ActivityEntity entity = entityMapper.mapIfNotNull(activity, clazz) as ActivityEntity
+
+			LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(activity.endTime)
+			entity.setStart( endTime.plus(adjustment).minusSeconds(activity.getDurationInSeconds()))
+			entity.setEnd( endTime.plus(adjustment))
+			entity.setOwnerId(userId);
+
+			recordTaskModification(entity.taskId, entity.end)
+			return entity
+		}
+
+		private EventEntity buildEventEntity ( NewBatchEvent event, Duration adjustment) {
+			EventEntity entity = entityMapper.mapIfNotNull(event, EventEntity.class)
+
+			LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(event.position)
+			entity.setPosition(endTime.plus(adjustment))
+			entity.setOwnerId(userId)
+
+			recordTaskModification(entity.taskId, entity.position)
+			return entity
+		}
+
+		private void recordTaskModification(Long taskId, LocalDateTime modifyDate) {
+			LocalDateTime lastModified = taskModificationDates.get(taskId)
+
+			if (lastModified == null || modifyDate.isAfter(lastModified)) {
+				taskModificationDates.put(taskId, modifyDate)
+			}
+		}
+
 	}
-
 
 }

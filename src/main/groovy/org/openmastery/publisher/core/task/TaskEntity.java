@@ -44,6 +44,8 @@ public class TaskEntity {
 	private Long ownerId;
 	private String name;
 	private String description;
+	private String project;
 	private LocalDateTime creationDate;
+	private LocalDateTime modifyDate;
 
 }
