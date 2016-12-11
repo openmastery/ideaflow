@@ -24,8 +24,10 @@ import org.openmastery.publisher.client.IdeaFlowClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.springframework.beans.factory.annotation.Autowired
+import spock.lang.Ignore
 import spock.lang.Specification
 
+@Ignore
 @ComponentTest
 class IdeaFlowResourceSpec extends Specification {
 

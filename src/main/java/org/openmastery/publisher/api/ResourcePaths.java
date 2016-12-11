@@ -29,12 +29,12 @@ public class ResourcePaths {
 
 	// ideaflow paths
 	public static final String IDEAFLOW_PATH = "/ideaflow";
-	public static final String CONFLICT_PATH = "/conflict";
-	public static final String LEARNING_PATH = "/learning";
-	public static final String REWORK_PATH = "/rework";
-	public static final String START_PATH = "/start";
-	public static final String STOP_PATH = "/stop";
-	public static final String ACTIVE_STATE_PATH = "/activeState";
+
+	public static final String IDEAFLOW_TIMELINE = "/timeline";
+	public static final String IDEAFLOW_TASK = "/task";
+	public static final String IDEAFLOW_SUBTASK = "/subtask";
+
+
 
 	// activity paths
 	public static final String ACTIVITY_PATH = "/activity";

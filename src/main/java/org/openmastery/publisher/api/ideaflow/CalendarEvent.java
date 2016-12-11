@@ -1,4 +1,4 @@
-package org.openmastery.publisher.api.timeline;
+package org.openmastery.publisher.api.ideaflow;
 
 import org.joda.time.LocalDateTime;
 

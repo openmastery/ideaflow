@@ -11,6 +11,7 @@ import org.openmastery.publisher.client.TimelineClient
 import org.openmastery.publisher.core.timeline.TimelineValidator
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.time.Duration
@@ -21,6 +22,7 @@ import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
+@Ignore
 @ComponentTest
 class PrimaryScenarioSpec extends Specification {
 

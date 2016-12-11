@@ -1,4 +1,4 @@
-package org.openmastery.publisher.api.timeline;
+package org.openmastery.publisher.api.ideaflow;
 
 public class ModificationActivity {
 

@@ -8,6 +8,7 @@ import org.openmastery.publisher.core.timeline.ActivityTimelineValidator
 import org.openmastery.publisher.core.timeline.TimelinePrettyPrinter
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.time.Duration
@@ -16,6 +17,7 @@ import java.time.LocalDateTime
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 
+@Ignore
 @ComponentTest
 class ActivityTimelineScenarioSpec  extends Specification {
 
@@ -36,6 +38,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	def setup() {
 		start = timeService.now()
 	}
+
 
 	def "activity timeline SHOULD break up timeband start and end AND sort with activity"() {
 		given:

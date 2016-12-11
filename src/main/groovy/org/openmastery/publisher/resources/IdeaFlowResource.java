@@ -20,6 +20,8 @@ import org.openmastery.mapper.EntityMapper;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowPartialCompositeState;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowState;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateTransition;
+import org.openmastery.publisher.api.ideaflow.Timeline;
+import org.openmastery.publisher.api.timeline.BandTimeline;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine;
@@ -27,11 +29,7 @@ import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Component
@@ -40,62 +38,13 @@ import javax.ws.rs.core.MediaType;
 public class IdeaFlowResource {
 
 	@Autowired
-	private IdeaFlowStateMachineFactory stateMachineFactory;
-	@Autowired
 	private IdeaFlowPersistenceService persistenceService;
-	private EntityMapper entityMapper = new EntityMapper();
-
-	private IdeaFlowStateMachine createStateMachine(IdeaFlowStateTransition transition) {
-		return stateMachineFactory.createStateMachine(transition.getTaskId());
-	}
-
-	@POST
-	@Path(ResourcePaths.CONFLICT_PATH + ResourcePaths.START_PATH)
-	public void startConflict(IdeaFlowStateTransition transition) {
-		createStateMachine(transition).startConflict(transition.getComment());
-	}
-
-	@POST
-	@Path(ResourcePaths.CONFLICT_PATH + ResourcePaths.STOP_PATH)
-	public void endConflict(IdeaFlowStateTransition transition) {
-		createStateMachine(transition).endConflict(transition.getComment());
-	}
-
-	@POST
-	@Path(ResourcePaths.LEARNING_PATH + ResourcePaths.START_PATH)
-	public void startLearning(IdeaFlowStateTransition transition) {
-		createStateMachine(transition).startLearning(transition.getComment());
-	}
-
-	@POST
-	@Path(ResourcePaths.LEARNING_PATH + ResourcePaths.STOP_PATH)
-	public void endLearning(IdeaFlowStateTransition transition) {
-		createStateMachine(transition).endLearning(transition.getComment());
-	}
-
-	@POST
-	@Path(ResourcePaths.REWORK_PATH + ResourcePaths.START_PATH)
-	public void startRework(IdeaFlowStateTransition transition) {
-		createStateMachine(transition).startRework(transition.getComment());
-	}
-
-	@POST
-	@Path(ResourcePaths.REWORK_PATH + ResourcePaths.STOP_PATH)
-	public void endRework(IdeaFlowStateTransition transition) {
-		createStateMachine(transition).endRework(transition.getComment());
-	}
 
 	@GET
-	@Path(ResourcePaths.ACTIVE_STATE_PATH + "/{taskId}")
-	public IdeaFlowPartialCompositeState activeState(@PathParam("taskId") Long taskId) {
-		IdeaFlowPartialStateEntity activePartialState = persistenceService.getActiveState(taskId);
-		IdeaFlowPartialStateEntity containingPartialState = persistenceService.getContainingState(taskId);
-		IdeaFlowState activeState = entityMapper.mapIfNotNull(activePartialState, IdeaFlowState.class);
-		IdeaFlowState containingState = entityMapper.mapIfNotNull(containingPartialState, IdeaFlowState.class);
-		return IdeaFlowPartialCompositeState.builder()
-				.activeState(activeState)
-				.containingState(containingState)
-				.build();
+	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
+	public Timeline getTimelineForTask(@PathParam("taskId") Long taskId) {
+		return null;
 	}
+
 
 }

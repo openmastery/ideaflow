@@ -6,9 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
-import org.openmastery.publisher.api.activity.NewModificationActivity;
 import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.ideaflow.CalendarEvent;
+import org.openmastery.publisher.api.ideaflow.ExecutionEvent;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
+import org.openmastery.publisher.api.ideaflow.ModificationActivity;
 
 import java.util.List;
 
@@ -18,23 +20,15 @@ import java.util.List;
 @AllArgsConstructor
 public class BandTimeline {
 
-	private String taskName; //TODO populate me
+	private String taskName;
 	private String description;
 	private LocalDateTime start;
 	private LocalDateTime end;
 	private Long durationInSeconds;
 	private Long relativePositionInSeconds;
 
-
-	//TODO can we delete timeBandGroups?
 	private List<IdeaFlowBand> ideaFlowBands;
 	private List<TimeBandGroup> timeBandGroups;
-
-	private List<ModificationActivity> modificationActivities;
-	private List<ExecutionEvent> executionEvents;
-	private List<CalendarEvent> calendarEvents;
-	private List<Event> events;
-
 
 	// simplify dozer mapping
 

@@ -1,11 +1,11 @@
-package org.openmastery.publisher.api.timeline;
+package org.openmastery.publisher.api.ideaflow;
 
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.timeline.summary.ExecutionType;
 
 
-class ExecutionEvent {
+public class ExecutionEvent {
 	private Long id;
 
 	private LocalDateTime position;
