@@ -33,16 +33,19 @@ class TaskResourceSpec extends Specification {
 		given:
 		String name = aRandom.text(10)
 		String description = "task description"
+		String project = "project"
 		LocalDateTime creationDate = timeService.jodaNow()
 
 		when:
-		Task createdTask = taskClient.createTask(name, description)
+		Task createdTask = taskClient.createTask(name, description, project)
 
 		then:
 		Task expectedTask = Task.builder()
 				.name(name)
 				.description(description)
+				.project(project)
 				.creationDate(creationDate)
+				.modifyDate(creationDate)
 				.build()
 		taskComparator.assertEquals(expectedTask, createdTask)
 		assert createdTask.id != null
@@ -51,7 +54,7 @@ class TaskResourceSpec extends Specification {
 	def "SHOULD find task with name"() {
 		given:
 		String name = aRandom.text(10)
-		Task createdTask = taskClient.createTask(name, "task description")
+		Task createdTask = taskClient.createTask(name, "task description", "project")
 
 		when:
 		Task foundTask = taskClient.findTaskWithName(name)
@@ -71,11 +74,13 @@ class TaskResourceSpec extends Specification {
 		Task expectedConflict = Task.builder()
 				.name("task")
 				.description("task description")
-				.creationDate(timeService.jodaNow()).build()
-		taskClient.createTask("task", "task description")
+				.project("project")
+				.creationDate(timeService.jodaNow())
+				.modifyDate(timeService.jodaNow()).build()
+		taskClient.createTask("task", "task description", "project")
 
 		when:
-		taskClient.createTask("task", "other description")
+		taskClient.createTask("task", "other description", "project")
 
 		then:
 		ConflictingEntityException ex = thrown()
@@ -85,13 +90,13 @@ class TaskResourceSpec extends Specification {
 	def "SHOULD return most recent tasks"() {
 		given:
 		for (int i = 0; i < 10; i++) {
-			taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50))
+			taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50), aRandom.text(50))
 			timeService.plusMinutes(10)
 		}
 		timeService.plusHours(1)
-		Task secondMostRecent = taskClient.createTask("recent1", "description")
+		Task secondMostRecent = taskClient.createTask("recent1", "description", "project")
 		timeService.plusHours(1)
-		Task mostRecent = taskClient.createTask("recent2", "description")
+		Task mostRecent = taskClient.createTask("recent2", "description", "project")
 
 		when:
 		List<Task> taskList = taskClient.findRecentTasks(1, 2)
@@ -105,7 +110,7 @@ class TaskResourceSpec extends Specification {
 		given:
 		List<Task> expectedTasks = []
 		for (int i = 0; i < 10; i++) {
-			Task task = taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50))
+			Task task = taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50), aRandom.text(50))
 			expectedTasks.add(task)
 			timeService.plusMinutes(10)
 		}
@@ -124,7 +129,7 @@ class TaskResourceSpec extends Specification {
 		given:
 		java.time.LocalDateTime fileActivityStart = timeService.now()
 		java.time.LocalDateTime fileActivityEnd = fileActivityStart.plusHours(1)
-		Task recentTask = taskClient.createTask("recent", "description")
+		Task recentTask = taskClient.createTask("recent", "description", "project")
 		ActivityEntity fileActivity = aRandom.activityEntity()
 				.taskId(recentTask.id)
 				.start(fileActivityStart)
@@ -144,7 +149,7 @@ class TaskResourceSpec extends Specification {
 
 	def "activate SHOULD NOT create idle time on resume if there is no file activity associated with task"() {
 		given:
-		Task recentTask = taskClient.createTask("recent", "description")
+		Task recentTask = taskClient.createTask("recent", "description", "project")
 		timeService.plusHours(5)
 
 		when:

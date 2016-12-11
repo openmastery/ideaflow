@@ -62,7 +62,9 @@ public class TaskResource {
 				.ownerId(invocationContext.getUserId())
 				.name(newTask.getName())
 				.description(newTask.getDescription())
+				.project(newTask.getProject())
 				.creationDate(timeService.now())
+				.modifyDate(timeService.now())
 				.build();
 
 		TaskEntity existingTask = persistenceService.findTaskWithName(task.getName());

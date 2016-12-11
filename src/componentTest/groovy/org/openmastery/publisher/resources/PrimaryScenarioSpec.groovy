@@ -44,7 +44,7 @@ class PrimaryScenarioSpec extends Specification {
 
 	def createBasicTimelineWithAllBandTypes() {
 		given:
-		Task task = taskClient.createTask("basic", "create basic timeline with all band types")
+		Task task = taskClient.createTask("basic", "create basic timeline with all band types", "project")
 		Long taskId = task.id
 
 		timeService.advanceTime(0, 0, 15)
@@ -93,7 +93,7 @@ class PrimaryScenarioSpec extends Specification {
 
 	def createTrialAndErrorMap() {
 		given:
-		Task task = taskClient.createTask("trial", "create trial and error map")
+		Task task = taskClient.createTask("trial", "create trial and error map", "project")
 		Long taskId = task.id
 
 		timeService.advanceTime(0, 0, 15)
@@ -172,7 +172,7 @@ class PrimaryScenarioSpec extends Specification {
 
 	def createLearningNestedConflictMap() {
 		given:
-		Task task = taskClient.createTask("learning", "create learning nested conflict map")
+		Task task = taskClient.createTask("learning", "create learning nested conflict map", "project")
 		Long taskId = task.id
 
 		timeService.advanceTime(0, 1, 30)
@@ -208,7 +208,7 @@ class PrimaryScenarioSpec extends Specification {
 
 	def createDetailedConflictMap() {
 		given:
-		Task task = taskClient.createTask("conflict", "create detailed conflict map")
+		Task task = taskClient.createTask("conflict", "create detailed conflict map", "project")
 		Long taskId = task.id
 
 		timeService.advanceTime(0, 5, 10)

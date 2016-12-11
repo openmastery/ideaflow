@@ -13,10 +13,11 @@ public class TaskClient extends OpenMasteryClient<Task, TaskClient> {
 		super(baseUrl, ResourcePaths.TASK_PATH, Task.class);
 	}
 
-	public Task createTask(String taskName, String description) {
+	public Task createTask(String taskName, String description, String project) {
 		NewTask task = NewTask.builder()
 				.name(taskName)
 				.description(description)
+				.project(project)
 				.build();
 		return crudClientRequest.createWithPost(task);
 	}

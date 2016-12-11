@@ -14,9 +14,10 @@ public class Task {
 
 	private Long id;
 	private LocalDateTime creationDate;
-	private LocalDateTime lastModifiedDate;
+	private LocalDateTime modifyDate;
 
 	private String name;
 	private String description;
+	private String project;
 
 }

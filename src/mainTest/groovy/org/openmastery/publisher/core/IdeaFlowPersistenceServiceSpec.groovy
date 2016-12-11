@@ -66,13 +66,13 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		assert taskList == [task]
 	}
 
-	def "findRecentTasks should return the most recent tasks added"() {
+	def "findRecentTasks should return the most recently modified tasks"() {
 		given:
-		TaskEntity mostRecent = saveTask(aRandom.taskEntity().creationDate(mockTimeService.inFuture(24)))
+		TaskEntity mostRecent = saveTask(aRandom.taskEntity().modifyDate(mockTimeService.inFuture(24)))
 		for (int i = 0; i < 5; i++) {
-			saveTask(aRandom.taskEntity().creationDate(mockTimeService.inFuture(i)))
+			saveTask(aRandom.taskEntity().modifyDate(mockTimeService.inFuture(i)))
 		}
-		TaskEntity secondMostRecent = saveTask(aRandom.taskEntity().creationDate(mockTimeService.inFuture(23)))
+		TaskEntity secondMostRecent = saveTask(aRandom.taskEntity().modifyDate(mockTimeService.inFuture(23)))
 
 		when:
 		List<TaskEntity> taskList = persistenceService.findRecentTasks(2)

@@ -178,7 +178,7 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 		} else if (limit >= taskList.size()) {
 			return taskList.asImmutable()
 		} else {
-			List<TaskEntity> sortedList = taskList.toSorted { a, b -> b.creationDate <=> a.creationDate }
+			List<TaskEntity> sortedList = taskList.toSorted { a, b -> b.modifyDate <=> a.modifyDate }
 			return sortedList.subList(0, limit)
 		}
 	}

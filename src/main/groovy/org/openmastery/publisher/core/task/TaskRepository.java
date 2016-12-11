@@ -24,7 +24,7 @@ public interface TaskRepository extends PagingAndSortingRepository<TaskEntity, L
 
 	TaskEntity findByName(String name);
 
-	@Query(nativeQuery = true, value = "select * from task order by creation_date desc limit ?1")
+	@Query(nativeQuery = true, value = "select * from task order by modify_date desc limit ?1")
 	List<TaskEntity> findRecent(int limit);
 
 }

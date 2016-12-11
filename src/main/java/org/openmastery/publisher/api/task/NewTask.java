@@ -13,5 +13,6 @@ public class NewTask {
 
 	private String name;
 	private String description;
+	private String project;
 
 }

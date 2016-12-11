@@ -39,7 +39,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 
 	def "activity timeline SHOULD break up timeband start and end AND sort with activity"() {
 		given:
-		Task task = taskClient.createTask("basic", "create basic timeline with file activity")
+		Task task = taskClient.createTask("basic", "create basic timeline with file activity", "project")
 		Long taskId = task.id
 
 		addEditorActivityAndAdvanceTime(taskId, 15, "first.txt", false)
@@ -78,7 +78,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 
 	def "activity timeline SHOULD extract idle activity AND sort with file activity"() {
 		given:
-		Task task = taskClient.createTask("basic", "create basic timeline with idles")
+		Task task = taskClient.createTask("basic", "create basic timeline with idles", "project")
 		Long taskId = task.id
 
 		ideaFlowClient.startLearning(taskId, "How does this code work?")
@@ -115,7 +115,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 
 	def "activity timeline SHOULD treat non-idle exteral activity as positive time like file activity"() {
 
-		Task task = taskClient.createTask("basic", "create basic timeline with external activity")
+		Task task = taskClient.createTask("basic", "create basic timeline with external activity", "project")
 		Long taskId = task.id
 
 		addEditorActivityAndAdvanceTime(taskId, 15, "first.txt", false)
@@ -149,7 +149,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 
 	def "activity timeline SHOULD sort events into position when events overlap with the file activity"() {
 
-		Task task = taskClient.createTask("basic", "create basic timeline with events")
+		Task task = taskClient.createTask("basic", "create basic timeline with events", "project")
 		Long taskId = task.id
 
 		addEditorActivityAndAdvanceTime(taskId, 15, "first.txt", false)
