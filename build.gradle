@@ -99,7 +99,7 @@ license {
 }
 
 task pullPostgres(type: Exec) {
-	commandLine "docker pull postgres:9.4".split(/\s+/)
+	commandLine "docker pull postgres:9.5.5".split(/\s+/)
 }
 
 task removePostgres(type: Exec) {
@@ -108,7 +108,7 @@ task removePostgres(type: Exec) {
 }
 
 task createPostgres(type: Exec) {
-	commandLine 'docker create --name=postgres --publish=5432:5432 --env="POSTGRES_USER=postgres" --env="POSTGRES_PASSWORD=postgres" postgres:9.4'.split(/\s+/)
+	commandLine 'docker create --name=postgres --publish=5432:5432 --env="POSTGRES_USER=postgres" --env="POSTGRES_PASSWORD=postgres" postgres:9.5.5'.split(/\s+/)
 	mustRunAfter pullPostgres, removePostgres
 }
 
