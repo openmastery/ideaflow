@@ -16,16 +16,8 @@
 package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.mapper.EntityMapper;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowPartialCompositeState;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowState;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowStateTransition;
-import org.openmastery.publisher.api.ideaflow.Timeline;
-import org.openmastery.publisher.api.timeline.BandTimeline;
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +34,7 @@ public class IdeaFlowResource {
 
 	@GET
 	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
-	public Timeline getTimelineForTask(@PathParam("taskId") Long taskId) {
+	public IdeaFlowTimeline getTimelineForTask(@PathParam("taskId") Long taskId) {
 		return null;
 	}
 

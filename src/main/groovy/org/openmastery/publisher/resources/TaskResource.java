@@ -25,6 +25,7 @@ import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
 import org.openmastery.publisher.core.task.TaskEntity;
 import org.openmastery.mapper.EntityMapper;
+import org.openmastery.publisher.core.task.TaskService;
 import org.openmastery.publisher.security.InvocationContext;
 import org.openmastery.time.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,89 +43,33 @@ import java.time.LocalDateTime;
 public class TaskResource {
 
 	@Autowired
-	private IdeaFlowStateMachineFactory stateMachineFactory;
-	@Autowired
-	private IdeaFlowPersistenceService persistenceService;
-	@Autowired
-	private TimeService timeService;
-	@Autowired
 	private InvocationContext invocationContext;
-
-	private EntityMapper entityMapper = new EntityMapper();
-
-	private Task toApiTask(TaskEntity taskEntity) {
-		return entityMapper.mapIfNotNull(taskEntity, Task.class);
-	}
+	@Autowired
+	private TaskService taskService;
 
 	@POST
 	public Task create(NewTask newTask) {
-		TaskEntity task = TaskEntity.builder()
-				.ownerId(invocationContext.getUserId())
-				.name(newTask.getName())
-				.description(newTask.getDescription())
-				.project(newTask.getProject())
-				.creationDate(timeService.now())
-				.modifyDate(timeService.now())
-				.build();
-
-		TaskEntity existingTask = persistenceService.findTaskWithName(task.getName());
-		if (existingTask != null) {
-			throw new ConflictingTaskException(toApiTask(existingTask));
-		}
-
-		try {
-			task = persistenceService.saveTask(task);
-		} catch (DataIntegrityViolationException ex) {
-			existingTask = persistenceService.findTaskWithName(task.getName());
-			throw new ConflictingTaskException(toApiTask(existingTask));
-		}
-
-		IdeaFlowStateMachine stateMachine = stateMachineFactory.createStateMachine(task.getId());
-		stateMachine.startTask();
-
-		Task apiTask = entityMapper.mapIfNotNull(task, Task.class);
-		return apiTask;
-	}
-
-	@PUT
-	@Path(ResourcePaths.ACTIVATE_PATH + "/{id}")
-	public Task activate(@PathParam("id") Long taskId) {
-		TaskEntity task = persistenceService.findTaskWithId(taskId);
-		if (task == null) {
-			throw new NotFoundException();
-		}
-
-		LocalDateTime activityEnd = persistenceService.getMostRecentActivityEnd(taskId);
-		if (activityEnd != null) {
-			IdleActivityEntity idleTime = IdleActivityEntity.builder()
-					.taskId(taskId)
-					.start(activityEnd)
-					.end(timeService.now())
-					.build();
-			persistenceService.saveActivity(idleTime);
-		}
-
-		return toApiTask(task);
+		return taskService.create(invocationContext.getUserId(), newTask);
 	}
 
 	@GET
 	@Path(ResourcePaths.ID_PATH + "/{id}")
 	public Task findTaskWithId(@PathParam("id") Long taskId) {
-		TaskEntity task = persistenceService.findTaskWithId(taskId);
+		Task task = taskService.findTaskWithId(taskId);
 		if (task == null) {
 			throw new NotFoundException();
 		}
-		return toApiTask(task);
+		return task;
 	}
 
 	@GET
 	@Path(ResourcePaths.TASK_NAME_PATH + "/{name}")
 	public Task findTaskWithName(@PathParam("name") String taskName) {
-		TaskEntity task = persistenceService.findTaskWithName(taskName);
+		Task task = taskService.findTaskWithName(taskName);
 		if (task == null) {
 			throw new NotFoundException();
 		}
-		return toApiTask(task);
+		return task;
 	}
 
 	@GET //TODO implement paging
@@ -135,16 +80,8 @@ public class TaskResource {
 		//On task activation, update a recent timestamp so recent stuff bubbles to the top
 		//the functionality below is no longer being used, so change to this new behavior
 
-		List<TaskEntity> taskList = persistenceService.findRecentTasks(perPage);
-		return entityMapper.mapList(taskList, Task.class);
+		return taskService.findRecentTasks(invocationContext.getUserId(), page, perPage);
 	}
 
-
-
-	class ConflictingTaskException extends ConflictingEntityException {
-		ConflictingTaskException(Task existingTask) {
-			super("Task with name '" + existingTask.getName() + "' already exists", existingTask);
-		}
-	}
 
 }

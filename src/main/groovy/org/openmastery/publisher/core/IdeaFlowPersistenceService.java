@@ -16,10 +16,7 @@
 package org.openmastery.publisher.core;
 
 import org.openmastery.publisher.api.batch.NewBatchEvent;
-import org.openmastery.publisher.core.activity.ActivityEntity;
-import org.openmastery.publisher.core.activity.EditorActivityEntity;
-import org.openmastery.publisher.core.activity.ExternalActivityEntity;
-import org.openmastery.publisher.core.activity.IdleActivityEntity;
+import org.openmastery.publisher.core.activity.*;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity;
@@ -47,6 +44,8 @@ public interface IdeaFlowPersistenceService {
 
 	List<EditorActivityEntity> getEditorActivityList(long taskId);
 
+	List<ModificationActivityEntity> getModificationActivityList(long taskId);
+
 	List<EventEntity> getEventList(long taskId);
 
 	LocalDateTime getMostRecentActivityEnd(long taskId);
@@ -70,6 +69,6 @@ public interface IdeaFlowPersistenceService {
 
 	List<EventEntity> findRecentEvents(Long userId, Timestamp afterDate, Integer limit);
 
-	List<TaskEntity> findRecentTasks(int limit);
+	List<TaskEntity> findRecentTasks(Long userId, int limit);
 
 }

@@ -16,11 +16,7 @@
 package org.openmastery.publisher.core;
 
 import org.openmastery.publisher.api.batch.NewBatchEvent;
-import org.openmastery.publisher.core.activity.ActivityEntity;
-import org.openmastery.publisher.core.activity.ActivityRepository;
-import org.openmastery.publisher.core.activity.EditorActivityEntity;
-import org.openmastery.publisher.core.activity.ExternalActivityEntity;
-import org.openmastery.publisher.core.activity.IdleActivityEntity;
+import org.openmastery.publisher.core.activity.*;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.event.EventRepository;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
@@ -101,6 +97,12 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
+	public List<ModificationActivityEntity> getModificationActivityList(long taskId) {
+		return activityRepository.findModificationActivityByTaskId(taskId);
+	}
+
+
+	@Override
 	public LocalDateTime getMostRecentActivityEnd(long taskId) {
 		ActivityEntity activity = activityRepository.findMostRecentActivityForTask(taskId);
 		return activity != null ? activity.getEnd() : null;
@@ -160,8 +162,8 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
-	public List<TaskEntity> findRecentTasks(int limit) {
-		return taskRepository.findRecent(limit);
+	public List<TaskEntity> findRecentTasks(Long userId, int limit) {
+		return taskRepository.findRecent(userId, limit);
 	}
 
 }

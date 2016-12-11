@@ -52,7 +52,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "findRecentTasks should return empty list if no tasks"() {
 		expect:
-		assert persistenceService.findRecentTasks(1).isEmpty()
+		assert persistenceService.findRecentTasks(-1L, 1).isEmpty()
 	}
 
 	def "findRecentTasks should return entire list if number of tasks less than limit"() {
@@ -60,7 +60,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		TaskEntity task = saveTask(aRandom.taskEntity())
 
 		when:
-		List<TaskEntity> taskList = persistenceService.findRecentTasks(5)
+		List<TaskEntity> taskList = persistenceService.findRecentTasks(task.ownerId, 5)
 
 		then:
 		assert taskList == [task]
@@ -70,12 +70,16 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		given:
 		TaskEntity mostRecent = saveTask(aRandom.taskEntity().modifyDate(mockTimeService.inFuture(24)))
 		for (int i = 0; i < 5; i++) {
-			saveTask(aRandom.taskEntity().modifyDate(mockTimeService.inFuture(i)))
+			saveTask(aRandom.taskEntity()
+					.ownerId(mostRecent.ownerId)
+					.modifyDate(mockTimeService.inFuture(i)))
 		}
-		TaskEntity secondMostRecent = saveTask(aRandom.taskEntity().modifyDate(mockTimeService.inFuture(23)))
+		TaskEntity secondMostRecent = saveTask(aRandom.taskEntity()
+				.ownerId(mostRecent.ownerId)
+				.modifyDate(mockTimeService.inFuture(23)))
 
 		when:
-		List<TaskEntity> taskList = persistenceService.findRecentTasks(2)
+		List<TaskEntity> taskList = persistenceService.findRecentTasks(mostRecent.ownerId, 2)
 
 		then:
 		assert taskList == [mostRecent, secondMostRecent]

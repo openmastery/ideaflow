@@ -6,16 +6,15 @@ import lombok.Data
 import lombok.NoArgsConstructor
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.api.task.Task
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class Timeline {
+class IdeaFlowTimeline {
 
-	private String taskName;
-	private String description;
-	private String project;
+	private Task task;
 
 	private LocalDateTime start;
 	private LocalDateTime end;

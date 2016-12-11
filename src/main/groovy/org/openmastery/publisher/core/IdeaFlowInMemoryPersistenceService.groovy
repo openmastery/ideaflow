@@ -20,6 +20,7 @@ import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
+import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
@@ -78,6 +79,11 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	@Override
 	List<EditorActivityEntity> getEditorActivityList(long taskId) {
 		findAllActivitiesOfType(EditorActivityEntity, taskId)
+	}
+
+	@Override
+	List<ModificationActivityEntity> getModificationActivityList(long taskId) {
+		findAllActivitiesOfType(ModificationActivityEntity, taskId)
 	}
 
 	private <T> List<T> findAllActivitiesOfType(Class<T> type, long taskId) {
@@ -172,7 +178,7 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
-	List<TaskEntity> findRecentTasks(int limit) {
+	List<TaskEntity> findRecentTasks(Long userId, int limit) {
 		if (limit < 1) {
 			return []
 		} else if (limit >= taskList.size()) {

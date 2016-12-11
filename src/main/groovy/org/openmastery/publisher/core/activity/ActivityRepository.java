@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.core.activity;
 
+import org.openmastery.publisher.api.ideaflow.ModificationActivity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -35,5 +36,9 @@ public interface ActivityRepository extends PagingAndSortingRepository<ActivityE
 
 	@Query(nativeQuery = true, value = "select * from activity where type = 'editor' and task_id = ?1")
 	List<EditorActivityEntity> findEditorActivityByTaskId(long taskId);
+
+	@Query(nativeQuery = true, value = "select * from activity where type = 'modification' and task_id = ?1")
+	List<ModificationActivityEntity> findModificationActivityByTaskId(long taskId);
+
 
 }

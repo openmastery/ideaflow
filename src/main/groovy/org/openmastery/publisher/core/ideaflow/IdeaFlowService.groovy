@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 New Iron Group, Inc.
+ * Copyright 2016 New Iron Group, Inc.
  *
  * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.resources
+package org.openmastery.publisher.core.ideaflow
 
-import org.openmastery.publisher.ComponentTest
-import org.openmastery.publisher.client.IdeaFlowClient
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.ModificationActivity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.springframework.beans.factory.annotation.Autowired
-import spock.lang.Specification
 
-@ComponentTest
-class IdeaFlowResourceSpec extends Specification {
+
+class IdeaFlowService {
 
 	@Autowired
-	private IdeaFlowClient ideaFlowClient
-	@Autowired
-	private IdeaFlowPersistenceService persistenceService
+	private IdeaFlowPersistenceService persistenceService;
 
+	IdeaFlowTimeline generateIdeaFlowForTask(Long taskId) {
+			IdeaFlowTimeline ideaFlow = new IdeaFlowTimeline()
+			//ideaFlow.task = //fetch from TaskService
+
+		List<ModificationActivityEntity> modificationList = persistenceService.getModificationActivityList(taskId)
+
+	}
 
 }

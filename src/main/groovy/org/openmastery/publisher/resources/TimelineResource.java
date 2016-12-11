@@ -82,25 +82,25 @@ public class TimelineResource {
 //
 //	@GET
 //	@Path(ResourcePaths.DAY_PATH)
-//	public Timeline getTimelineForDay(@QueryParam("day") LocalDate day, @QueryParam("userId") String userId) {
-//		return new Timeline();
+//	public IdeaFlowTimeline getTimelineForDay(@QueryParam("day") LocalDate day, @QueryParam("userId") String userId) {
+//		return new IdeaFlowTimeline();
 //	}
 //
 //	@GET
 //	@Path(ResourcePaths.DAY_PATH + ResourcePaths.RECENT_PATH)
-//	public List<Timeline> getRecentTimelinesForDays(@QueryParam("days") int days, @QueryParam("userId") String userId) {
+//	public List<IdeaFlowTimeline> getRecentTimelinesForDays(@QueryParam("days") int days, @QueryParam("userId") String userId) {
 //		return Collections.emptyList();
 //	}
 //
 //	@GET
 //	@Path(ResourcePaths.TIMELINE_USER_PATH + ResourcePaths.RECENT_PATH)
-//	public List<Timeline> getRecentTimelinesForUser(@QueryParam("userId") String userId) {
+//	public List<IdeaFlowTimeline> getRecentTimelinesForUser(@QueryParam("userId") String userId) {
 //		return Collections.emptyList();
 //	}
 //
 //	@GET
 //	@Path(ResourcePaths.PROJECT_PATH + ResourcePaths.RECENT_PATH)
-//	public List<Timeline> getRecentTimelinesForProject(@QueryParam("projectId") String projectId) {
+//	public List<IdeaFlowTimeline> getRecentTimelinesForProject(@QueryParam("projectId") String projectId) {
 //		return Collections.emptyList();
 //	}
 

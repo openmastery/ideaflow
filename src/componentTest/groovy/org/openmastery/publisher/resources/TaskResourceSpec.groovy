@@ -123,40 +123,5 @@ class TaskResourceSpec extends Specification {
 	}
 
 
-	@Ignore //this is failing intermittently because 2 idles exist for the task, and it randomly grabs the other one.
-	//not sure why there are two, but ignoring for now since we're abandoning the activation strategy for the time being
-	def "activate SHOULD create idle time on resume with start time as the most recent file activity end time"() {
-		given:
-		java.time.LocalDateTime fileActivityStart = timeService.now()
-		java.time.LocalDateTime fileActivityEnd = fileActivityStart.plusHours(1)
-		Task recentTask = taskClient.createTask("recent", "description", "project")
-		ActivityEntity fileActivity = aRandom.activityEntity()
-				.taskId(recentTask.id)
-				.start(fileActivityStart)
-				.end(fileActivityEnd)
-				.build()
-		persistenceService.saveActivity(fileActivity)
-		timeService.plusHours(5)
-
-		when:
-		taskClient.activate(recentTask.id)
-
-		then:
-		IdleActivityEntity idleActivityEntity = persistenceService.getIdleActivityList(recentTask.id)[0]
-		println "size ="+persistenceService.getIdleActivityList(recentTask.id).size()
-		assert idleActivityEntity.start == fileActivityEnd
-	}
-
-	def "activate SHOULD NOT create idle time on resume if there is no file activity associated with task"() {
-		given:
-		Task recentTask = taskClient.createTask("recent", "description", "project")
-		timeService.plusHours(5)
-
-		when:
-		taskClient.activate(recentTask.id)
-
-		then:
-		assert persistenceService.getIdleActivityList(recentTask.id).size() == 0
-	}
 
 }
