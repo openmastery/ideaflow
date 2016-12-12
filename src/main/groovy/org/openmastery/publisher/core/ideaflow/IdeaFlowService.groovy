@@ -17,22 +17,44 @@ package org.openmastery.publisher.core.ideaflow
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.ModificationActivity
+import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.activity.ExternalActivityEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
+import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.core.ideaflow.timeline.IdeaFlowTimelineBuilder
+import org.openmastery.publisher.core.task.TaskService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
-
+@Component
 class IdeaFlowService {
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService;
 
+	@Autowired
+	private TaskService taskService
+
 	IdeaFlowTimeline generateIdeaFlowForTask(Long taskId) {
-			IdeaFlowTimeline ideaFlow = new IdeaFlowTimeline()
-			//ideaFlow.task = //fetch from TaskService
 
-		List<ModificationActivityEntity> modificationList = persistenceService.getModificationActivityList(taskId)
+		Task task = taskService.findTaskWithId(taskId)
+		List<ModificationActivityEntity> modifications = persistenceService.getModificationActivityList(taskId)
+		List<EventEntity> events = persistenceService.getEventList(taskId)
+		List<ExternalActivityEntity> externalActivities = persistenceService.getExternalActivityList(taskId)
+		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(taskId)
 
+
+		IdeaFlowTimeline timeline = new IdeaFlowTimelineBuilder()
+				.task(task)
+				.modificationActivities(modifications)
+				.events(events)
+				.externalActivities(externalActivities)
+				.idleActivities(idleActivities)
+				.build()
+
+		return timeline
 	}
 
 }

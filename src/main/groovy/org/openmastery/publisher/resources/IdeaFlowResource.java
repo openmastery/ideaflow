@@ -18,6 +18,7 @@ package org.openmastery.publisher.resources;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
+import org.openmastery.publisher.core.ideaflow.IdeaFlowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,12 +31,13 @@ import javax.ws.rs.core.MediaType;
 public class IdeaFlowResource {
 
 	@Autowired
-	private IdeaFlowPersistenceService persistenceService;
+	private IdeaFlowService ideaFlowService;
 
 	@GET
 	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
 	public IdeaFlowTimeline getTimelineForTask(@PathParam("taskId") Long taskId) {
-		return null;
+
+		return ideaFlowService.generateIdeaFlowForTask(taskId);
 	}
 
 

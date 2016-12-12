@@ -1,18 +1,21 @@
-package org.openmastery.publisher.api.ideaflow
+package org.openmastery.publisher.api.ideaflow;
 
-import lombok.AllArgsConstructor
-import lombok.Builder
-import lombok.Data
-import lombok.NoArgsConstructor
-import org.joda.time.LocalDateTime
-import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.task.Task
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.joda.time.LocalDateTime;
+import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.task.Task;
+
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class IdeaFlowTimeline {
+
+public class IdeaFlowTimeline {
 
 	private Task task;
 
