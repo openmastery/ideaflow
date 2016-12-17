@@ -43,7 +43,7 @@ class IFMBatchService {
 
 
 	Duration determineTimeAdjustment(LocalDateTime messageSentAt) {
-		LocalDateTime now = timeService.now()
+		LocalDateTime now = timeService.javaNow()
 
 		Duration.between(messageSentAt, now)
 	}

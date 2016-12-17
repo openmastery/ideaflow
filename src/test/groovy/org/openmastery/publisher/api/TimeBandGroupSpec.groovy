@@ -1,10 +1,9 @@
 package org.openmastery.publisher.api
 
+import org.joda.time.LocalDateTime
 import org.openmastery.publisher.core.timeline.TimeBandGroupModel
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
-
-import java.time.LocalDateTime
 
 public class TimeBandGroupSpec extends Specification implements TimeBandTestSupport {
 
@@ -17,7 +16,6 @@ public class TimeBandGroupSpec extends Specification implements TimeBandTestSupp
 	private LocalDateTime hourFour = timeService.plusHour().now()
 	private LocalDateTime hourFive = timeService.plusHour().now()
 	private LocalDateTime hourSix = timeService.plusHour().now()
-
 
 	def "splitAndReturn should return null if position is on or outside timeband range AND exclusive direction"() {
 		given:

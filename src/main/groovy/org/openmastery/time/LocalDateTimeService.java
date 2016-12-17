@@ -19,18 +19,17 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 @Component
 public class LocalDateTimeService implements TimeService {
 
 	@Override
-	public LocalDateTime now() {
+	public LocalDateTime javaNow() {
 		return nowTruncateToSeconds();
 	}
 
 	@Override
-	public org.joda.time.LocalDateTime jodaNow() {
+	public org.joda.time.LocalDateTime now() {
 		return jodaNowTruncateToSeconds();
 	}
 

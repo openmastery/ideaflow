@@ -81,8 +81,8 @@ class TestTimelineSegmentBuilder {
 
 	TestTimelineSegmentBuilder idle(int startHour, int endHour) {
 		idleActivities << IdleActivityEntity.builder()
-				.start(timeService.inFuture(startHour))
-				.end(timeService.inFuture(endHour))
+				.start(timeService.javaInFuture(startHour))
+				.end(timeService.javaInFuture(endHour))
 				.build()
 		this
 	}

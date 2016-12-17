@@ -15,11 +15,10 @@
  */
 package org.openmastery.publisher.core.timeline;
 
+import org.joda.time.LocalDateTime;
+import org.joda.time.Duration;
 import org.openmastery.publisher.core.Positionable;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,7 +109,7 @@ public abstract class TimeBandModel<T extends TimeBandModel> implements Position
 		Duration duration = Duration.ZERO;
 		for (TimeBandModel ideaFlowBand : ideaFlowBands) {
 			Duration bandDuration = ideaFlowBand.getDuration();
-			if (bandDuration.isNegative()) {
+			if (bandDuration.getMillis() < 0) {
 				throw new BandDurationIsNegativeException(ideaFlowBand);
 			}
 			duration = duration.plus(bandDuration);

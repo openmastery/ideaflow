@@ -7,8 +7,6 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.core.activity.ActivityEntity
-import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,7 +32,7 @@ class TaskResourceSpec extends Specification {
 		String name = aRandom.text(10)
 		String description = "task description"
 		String project = "project"
-		LocalDateTime creationDate = timeService.jodaNow()
+		LocalDateTime creationDate = timeService.now()
 
 		when:
 		Task createdTask = taskClient.createTask(name, description, project)
@@ -75,8 +73,8 @@ class TaskResourceSpec extends Specification {
 				.name("task")
 				.description("task description")
 				.project("project")
-				.creationDate(timeService.jodaNow())
-				.modifyDate(timeService.jodaNow()).build()
+				.creationDate(timeService.now())
+				.modifyDate(timeService.now()).build()
 		taskClient.createTask("task", "task description", "project")
 
 		when:

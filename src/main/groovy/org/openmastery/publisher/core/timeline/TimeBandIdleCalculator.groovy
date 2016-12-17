@@ -15,7 +15,7 @@
  */
 package org.openmastery.publisher.core.timeline
 
-import java.time.LocalDateTime
+import org.joda.time.LocalDateTime
 
 class TimeBandIdleCalculator {
 

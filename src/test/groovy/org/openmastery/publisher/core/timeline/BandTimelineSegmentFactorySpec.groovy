@@ -1,10 +1,9 @@
 package org.openmastery.publisher.core.timeline
 
+import org.joda.time.Duration
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
-
-import java.time.Duration
 
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
@@ -36,11 +35,11 @@ class BandTimelineSegmentFactorySpec extends Specification {
 		BandTimelineSegment segment = generatePrimaryTimeline()
 
 		then:
-		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.ideaFlowBands, 1, REWORK, Duration.ofHours(2))
-		validator.assertTimeBand(segment.ideaFlowBands, 2, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, REWORK, Duration.standardHours(2))
+		validator.assertTimeBand(segment.ideaFlowBands, 2, PROGRESS, Duration.standardHours(1))
 		validator.assertValidationComplete(segment)
-		assert segment.duration == Duration.ofHours(4)
+		assert segment.duration == Duration.standardHours(4)
 	}
 
 	def "WHEN IdeaFlowStates are nested SHOULD create nested TimeBands"() {
@@ -56,13 +55,13 @@ class BandTimelineSegmentFactorySpec extends Specification {
 
 
 		then:
-		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.ideaFlowBands, 1, REWORK, Duration.ofHours(8))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, REWORK, Duration.standardHours(8))
 		List<IdeaFlowBandModel> nestedBands = segment.ideaFlowBands[1].nestedBands
-		validator.assertNestedTimeBand(nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(2))
-		validator.assertNestedTimeBand(nestedBands, 1, TROUBLESHOOTING, Duration.ofHours(3))
+		validator.assertNestedTimeBand(nestedBands, 0, TROUBLESHOOTING, Duration.standardHours(2))
+		validator.assertNestedTimeBand(nestedBands, 1, TROUBLESHOOTING, Duration.standardHours(3))
 		validator.assertValidationComplete(segment)
-		assert segment.duration == Duration.ofHours(9)
+		assert segment.duration == Duration.standardHours(9)
 	}
 
 	def "WHEN IdeaFlowStates are linked SHOULD group bands into a TimeBandGroup"() {
@@ -75,13 +74,13 @@ class BandTimelineSegmentFactorySpec extends Specification {
 		BandTimelineSegment segment = generatePrimaryTimeline()
 
 		then:
-		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
 		List groupedIdeaFlowBands = segment.timeBandGroups[0].linkedTimeBands
-		validator.assertLinkedTimeBand(groupedIdeaFlowBands, 0, TROUBLESHOOTING, Duration.ofHours(1))
-		validator.assertLinkedTimeBand(groupedIdeaFlowBands, 1, LEARNING, Duration.ofHours(3))
-		validator.assertLinkedTimeBand(groupedIdeaFlowBands, 2, REWORK, Duration.ofHours(2))
+		validator.assertLinkedTimeBand(groupedIdeaFlowBands, 0, TROUBLESHOOTING, Duration.standardHours(1))
+		validator.assertLinkedTimeBand(groupedIdeaFlowBands, 1, LEARNING, Duration.standardHours(3))
+		validator.assertLinkedTimeBand(groupedIdeaFlowBands, 2, REWORK, Duration.standardHours(2))
 		validator.assertValidationComplete(segment)
-		assert segment.duration == Duration.ofHours(7)
+		assert segment.duration == Duration.standardHours(7)
 	}
 
 	def "WHEN IdeaFlowStates are linked AND first state has nested conflicts SHOULD create TimeBandGroup including all bands"() {
@@ -95,14 +94,14 @@ class BandTimelineSegmentFactorySpec extends Specification {
 		BandTimelineSegment segment = generatePrimaryTimeline()
 
 		then:
-		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
 		List linkedIdeaFlowBands = segment.timeBandGroups[0].linkedTimeBands
-		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 0, REWORK, Duration.ofHours(6))
-		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 1, LEARNING, Duration.ofHours(4))
+		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 0, REWORK, Duration.standardHours(6))
+		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 1, LEARNING, Duration.standardHours(4))
 		List nestedIdeaFlowBands = segment.timeBandGroups[0].linkedTimeBands[0].nestedBands
-		validator.assertNestedTimeBand(nestedIdeaFlowBands, 0, TROUBLESHOOTING, Duration.ofHours(1))
+		validator.assertNestedTimeBand(nestedIdeaFlowBands, 0, TROUBLESHOOTING, Duration.standardHours(1))
 		validator.assertValidationComplete(segment)
-		assert segment.duration == Duration.ofHours(11)
+		assert segment.duration == Duration.standardHours(11)
 	}
 
 	def "WHEN conflict is unnested SHOULD be considered linked AND previous duration should be reduced by the band overlap"() {
@@ -121,14 +120,14 @@ class BandTimelineSegmentFactorySpec extends Specification {
 		BandTimelineSegment segment = generatePrimaryTimeline()
 
 		then:
-		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
 		List linkedIdeaFlowBands = segment.timeBandGroups[0].linkedTimeBands
-		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 0, TROUBLESHOOTING, Duration.ofHours(1))
-		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 1, LEARNING, Duration.ofHours(2))
-		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 2, REWORK, Duration.ofHours(1))
-		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 3, TROUBLESHOOTING, Duration.ofHours(7))
-		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 4, LEARNING, Duration.ofHours(5))
-		assert segment.duration == Duration.ofHours(19)
+		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 0, TROUBLESHOOTING, Duration.standardHours(1))
+		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 1, LEARNING, Duration.standardHours(2))
+		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 2, REWORK, Duration.standardHours(1))
+		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 3, TROUBLESHOOTING, Duration.standardHours(7))
+		validator.assertLinkedTimeBand(linkedIdeaFlowBands, 4, LEARNING, Duration.standardHours(5))
+		assert segment.duration == Duration.standardHours(19)
 	}
 
 }

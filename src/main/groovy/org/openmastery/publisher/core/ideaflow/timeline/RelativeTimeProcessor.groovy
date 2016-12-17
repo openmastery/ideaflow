@@ -15,11 +15,11 @@
  */
 package org.openmastery.publisher.core.ideaflow.timeline
 
+import org.joda.time.Duration
 import org.openmastery.publisher.core.Positionable
 import org.openmastery.publisher.core.PositionableComparator
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
-
-import java.time.Duration
+import org.openmastery.time.TimeConverter
 
 class RelativeTimeProcessor {
 
@@ -50,12 +50,14 @@ class RelativeTimeProcessor {
 			if (previousPositionable != null) {
 				Duration duration
 				if (previousPositionable instanceof IdleTimeBandModel) {
-					duration = Duration.between(previousPositionable.end, positionable.getPosition())
+					duration = TimeConverter.between(previousPositionable.end, positionable.getPosition())
 				} else {
-					duration = Duration.between(previousPositionable.getPosition(), positionable.getPosition())
+					duration = TimeConverter.between(previousPositionable.getPosition(), positionable.getPosition())
 				}
-				if (duration.isNegative() == false) {
-					relativeTime += duration.seconds
+
+				long seconds = duration.standardSeconds
+				if (seconds > 0) {
+					relativeTime += seconds
 				}
 			}
 

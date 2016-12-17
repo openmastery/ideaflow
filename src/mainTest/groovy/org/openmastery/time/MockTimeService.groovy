@@ -11,17 +11,21 @@ class MockTimeService implements TimeService {
 	}
 
 	@Override
-	LocalDateTime now() {
+	LocalDateTime javaNow() {
 		return now
 	}
 
-	@Override
-	org.joda.time.LocalDateTime jodaNow() {
-		return TimeConverter.toJodaLocalDateTime(now())
+	LocalDateTime javaInFuture(int hours) {
+		now.plusHours(hours)
 	}
 
-	LocalDateTime inFuture(int hours) {
-		now.plusHours(hours)
+	@Override
+	org.joda.time.LocalDateTime now() {
+		return TimeConverter.toJodaLocalDateTime(javaNow())
+	}
+
+	org.joda.time.LocalDateTime inFuture(int hours) {
+		TimeConverter.toJodaLocalDateTime(now.plusHours(hours))
 	}
 
 	MockTimeService plusHour() {

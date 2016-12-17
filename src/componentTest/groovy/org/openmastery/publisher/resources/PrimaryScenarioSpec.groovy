@@ -41,7 +41,7 @@ class PrimaryScenarioSpec extends Specification {
 	private LocalDateTime start
 
 	def setup() {
-		start = timeService.now()
+		start = timeService.javaNow()
 	}
 
 	def createBasicTimelineWithAllBandTypes() {
@@ -72,7 +72,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 10, 43)
 		ideaFlowClient.endConflict(taskId, "jqPlot parameters were wrong.  Passing in [] instead of [[]]")
 		timeService.advanceTime(0, 5, 4)
-		activityClient.addEditorActivity(taskId, timeService.jodaNow(), 10l, "/some/path", true)
+		activityClient.addEditorActivity(taskId, timeService.now(), 10l, "/some/path", true)
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
@@ -143,7 +143,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 30, 43)
 		ideaFlowClient.endConflict(taskId, "Bunch of little bugs.")
 		timeService.advanceTime(0, 0, 10)
-		activityClient.addEditorActivity(taskId, timeService.jodaNow(), 5l, "/some/path", true)
+		activityClient.addEditorActivity(taskId, timeService.now(), 5l, "/some/path", true)
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
@@ -192,7 +192,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 15, 30)
 		eventClient.createSubtask(taskId, "Final Validation")
 		timeService.advanceTime(0, 32, 3)
-		activityClient.addEditorActivity(taskId, timeService.jodaNow(), 10l, "/some/path", true)
+		activityClient.addEditorActivity(taskId, timeService.now(), 10l, "/some/path", true)
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)
@@ -244,7 +244,7 @@ class PrimaryScenarioSpec extends Specification {
 		timeService.advanceTime(0, 15, 43)
 		ideaFlowClient.endConflict(taskId, "Flipped if/else condition. #TranspositionMistake")
 		timeService.advanceTime(0, 30, 3)
-		activityClient.addEditorActivity(taskId, timeService.jodaNow(), 10l, "/some/path", true)
+		activityClient.addEditorActivity(taskId, timeService.now(), 10l, "/some/path", true)
 
 		when:
 		BandTimeline bandTimeline = timelineClient.getBandTimelineForTask(taskId)

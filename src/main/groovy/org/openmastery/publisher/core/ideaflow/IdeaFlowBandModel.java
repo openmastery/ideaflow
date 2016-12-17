@@ -21,12 +21,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.joda.time.LocalDateTime;
+import org.joda.time.Duration;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel;
 import org.openmastery.publisher.core.timeline.TimeBandModel;
+import org.openmastery.time.TimeConverter;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class IdeaFlowBandModel extends TimeBandModel<IdeaFlowBandModel> {
 
 	@Override
 	public Duration getDuration() {
-		return Duration.between(start, end).minus(getIdleDuration());
+		return TimeConverter.between(start, end).minus(getIdleDuration());
 	}
 
 	@Override

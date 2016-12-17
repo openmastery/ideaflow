@@ -1,11 +1,10 @@
 package org.openmastery.publisher.core.timeline
 
+import org.joda.time.Duration
+import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
-
-import java.time.Duration
-import java.time.LocalDateTime
 
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
@@ -52,7 +51,7 @@ class BandTimelineFactorySpec extends Specification {
 		List<BandTimelineSegment> segments = createBandTimelineSegments()
 
 		then:
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.standardHours(1), 0)
 		validator.assertValidationComplete(segments, 1)
 	}
 
@@ -65,9 +64,9 @@ class BandTimelineFactorySpec extends Specification {
 		List<BandTimelineSegment> segments = createBandTimelineSegments()
 
 		then:
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.standardHours(1), 0)
 		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(1))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.ofHours(2), Duration.ofHours(1).seconds)
+		validator.assertTimeBand(segments[1].ideaFlowBands, 0, PROGRESS, Duration.standardHours(2), Duration.standardHours(1).standardSeconds)
 		validator.assertValidationComplete(segments, 2)
 	}
 
@@ -83,10 +82,10 @@ class BandTimelineFactorySpec extends Specification {
 		List<BandTimelineSegment> segments = createBandTimelineSegments()
 
 		then:
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
-		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.ofHours(2), Duration.ofHours(3), Duration.ofHours(1).seconds)
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.standardHours(1), 0)
+		validator.assertTimeBand(segments[0].ideaFlowBands, 1, LEARNING, Duration.standardHours(2), Duration.standardHours(3), Duration.standardHours(1).standardSeconds)
 		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(6))
-		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.ofHours(1), Duration.ofHours(2), Duration.ofHours(3).seconds)
+		validator.assertTimeBand(segments[1].ideaFlowBands, 0, LEARNING, Duration.standardHours(1), Duration.standardHours(2), Duration.standardHours(3).standardSeconds)
 		validator.assertValidationComplete(segments, 2)
 	}
 
@@ -103,11 +102,11 @@ class BandTimelineFactorySpec extends Specification {
 		List<BandTimelineSegment> segments = createBandTimelineSegments()
 
 		then:
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
-		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(2), Duration.ofHours(1), Duration.ofHours(1).seconds)
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.standardHours(1), 0)
+		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.standardHours(2), Duration.standardHours(1), Duration.standardHours(1).standardSeconds)
 		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(4))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(1), Duration.ofHours(3).seconds)
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, REWORK, Duration.ofHours(3), Duration.ofHours(2), Duration.ofHours(4).seconds)
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.standardHours(1), Duration.standardHours(3).standardSeconds)
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 1, REWORK, Duration.standardHours(3), Duration.standardHours(2), Duration.standardHours(4).standardSeconds)
 		validator.assertValidationComplete(segments, 2)
 	}
 
@@ -127,13 +126,13 @@ class BandTimelineFactorySpec extends Specification {
 		List<BandTimelineSegment> segments = createBandTimelineSegments()
 
 		then:
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
-		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, TROUBLESHOOTING, Duration.ofHours(1), Duration.ofHours(1), Duration.ofHours(1).seconds)
-		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 1, LEARNING, Duration.ofHours(4), Duration.ofHours(3), Duration.ofHours(2).seconds)
-		validator.assertNestedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands[1].nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(1), Duration.ofHours(1), Duration.ofHours(5).seconds)
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.standardHours(1), 0)
+		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 0, TROUBLESHOOTING, Duration.standardHours(1), Duration.standardHours(1), Duration.standardHours(1).standardSeconds)
+		validator.assertLinkedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands, 1, LEARNING, Duration.standardHours(4), Duration.standardHours(3), Duration.standardHours(2).standardSeconds)
+		validator.assertNestedTimeBand(segments[0].timeBandGroups[0].linkedTimeBands[1].nestedBands, 0, TROUBLESHOOTING, Duration.standardHours(1), Duration.standardHours(1), Duration.standardHours(5).standardSeconds)
 		validator.assertEvent(segments[1], 0, EventType.SUBTASK, start.plusHours(10))
-		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.ofHours(2), Duration.ofHours(6).seconds)
-		validator.assertNestedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands[0].nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(2), Duration.ofHours(6).seconds)
+		validator.assertLinkedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands, 0, LEARNING, Duration.standardHours(2), Duration.standardHours(6).standardSeconds)
+		validator.assertNestedTimeBand(segments[1].timeBandGroups[0].linkedTimeBands[0].nestedBands, 0, TROUBLESHOOTING, Duration.standardHours(2), Duration.standardHours(6).standardSeconds)
 		validator.assertValidationComplete(segments, 2)
 	}
 
@@ -145,7 +144,7 @@ class BandTimelineFactorySpec extends Specification {
 		List<BandTimelineSegment> segments = createBandTimelineSegments()
 
 		then:
-		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.ofHours(1), 0)
+		validator.assertTimeBand(segments[0].ideaFlowBands, 0, PROGRESS, Duration.standardHours(1), 0)
 		validator.assertValidationComplete(segments, 1)
 	}
 

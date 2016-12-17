@@ -17,7 +17,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 
 	static class TestTimeService implements TimeService {
 		@Override
-		LocalDateTime now() {
+		LocalDateTime javaNow() {
 			// the tests rely on ordering based on start time - put in a sleep so that all start times are
 			// different by at least one
 			Thread.sleep(1)
@@ -25,7 +25,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		}
 
 		@Override
-		org.joda.time.LocalDateTime jodaNow() {
+		org.joda.time.LocalDateTime now() {
 			Thread.sleep(1)
 			org.joda.time.LocalDateTime.now()
 		}

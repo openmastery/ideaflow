@@ -21,9 +21,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.joda.time.LocalDateTime;
+import org.joda.time.Duration;
+import org.openmastery.time.TimeConverter;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class IdleTimeBandModel extends TimeBandModel<IdleTimeBandModel> {
 
 	@Override
 	public Duration getDuration() {
-		return Duration.between(start, end);
+		return TimeConverter.between(start, end);
 	}
 
 	@Override

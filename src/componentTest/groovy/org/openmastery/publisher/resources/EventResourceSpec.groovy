@@ -1,6 +1,5 @@
 package org.openmastery.publisher.resources
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
@@ -76,7 +75,7 @@ class EventResourceSpec extends Specification {
 		eventClient.createAwesome(taskId, "YAY!")
 		eventClient.createWTF(taskId, "WTF?!")
 		when:
-		List<NewBatchEvent> eventList = eventClient.getRecentEvents(timeService.jodaNow().minusDays(2), 5)
+		List<NewBatchEvent> eventList = eventClient.getRecentEvents(timeService.now().minusDays(2), 5)
 
 		then:
 		assert eventList.size() == 2

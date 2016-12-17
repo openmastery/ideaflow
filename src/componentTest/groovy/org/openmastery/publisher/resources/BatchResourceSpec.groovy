@@ -45,13 +45,13 @@ class BatchResourceSpec extends Specification {
 		given:
 		Duration expectedDuration = aRandom.duration()
 		EditorActivityEntity expectedActivity = aRandom.editorActivityEntity()
-				.start(timeService.now().minus(expectedDuration))
-				.end(timeService.now())
+				.start(timeService.javaNow().minus(expectedDuration))
+				.end(timeService.javaNow())
 				.taskId(taskId)
 				.build()
 
 		when:
-		client.addEditorActivity(expectedActivity.taskId, timeService.jodaNow(), expectedDuration.seconds, expectedActivity.filePath, expectedActivity.modified)
+		client.addEditorActivity(expectedActivity.taskId, timeService.now(), expectedDuration.seconds, expectedActivity.filePath, expectedActivity.modified)
 
 		then:
 		List<EditorActivityEntity> activityEntities = persistenceService.getEditorActivityList(expectedActivity.taskId)
@@ -63,13 +63,13 @@ class BatchResourceSpec extends Specification {
 		given:
 		Duration expectedDuration = aRandom.duration()
 		IdleActivityEntity expectedIdle = aRandom.idleActivityEntity()
-				.start(timeService.now().minus(expectedDuration))
-				.end(timeService.now())
+				.start(timeService.javaNow().minus(expectedDuration))
+				.end(timeService.javaNow())
 				.taskId(taskId)
 				.build()
 
 		when:
-		client.addIdleActivity(expectedIdle.taskId, timeService.jodaNow(), expectedDuration.seconds)
+		client.addIdleActivity(expectedIdle.taskId, timeService.now(), expectedDuration.seconds)
 
 		then:
 		List<IdleActivityEntity> idleEntities = persistenceService.getIdleActivityList(expectedIdle.taskId)
@@ -80,13 +80,13 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post external activity"() {
 		Duration expectedDuration = aRandom.duration()
 		ExternalActivityEntity expectedExternal = aRandom.externalActivityEntity()
-				.start(timeService.now().minus(expectedDuration))
-				.end(timeService.now())
+				.start(timeService.javaNow().minus(expectedDuration))
+				.end(timeService.javaNow())
 				.taskId(taskId)
 				.build()
 
 		when:
-		client.addExternalActivity(expectedExternal.taskId, timeService.jodaNow(), expectedDuration.seconds, expectedExternal.comment)
+		client.addExternalActivity(expectedExternal.taskId, timeService.now(), expectedDuration.seconds, expectedExternal.comment)
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExternal.taskId)
@@ -97,13 +97,13 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post block activity"() {
 		Duration expectedDuration = aRandom.duration()
 		BlockActivityEntity expectedActivity = aRandom.blockActivityEntity()
-				.start(timeService.now().minus(expectedDuration))
-				.end(timeService.now())
+				.start(timeService.javaNow().minus(expectedDuration))
+				.end(timeService.javaNow())
 				.taskId(taskId)
 				.build()
 
 		when:
-		client.addExternalActivity(expectedActivity.taskId, timeService.jodaNow(), expectedDuration.seconds, expectedActivity.comment)
+		client.addExternalActivity(expectedActivity.taskId, timeService.now(), expectedDuration.seconds, expectedActivity.comment)
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedActivity.taskId)
@@ -114,15 +114,15 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post execution activity"() {
 		Duration expectedDuration = aRandom.duration()
 		ExecutionActivityEntity expectedExecution = aRandom.executionActivityEntity()
-				.start(timeService.now().minus(expectedDuration))
-				.end(timeService.now())
+				.start(timeService.javaNow().minus(expectedDuration))
+				.end(timeService.javaNow())
 				.taskId(taskId)
 				.build()
 
 		when:
 		// TODO: move this stuff to use test client instead of putting test methods in actual client
-		client.addExecutionActivity(expectedExecution.taskId, timeService.jodaNow(), expectedDuration.seconds,
-								expectedExecution.processName, expectedExecution.executionTaskType, expectedExecution.exitCode, expectedExecution.isDebug())
+		client.addExecutionActivity(expectedExecution.taskId, timeService.now(), expectedDuration.seconds,
+		                            expectedExecution.processName, expectedExecution.executionTaskType, expectedExecution.exitCode, expectedExecution.isDebug())
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExecution.taskId)
@@ -133,15 +133,15 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post modification activity"() {
 		Duration expectedDuration = aRandom.duration()
 		ModificationActivityEntity expectedModification = aRandom.modificationActivityEntity()
-				.start(timeService.now().minus(expectedDuration))
-				.end(timeService.now())
+				.start(timeService.javaNow().minus(expectedDuration))
+				.end(timeService.javaNow())
 				.taskId(taskId)
 				.build()
 
 		when:
 		// TODO: move this stuff to use test client instead of putting test methods in actual client
-		client.addModificationActivity(expectedModification.taskId, timeService.jodaNow(), expectedDuration.seconds,
-				expectedModification.modificationCount)
+		client.addModificationActivity(expectedModification.taskId, timeService.now(), expectedDuration.seconds,
+		                               expectedModification.modificationCount)
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedModification.taskId)
@@ -152,12 +152,12 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post events"() {
 		given:
 		EventEntity expectedEvent = aRandom.eventEntity()
-			.position(timeService.now())
+			.position(timeService.javaNow())
 			.taskId(taskId)
 			.build()
 
 		when:
-		client.addBatchEvent(expectedEvent.taskId, timeService.jodaNow(), expectedEvent.type, expectedEvent.comment)
+		client.addBatchEvent(expectedEvent.taskId, timeService.now(), expectedEvent.type, expectedEvent.comment)
 
 		then:
 		List<EventEntity> entities = persistenceService.getEventList(expectedEvent.taskId)

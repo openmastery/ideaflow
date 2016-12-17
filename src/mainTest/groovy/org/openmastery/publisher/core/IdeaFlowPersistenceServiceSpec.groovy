@@ -68,15 +68,15 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "findRecentTasks should return the most recently modified tasks"() {
 		given:
-		TaskEntity mostRecent = saveTask(aRandom.taskEntity().modifyDate(mockTimeService.inFuture(24)))
+		TaskEntity mostRecent = saveTask(aRandom.taskEntity().modifyDate(mockTimeService.javaInFuture(24)))
 		for (int i = 0; i < 5; i++) {
 			saveTask(aRandom.taskEntity()
 					.ownerId(mostRecent.ownerId)
-					.modifyDate(mockTimeService.inFuture(i)))
+					.modifyDate(mockTimeService.javaInFuture(i)))
 		}
 		TaskEntity secondMostRecent = saveTask(aRandom.taskEntity()
 				.ownerId(mostRecent.ownerId)
-				.modifyDate(mockTimeService.inFuture(23)))
+				.modifyDate(mockTimeService.javaInFuture(23)))
 
 		when:
 		List<TaskEntity> taskList = persistenceService.findRecentTasks(mostRecent.ownerId, 2)
@@ -100,15 +100,15 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		given:
 		for (int i = 0; i < 5; i++) {
 			saveActivity(
-					aRandom.activityEntity().end(mockTimeService.inFuture(i))
+					aRandom.activityEntity().end(mockTimeService.javaInFuture(i))
 			)
 		}
 		ActivityEntity mostRecentActivity = saveActivity(
-				aRandom.activityEntity().end(mockTimeService.inFuture(24))
+				aRandom.activityEntity().end(mockTimeService.javaInFuture(24))
 		)
 		for (int i = 0; i < 5; i++) {
 			saveActivity(
-					aRandom.activityEntity().end(mockTimeService.inFuture(i + 5))
+					aRandom.activityEntity().end(mockTimeService.javaInFuture(i + 5))
 			)
 		}
 
@@ -118,7 +118,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "getMostRecentActivityEnd SHOULD return null WHEN there's no activity"() {
 		given:
-		TaskEntity task = saveTask(aRandom.taskEntity().creationDate(mockTimeService.now()))
+		TaskEntity task = saveTask(aRandom.taskEntity().creationDate(mockTimeService.javaNow()))
 
 		expect:
 		assert null == persistenceService.getMostRecentActivityEnd(task.id)

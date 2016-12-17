@@ -1,5 +1,6 @@
 package org.openmastery.publisher.core.ideaflow
 
+import org.joda.time.Duration
 import org.openmastery.publisher.core.timeline.BandTimelineSegmentBuilder
 import org.openmastery.publisher.core.timeline.TimeBandModel
 import org.openmastery.publisher.core.timeline.BandTimelineSegment
@@ -7,8 +8,6 @@ import org.openmastery.publisher.core.timeline.TimelineSegmentValidator
 import org.openmastery.publisher.core.timeline.IdleTimeProcessor
 import org.openmastery.publisher.core.timeline.TimelineTestSupport
 import spock.lang.Specification
-
-import java.time.Duration
 
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
@@ -48,12 +47,12 @@ class IdleTimeProcessorSpec extends Specification {
 		BandTimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
-		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.ideaFlowBands, 1, TROUBLESHOOTING, Duration.ofHours(1))
-		validator.assertTimeBand(segment.ideaFlowBands, 2, PROGRESS, Duration.ofHours(2))
-		validator.assertTimeBand(segment.ideaFlowBands, 3, LEARNING, Duration.ofHours(2), Duration.ofHours(3))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, TROUBLESHOOTING, Duration.standardHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 2, PROGRESS, Duration.standardHours(2))
+		validator.assertTimeBand(segment.ideaFlowBands, 3, LEARNING, Duration.standardHours(2), Duration.standardHours(3))
 		validator.assertValidationComplete(segment)
-		assert segment.duration == Duration.ofHours(6)
+		assert segment.duration == Duration.standardHours(6)
 	}
 
 	def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {
@@ -67,12 +66,12 @@ class IdleTimeProcessorSpec extends Specification {
 		BandTimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
-		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.ofHours(4), Duration.ofHours(4))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.standardHours(4), Duration.standardHours(4))
 		List nestedBands = segment.ideaFlowBands[1].nestedBands
-		validator.assertNestedTimeBand(nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(3), Duration.ofHours(4))
+		validator.assertNestedTimeBand(nestedBands, 0, TROUBLESHOOTING, Duration.standardHours(3), Duration.standardHours(4))
 		validator.assertValidationComplete(segment)
-		assert segment.duration == Duration.ofHours(5)
+		assert segment.duration == Duration.standardHours(5)
 	}
 
 	def "WHEN multiple idles within band SHOULD provide total idle duration"() {
@@ -86,8 +85,8 @@ class IdleTimeProcessorSpec extends Specification {
 		BandTimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
-		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
-		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.ofHours(4), Duration.ofHours(6))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 1, LEARNING, Duration.standardHours(4), Duration.standardHours(6))
 		validator.assertValidationComplete(segment)
 	}
 
@@ -104,10 +103,10 @@ class IdleTimeProcessorSpec extends Specification {
 		BandTimelineSegment segment = createTimelineSegmentAndParseIdleTime()
 
 		then:
-		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(segment.ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
 		List<TimeBandModel> linkedTimeBands = segment.timeBandGroups[0].linkedTimeBands
-		validator.assertLinkedTimeBand(linkedTimeBands, 0, LEARNING, Duration.ofHours(4), Duration.ofHours(2))
-		validator.assertLinkedTimeBand(linkedTimeBands, 1, REWORK, Duration.ofHours(6), Duration.ofHours(3))
+		validator.assertLinkedTimeBand(linkedTimeBands, 0, LEARNING, Duration.standardHours(4), Duration.standardHours(2))
+		validator.assertLinkedTimeBand(linkedTimeBands, 1, REWORK, Duration.standardHours(6), Duration.standardHours(3))
 		validator.assertValidationComplete(segment)
 	}
 

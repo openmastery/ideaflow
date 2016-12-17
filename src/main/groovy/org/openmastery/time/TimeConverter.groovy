@@ -15,6 +15,9 @@
  */
 package org.openmastery.time
 
+import org.joda.time.DateTimeZone
+import org.joda.time.Duration
+
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -69,6 +72,10 @@ class TimeConverter {
 				localDateTime.getHourOfDay(),
 				localDateTime.getMinuteOfHour(),
 				localDateTime.getSecondOfMinute(), 0)
+	}
+
+	public static Duration between(org.joda.time.LocalDateTime start, org.joda.time.LocalDateTime end) {
+		return new Duration(start.toDateTime(DateTimeZone.UTC), end.toDateTime(DateTimeZone.UTC))
 	}
 
 }

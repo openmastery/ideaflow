@@ -1,10 +1,8 @@
 package org.openmastery.publisher.core.timeline
 
+import org.joda.time.Duration
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import spock.lang.Specification
-
-import java.time.Duration
-
 
 class TimeBandModelSpec extends Specification {
 
@@ -12,7 +10,7 @@ class TimeBandModelSpec extends Specification {
 
 		given:
 		IdeaFlowBandModel model = Mock(IdeaFlowBandModel)
-		model.getDuration() >> Duration.ofSeconds(-10)
+		model.getDuration() >> Duration.standardSeconds(-10)
 
 		when:
 		TimeBandModel.sumDuration([model])
@@ -26,13 +24,13 @@ class TimeBandModelSpec extends Specification {
 
 		given:
 		IdeaFlowBandModel model = Mock(IdeaFlowBandModel)
-		model.getDuration() >> Duration.ofSeconds(10)
+		model.getDuration() >> Duration.standardSeconds(10)
 
 		when:
 		Duration duration = TimeBandModel.sumDuration([model, model])
 
 		then:
-		duration == Duration.ofSeconds(20)
+		duration == Duration.standardSeconds(20)
 
 	}
 

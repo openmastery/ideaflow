@@ -26,6 +26,7 @@ import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.ideaflow.timeline.RelativeTimeProcessor
+import org.openmastery.time.TimeConverter
 
 class BandTimelineSegmentBuilder {
 
@@ -165,8 +166,8 @@ class BandTimelineSegmentBuilder {
 				.id(state.id)
 				.taskId(state.taskId)
 				.type(state.type)
-				.start(state.start)
-				.end(state.end)
+				.start(TimeConverter.toJodaLocalDateTime(state.start))
+				.end(TimeConverter.toJodaLocalDateTime(state.end))
 				.startingComment(state.startingComment)
 				.endingComent(state.endingComment)
 				.idleBands([])

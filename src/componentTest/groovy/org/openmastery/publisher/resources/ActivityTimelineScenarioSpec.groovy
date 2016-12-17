@@ -36,7 +36,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	private LocalDateTime start
 
 	def setup() {
-		start = timeService.now()
+		start = timeService.javaNow()
 	}
 
 
@@ -163,7 +163,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 		timeService.advanceTime(0, 0, 5)
 		eventClient.createNote(taskId, "Exploring the email engine...")
 		timeService.advanceTime(0, 0, 10)
-		batchClient.addEditorActivity(taskId, timeService.jodaNow(), 15, "second.txt", false)
+		batchClient.addEditorActivity(taskId, timeService.now(), 15, "second.txt", false)
 
 		eventClient.createSubtask(taskId, "my subtask")
 		addEditorActivityAndAdvanceTime(taskId, 10, "third.txt", false)
@@ -192,17 +192,17 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	void addEditorActivityAndAdvanceTime (Long taskId, Long durationInSeconds, String fileName, boolean isModified) {
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
 		// editor activity is submitted at the end time rather than the start time
-		batchClient.addEditorActivity(taskId, timeService.jodaNow(), durationInSeconds, fileName, isModified)
+		batchClient.addEditorActivity(taskId, timeService.now(), durationInSeconds, fileName, isModified)
 	}
 
 	void addIdleActivityAndAdvanceTime(Long taskId, Long durationInSeconds) {
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
-		batchClient.addIdleActivity(taskId, timeService.jodaNow(), durationInSeconds)
+		batchClient.addIdleActivity(taskId, timeService.now(), durationInSeconds)
 	}
 
 	void addExternalActivityAndAdvanceTime(Long taskId, Long durationInSeconds, String comment) {
 		timeService.advanceTime(0, 0, durationInSeconds.toInteger())
-		batchClient.addExternalActivity(taskId, timeService.jodaNow(), durationInSeconds, comment)
+		batchClient.addExternalActivity(taskId, timeService.now(), durationInSeconds, comment)
 	}
 
 }

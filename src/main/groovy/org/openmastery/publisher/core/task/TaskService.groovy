@@ -20,13 +20,10 @@ import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.task.NewTask
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Component
-
-import javax.ws.rs.NotFoundException
 
 @Component
 class TaskService {
@@ -45,8 +42,8 @@ class TaskService {
 				.name(newTask.getName())
 				.description(newTask.getDescription())
 				.project(newTask.getProject())
-				.creationDate(timeService.now())
-				.modifyDate(timeService.now())
+				.creationDate(timeService.javaNow())
+				.modifyDate(timeService.javaNow())
 				.build();
 
 		TaskEntity existingTask = persistenceService.findTaskWithName(task.getName());

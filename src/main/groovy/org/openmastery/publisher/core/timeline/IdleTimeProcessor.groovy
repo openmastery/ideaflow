@@ -17,6 +17,7 @@ package org.openmastery.publisher.core.timeline
 
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.activity.IdleActivityEntity
+import org.openmastery.time.TimeConverter
 
 class IdleTimeProcessor {
 
@@ -50,8 +51,8 @@ class IdleTimeProcessor {
 		IdleTimeBandModel.builder()
 				.id(entity.id)
 				.taskId(entity.taskId)
-				.start(entity.start)
-				.end(entity.end)
+				.start(TimeConverter.toJodaLocalDateTime(entity.start))
+				.end(TimeConverter.toJodaLocalDateTime(entity.end))
 				.build()
 	}
 

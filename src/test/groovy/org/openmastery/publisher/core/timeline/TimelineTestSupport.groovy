@@ -1,5 +1,6 @@
 package org.openmastery.publisher.core.timeline
 
+import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
@@ -12,8 +13,6 @@ import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.IdeaFlowInMemoryPersistenceService
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine
-
-import java.time.LocalDateTime
 
 import static IdeaFlowStateType.TROUBLESHOOTING
 import static IdeaFlowStateType.LEARNING
@@ -57,7 +56,7 @@ class TimelineTestSupport {
 		if (state) {
 			stateList << IdeaFlowStateEntity.from(state)
 					.taskId(taskId)
-					.end(timeService.now())
+					.end(timeService.javaNow())
 					.endingComment("")
 					.build();
 		}
@@ -89,7 +88,7 @@ class TimelineTestSupport {
 		EventEntity event = EventEntity.builder()
 				.taskId(taskId)
 				.type(EventType.SUBTASK)
-				.position(timeService.now())
+				.position(timeService.javaNow())
 				.comment(comment)
 				.build()
 		persistenceService.saveEvent(event)
@@ -101,20 +100,20 @@ class TimelineTestSupport {
 	}
 
 	void idle(int hours) {
-		LocalDateTime start = timeService.now()
+		java.time.LocalDateTime start = timeService.javaNow()
 		timeService.plusHours(hours)
 		IdleActivityEntity idleActivity = IdleActivityEntity.builder()
 				.taskId(taskId)
 				.start(start)
-				.end(timeService.now()).build()
+				.end(timeService.javaNow()).build()
 		persistenceService.saveActivity(idleActivity)
 	}
 
 	void editor() {
 		EditorActivityEntity editorActivity = EditorActivityEntity.builder()
 				.taskId(taskId)
-				.start(timeService.now())
-				.end(timeService.now())
+				.start(timeService.javaNow())
+				.end(timeService.javaNow())
 				.filePath("/some/path")
 				.build()
 		persistenceService.saveActivity(editorActivity)
@@ -128,7 +127,7 @@ class TimelineTestSupport {
 		EventEntity event = EventEntity.builder()
 				.taskId(taskId)
 				.comment(comment)
-				.position(now())
+				.position(timeService.javaNow())
 				.type(EventType.NOTE)
 				.build()
 		persistenceService.saveEvent(event)

@@ -53,7 +53,7 @@ public class EventResource {
 		return EventEntity.builder()
 				.id(null)
 				.ownerId(invocationContext.getUserId())
-				.position(timeService.now())
+				.position(timeService.javaNow())
 				.taskId(event.getTaskId())
 				.comment(event.getComment())
 				.type(type)
