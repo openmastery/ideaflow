@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.core.activity;
 
-import org.openmastery.publisher.api.ideaflow.ModificationActivity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

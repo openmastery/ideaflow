@@ -17,9 +17,9 @@ package org.openmastery.mapper;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
-import org.dozer.loader.api.BeanMappingBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -50,6 +50,10 @@ public class EntityMapper {
     }
 
     public <S, D> List<D> mapList(Iterable<S> source, Class<D> destType) {
+        if (source == null) {
+            return Collections.EMPTY_LIST;
+        }
+
         return mapList(source, (entity) -> mapIfNotNull(entity, destType));
     }
 

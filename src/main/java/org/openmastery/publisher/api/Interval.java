@@ -9,6 +9,7 @@ public interface Interval {
 
 	LocalDateTime getEnd();
 
+	// TODO: change to seconds
 	Duration getDuration();
 
 }

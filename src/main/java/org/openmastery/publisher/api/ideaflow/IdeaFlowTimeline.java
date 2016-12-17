@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
+import org.openmastery.publisher.api.Positionable;
+import org.openmastery.publisher.api.activity.ModificationActivity;
 import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.task.Task;
 
 import java.util.List;
@@ -14,8 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class IdeaFlowTimeline {
+public class IdeaFlowTimeline implements Positionable {
 
 	private Task task;
 
@@ -28,7 +30,12 @@ public class IdeaFlowTimeline {
 	private List<IdeaFlowBand> ideaFlowBands;
 	private List<ModificationActivity> modificationActivities;
 	private List<ExecutionEvent> executionEvents;
-	private List<CalendarEvent> calendarEvents; //TODO need to generate
 	private List<Event> events;
+
+
+	@Override
+	public LocalDateTime getPosition() {
+		return start;
+	}
 
 }

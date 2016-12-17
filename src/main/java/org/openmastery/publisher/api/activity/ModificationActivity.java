@@ -7,21 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.io.File;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class EditorActivity extends AbstractActivity {
+public class ModificationActivity extends AbstractActivity {
 
-	private String filePath;
-	private boolean isModified;
-
-	public String getFileName() {
-		return new File(filePath).getName();
-	}
+	private int modificationCount;
 
 }

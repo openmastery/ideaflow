@@ -6,11 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
-import org.openmastery.publisher.api.event.Event;
-import org.openmastery.publisher.api.ideaflow.CalendarEvent;
-import org.openmastery.publisher.api.ideaflow.ExecutionEvent;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
-import org.openmastery.publisher.api.ideaflow.ModificationActivity;
 
 import java.util.List;
 

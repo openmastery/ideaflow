@@ -1,4 +1,4 @@
-package org.openmastery.publisher.api.activity;
+package org.openmastery.publisher.api.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.io.File;
+import org.openmastery.publisher.api.activity.AbstractPositionable;
 
 @Data
 @Builder
@@ -15,13 +14,12 @@ import java.io.File;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class EditorActivity extends AbstractActivity {
+public class ExecutionEvent extends AbstractPositionable {
 
-	private String filePath;
-	private boolean isModified;
+	private String processName;
+	private String executionType;
 
-	public String getFileName() {
-		return new File(filePath).getName();
-	}
+	private boolean debug;
+	private boolean failed;
 
 }

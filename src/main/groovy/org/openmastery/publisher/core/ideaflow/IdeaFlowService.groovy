@@ -16,7 +16,6 @@
 package org.openmastery.publisher.core.ideaflow
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.ideaflow.ModificationActivity
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
