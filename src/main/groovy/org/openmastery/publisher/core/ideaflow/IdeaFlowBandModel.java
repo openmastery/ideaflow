@@ -23,14 +23,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Duration;
+import org.openmastery.publisher.api.Positionable;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel;
 import org.openmastery.publisher.core.timeline.TimeBandModel;
 import org.openmastery.time.TimeConverter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+// TODO: remove JsonIgnores...
 
 @Data
 @Builder
@@ -70,6 +73,18 @@ public class IdeaFlowBandModel extends TimeBandModel<IdeaFlowBandModel> {
 	@Override
 	public Duration getDuration() {
 		return TimeConverter.between(start, end).minus(getIdleDuration());
+	}
+
+	public List<Positionable> getAllContentsFlattenedAsPositionableList() {
+		// use a set b/c we could have duplicate idle bands (e.g. if idle is w/in nested conflict)
+		// TODO: there's no test that fails if this is a List... either make it a list or add a test that proves the above statement
+		HashSet<Positionable> positionables = new HashSet<>();
+		positionables.addAll(idleBands);
+		for (IdeaFlowBandModel nestedBand : nestedBands) {
+			positionables.add(nestedBand);
+			positionables.addAll(nestedBand.getAllContentsFlattenedAsPositionableList());
+		}
+		return new ArrayList<>(positionables);
 	}
 
 	@Override

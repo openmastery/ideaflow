@@ -12,20 +12,16 @@ import static org.openmastery.publisher.ARandom.aRandom
 class IdeaFlowTimelineBuilderSpec extends Specification {
 
 	private MockTimeService mockTimeService = new MockTimeService()
-	private long taskId = aRandom.intBetween(1, 100000)
-
-
 	private IdeaFlowTimelineBuilder timelineBuilder = new IdeaFlowTimelineBuilder()
 
-	def setup() {
-
+	private EventEntity createEvent(EventType type, int hoursInFuture) {
+		aRandom.eventEntity().type(type).position(mockTimeService.javaInFuture(hoursInFuture)).build()
 	}
-
 
 	def "generateProgressBands SHOULD create a progress band for an activate/deactivate interval"() {
 		given:
-		EventEntity taskStart = aRandom.eventEntity().type(EventType.ACTIVATE).position(mockTimeService.javaNow()).build()
-		EventEntity taskEnd = aRandom.eventEntity().type(EventType.DEACTIVATE).position(mockTimeService.javaInFuture(3)).build()
+		EventEntity taskStart = createEvent(EventType.ACTIVATE, 0)
+		EventEntity taskEnd = createEvent(EventType.DEACTIVATE, 3)
 
 		when:
 		timelineBuilder.events([taskStart, taskEnd])
@@ -38,10 +34,10 @@ class IdeaFlowTimelineBuilderSpec extends Specification {
 
 	def "generateProgressBands SHOULD create bands WHEN out of order intervals"() {
 		given:
-		EventEntity taskStart1 = aRandom.eventEntity().type(EventType.ACTIVATE).position(mockTimeService.javaNow()).build()
-		EventEntity taskEnd1 = aRandom.eventEntity().type(EventType.DEACTIVATE).position(mockTimeService.javaInFuture(3)).build()
-		EventEntity taskStart2 = aRandom.eventEntity().type(EventType.ACTIVATE).position(mockTimeService.javaInFuture(4)).build()
-		EventEntity taskEnd2 = aRandom.eventEntity().type(EventType.DEACTIVATE).position(mockTimeService.javaInFuture(6)).build()
+		EventEntity taskStart1 = createEvent(EventType.ACTIVATE, 0)
+		EventEntity taskEnd1 = createEvent(EventType.DEACTIVATE, 3)
+		EventEntity taskStart2 = createEvent(EventType.ACTIVATE, 4)
+		EventEntity taskEnd2 = createEvent(EventType.DEACTIVATE, 6)
 
 		when:
 		timelineBuilder.events([taskStart1, taskEnd2, taskStart2, taskEnd1])
@@ -55,9 +51,9 @@ class IdeaFlowTimelineBuilderSpec extends Specification {
 
 	//in actuality, this should probably prompt a "repair" job, looking at raw activity and creating the missing event
 	def "generateProgressBands SHOULD ignore multiple activates in a row"() {
-		EventEntity taskStart = aRandom.eventEntity().type(EventType.ACTIVATE).position(mockTimeService.javaNow()).build()
-		EventEntity taskStartAgain = aRandom.eventEntity().type(EventType.ACTIVATE).position(mockTimeService.javaInFuture(1)).build()
-		EventEntity taskEnd = aRandom.eventEntity().type(EventType.DEACTIVATE).position(mockTimeService.javaInFuture(5)).build()
+		EventEntity taskStart = createEvent(EventType.ACTIVATE, 0)
+		EventEntity taskStartAgain = createEvent(EventType.ACTIVATE, 1)
+		EventEntity taskEnd = createEvent(EventType.DEACTIVATE, 5)
 
 		when:
 		timelineBuilder.events([taskStart, taskStartAgain, taskEnd])

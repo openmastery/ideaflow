@@ -21,6 +21,7 @@ import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
+import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.task.Task
@@ -30,8 +31,6 @@ import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
-import org.openmastery.publisher.core.timeline.BandTimelineSegment
-import org.openmastery.publisher.core.timeline.IdleTimeProcessor
 
 class IdeaFlowTimelineBuilder {
 
@@ -43,6 +42,7 @@ class IdeaFlowTimelineBuilder {
 	private List<IdleActivityEntity> idleActivities
 
 	private EntityMapper entityMapper = new EntityMapper()
+	private RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 
 	IdeaFlowTimelineBuilder task(Task task) {
 		this.task = task
@@ -69,38 +69,41 @@ class IdeaFlowTimelineBuilder {
 		//translate execution activities to events
 		//relative time, implement positionable
 
+		List<Event> events = entityMapper.mapList(events, Event)
+		List<ExecutionEvent> executionEvents = entityMapper.mapList(executionActivities, ExecutionEvent)
+		List<ModificationActivity> modificationActivities = entityMapper.mapList(modificationActivities, ModificationActivity)
+		List<IdeaFlowBandModel> progressBands = generateProgressBands()
+
+		if (idleActivities) {
+			// TODO: fix
+//			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
+//			idleTimeProcessor.collapseIdleTime(segment, idleActivities)
+		}
+
+		computeRelativeTime(events, executionEvents, modificationActivities, progressBands)
+
 		//when no modification activity above threshold, create learning bands
 		//when WTF, WTF, AWESOME combo, create conflict band that spans this time
 
+		List<IdeaFlowBand> ideaFlowBands = entityMapper.mapList(progressBands, IdeaFlowBand)
+		return IdeaFlowTimeline.builder()
+				.events(events)
+				.executionEvents(executionEvents)
+				.modificationActivities(modificationActivities)
+				.ideaFlowBands(ideaFlowBands)
+				.build()
+	}
 
-		List<IdeaFlowBandModel> progressBands = generateProgressBands()
-//		List<AbstractActivity> allActivities = []
-//		allActivities.addAll(toModificationActivityList(modificationActivities))
-//		allActivities.addAll(toExecutionEventList(executionActivities))
-//
-//		BandTimelineSegment segment = BandTimelineSegment.builder()
-//			.events(toEventList(events))
-//			.ideaFlowBands(progressBands)
-//			.activities(allActivities)
-//			.timeBandGroups([])
-//			.build()
-
-		if (idleActivities) {
-			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
-			idleTimeProcessor.collapseIdleTime(segment, idleActivities)
+	private void computeRelativeTime(List<Event> events, List<ExecutionEvent> executionEvents,
+	                                 List<ModificationActivity> modificationActivities, List<IdeaFlowBandModel> progressBands) {
+		List<Positionable> positionables = []
+		positionables.addAll(events)
+		positionables.addAll(executionEvents)
+		positionables.addAll(modificationActivities)
+		progressBands.each { IdeaFlowBandModel model ->
+			positionables.add(model)
+			positionables.addAll(model.getAllContentsFlattenedAsPositionableList())
 		}
-
-		computeRelativeTime(segment.getAllContentsFlattenedAsPositionableList())
-
-		return convertToIdeaFlowTimeline(segment)
-	}
-
-	private IdeaFlowTimeline convertToIdeaFlowTimeline(BandTimelineSegment segment) {
-
-	}
-
-	private void computeRelativeTime(List<Positionable> positionables) {
-		RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 		relativeTimeProcessor.computeRelativeTime(positionables)
 	}
 
@@ -112,16 +115,16 @@ class IdeaFlowTimelineBuilder {
 		sortedTaskActivationEvents.each { Event taskEvent ->
 			if (activeProgressBand == null && taskEvent.type == EventType.ACTIVATE) {
 				activeProgressBand = IdeaFlowBandModel.builder()
-					.type(IdeaFlowStateType.PROGRESS)
-					.taskId(taskEvent.id)
-					.start(taskEvent.position)
-					.nestedBands([])
-					.idleBands([])
-					.build()
+						.type(IdeaFlowStateType.PROGRESS)
+						.taskId(taskEvent.id)
+						.start(taskEvent.position)
+						.nestedBands([])
+						.idleBands([])
+						.build()
 			} else if (activeProgressBand != null && taskEvent.type == EventType.DEACTIVATE) {
-					activeProgressBand.end = taskEvent.position
-					progressBands.add(activeProgressBand)
-					activeProgressBand = null
+				activeProgressBand.end = taskEvent.position
+				progressBands.add(activeProgressBand)
+				activeProgressBand = null
 			} else {
 				//eh... messed up state.  Multiple activates, multiple deactivates
 				//should trigger a "repair" by looking at raw data and correcting events
@@ -131,26 +134,12 @@ class IdeaFlowTimelineBuilder {
 	}
 
 	List<Event> createSortedTaskActivationEventList() {
-		List<EventEntity> taskActivationEvents = events.findAll { EventEntity event ->
+		List<Event> allEvents = entityMapper.mapList(events, Event)
+		List<Event> taskActivationEvents = allEvents.findAll { Event event ->
 			event.type == EventType.ACTIVATE || event.type == EventType.DEACTIVATE
 		}
-		List<Event> positionableTaskActivationEvents = toEventList(taskActivationEvents)
-		Collections.sort(positionableTaskActivationEvents, PositionableComparator.INSTANCE);
-		return positionableTaskActivationEvents
-	}
-
-
-
-	private List<Event> toEventList(List<EventEntity> eventEntityList) {
-		return entityMapper.mapList(eventEntityList, Event)
-	}
-
-	private List<ModificationActivity> toModificationActivityList(List<ModificationActivityEntity> modificationActivityEntityList) {
-		return entityMapper.mapList(modificationActivityEntityList, ModificationActivity)
-	}
-
-	private List<ExecutionEvent> toExecutionEventList(List<ExecutionActivityEntity> executionActivityEntityList) {
-		return entityMapper.mapList(executionActivityEntityList, ExecutionEvent)
+		Collections.sort(taskActivationEvents, PositionableComparator.INSTANCE);
+		return taskActivationEvents
 	}
 
 }
