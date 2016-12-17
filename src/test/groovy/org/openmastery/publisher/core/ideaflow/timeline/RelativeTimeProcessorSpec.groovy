@@ -1,142 +1,99 @@
 package org.openmastery.publisher.core.ideaflow.timeline
 
-import org.openmastery.publisher.api.TestTimelineSegmentBuilder
+import org.joda.time.Duration
 import org.openmastery.publisher.api.Positionable
-import org.openmastery.publisher.core.timeline.BandTimelineSegment
-import org.openmastery.publisher.core.timeline.TimelineTestSupport
+import org.openmastery.publisher.api.PositionableListBuilder
 import spock.lang.Specification
-
-import java.time.Duration
-import java.time.LocalDateTime
-
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
 class RelativeTimeProcessorSpec extends Specification {
 
-	TimelineTestSupport testSupport = new TimelineTestSupport()
-	TestTimelineSegmentBuilder builder = new TestTimelineSegmentBuilder()
+	PositionableListBuilder builder = new PositionableListBuilder()
 
-	def setup() {
-		testSupport.startTaskAndAdvanceHours(1)
-	}
-
-	private BandTimelineSegment processRelativeTime() {
-		BandTimelineSegment segment = builder.build()
-		List<Positionable> positionables = segment.getAllContentsFlattenedAsPositionableList()
+	private List<Positionable> processRelativeTime() {
+		List<Positionable> positionables = builder.build()
 		new RelativeTimeProcessor().computeRelativeTime(positionables)
-		segment
+		positionables
 	}
 
-	def "WHEN there is no idle"() {
-		given:
-		builder.ideaFlowBand(LEARNING, 0, 4)
-				.nestedConflict(1, 3)
-				.ideaFlowBand(PROGRESS, 5, 7)
-				.linkedIdeaFlowBand(LEARNING, 7, 10)
-				.linkedIdeaFlowBand(REWORK, 10, 12)
-
-		when:
-		BandTimelineSegment segment = processRelativeTime()
-
-		then:
-		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0l
-		assert segment.ideaFlowBands[0].nestedBands[0].relativePositionInSeconds == Duration.ofHours(1).seconds
-		assert segment.ideaFlowBands[1].relativePositionInSeconds == Duration.ofHours(5).seconds
-		assert segment.timeBandGroups[0].relativePositionInSeconds == Duration.ofHours(7).seconds
-		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == Duration.ofHours(7).seconds
-		assert segment.timeBandGroups[0].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(10).seconds
+	private long hoursToSeconds(int hours) {
+		Duration.standardHours(hours).standardSeconds
 	}
 
-	def "WHEN idle in prior nested conflict"() {
+	def "should adjust instant when idle is before positionable"() {
 		given:
-		builder.ideaFlowBand(LEARNING, 0, 6)
-				.nestedConflict(2, 4)
-				.idle(3, 4)
-				.nestedConflict(5, 6)
-				.ideaFlowBand(PROGRESS, 7, 8)
-
-		when:
-		BandTimelineSegment segment = processRelativeTime()
-
-		then:
-		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0l
-		assert segment.ideaFlowBands[0].nestedBands[0].relativePositionInSeconds == Duration.ofHours(2).seconds
-		assert segment.ideaFlowBands[0].nestedBands[1].relativePositionInSeconds == Duration.ofHours(4).seconds
-		assert segment.ideaFlowBands[1].relativePositionInSeconds == Duration.ofHours(6).seconds
-	}
-
-	def "WHEN segment has a mix of nested conflict and idle"() {
-		given:
-		builder.ideaFlowBand(LEARNING, 0, 10)
+		builder.interval(0, 6)
 				.idle(1, 2)
-				.nestedConflict(3, 4)
+				.position(4)
+
+		when:
+		List<Positionable> positionables = processRelativeTime()
+
+		then:
+		assert positionables[0].relativePositionInSeconds == 0l
+		assert positionables[1].relativePositionInSeconds == hoursToSeconds(1)
+		assert positionables[2].relativePositionInSeconds == hoursToSeconds(3)
+	}
+
+	def "should ignore idle when idle is after positionable"() {
+		given:
+		builder.interval(0, 6)
+				.position(2)
 				.idle(4, 5)
-				.idle(6, 7)
-				.nestedConflict(7, 8)
-				.idle(9, 10)
-				.ideaFlowBand(PROGRESS, 10, 12)
 
 		when:
-		BandTimelineSegment segment = processRelativeTime()
+		List<Positionable> positionables = processRelativeTime()
 
 		then:
-		assert segment.ideaFlowBands[0].relativePositionInSeconds == 0l
-		assert segment.ideaFlowBands[0].nestedBands[0].relativePositionInSeconds == Duration.ofHours(2).seconds
-		assert segment.ideaFlowBands[0].nestedBands[1].relativePositionInSeconds == Duration.ofHours(4).seconds
-		assert segment.ideaFlowBands[1].relativePositionInSeconds == Duration.ofHours(6).seconds
+		assert positionables[0].relativePositionInSeconds == 0l
+		assert positionables[1].relativePositionInSeconds == hoursToSeconds(2)
+		assert positionables[2].relativePositionInSeconds == hoursToSeconds(4)
 	}
 
-	def "WHEN segment has idle within a TimeBandGroup"() {
+	def "should collapse idle time when idle starts at interval start"() {
 		given:
-		builder.linkedIdeaFlowBand(REWORK, 0, 4)
-				.idle(0, 1)
+		builder.interval(0, 6)
+				.idle(0, 3)
+				.interval(6, 8)
+
+		when:
+		List<Positionable> positionables = processRelativeTime()
+
+		then:
+		assert positionables[0].relativePositionInSeconds == 0l
+		assert positionables[1].relativePositionInSeconds == hoursToSeconds(0)
+		assert positionables[2].relativePositionInSeconds == hoursToSeconds(3)
+	}
+
+	def "should collapse idle time when idle starts at interval end"() {
+		given:
+		builder.interval(0, 6)
+				.idle(3, 6)
+				.interval(6, 8)
+
+		when:
+		List<Positionable> positionables = processRelativeTime()
+
+		then:
+		assert positionables[0].relativePositionInSeconds == 0l
+		assert positionables[1].relativePositionInSeconds == hoursToSeconds(3)
+		assert positionables[2].relativePositionInSeconds == hoursToSeconds(3)
+	}
+
+	def "should collapse idle time if consecutive idle"() {
+		given:
+		builder.interval(0, 6)
+				.idle(2, 3)
 				.idle(3, 4)
-				.linkedIdeaFlowBand(LEARNING, 4, 7)
-				.idle(5, 6)
-				.ideaFlowBand(PROGRESS, 7, 8)
+				.interval(6, 8)
 
 		when:
-		BandTimelineSegment segment = processRelativeTime()
+		List<Positionable> positionables = processRelativeTime()
 
 		then:
-		assert segment.timeBandGroups[0].relativePositionInSeconds == 0l
-		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == 0l
-		assert segment.timeBandGroups[0].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(2).seconds
-		assert segment.ideaFlowBands[0].relativePositionInSeconds == Duration.ofHours(4).seconds
-	}
-
-	def "WHEN segment has idle within multiple TimeBandGroups"() {
-		given:
-		builder.linkedIdeaFlowBand(REWORK, 0, 4)
-				.linkedIdeaFlowBand(LEARNING, 4, 7)
-				.idle(5, 6)
-				.ideaFlowBand(PROGRESS, 7, 8)
-				.linkedIdeaFlowBand(LEARNING, 8, 12)
-				.idle(9, 11)
-				.linkedIdeaFlowBand(REWORK, 12, 13)
-
-		when:
-		BandTimelineSegment segment = processRelativeTime()
-
-		then:
-		assert segment.timeBandGroups[0].relativePositionInSeconds == 0l
-		assert segment.timeBandGroups[0].linkedTimeBands[0].relativePositionInSeconds == 0l
-		assert segment.timeBandGroups[0].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(4).seconds
-		assert segment.ideaFlowBands[0].relativePositionInSeconds == Duration.ofHours(6).seconds
-		assert segment.timeBandGroups[1].relativePositionInSeconds == Duration.ofHours(7).seconds
-		assert segment.timeBandGroups[1].linkedTimeBands[0].relativePositionInSeconds == Duration.ofHours(7).seconds
-		assert segment.timeBandGroups[1].linkedTimeBands[1].relativePositionInSeconds == Duration.ofHours(9).seconds
-	}
-
-	def "TODO add event test"() {
-		given:
-		LocalDateTime now = LocalDateTime.now()
-		boolean shouldFail = now.year != 2016
-
-		expect:
-		assert shouldFail == false
+		assert positionables[0].relativePositionInSeconds == 0l
+		assert positionables[1].relativePositionInSeconds == hoursToSeconds(2)
+		assert positionables[2].relativePositionInSeconds == hoursToSeconds(2)
+		assert positionables[3].relativePositionInSeconds == hoursToSeconds(4)
 	}
 
 }
