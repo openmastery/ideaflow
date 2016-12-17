@@ -19,10 +19,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
+import org.openmastery.publisher.api.Interval;
 import org.openmastery.publisher.api.Positionable;
 import org.openmastery.time.TimeConverter;
 
-public abstract class ActivityModel<T extends ActivityEntity> implements Positionable {
+public abstract class ActivityModel<T extends ActivityEntity> implements Positionable, Interval {
 
 	protected T delegate;
 	@Getter @Setter

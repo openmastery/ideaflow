@@ -17,12 +17,13 @@ package org.openmastery.publisher.core.timeline;
 
 import org.joda.time.LocalDateTime;
 import org.joda.time.Duration;
+import org.openmastery.publisher.api.Interval;
 import org.openmastery.publisher.api.Positionable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TimeBandModel<T extends TimeBandModel> implements Positionable {
+public abstract class TimeBandModel<T extends TimeBandModel> implements Positionable, Interval {
 
 	private Long relativePositionInSeconds;
 
