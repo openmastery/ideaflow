@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
+import org.openmastery.publisher.api.Positionable;
 
+import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowBand {
+public class IdeaFlowBand implements Positionable {
 
 	private long id;
 	private Long taskId;
@@ -31,6 +33,11 @@ public class IdeaFlowBand {
 	private IdeaFlowStateType type;
 
 	private List<IdeaFlowBand> nestedBands = new ArrayList<IdeaFlowBand>();
+
+	@Override
+	public LocalDateTime getPosition() {
+		return start;
+	}
 
 
 	// simplify dozer mapping

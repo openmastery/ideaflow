@@ -36,10 +36,10 @@ class IdeaFlowTimelineBuilder {
 
 	private Task task
 
-	private List<EventEntity> events
-	private List<ModificationActivityEntity> modificationActivities
-	private List<ExecutionActivityEntity> executionActivities
+	private List<Event> events
 	private List<IdleActivityEntity> idleActivities
+	private List<ModificationActivity> modificationActivities
+	private List<ExecutionEvent> executionEvents
 
 	private EntityMapper entityMapper = new EntityMapper()
 	private RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
@@ -55,58 +55,33 @@ class IdeaFlowTimelineBuilder {
 	}
 
 	IdeaFlowTimelineBuilder events(List<EventEntity> events) {
-		this.events = events
+		this.events = entityMapper.mapList(events, Event)
+		this
+	}
+
+	IdeaFlowTimelineBuilder executionActivities(List<ExecutionActivityEntity> executionActivities) {
+		this.executionEvents = entityMapper.mapList(executionActivities, ExecutionEvent)
 		this
 	}
 
 	IdeaFlowTimelineBuilder modificationActivities(List<ModificationActivityEntity> modificationActivities) {
-		this.modificationActivities = modificationActivities
+		this.modificationActivities = entityMapper.mapList(modificationActivities, ModificationActivity)
 		this
 	}
 
 	IdeaFlowTimeline build() {
-		//if bands, collapse idle time within band, if idle time outside of band its chopped
-		//translate execution activities to events
-		//relative time, implement positionable
-
-		List<Event> events = entityMapper.mapList(events, Event)
-		List<ExecutionEvent> executionEvents = entityMapper.mapList(executionActivities, ExecutionEvent)
-		List<ModificationActivity> modificationActivities = entityMapper.mapList(modificationActivities, ModificationActivity)
 		List<IdeaFlowBandModel> progressBands = generateProgressBands()
+		collapseIdleTime(progressBands)
+		computeRelativeTime(progressBands)
 
-		if (idleActivities) {
-			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
-			idleTimeProcessor.collapseIdleTime(progressBands, idleActivities)
-		}
-
-		computeRelativeTime(events, executionEvents, modificationActivities, progressBands)
-
+		//calendar events
 		//when no modification activity above threshold, create learning bands
 		//when WTF, WTF, AWESOME combo, create conflict band that spans this time
 
-		List<IdeaFlowBand> ideaFlowBands = entityMapper.mapList(progressBands, IdeaFlowBand)
-		return IdeaFlowTimeline.builder()
-				.events(events)
-				.executionEvents(executionEvents)
-				.modificationActivities(modificationActivities)
-				.ideaFlowBands(ideaFlowBands)
-				.build()
+		return createIdeaFlowTimeline(progressBands)
 	}
 
-	private void computeRelativeTime(List<Event> events, List<ExecutionEvent> executionEvents,
-	                                 List<ModificationActivity> modificationActivities, List<IdeaFlowBandModel> progressBands) {
-		List<Positionable> positionables = []
-		positionables.addAll(events)
-		positionables.addAll(executionEvents)
-		positionables.addAll(modificationActivities)
-		progressBands.each { IdeaFlowBandModel model ->
-			positionables.add(model)
-			positionables.addAll(model.getAllContentsFlattenedAsPositionableList())
-		}
-		relativeTimeProcessor.computeRelativeTime(positionables)
-	}
-
-	List<IdeaFlowBandModel> generateProgressBands() {
+	private List<IdeaFlowBandModel> generateProgressBands() {
 		List<Event> sortedTaskActivationEvents = createSortedTaskActivationEventList()
 		List<IdeaFlowBandModel> progressBands = []
 		IdeaFlowBandModel activeProgressBand = null
@@ -132,13 +107,46 @@ class IdeaFlowTimelineBuilder {
 		return progressBands
 	}
 
-	List<Event> createSortedTaskActivationEventList() {
-		List<Event> allEvents = entityMapper.mapList(events, Event)
-		List<Event> taskActivationEvents = allEvents.findAll { Event event ->
+	private List<Event> createSortedTaskActivationEventList() {
+		List<Event> taskActivationEvents = events.findAll { Event event ->
 			event.type == EventType.ACTIVATE || event.type == EventType.DEACTIVATE
 		}
 		Collections.sort(taskActivationEvents, PositionableComparator.INSTANCE);
 		return taskActivationEvents
+	}
+
+	private void collapseIdleTime(List<IdeaFlowBandModel> progressBands) {
+		if (idleActivities) {
+			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
+			idleTimeProcessor.collapseIdleTime(progressBands, idleActivities)
+		}
+	}
+
+	private void computeRelativeTime(List<IdeaFlowBandModel> progressBands) {
+		List<Positionable> positionables = []
+		positionables.addAll(events)
+		positionables.addAll(executionEvents)
+		positionables.addAll(modificationActivities)
+		progressBands.each { IdeaFlowBandModel model ->
+			positionables.add(model)
+			positionables.addAll(model.getAllContentsFlattenedAsPositionableList())
+		}
+		relativeTimeProcessor.computeRelativeTime(positionables)
+	}
+
+	private IdeaFlowTimeline createIdeaFlowTimeline(List<IdeaFlowBandModel> progressBands) {
+		List<IdeaFlowBand> ideaFlowBands = entityMapper.mapList(progressBands, IdeaFlowBand)
+		Collections.sort(events, PositionableComparator.INSTANCE);
+		Collections.sort(executionEvents, PositionableComparator.INSTANCE);
+		Collections.sort(modificationActivities, PositionableComparator.INSTANCE);
+		Collections.sort(ideaFlowBands, PositionableComparator.INSTANCE);
+
+		return IdeaFlowTimeline.builder()
+				.events(events)
+				.executionEvents(executionEvents)
+				.modificationActivities(modificationActivities)
+				.ideaFlowBands(ideaFlowBands)
+				.build()
 	}
 
 }
