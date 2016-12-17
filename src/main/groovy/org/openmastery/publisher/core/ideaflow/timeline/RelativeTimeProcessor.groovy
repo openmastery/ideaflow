@@ -16,6 +16,8 @@
 package org.openmastery.publisher.core.ideaflow.timeline
 
 import org.joda.time.Duration
+import org.joda.time.LocalDateTime
+import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.core.PositionableComparator
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
@@ -23,7 +25,8 @@ import org.openmastery.time.TimeConverter
 
 class RelativeTimeProcessor {
 
-	private static final Comparator<Positionable> IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE = new Comparator<Positionable>() {
+	private static
+	final Comparator<Positionable> IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE = new Comparator<Positionable>() {
 		@Override
 		public int compare(Positionable o1, Positionable o2) {
 			int comparison = PositionableComparator.INSTANCE.compare(o1, o2)
@@ -42,7 +45,7 @@ class RelativeTimeProcessor {
 	}
 
 	public void computeRelativeTime(List<Positionable> positionables) {
-		positionables = positionables.sort(false, IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE)
+		positionables = sortPositionablesAndInsertIdleBandsBetweenIntervalGaps(positionables)
 
 		long relativeTime = 0
 		Positionable previousPositionable = null
@@ -64,6 +67,34 @@ class RelativeTimeProcessor {
 			positionable.relativePositionInSeconds = relativeTime
 			previousPositionable = positionable
 		}
+	}
+
+	private List<Positionable> sortPositionablesAndInsertIdleBandsBetweenIntervalGaps(List<Positionable> positionables) {
+		positionables = positionables.sort(false, IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE)
+		List idleBands = []
+
+
+		LocalDateTime maxIntervalEnd = null
+		List<Interval> intervalList = positionables.findAll { it instanceof Interval }
+		intervalList.each { Interval interval ->
+			if (maxIntervalEnd == null) {
+				maxIntervalEnd = interval.end
+			} else {
+				if (interval.start.isAfter(maxIntervalEnd)) {
+					idleBands << IdleTimeBandModel.builder()
+							.start(maxIntervalEnd)
+							.end(interval.start)
+							.build()
+				}
+
+				if (interval.end.isAfter(maxIntervalEnd)) {
+					maxIntervalEnd = interval.end
+				}
+			}
+		}
+
+		positionables.addAll(idleBands)
+		positionables.sort(false, IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE)
 	}
 
 }

@@ -96,4 +96,47 @@ class RelativeTimeProcessorSpec extends Specification {
 		assert positionables[3].relativePositionInSeconds == hoursToSeconds(4)
 	}
 
+	def "should collapse empty space between intervals"() {
+		given:
+		builder.interval(0, 2)
+				.interval(4, 6)
+
+		when:
+		List<Positionable> positionables = processRelativeTime()
+
+		then:
+		assert positionables[0].relativePositionInSeconds == 0l
+		assert positionables[1].relativePositionInSeconds == hoursToSeconds(2)
+	}
+
+	def "should collapse empty space between overlapping intervals"() {
+		given:
+		builder.interval(0, 2)
+				.interval(1, 4)
+				.interval(6, 8)
+
+		when:
+		List<Positionable> positionables = processRelativeTime()
+
+		then:
+		assert positionables[0].relativePositionInSeconds == 0l
+		assert positionables[1].relativePositionInSeconds == hoursToSeconds(1)
+		assert positionables[2].relativePositionInSeconds == hoursToSeconds(4)
+	}
+
+	def "should not collapse empty space if interval starts at interval end"() {
+		given:
+		builder.interval(0, 2)
+				.interval(2, 4)
+				.interval(4, 6)
+
+		when:
+		List<Positionable> positionables = processRelativeTime()
+
+		then:
+		assert positionables[0].relativePositionInSeconds == 0l
+		assert positionables[1].relativePositionInSeconds == hoursToSeconds(2)
+		assert positionables[2].relativePositionInSeconds == hoursToSeconds(4)
+	}
+
 }
