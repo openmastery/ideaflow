@@ -27,7 +27,6 @@ import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.timeline.BandTimelineSegment
 import org.openmastery.publisher.core.timeline.IdleTimeProcessor
-import org.openmastery.publisher.core.timeline.RelativeTimeProcessor
 
 class IdeaFlowTimelineBuilder {
 

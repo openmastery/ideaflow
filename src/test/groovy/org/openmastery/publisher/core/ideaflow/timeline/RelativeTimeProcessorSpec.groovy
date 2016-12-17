@@ -1,7 +1,10 @@
-package org.openmastery.publisher.core.timeline
+package org.openmastery.publisher.core.ideaflow.timeline
 
 import org.openmastery.publisher.api.TestTimelineSegmentBuilder
 import org.openmastery.publisher.core.Positionable
+import org.openmastery.publisher.core.ideaflow.timeline.RelativeTimeProcessor
+import org.openmastery.publisher.core.timeline.BandTimelineSegment
+import org.openmastery.publisher.core.timeline.TimelineTestSupport
 import spock.lang.Specification
 
 import java.time.Duration
@@ -11,7 +14,7 @@ import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 
-class RelativeTimeProcessorTest extends Specification {
+class RelativeTimeProcessorSpec extends Specification {
 
 	TimelineTestSupport testSupport = new TimelineTestSupport()
 	TestTimelineSegmentBuilder builder = new TestTimelineSegmentBuilder()

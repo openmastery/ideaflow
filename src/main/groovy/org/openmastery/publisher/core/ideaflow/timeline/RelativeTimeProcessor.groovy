@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.core.timeline
+package org.openmastery.publisher.core.ideaflow.timeline
 
 import org.openmastery.publisher.core.Positionable
 import org.openmastery.publisher.core.PositionableComparator
+import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 
 import java.time.Duration
 
