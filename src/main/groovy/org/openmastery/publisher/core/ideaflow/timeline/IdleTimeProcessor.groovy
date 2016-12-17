@@ -13,36 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.core.timeline
+package org.openmastery.publisher.core.ideaflow.timeline
 
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.activity.IdleActivityEntity
+import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.core.timeline.IdleTimeBandModel
+import org.openmastery.publisher.core.timeline.TimeBandIdleCalculator
 import org.openmastery.time.TimeConverter
 
-@Deprecated
 class IdleTimeProcessor {
 
 	private TimeBandIdleCalculator timeBandCalculator = new TimeBandIdleCalculator()
 
-	public void collapseIdleTime(BandTimelineSegment timelineSegment, List<IdleActivityEntity> idleActivities) {
+	public void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands, List<IdleActivityEntity> idleActivities) {
 		for (IdleActivityEntity idle : idleActivities) {
-			addIdleDuration(timelineSegment.ideaFlowBands, idle)
-
-			for (TimeBandGroupModel group : timelineSegment.timeBandGroups) {
-				addIdleDuration(group.linkedTimeBands, idle)
-			}
+			addIdleDuration(ideaFlowBands, idle)
 		}
 	}
 
-	private void addIdleDuration(List<TimeBandModel> timeBands, IdleActivityEntity idleEntity) {
-		for (TimeBandModel timeBand : timeBands) {
-			if (timeBand instanceof IdeaFlowBandModel) {
-				IdleTimeBandModel idle = toIdleTimeBand(idleEntity)
-				IdleTimeBandModel splitIdle = timeBandCalculator.getIdleForTimeBandOrNull(timeBand, idle)
-				if (splitIdle != null) {
-					timeBand.addIdleBand(splitIdle)
-					addIdleDuration(timeBand.nestedBands, idleEntity)
-				}
+	private void addIdleDuration(List<IdeaFlowBandModel> timeBands, IdleActivityEntity idleEntity) {
+		for (IdeaFlowBandModel ideaFlowBandModel : timeBands) {
+			IdleTimeBandModel idle = toIdleTimeBand(idleEntity)
+			IdleTimeBandModel splitIdle = timeBandCalculator.getIdleForTimeBandOrNull(ideaFlowBandModel, idle)
+			if (splitIdle != null) {
+				ideaFlowBandModel.addIdleBand(splitIdle)
+				addIdleDuration(ideaFlowBandModel.nestedBands, idleEntity)
 			}
 		}
 	}

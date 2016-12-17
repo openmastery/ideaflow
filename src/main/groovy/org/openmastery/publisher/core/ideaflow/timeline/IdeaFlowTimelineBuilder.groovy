@@ -75,9 +75,8 @@ class IdeaFlowTimelineBuilder {
 		List<IdeaFlowBandModel> progressBands = generateProgressBands()
 
 		if (idleActivities) {
-			// TODO: fix
-//			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
-//			idleTimeProcessor.collapseIdleTime(segment, idleActivities)
+			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
+			idleTimeProcessor.collapseIdleTime(progressBands, idleActivities)
 		}
 
 		computeRelativeTime(events, executionEvents, modificationActivities, progressBands)

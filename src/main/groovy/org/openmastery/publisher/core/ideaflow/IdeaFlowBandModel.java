@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-// TODO: remove JsonIgnores...
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -53,7 +51,6 @@ public class IdeaFlowBandModel extends TimeBandModel<IdeaFlowBandModel> {
 
 	private IdeaFlowStateType type;
 
-	@JsonIgnore
 	private List<IdleTimeBandModel> idleBands = new ArrayList<>();
 	private List<IdeaFlowBandModel> nestedBands = new ArrayList<>();
 
@@ -65,7 +62,6 @@ public class IdeaFlowBandModel extends TimeBandModel<IdeaFlowBandModel> {
 		idleBands.add(idleTimeBand);
 	}
 
-	@JsonIgnore
 	public Duration getIdleDuration() {
 		return TimeBandModel.sumDuration(idleBands);
 	}
@@ -88,7 +84,6 @@ public class IdeaFlowBandModel extends TimeBandModel<IdeaFlowBandModel> {
 	}
 
 	@Override
-	@JsonIgnore
 	public List<TimeBandModel> getContainedBands() {
 		ArrayList<TimeBandModel> containedBands = new ArrayList<>(nestedBands);
 		containedBands.addAll(idleBands);
