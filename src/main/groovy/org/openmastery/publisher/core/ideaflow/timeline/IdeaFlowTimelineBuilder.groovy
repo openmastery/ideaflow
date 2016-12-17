@@ -15,30 +15,28 @@
  */
 package org.openmastery.publisher.core.ideaflow.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.task.Task
+import org.openmastery.publisher.core.Positionable
 import org.openmastery.publisher.core.PositionableComparator
 import org.openmastery.publisher.core.activity.*
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
-import org.openmastery.time.TimeConverter
+import org.openmastery.publisher.core.timeline.BandTimelineSegment
+import org.openmastery.publisher.core.timeline.IdleTimeProcessor
+import org.openmastery.publisher.core.timeline.RelativeTimeProcessor
 
 class IdeaFlowTimelineBuilder {
 
 	private Task task
 
-	private List<IdeaFlowBand> progressBands
 	private List<EventEntity> events
-	private List<IdleActivityEntity> idleActivities
 	private List<ModificationActivityEntity> modificationActivities
-
-	private List<ExternalActivityEntity> externalActivities //TODO do we need to convert to idle?
-
+	private List<ExecutionActivityEntity> executionActivities
+	private List<IdleActivityEntity> idleActivities
 
 	IdeaFlowTimelineBuilder task(Task task) {
 		this.task = task
@@ -55,23 +53,49 @@ class IdeaFlowTimelineBuilder {
 		this
 	}
 
-	IdeaFlowTimelineBuilder externalActivities(List<ExternalActivityEntity> externalActivities) {
-		this.externalActivities = externalActivities
-		this
-	}
-
 	IdeaFlowTimelineBuilder modificationActivities(List<ModificationActivityEntity> modificationActivities) {
 		this.modificationActivities = modificationActivities
 		this
 	}
 
 	IdeaFlowTimeline build() {
+		//if bands, collapse idle time within band, if idle time outside of band its chopped
+		//translate execution activities to events
+		//relative time, implement positionable
+
+		//when no modification activity above threshold, create learning bands
+		//when WTF, WTF, AWESOME combo, create conflict band that spans this time
+
+
 		List<IdeaFlowBandModel> progressBands = generateProgressBands()
+		List<ActivityModel> allActivities = []
+		allActivities.addAll(toModificationModelList(modificationActivities))
+		allActivities.addAll(toExecutionModelList(executionActivities))
 
+		BandTimelineSegment segment = BandTimelineSegment.builder()
+			.events(toEventModelList(events))
+			.ideaFlowBands(progressBands)
+			.activities(allActivities)
+			.timeBandGroups([])
+			.build()
 
-		IdeaFlowTimeline timeline = createTimelineAndCollapseIdleTime()
-		//computeRelativeTime(segment.getAllContentsFlattenedAsPositionableList())
-		timeline
+		if (idleActivities) {
+			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
+			idleTimeProcessor.collapseIdleTime(segment, idleActivities)
+		}
+
+		computeRelativeTime(segment.getAllContentsFlattenedAsPositionableList())
+
+		return convertToIdeaFlowTimeline(segment)
+	}
+
+	private IdeaFlowTimeline convertToIdeaFlowTimeline(BandTimelineSegment segment) {
+
+	}
+
+	private void computeRelativeTime(List<Positionable> positionables) {
+		RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
+		relativeTimeProcessor.computeRelativeTime(positionables)
 	}
 
 	List<IdeaFlowBandModel> generateProgressBands() {
@@ -100,20 +124,6 @@ class IdeaFlowTimelineBuilder {
 		return progressBands
 	}
 
-//	private long id;
-//	private Long taskId;
-//
-//	private LocalDateTime start;
-//	private LocalDateTime end;
-//	private Long durationInSeconds;
-//	private Long relativePositionInSeconds;
-//
-//	private String startingComment;
-//	private String endingComent;
-//
-//	private IdeaFlowStateType type;
-
-
 	List<EventModel> createSortedTaskActivationEventList() {
 		List<EventEntity> taskActivationEvents = events.findAll { EventEntity event ->
 			event.type == EventType.ACTIVATE || event.type == EventType.DEACTIVATE
@@ -133,6 +143,26 @@ class IdeaFlowTimelineBuilder {
 
 		eventEntityList.collect { EventEntity eventEntity ->
 			new EventModel(eventEntity)
+		}
+	}
+
+	private List<ModificationActivityModel> toModificationModelList(List<ModificationActivityEntity> modificationActivityEntityList) {
+		if (modificationActivityEntityList == null) {
+			return []
+		}
+
+		modificationActivityEntityList.collect { ModificationActivityEntity activityEntity ->
+			new ModificationActivityModel(activityEntity)
+		}
+	}
+
+	private List<ExecutionActivityModel> toExecutionModelList(List<ExecutionActivityEntity> executionActivityEntityList) {
+		if (executionActivityEntityList == null) {
+			return []
+		}
+
+		executionActivityEntityList.collect { ExecutionActivityEntity activityEntity ->
+			new ExecutionActivityModel(activityEntity)
 		}
 	}
 

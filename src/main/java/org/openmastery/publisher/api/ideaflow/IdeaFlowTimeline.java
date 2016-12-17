@@ -23,11 +23,12 @@ public class IdeaFlowTimeline {
 	private LocalDateTime end;
 
 	private Long durationInSeconds;
-	private Long relativePositionInSeconds;
+	private Long relativePositionInSeconds; //can be offset if showing a subtask fragment
 
+	private List<IdeaFlowBand> ideaFlowBands;
 	private List<ModificationActivity> modificationActivities;
 	private List<ExecutionEvent> executionEvents;
-	private List<CalendarEvent> calendarEvents;
+	private List<CalendarEvent> calendarEvents; //TODO need to generate
 	private List<Event> events;
 
 }
