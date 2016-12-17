@@ -19,7 +19,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.timeline.ActivityNode
 import org.openmastery.publisher.api.timeline.ActivityNodeType
 import org.openmastery.publisher.api.timeline.ActivityTimeline
-import org.openmastery.publisher.core.Positionable
+import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.core.activity.ActivityModel
 import org.openmastery.publisher.core.activity.EditorActivityModel
 import org.openmastery.publisher.core.activity.ExternalActivityModel

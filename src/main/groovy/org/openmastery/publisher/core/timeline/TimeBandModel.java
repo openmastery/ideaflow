@@ -17,7 +17,7 @@ package org.openmastery.publisher.core.timeline;
 
 import org.joda.time.LocalDateTime;
 import org.joda.time.Duration;
-import org.openmastery.publisher.core.Positionable;
+import org.openmastery.publisher.api.Positionable;
 
 import java.util.ArrayList;
 import java.util.List;

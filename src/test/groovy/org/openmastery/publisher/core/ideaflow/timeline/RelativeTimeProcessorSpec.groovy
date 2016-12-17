@@ -1,8 +1,7 @@
 package org.openmastery.publisher.core.ideaflow.timeline
 
 import org.openmastery.publisher.api.TestTimelineSegmentBuilder
-import org.openmastery.publisher.core.Positionable
-import org.openmastery.publisher.core.ideaflow.timeline.RelativeTimeProcessor
+import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.core.timeline.BandTimelineSegment
 import org.openmastery.publisher.core.timeline.TimelineTestSupport
 import spock.lang.Specification

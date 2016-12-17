@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.event.EventType;
-import org.openmastery.publisher.core.Positionable;
+import org.openmastery.publisher.api.Positionable;
 import org.openmastery.time.TimeConverter;
 
 public class EventModel implements Positionable {

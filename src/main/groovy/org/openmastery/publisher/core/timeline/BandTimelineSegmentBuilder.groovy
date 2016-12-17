@@ -15,7 +15,7 @@
  */
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.core.Positionable
+import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.EditorActivityModel
 import org.openmastery.publisher.core.activity.ExternalActivityEntity

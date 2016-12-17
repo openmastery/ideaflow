@@ -15,6 +15,8 @@
  */
 package org.openmastery.publisher.core;
 
+import org.openmastery.publisher.api.Positionable;
+
 import java.util.Comparator;
 
 public class PositionableComparator implements Comparator<Positionable> {

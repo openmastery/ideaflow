@@ -16,7 +16,7 @@
 package org.openmastery.publisher.core.ideaflow.timeline
 
 import org.joda.time.Duration
-import org.openmastery.publisher.core.Positionable
+import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.core.PositionableComparator
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.time.TimeConverter

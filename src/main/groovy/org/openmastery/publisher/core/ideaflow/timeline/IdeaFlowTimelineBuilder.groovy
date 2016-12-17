@@ -19,7 +19,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.task.Task
-import org.openmastery.publisher.core.Positionable
+import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.core.PositionableComparator
 import org.openmastery.publisher.core.activity.*
 import org.openmastery.publisher.core.event.EventEntity
