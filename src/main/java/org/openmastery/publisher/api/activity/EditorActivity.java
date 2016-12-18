@@ -10,7 +10,6 @@ import lombok.ToString;
 import java.io.File;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)

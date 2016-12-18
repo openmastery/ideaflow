@@ -1,4 +1,4 @@
-package org.openmastery.publisher.api.activity;
+package org.openmastery.publisher.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

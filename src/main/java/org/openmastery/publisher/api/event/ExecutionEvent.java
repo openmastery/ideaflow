@@ -6,10 +6,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.openmastery.publisher.api.activity.AbstractPositionable;
+import org.openmastery.publisher.api.AbstractPositionable;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
