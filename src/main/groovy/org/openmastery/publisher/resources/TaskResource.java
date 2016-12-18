@@ -15,27 +15,16 @@
  */
 package org.openmastery.publisher.resources;
 
-import com.bancvue.rest.exception.ConflictingEntityException;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
-import org.openmastery.publisher.core.IdeaFlowPersistenceService;
-import org.openmastery.publisher.core.activity.IdleActivityEntity;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachineFactory;
-import org.openmastery.publisher.core.task.TaskEntity;
-import org.openmastery.mapper.EntityMapper;
-import org.openmastery.publisher.core.task.TaskService;
-import org.openmastery.publisher.security.InvocationContext;
-import org.openmastery.time.TimeService;
+import org.openmastery.publisher.core.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.time.LocalDateTime;
 
 @Component
 @Path(ResourcePaths.TASK_PATH)

@@ -19,15 +19,13 @@ import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.timeline.ActivityTimeline
 import org.openmastery.publisher.api.timeline.BandTimeline
-import org.openmastery.publisher.api.timeline.TreeTimeline
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

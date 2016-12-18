@@ -3,7 +3,7 @@ package org.openmastery.publisher.core.timeline
 import org.joda.time.Duration
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
 
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING

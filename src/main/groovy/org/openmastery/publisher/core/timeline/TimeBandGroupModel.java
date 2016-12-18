@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel;
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel;
 
 import java.util.ArrayList;
 import java.util.List;

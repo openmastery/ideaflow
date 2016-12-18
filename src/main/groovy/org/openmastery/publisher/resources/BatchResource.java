@@ -17,7 +17,7 @@ package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.batch.NewIFMBatch;
-import org.openmastery.publisher.core.activity.IFMBatchService;
+import org.openmastery.publisher.core.IFMBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

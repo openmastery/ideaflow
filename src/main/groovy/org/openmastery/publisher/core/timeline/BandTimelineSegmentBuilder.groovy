@@ -23,9 +23,9 @@ import org.openmastery.publisher.core.activity.ExternalActivityModel
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.event.EventModel
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
-import org.openmastery.publisher.core.ideaflow.timeline.RelativeTimeProcessor
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
+import org.openmastery.publisher.ideaflow.timeline.RelativeTimeProcessor
 import org.openmastery.time.TimeConverter
 
 class BandTimelineSegmentBuilder {

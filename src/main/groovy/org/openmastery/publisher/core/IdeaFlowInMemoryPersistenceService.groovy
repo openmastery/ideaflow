@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.core
 
-import org.apache.tomcat.jni.Local
 import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.BlockActivityEntity
 import org.openmastery.publisher.core.activity.EditorActivityEntity
@@ -24,16 +23,14 @@ import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
-import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.time.TimeConverter
 import org.springframework.dao.DataIntegrityViolationException
 
 import java.sql.Timestamp
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
 
 public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceService {
 

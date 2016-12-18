@@ -24,7 +24,7 @@ import org.openmastery.publisher.core.activity.ActivityModel
 import org.openmastery.publisher.core.activity.EditorActivityModel
 import org.openmastery.publisher.core.activity.ExternalActivityModel
 import org.openmastery.publisher.core.event.EventModel
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 
 import static org.openmastery.time.TimeConverter.toJodaLocalDateTime
 

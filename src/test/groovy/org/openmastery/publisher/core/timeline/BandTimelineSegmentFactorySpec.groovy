@@ -1,8 +1,8 @@
 package org.openmastery.publisher.core.timeline
 
 import org.joda.time.Duration
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
 import spock.lang.Specification
 
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING

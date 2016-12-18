@@ -1,6 +1,6 @@
 package org.openmastery.publisher.api
 
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.core.timeline.TimeBandGroupModel
 import org.openmastery.publisher.core.timeline.BandTimelineSegment

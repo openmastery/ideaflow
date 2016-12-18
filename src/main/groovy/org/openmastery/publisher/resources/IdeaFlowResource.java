@@ -17,8 +17,9 @@ package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
-import org.openmastery.publisher.core.IdeaFlowPersistenceService;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowService;
+import org.openmastery.publisher.api.metrics.IdeaFlowMetrics;
+import org.openmastery.publisher.api.metrics.IdeaFlowMetricsCalculator;
+import org.openmastery.publisher.ideaflow.IdeaFlowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,11 +34,42 @@ public class IdeaFlowResource {
 	@Autowired
 	private IdeaFlowService ideaFlowService;
 
+
+	/**
+	 * Uses the automated data collection from IdeaFlowMetrics to generate an IdeaFlowTimeline.
+	 * The timeline includes both the automated data collection, as well as a set of named ToggleableOverlays.
+	 *
+	 * DetailedStatistics are also available on demand, queryable by subtask.
+	 *
+	 * @see "http://github.com/openmastery/ideaflowmetrics"
+	 * @param taskId
+	 * @return IdeaFlowTimeline
+	 */
+
 	@GET
 	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
 	public IdeaFlowTimeline getTimelineForTask(@PathParam("taskId") Long taskId) {
 
 		return ideaFlowService.generateIdeaFlowForTask(taskId);
+	}
+
+
+	/**
+	 * Run a customizable set of metrics to generate some interesting statistics.
+	 * Analyze your data, with this handful of statistics.
+	 *
+	 * Want more?  Create your own IdeaFlowMetricsCalculator, contribute to OSS,
+	 * give it a new calculator name, and add it to the API!
+	 *
+	 * @param taskId
+	 * @param calculator IdeaFlowMetricsCalculator
+	 * @return IdeaFlowMetrics
+	 */
+
+	@POST
+	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
+	public IdeaFlowMetrics runYourMetrics(@PathParam("taskId") Long taskId, IdeaFlowMetricsCalculator calculator) {
+		return ideaFlowService.runYourMetrics(taskId, calculator);
 	}
 
 

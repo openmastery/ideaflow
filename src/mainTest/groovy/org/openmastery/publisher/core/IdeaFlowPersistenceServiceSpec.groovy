@@ -8,7 +8,7 @@ import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity.ExternalActivityEntityBuilder
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity.IdleActivityEntityBuilder
-import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.time.MockTimeService
 import org.springframework.dao.DataIntegrityViolationException

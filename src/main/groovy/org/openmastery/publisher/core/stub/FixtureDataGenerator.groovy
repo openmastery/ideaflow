@@ -5,9 +5,6 @@ import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.TaskClient
-import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.core.task.TaskService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 

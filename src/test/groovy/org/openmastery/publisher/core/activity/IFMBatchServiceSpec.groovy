@@ -2,6 +2,7 @@ package org.openmastery.publisher.core.activity
 
 import org.openmastery.publisher.api.activity.NewEditorActivity
 import org.openmastery.publisher.api.batch.NewBatchEvent
+import org.openmastery.publisher.core.IFMBatchService
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.MockTimeService

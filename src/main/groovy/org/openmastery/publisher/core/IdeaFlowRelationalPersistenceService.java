@@ -15,15 +15,14 @@
  */
 package org.openmastery.publisher.core;
 
-import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.core.activity.*;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.event.EventRepository;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateRepository;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateScope;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateRepository;
+import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity;
+import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateRepository;
+import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateScope;
+import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity;
+import org.openmastery.publisher.ideaflow.IdeaFlowStateRepository;
 import org.openmastery.publisher.core.task.TaskEntity;
 import org.openmastery.publisher.core.task.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Transactional

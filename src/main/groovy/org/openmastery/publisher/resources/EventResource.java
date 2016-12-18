@@ -23,7 +23,7 @@ import org.openmastery.publisher.api.event.NewEvent;
 import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.core.event.EventEntity;
-import org.openmastery.publisher.core.event.EventService;
+import org.openmastery.publisher.core.EventService;
 import org.openmastery.publisher.security.InvocationContext;
 import org.openmastery.time.TimeService;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;

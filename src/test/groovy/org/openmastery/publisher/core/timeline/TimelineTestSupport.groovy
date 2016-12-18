@@ -3,7 +3,7 @@ package org.openmastery.publisher.core.timeline
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.core.ideaflow.IdeaFlowPartialStateEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.MockTimeService
@@ -11,8 +11,8 @@ import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.IdeaFlowInMemoryPersistenceService
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateEntity
-import org.openmastery.publisher.core.ideaflow.IdeaFlowStateMachine
+import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
+import org.openmastery.publisher.metrics.machine.IdeaFlowStateMachine
 
 import static IdeaFlowStateType.TROUBLESHOOTING
 import static IdeaFlowStateType.LEARNING

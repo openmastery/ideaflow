@@ -25,7 +25,7 @@ import org.openmastery.publisher.api.Positionable;
 import org.openmastery.publisher.api.PositionableComparator;
 import org.openmastery.publisher.core.activity.ActivityModel;
 import org.openmastery.publisher.core.event.EventModel;
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel;
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel;
 
 import java.util.ArrayList;
 import java.util.Collections;

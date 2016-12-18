@@ -15,7 +15,7 @@
  */
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.time.TimeConverter
 

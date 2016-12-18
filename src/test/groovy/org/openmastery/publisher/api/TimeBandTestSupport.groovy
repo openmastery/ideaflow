@@ -1,7 +1,7 @@
 package org.openmastery.publisher.api
 
 import org.joda.time.LocalDateTime
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.core.timeline.TimeBandModel
 import org.openmastery.publisher.core.timeline.TimeBandGroupModel

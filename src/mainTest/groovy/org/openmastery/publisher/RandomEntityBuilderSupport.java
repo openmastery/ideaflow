@@ -2,11 +2,9 @@ package org.openmastery.publisher;
 
 import org.openmastery.publisher.core.activity.*;
 import org.openmastery.publisher.core.event.RandomEventEntityBuilder;
-import org.openmastery.publisher.core.ideaflow.RandomIdeaFlowPartialStateBuilder;
-import org.openmastery.publisher.core.ideaflow.RandomIdeaFlowStateEntityBuilder;
+import org.openmastery.publisher.ideaflow.RandomIdeaFlowPartialStateBuilder;
+import org.openmastery.publisher.ideaflow.RandomIdeaFlowStateEntityBuilder;
 import org.openmastery.publisher.core.task.RandomTaskEntityBuilder;
-
-import java.util.Random;
 
 public class RandomEntityBuilderSupport {
 

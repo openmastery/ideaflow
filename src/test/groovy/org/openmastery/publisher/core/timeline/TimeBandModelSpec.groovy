@@ -1,7 +1,7 @@
 package org.openmastery.publisher.core.timeline
 
 import org.joda.time.Duration
-import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import spock.lang.Specification
 
 class TimeBandModelSpec extends Specification {
