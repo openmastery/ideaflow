@@ -16,18 +16,70 @@
 package org.openmastery.publisher.resources
 
 import org.openmastery.publisher.ComponentTest
+import org.openmastery.publisher.api.batch.NewIFMBatch
+import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.task.Task
+import org.openmastery.publisher.api.timeline.BandTimeline
+import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.IdeaFlowClient
+import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.timeline.TimelineValidator
+import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
+
+import java.time.Duration
+
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
+import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 
 @ComponentTest
 class IdeaFlowResourceSpec extends Specification {
 
 	@Autowired
 	private IdeaFlowClient ideaFlowClient
+
+	@Autowired
+	private TaskClient taskClient
+	@Autowired
+	private BatchClient batchClient
+
+	@Autowired
+	private MockTimeService timeService
+
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
 
+	def "SHOULD generate IdeaFlow timeline with all data types"() {
+		given:
+		Task task = taskClient.createTask("basic", "create basic timeline with all band types", "project")
+
+		batchClient.addBatchEvent(task.id, timeService.now(), EventType.ACTIVATE, "unpause")
+		batchClient.addExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
+		batchClient.addModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+		batchClient.addBlockActivity(task.id, timeService.inFuture(2), 500, "Waiting on stuff")
+		batchClient.addBatchEvent(task.id, timeService.inFuture(3), EventType.DEACTIVATE, "pause")
+
+		when:
+		IdeaFlowTimeline timeline = ideaFlowClient.geTimelineForTask(task.id)
+
+		then:
+		assert timeline != null
+		assert timeline.executionEvents.size() == 1
+		assert timeline.modificationActivities.size() == 1
+		assert timeline.blockActivities.size() == 1
+		assert timeline.events.size() == 2
+
+
+	}
 
 }

@@ -79,6 +79,7 @@ class IdeaFlowTimelineBuilder {
 	}
 
 	IdeaFlowTimelineBuilder blockActivities(List<BlockActivityEntity> blockActivityEntities) {
+		println "BLOCKS!!! "+blockActivityEntities
 		this.blockActivities = entityMapper.mapList(blockActivityEntities, BlockActivity)
 		this
 	}
@@ -144,6 +145,7 @@ class IdeaFlowTimelineBuilder {
 		positionables.addAll(events)
 		positionables.addAll(executionEvents)
 		positionables.addAll(modificationActivities)
+		positionables.addAll(blockActivities)
 		progressBands.each { IdeaFlowBandModel model ->
 			positionables.add(model)
 			positionables.addAll(model.getAllContentsFlattenedAsPositionableList())
@@ -169,6 +171,7 @@ class IdeaFlowTimelineBuilder {
 		Collections.sort(events, PositionableComparator.INSTANCE);
 		Collections.sort(executionEvents, PositionableComparator.INSTANCE);
 		Collections.sort(modificationActivities, PositionableComparator.INSTANCE);
+		Collections.sort(blockActivities, PositionableComparator.INSTANCE)
 		Collections.sort(ideaFlowBands, PositionableComparator.INSTANCE);
 
 		IdeaFlowBand firstBand = ideaFlowBands.first()
@@ -184,6 +187,7 @@ class IdeaFlowTimelineBuilder {
 				.events(events)
 				.executionEvents(executionEvents)
 				.modificationActivities(modificationActivities)
+				.blockActivities(blockActivities)
 				.ideaFlowBands(ideaFlowBands)
 				.build()
 	}

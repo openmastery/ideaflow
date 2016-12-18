@@ -99,7 +99,8 @@ class IFMBatchService {
 				build(batch.externalActivityList, adjustment, ExternalActivityEntity.class) +
 				build(batch.idleActivityList, adjustment, IdleActivityEntity.class) +
 				build(batch.executionActivityList, adjustment, ExecutionActivityEntity.class) +
-				build(batch.modificationActivityList, adjustment, ModificationActivityEntity.class)
+				build(batch.modificationActivityList, adjustment, ModificationActivityEntity.class) +
+				build(batch.blockActivityList, adjustment, BlockActivityEntity.class)
 			)
 
 			return activities

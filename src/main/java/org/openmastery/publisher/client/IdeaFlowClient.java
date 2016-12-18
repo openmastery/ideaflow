@@ -19,11 +19,21 @@ import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowPartialCompositeState;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateTransition;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
+import org.openmastery.publisher.api.timeline.BandTimeline;
 
 public class IdeaFlowClient extends  OpenMasteryClient<Object, IdeaFlowClient> {
 
 	public IdeaFlowClient(String hostUri) {
 		super(hostUri, ResourcePaths.IDEAFLOW_PATH, Object.class);
+	}
+
+	public IdeaFlowTimeline geTimelineForTask(long taskId) {
+		return (IdeaFlowTimeline) getUntypedCrudClientRequest()
+				.path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK)
+				.path(taskId)
+				.entity(IdeaFlowTimeline.class)
+				.find();
 	}
 
 }
