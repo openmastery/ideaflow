@@ -33,6 +33,11 @@ class MockTimeService implements TimeService {
 		this
 	}
 
+	MockTimeService plusDays(int days) {
+		now = now.plusDays(days)
+		this
+	}
+
 	MockTimeService plusHours(int hours) {
 		now = now.plusHours(hours)
 		this

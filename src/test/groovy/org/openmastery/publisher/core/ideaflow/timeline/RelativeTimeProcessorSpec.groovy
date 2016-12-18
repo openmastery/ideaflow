@@ -2,15 +2,15 @@ package org.openmastery.publisher.core.ideaflow.timeline
 
 import org.joda.time.Duration
 import org.openmastery.publisher.api.Positionable
-import org.openmastery.publisher.api.PositionableListBuilder
+import org.openmastery.publisher.api.PositionableAndIntervalListBuilder
 import spock.lang.Specification
 
 class RelativeTimeProcessorSpec extends Specification {
 
-	PositionableListBuilder builder = new PositionableListBuilder()
+	PositionableAndIntervalListBuilder builder = new PositionableAndIntervalListBuilder()
 
 	private List<Positionable> processRelativeTime() {
-		List<Positionable> positionables = builder.build()
+		List<Positionable> positionables = builder.buildPositionables()
 		new RelativeTimeProcessor().computeRelativeTime(positionables)
 		positionables
 	}

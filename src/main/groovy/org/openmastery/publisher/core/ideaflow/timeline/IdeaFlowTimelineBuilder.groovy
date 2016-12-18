@@ -16,6 +16,7 @@
 package org.openmastery.publisher.core.ideaflow.timeline
 
 import org.openmastery.mapper.EntityMapper
+import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
@@ -31,6 +32,7 @@ import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 
 class IdeaFlowTimelineBuilder {
 
@@ -42,7 +44,6 @@ class IdeaFlowTimelineBuilder {
 	private List<ExecutionEvent> executionEvents
 
 	private EntityMapper entityMapper = new EntityMapper()
-	private RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 
 	IdeaFlowTimelineBuilder task(Task task) {
 		this.task = task
@@ -71,6 +72,8 @@ class IdeaFlowTimelineBuilder {
 
 	IdeaFlowTimeline build() {
 		List<IdeaFlowBandModel> progressBands = generateProgressBands()
+		// NOTE: calendar events MUST be added BEFORE relative time is computed
+		addCalendarEvents(progressBands)
 		collapseIdleTime(progressBands)
 		computeRelativeTime(progressBands)
 
@@ -131,7 +134,20 @@ class IdeaFlowTimelineBuilder {
 			positionables.add(model)
 			positionables.addAll(model.getAllContentsFlattenedAsPositionableList())
 		}
+
+		RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 		relativeTimeProcessor.computeRelativeTime(positionables)
+	}
+
+	private void addCalendarEvents(List<IdeaFlowBandModel> progressBands) {
+		List<Interval> intervals = []
+		intervals.addAll(progressBands)
+		intervals.addAll(entityMapper.mapList(idleActivities, IdleTimeBandModel))
+
+		CalendarEventGenerator calendarEventGenerator = new CalendarEventGenerator()
+		List<Event> calendarEvents = calendarEventGenerator.generateCalendarEvents(intervals)
+
+		events.addAll(calendarEvents)
 	}
 
 	private IdeaFlowTimeline createIdeaFlowTimeline(List<IdeaFlowBandModel> progressBands) {
