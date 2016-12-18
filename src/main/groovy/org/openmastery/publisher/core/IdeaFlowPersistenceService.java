@@ -65,7 +65,7 @@ public interface IdeaFlowPersistenceService {
 
 	TaskEntity findTaskWithId(long taskId);
 
-	TaskEntity findTaskWithName(String taskName);
+	TaskEntity findTaskWithName(Long userId, String taskName);
 
 	List<EventEntity> findRecentEvents(Long userId, Timestamp afterDate, Integer limit);
 

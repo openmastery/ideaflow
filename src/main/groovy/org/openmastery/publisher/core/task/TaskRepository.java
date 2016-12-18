@@ -25,7 +25,7 @@ import java.util.List;
 
 public interface TaskRepository extends PagingAndSortingRepository<TaskEntity, Long> {
 
-	TaskEntity findByName(String name);
+	TaskEntity findByOwnerIdAndName(Long ownerId, String name);
 
 	@Query(nativeQuery = true, value = "select * from task where owner_id=:ownerId order by modify_date desc limit :limit")
 	List<TaskEntity> findRecent(@Param("ownerId") Long userId, @Param("limit") int limit);

@@ -43,13 +43,11 @@ import java.time.LocalDateTime;
 public class TaskResource {
 
 	@Autowired
-	private InvocationContext invocationContext;
-	@Autowired
 	private TaskService taskService;
 
 	@POST
 	public Task create(NewTask newTask) {
-		return taskService.create(invocationContext.getUserId(), newTask);
+		return taskService.create(newTask);
 	}
 
 	@GET
@@ -80,7 +78,7 @@ public class TaskResource {
 		//On task activation, update a recent timestamp so recent stuff bubbles to the top
 		//the functionality below is no longer being used, so change to this new behavior
 
-		return taskService.findRecentTasks(invocationContext.getUserId(), page, perPage);
+		return taskService.findRecentTasks(page, perPage);
 	}
 
 

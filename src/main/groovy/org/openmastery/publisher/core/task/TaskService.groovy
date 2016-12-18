@@ -20,6 +20,7 @@ import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.task.NewTask
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
@@ -32,11 +33,15 @@ class TaskService {
 	private IdeaFlowPersistenceService persistenceService;
 	@Autowired
 	private TimeService timeService;
+	@Autowired
+	private InvocationContext invocationContext;
 
 	private EntityMapper entityMapper = new EntityMapper();
 
 
-	public Task create(Long userId, NewTask newTask) {
+	public Task create(NewTask newTask) {
+		long userId = invocationContext.getUserId()
+
 		TaskEntity task = TaskEntity.builder()
 				.ownerId(userId)
 				.name(newTask.getName())
@@ -46,7 +51,7 @@ class TaskService {
 				.modifyDate(timeService.javaNow())
 				.build();
 
-		TaskEntity existingTask = persistenceService.findTaskWithName(task.getName());
+		TaskEntity existingTask = persistenceService.findTaskWithName(userId, task.getName());
 		if (existingTask != null) {
 			throw new ConflictingTaskException(toApiTask(existingTask));
 		}
@@ -54,7 +59,7 @@ class TaskService {
 		try {
 			task = persistenceService.saveTask(task);
 		} catch (DataIntegrityViolationException ex) {
-			existingTask = persistenceService.findTaskWithName(task.getName());
+			existingTask = persistenceService.findTaskWithName(userId, task.getName());
 			throw new ConflictingTaskException(toApiTask(existingTask));
 		}
 
@@ -68,13 +73,13 @@ class TaskService {
 	}
 
 	public Task findTaskWithName(String taskName) {
-		TaskEntity taskEntity = persistenceService.findTaskWithName(taskName);
+		TaskEntity taskEntity = persistenceService.findTaskWithName(invocationContext.getUserId(), taskName);
 		return toApiTask(taskEntity);
 	}
 
 	//TODO implement paging
-	public List<Task> findRecentTasks(Long userId, Integer page, Integer perPage) {
-		List<TaskEntity> taskList = persistenceService.findRecentTasks(userId, perPage);
+	public List<Task> findRecentTasks(Integer page, Integer perPage) {
+		List<TaskEntity> taskList = persistenceService.findRecentTasks(invocationContext.getUserId(), perPage);
 		return entityMapper.mapList(taskList, Task.class);
 	}
 

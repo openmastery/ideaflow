@@ -152,8 +152,8 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
-	public TaskEntity findTaskWithName(String taskName) {
-		return taskRepository.findByName(taskName);
+	public TaskEntity findTaskWithName(Long userId, String taskName) {
+		return taskRepository.findByOwnerIdAndName(userId, taskName);
 	}
 
 	@Override

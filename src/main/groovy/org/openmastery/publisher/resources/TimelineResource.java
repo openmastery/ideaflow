@@ -66,11 +66,12 @@ public class TimelineResource {
 	}
 
 	private Long getTaskId(Long optionalTaskId, String optionalTaskName) {
+
 		if (optionalTaskId != null) {
 			return optionalTaskId;
 		}
 		if (optionalTaskName != null) {
-			TaskEntity task = persistenceService.findTaskWithName(optionalTaskName);
+			TaskEntity task = persistenceService.findTaskWithName(-1L, optionalTaskName);
 			if (task == null) {
 				throw new NotFoundException("No task with name=" + optionalTaskName);
 			}
