@@ -59,7 +59,8 @@ public class FixtureTimelineInitializer {
 		System.out.println("************************************************************************************************");
 
 
-		fixtureDataGenerator.generateStubTasks(user.getId(), user.getApiKey());
+		fixtureDataGenerator.connect(user.getApiKey());
+		fixtureDataGenerator.generateStubTasks(user.getId());
 
 	}
 
