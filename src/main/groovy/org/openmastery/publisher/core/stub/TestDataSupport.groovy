@@ -43,7 +43,7 @@ class TestDataSupport {
 	}
 
 	private boolean doesTaskExist(String name) {
-		persistenceService.findTaskWithName(name)
+		persistenceService.findTaskWithName(-1L, name)
 	}
 
 	void createBasicTimelineWithAllBandTypes() {

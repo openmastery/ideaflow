@@ -34,13 +34,10 @@ public class FixtureTimelineInitializer {
 	@Autowired
 	private UserRepository userRepository;
 
-	@PostConstruct
-	private void init() {
-		TestDataSupport support = new TestDataSupport(persistenceService);
-		support.createBasicTimelineWithAllBandTypes();
-		support.createDetailedConflictMap();
-		support.createLearningNestedConflictMap();
-		support.createTrialAndErrorMap();
+	@Autowired
+	FixtureDataGenerator fixtureDataGenerator;
+
+	public void initializeFixtures() {
 
 		String userEmail = "everything-is-awesome@openmastery.org";
 		UserEntity user = userRepository.findByEmail(userEmail);
@@ -60,6 +57,10 @@ public class FixtureTimelineInitializer {
 		System.out.println("************************************************************************************************");
 		System.out.println("************************************************************************************************");
 		System.out.println("************************************************************************************************");
+
+
+		fixtureDataGenerator.generateStubTasks(user.getId(), user.getApiKey());
+
 	}
 
 }

@@ -15,15 +15,20 @@
  */
 package org.openmastery.publisher;
 
+import org.openmastery.publisher.core.stub.FixtureTimelineInitializer;
 import org.openmastery.publisher.security.AuthorizationFilter;
 import org.openmastery.publisher.security.InvocationContext;
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 public class IfmPublisher {
 
 	public static void main(String[] args) {
-		SpringApplication.run(IfmPublisherConfig.class, args);
+
+		ConfigurableApplicationContext context = SpringApplication.run(IfmPublisherConfig.class, args);
+		FixtureTimelineInitializer fixtureInitializer = context.getBean(FixtureTimelineInitializer.class);
+		fixtureInitializer.initializeFixtures();
 	}
 
 	@Bean
