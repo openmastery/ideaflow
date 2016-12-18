@@ -19,7 +19,7 @@ import org.joda.time.Duration
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
-import org.openmastery.publisher.core.PositionableComparator
+import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.time.TimeConverter
 

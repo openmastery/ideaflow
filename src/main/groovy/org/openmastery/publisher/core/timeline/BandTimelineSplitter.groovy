@@ -15,7 +15,7 @@
  */
 package org.openmastery.publisher.core.timeline
 
-import org.openmastery.publisher.core.PositionableComparator
+import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.api.event.EventType
 

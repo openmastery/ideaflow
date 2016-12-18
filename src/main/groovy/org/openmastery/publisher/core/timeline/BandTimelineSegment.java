@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.Positionable;
-import org.openmastery.publisher.core.PositionableComparator;
+import org.openmastery.publisher.api.PositionableComparator;
 import org.openmastery.publisher.core.activity.ActivityModel;
 import org.openmastery.publisher.core.event.EventModel;
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel;
