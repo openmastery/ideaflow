@@ -18,6 +18,8 @@ package org.openmastery.publisher.core.ideaflow
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.activity.BlockActivityEntity
+import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
@@ -41,7 +43,8 @@ class IdeaFlowService {
 		Task task = taskService.findTaskWithId(taskId)
 		List<ModificationActivityEntity> modifications = persistenceService.getModificationActivityList(taskId)
 		List<EventEntity> events = persistenceService.getEventList(taskId)
-		List<ExternalActivityEntity> externalActivities = persistenceService.getExternalActivityList(taskId)
+		List<ExecutionActivityEntity> executions = persistenceService.getExecutionActivityList(taskId)
+		List<BlockActivityEntity> blocks = persistenceService.getBlockActivityList(taskId)
 		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(taskId)
 
 
@@ -49,7 +52,8 @@ class IdeaFlowService {
 				.task(task)
 				.modificationActivities(modifications)
 				.events(events)
-				.externalActivities(externalActivities)
+				.executionActivities(executions)
+				.blockActivities(blocks)
 				.idleActivities(idleActivities)
 				.build()
 

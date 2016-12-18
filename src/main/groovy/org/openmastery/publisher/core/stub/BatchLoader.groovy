@@ -15,20 +15,23 @@ class BatchLoader {
 
 	private JSONConverter jsonConverter = new JSONConverter()
 
-	public NewIFMBatch load(Long taskId, String resourceName) {
-		NewIFMBatch batch = null
-		URL resource = this.getClass().getResource(resourceName)
+	public NewIFMBatch loadAndAdjust(Long taskId, LocalDateTime startTime, String resourceName) {
+		List<Object> batchActivityList = loadObjects(resourceName)
+		adjustTaskId(batchActivityList, taskId)
+		adjustTimeAndMakeConsecutive(batchActivityList, startTime)
 
-		if (resource) {
-			resource.withReader { r ->
-				List<String> jsonLines = r.readLines()
-				batch = convertBatchFileToObject(taskId, jsonLines)
-			}
-		}
-		return batch
+		return convertToBatch(batchActivityList)
 	}
 
 	public List<Object> loadAndAdjustToConsecutiveTime(String resourceName, Long taskId, LocalDateTime startTime) {
+		List<Object> batchActivityList = loadObjects(resourceName)
+		adjustTaskId(batchActivityList, taskId)
+		adjustTimeAndMakeConsecutive(batchActivityList, startTime)
+
+		return batchActivityList
+	}
+
+	private List<Object> loadObjects(String resourceName) {
 		List<Object> batchActivityList = []
 
 		URL resource = this.getClass().getResource(resourceName)
@@ -43,10 +46,6 @@ class BatchLoader {
 				}
 			}
 		}
-
-		adjustTaskId(batchActivityList, taskId)
-		adjustTimeAndMakeConsecutive(batchActivityList, startTime)
-
 		return batchActivityList
 	}
 
@@ -57,15 +56,14 @@ class BatchLoader {
 	}
 
 
-	NewIFMBatch convertBatchFileToObject(Long taskId, List<String> jsonLines) {
+	NewIFMBatch convertToBatch(List<Object> batchActivityList) {
 		NewIFMBatch batch = createEmptyBatch()
-		jsonLines.each { String line ->
-			Object object = jsonConverter.fromJSON(line)
-			addObjectToBatch(taskId, batch, object)
-
+		batchActivityList.each { Object o ->
+			addObjectToBatch(batch, o)
 		}
 		return batch
 	}
+
 
 	private NewIFMBatch createEmptyBatch() {
 		NewIFMBatch.builder()
@@ -81,8 +79,7 @@ class BatchLoader {
 	}
 
 
-	private void addObjectToBatch(Long taskId, NewIFMBatch batch, Object object) {
-		object.taskId = taskId
+	private void addObjectToBatch(NewIFMBatch batch, Object object) {
 		if (object instanceof NewEditorActivity) {
 			batch.editorActivityList.add(object)
 		} else if (object instanceof NewExternalActivity) {
@@ -125,8 +122,6 @@ class BatchLoader {
 			if (o.hasProperty("endTime")) {
 				o.endTime = currentTime.plusSeconds(seconds)
 			}
-
-
 		}
 	}
 }

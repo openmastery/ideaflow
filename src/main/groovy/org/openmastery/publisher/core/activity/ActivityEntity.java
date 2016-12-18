@@ -31,6 +31,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.PostLoad;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -95,6 +96,10 @@ public abstract class ActivityEntity {
 		metadataContainer.fromJson(metadata);
 	}
 
+	//dozer maps to API duration
+	public Duration getDuration() {
+		return Duration.between(start, end);
+	}
 
 	public static abstract class ActivityEntityBuilder<T extends ActivityEntityBuilder> {
 

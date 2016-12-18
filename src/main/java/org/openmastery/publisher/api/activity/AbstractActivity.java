@@ -15,6 +15,7 @@ public abstract class AbstractActivity extends AbstractPositionable {
 
 	// simplify dozer mapping
 
+
 	@JsonIgnore
 	public Long getDuration() {
 		return durationInSeconds;

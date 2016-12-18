@@ -17,7 +17,9 @@ package org.openmastery.publisher.core
 
 import org.apache.tomcat.jni.Local
 import org.openmastery.publisher.core.activity.ActivityEntity
+import org.openmastery.publisher.core.activity.BlockActivityEntity
 import org.openmastery.publisher.core.activity.EditorActivityEntity
+import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
@@ -84,6 +86,16 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	@Override
 	List<ModificationActivityEntity> getModificationActivityList(long taskId) {
 		findAllActivitiesOfType(ModificationActivityEntity, taskId)
+	}
+
+	@Override
+	List<ExecutionActivityEntity> getExecutionActivityList(long taskId) {
+		findAllActivitiesOfType(ExecutionActivityEntity, taskId)
+	}
+
+	@Override
+	List<BlockActivityEntity> getBlockActivityList(long taskId) {
+		findAllActivitiesOfType(BlockActivityEntity, taskId)
 	}
 
 	private <T> List<T> findAllActivitiesOfType(Class<T> type, long taskId) {

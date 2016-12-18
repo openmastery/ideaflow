@@ -39,5 +39,9 @@ public interface ActivityRepository extends PagingAndSortingRepository<ActivityE
 	@Query(nativeQuery = true, value = "select * from activity where type = 'modification' and task_id = ?1")
 	List<ModificationActivityEntity> findModificationActivityByTaskId(long taskId);
 
+	@Query(nativeQuery = true, value = "select * from activity where type = 'execution' and task_id = ?1")
+	List<ExecutionActivityEntity> findExecutionActivityByTaskId(long taskId);
 
+	@Query(nativeQuery = true, value = "select * from activity where type = 'block' and task_id = ?1")
+	List<BlockActivityEntity> findBlockActivityByTaskId(long taskId);
 }

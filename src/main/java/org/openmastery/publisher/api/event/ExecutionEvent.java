@@ -16,7 +16,7 @@ import org.openmastery.publisher.api.AbstractPositionable;
 public class ExecutionEvent extends AbstractPositionable {
 
 	private String processName;
-	private String executionType;
+	private String executionTaskType;
 
 	private boolean debug;
 	private boolean failed;

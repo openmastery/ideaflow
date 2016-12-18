@@ -101,6 +101,16 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 		return activityRepository.findModificationActivityByTaskId(taskId);
 	}
 
+	@Override
+	public List<ExecutionActivityEntity> getExecutionActivityList(long taskId) {
+		return activityRepository.findExecutionActivityByTaskId(taskId);
+	}
+
+	@Override
+	public List<BlockActivityEntity> getBlockActivityList(long taskId) {
+		return activityRepository.findBlockActivityByTaskId(taskId);
+	}
+
 
 	@Override
 	public LocalDateTime getMostRecentActivityEnd(long taskId) {

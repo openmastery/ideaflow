@@ -46,6 +46,10 @@ public interface IdeaFlowPersistenceService {
 
 	List<ModificationActivityEntity> getModificationActivityList(long taskId);
 
+	List<ExecutionActivityEntity> getExecutionActivityList(long taskId);
+
+	List<BlockActivityEntity> getBlockActivityList(long taskId);
+
 	List<EventEntity> getEventList(long taskId);
 
 	LocalDateTime getMostRecentActivityEnd(long taskId);

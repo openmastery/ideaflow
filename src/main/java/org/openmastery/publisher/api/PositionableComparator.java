@@ -23,6 +23,12 @@ public class PositionableComparator implements Comparator<Positionable> {
 
 	@Override
 	public int compare(Positionable o1, Positionable o2) {
+		if (o1.getPosition() == null) {
+			throw new IllegalArgumentException("Position is not allowed to be null!"+ o1);
+		}
+		if (o2.getPosition() == null) {
+			throw new IllegalArgumentException("Position is not allowed to be null!"+ o2);
+		}
 		return o1.getPosition().compareTo(o2.getPosition());
 	}
 

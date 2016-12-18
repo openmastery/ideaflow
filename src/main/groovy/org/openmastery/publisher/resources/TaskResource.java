@@ -74,11 +74,10 @@ public class TaskResource {
 	public List<Task> findRecentTasks(@QueryParam("page") Integer page,
 									  @QueryParam("per_page") Integer perPage) {
 
-		//TODO Needs to sort tasks with most recently activated at the top.
-		//On task activation, update a recent timestamp so recent stuff bubbles to the top
-		//the functionality below is no longer being used, so change to this new behavior
+		Integer activePage = page == null ? 0 : page;
+		Integer activePerPage = perPage == null ? 20 : perPage;
 
-		return taskService.findRecentTasks(page, perPage);
+		return taskService.findRecentTasks(activePage, activePerPage);
 	}
 
 

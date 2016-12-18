@@ -1,5 +1,6 @@
 package org.openmastery.publisher.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +17,16 @@ public abstract class AbstractPositionable implements Positionable {
 	private LocalDateTime position;
 	private Long relativePositionInSeconds;
 
+
+// simplify dozer mapping
+
+	@JsonIgnore
+	public LocalDateTime getStart() {
+		return position;
+	}
+
+	@JsonIgnore
+	public void setStart(LocalDateTime position) {
+		this.position = position;
+	}
 }

@@ -18,6 +18,7 @@ package org.openmastery.publisher.core.ideaflow.timeline
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
+import org.openmastery.publisher.api.activity.BlockActivity
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
@@ -27,12 +28,14 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.api.PositionableComparator
+import org.openmastery.publisher.core.activity.BlockActivityEntity
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
+import org.openmastery.time.TimeConverter
 
 class IdeaFlowTimelineBuilder {
 
@@ -42,6 +45,7 @@ class IdeaFlowTimelineBuilder {
 	private List<IdleActivityEntity> idleActivities
 	private List<ModificationActivity> modificationActivities
 	private List<ExecutionEvent> executionEvents
+	private List<BlockActivity> blockActivities
 
 	private EntityMapper entityMapper = new EntityMapper()
 
@@ -61,7 +65,11 @@ class IdeaFlowTimelineBuilder {
 	}
 
 	IdeaFlowTimelineBuilder executionActivities(List<ExecutionActivityEntity> executionActivities) {
-		this.executionEvents = entityMapper.mapList(executionActivities, ExecutionEvent)
+		this.executionEvents = executionActivities.collect { ExecutionActivityEntity entity ->
+			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)
+			execution.failed = entity.exitCode != 0
+			return execution
+		}
 		this
 	}
 
@@ -69,6 +77,12 @@ class IdeaFlowTimelineBuilder {
 		this.modificationActivities = entityMapper.mapList(modificationActivities, ModificationActivity)
 		this
 	}
+
+	IdeaFlowTimelineBuilder blockActivities(List<BlockActivityEntity> blockActivityEntities) {
+		this.blockActivities = entityMapper.mapList(blockActivityEntities, BlockActivity)
+		this
+	}
+
 
 	IdeaFlowTimeline build() {
 		List<IdeaFlowBandModel> progressBands = generateProgressBands()
@@ -157,12 +171,22 @@ class IdeaFlowTimelineBuilder {
 		Collections.sort(modificationActivities, PositionableComparator.INSTANCE);
 		Collections.sort(ideaFlowBands, PositionableComparator.INSTANCE);
 
+		IdeaFlowBand firstBand = ideaFlowBands.first()
+		IdeaFlowBand lastBand = ideaFlowBands.last()
+		Long totalDuration = (lastBand.relativePositionInSeconds - firstBand.relativePositionInSeconds) + lastBand.durationInSeconds
+
 		return IdeaFlowTimeline.builder()
+				.task(task)
+				.start(firstBand.start)
+				.end(lastBand.end)
+				.relativePositionInSeconds(firstBand.relativePositionInSeconds)
+				.durationInSeconds(totalDuration)
 				.events(events)
 				.executionEvents(executionEvents)
 				.modificationActivities(modificationActivities)
 				.ideaFlowBands(ideaFlowBands)
 				.build()
 	}
+
 
 }

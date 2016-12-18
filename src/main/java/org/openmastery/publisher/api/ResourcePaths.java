@@ -25,7 +25,7 @@ public class ResourcePaths {
 	public static final String TASK_PATH = "/task";
 	public static final String RECENT_PATH = "/recent";
 	public static final String ACTIVATE_PATH = "/activate";
-	public static final String TASK_NAME_PATH = "/path";
+	public static final String TASK_NAME_PATH = "/name";
 
 	// ideaflow paths
 	public static final String IDEAFLOW_PATH = "/ideaflow";
