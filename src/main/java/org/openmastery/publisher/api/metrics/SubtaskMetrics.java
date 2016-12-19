@@ -22,7 +22,7 @@ public class SubtaskMetrics {
 
 	public void addMetric(MetricType type, Object value) {
 		if (metrics == null) {
-			metrics = new HashMap<>();
+			metrics = new HashMap<MetricType, Object>();
 		}
 		metrics.put(type, value);
 	}
