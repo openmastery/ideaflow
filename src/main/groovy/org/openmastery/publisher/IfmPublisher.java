@@ -28,7 +28,7 @@ public class IfmPublisher {
 
 		ConfigurableApplicationContext context = SpringApplication.run(IfmPublisherConfig.class, args);
 		FixtureTimelineInitializer fixtureInitializer = context.getBean(FixtureTimelineInitializer.class);
-		fixtureInitializer.initializeFixtures();
+		fixtureInitializer.initialize();
 	}
 
 	@Bean

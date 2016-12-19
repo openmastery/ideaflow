@@ -37,9 +37,18 @@ public class FixtureTimelineInitializer {
 	@Autowired
 	FixtureDataGenerator fixtureDataGenerator;
 
-	public void initializeFixtures() {
+	public void initialize() {
 
-		String userEmail = "everything-is-awesome@openmastery.org";
+		UserEntity masterUser = initializeUser("everything-is-awesome@openmastery.org");
+		UserEntity demoUser = initializeUser("demo@openmastery.org");
+
+		fixtureDataGenerator.connect(demoUser.getApiKey());
+		fixtureDataGenerator.generateStubTasks(demoUser.getId());
+
+	}
+
+	UserEntity initializeUser(String email) {
+		String userEmail = email;
 		UserEntity user = userRepository.findByEmail(userEmail);
 		if (user == null) {
 			user = UserEntity.builder()
@@ -58,10 +67,7 @@ public class FixtureTimelineInitializer {
 		System.out.println("************************************************************************************************");
 		System.out.println("************************************************************************************************");
 
-
-		fixtureDataGenerator.connect(user.getApiKey());
-		fixtureDataGenerator.generateStubTasks(user.getId());
-
+		return user;
 	}
 
 }
