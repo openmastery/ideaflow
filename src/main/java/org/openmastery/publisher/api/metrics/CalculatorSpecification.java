@@ -5,16 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.security.acl.Group;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowMetrics {
+public class CalculatorSpecification {
 
-	GroupBy groupType;
+	//TODO figure out how to do this declaratively
 
-	Map<String, List<Metric>> metricResults;
+	GroupBy groupBy;
+	MetricType metricToRun;
 }

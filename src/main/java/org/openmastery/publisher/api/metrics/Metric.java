@@ -12,9 +12,9 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowMetrics {
+public class Metric {
+	String metricName;
+	Double metricValue;
 
-	GroupBy groupType;
-
-	Map<String, List<Metric>> metricResults;
+	MetricType metricType;
 }

@@ -17,7 +17,7 @@ package org.openmastery.publisher.ideaflow
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.IdeaFlowMetrics
-import org.openmastery.publisher.api.metrics.IdeaFlowMetricsCalculator
+import org.openmastery.publisher.api.metrics.CalculatorSpecification
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.activity.BlockActivityEntity
@@ -28,6 +28,7 @@ import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.TaskService
 import org.openmastery.publisher.metrics.MetricsService
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineBuilder
+import org.openmastery.publisher.metrics.calculator.RiskSummaryBySubtaskCalculator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -74,8 +75,14 @@ class IdeaFlowService {
 		return timeline
 	}
 
-	IdeaFlowMetrics runYourMetrics(Long taskId, IdeaFlowMetricsCalculator calculator) {
+	IdeaFlowMetrics runYourMetrics(Long taskId, CalculatorSpecification calculatorSpec) {
 		IdeaFlowTimeline timeline = generateIdeaFlowForTask(taskId)
-		return metricsService.calculateMetrics(timeline, calculator)
+		return metricsService.calculateMetrics(timeline, calculatorSpec)
+	}
+
+
+	IdeaFlowMetrics generateRiskSummariesBySubtask(Long taskId) {
+		IdeaFlowTimeline timeline = generateIdeaFlowForTask(taskId)
+		return metricsService.calculateMetrics(timeline, new RiskSummaryBySubtaskCalculator());
 	}
 }
