@@ -21,6 +21,8 @@
 		<copy-by-references>
 			<copy-by-reference>java.time.LocalDateTime</copy-by-reference>
 			<copy-by-reference>java.time.Duration</copy-by-reference>
+			<copy-by-reference>org.joda.time.LocalDateTime</copy-by-reference>
+			<copy-by-reference>org.joda.time.Duration</copy-by-reference>
 		</copy-by-references>
 	</configuration>
 

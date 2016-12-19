@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.Positionable;
 
-import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.List;
 
