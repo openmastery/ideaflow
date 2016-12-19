@@ -40,11 +40,11 @@ class IdeaFlowTimelineBuilder {
 
 	private Task task
 
-	private List<Event> events
-	private List<IdleActivityEntity> idleActivities
-	private List<ModificationActivity> modificationActivities
-	private List<ExecutionEvent> executionEvents
-	private List<BlockActivity> blockActivities
+	private List<Event> events = []
+	private List<IdleTimeBandModel> idleTimeBands = []
+	private List<ModificationActivity> modificationActivities = []
+	private List<ExecutionEvent> executionEvents = []
+	private List<BlockActivity> blockActivities = []
 
 	private EntityMapper entityMapper = new EntityMapper()
 
@@ -54,7 +54,7 @@ class IdeaFlowTimelineBuilder {
 	}
 
 	IdeaFlowTimelineBuilder idleActivities(List<IdleActivityEntity> idleActivities) {
-		this.idleActivities = idleActivities
+		this.idleTimeBands = entityMapper.mapList(idleActivities, IdleTimeBandModel)
 		this
 	}
 
@@ -86,65 +86,67 @@ class IdeaFlowTimelineBuilder {
 
 	IdeaFlowTimeline build() {
 		List<IdeaFlowBandModel> progressBands = generateProgressBands()
+
 		// NOTE: calendar events MUST be added BEFORE relative time is computed
 		addCalendarEvents(progressBands)
-		collapseIdleTime(progressBands)
-		computeRelativeTime(progressBands)
 
-		//calendar events
 		//when no modification activity above threshold, create learning bands
 		//when WTF, WTF, AWESOME combo, create conflict band that spans this time
+
+		collapseIdleTime(progressBands)
+		computeRelativeTime(progressBands)
 
 		return createIdeaFlowTimeline(progressBands)
 	}
 
 	private List<IdeaFlowBandModel> generateProgressBands() {
-		List<Event> sortedTaskActivationEvents = createSortedTaskActivationEventList()
-		List<IdeaFlowBandModel> progressBands = []
-		IdeaFlowBandModel activeProgressBand = null
+		IdeaFlowBandGenerator bandGenerator = new IdeaFlowBandGenerator()
 
-		sortedTaskActivationEvents.each { Event taskEvent ->
-			if (activeProgressBand == null && taskEvent.type == EventType.ACTIVATE) {
-				activeProgressBand = IdeaFlowBandModel.builder()
-						.type(IdeaFlowStateType.PROGRESS)
-						.taskId(taskEvent.id)
-						.start(taskEvent.position)
-						.nestedBands([])
-						.idleBands([])
-						.build()
-			} else if (activeProgressBand != null && taskEvent.type == EventType.DEACTIVATE) {
-				activeProgressBand.end = taskEvent.position
-				progressBands.add(activeProgressBand)
-				activeProgressBand = null
-			} else {
-				//eh... messed up state.  Multiple activates, multiple deactivates
-				//should trigger a "repair" by looking at raw data and correcting events
-			}
-		}
-		return progressBands
+		List<Positionable> positionables = getAllItemsAsPositionableList()
+		bandGenerator.generateIdeaFlowBands(positionables)
+
+//		List<Event> sortedTaskActivationEvents = createSortedTaskActivationEventList()
+//		List<IdeaFlowBandModel> progressBands = []
+//		IdeaFlowBandModel activeProgressBand = null
+//
+//		sortedTaskActivationEvents.each { Event taskEvent ->
+//			if (activeProgressBand == null && taskEvent.type == EventType.ACTIVATE) {
+//				activeProgressBand = IdeaFlowBandModel.builder()
+//						.type(IdeaFlowStateType.PROGRESS)
+//						.taskId(taskEvent.id)
+//						.start(taskEvent.position)
+//						.nestedBands([])
+//						.idleBands([])
+//						.build()
+//			} else if (activeProgressBand != null && taskEvent.type == EventType.DEACTIVATE) {
+//				activeProgressBand.end = taskEvent.position
+//				progressBands.add(activeProgressBand)
+//				activeProgressBand = null
+//			} else {
+//				//eh... messed up state.  Multiple activates, multiple deactivates
+//				//should trigger a "repair" by looking at raw data and correcting events
+//			}
+//		}
+//		return progressBands
 	}
 
-	private List<Event> createSortedTaskActivationEventList() {
-		List<Event> taskActivationEvents = events.findAll { Event event ->
-			event.type == EventType.ACTIVATE || event.type == EventType.DEACTIVATE
-		}
-		Collections.sort(taskActivationEvents, PositionableComparator.INSTANCE);
-		return taskActivationEvents
-	}
+//	private List<Event> createSortedTaskActivationEventList() {
+//		List<Event> taskActivationEvents = events.findAll { Event event ->
+//			event.type == EventType.ACTIVATE || event.type == EventType.DEACTIVATE
+//		}
+//		Collections.sort(taskActivationEvents, PositionableComparator.INSTANCE);
+//		return taskActivationEvents
+//	}
 
 	private void collapseIdleTime(List<IdeaFlowBandModel> progressBands) {
-		if (idleActivities) {
+		if (idleTimeBands) {
 			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
-			idleTimeProcessor.collapseIdleTime(progressBands, idleActivities)
+			idleTimeProcessor.collapseIdleTime(progressBands, idleTimeBands)
 		}
 	}
 
 	private void computeRelativeTime(List<IdeaFlowBandModel> progressBands) {
-		List<Positionable> positionables = []
-		positionables.addAll(events)
-		positionables.addAll(executionEvents)
-		positionables.addAll(modificationActivities)
-		positionables.addAll(blockActivities)
+		List<Positionable> positionables = getAllItemsAsPositionableList()
 		progressBands.each { IdeaFlowBandModel model ->
 			positionables.add(model)
 			positionables.addAll(model.getAllContentsFlattenedAsPositionableList())
@@ -154,10 +156,19 @@ class IdeaFlowTimelineBuilder {
 		relativeTimeProcessor.computeRelativeTime(positionables)
 	}
 
+	private List getAllItemsAsPositionableList() {
+		List<Positionable> positionables = []
+		positionables.addAll(events)
+		positionables.addAll(executionEvents)
+		positionables.addAll(modificationActivities)
+		positionables.addAll(blockActivities)
+		positionables
+	}
+
 	private void addCalendarEvents(List<IdeaFlowBandModel> progressBands) {
 		List<Interval> intervals = []
 		intervals.addAll(progressBands)
-		intervals.addAll(entityMapper.mapList(idleActivities, IdleTimeBandModel))
+		intervals.addAll(idleTimeBands)
 
 		CalendarEventGenerator calendarEventGenerator = new CalendarEventGenerator()
 		List<Event> calendarEvents = calendarEventGenerator.generateCalendarEvents(intervals)

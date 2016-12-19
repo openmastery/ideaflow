@@ -15,41 +15,28 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.openmastery.publisher.core.activity.IdleActivityEntity
-import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.core.timeline.TimeBandIdleCalculator
-import org.openmastery.time.TimeConverter
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 
 class IdleTimeProcessor {
 
 	private TimeBandIdleCalculator timeBandCalculator = new TimeBandIdleCalculator()
 
-	public void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands, List<IdleActivityEntity> idleActivities) {
-		for (IdleActivityEntity idle : idleActivities) {
-			addIdleDuration(ideaFlowBands, idle)
+	public void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands, List<IdleTimeBandModel> idleTimeBandList) {
+		for (IdleTimeBandModel idleTimeBandModel : idleTimeBandList) {
+			addIdleDuration(ideaFlowBands, idleTimeBandModel)
 		}
 	}
 
-	private void addIdleDuration(List<IdeaFlowBandModel> timeBands, IdleActivityEntity idleEntity) {
+	private void addIdleDuration(List<IdeaFlowBandModel> timeBands, IdleTimeBandModel idleTimeBand) {
 		for (IdeaFlowBandModel ideaFlowBandModel : timeBands) {
-			IdleTimeBandModel idle = toIdleTimeBand(idleEntity)
-			IdleTimeBandModel splitIdle = timeBandCalculator.getIdleForTimeBandOrNull(ideaFlowBandModel, idle)
+			IdleTimeBandModel splitIdle = timeBandCalculator.getIdleForTimeBandOrNull(ideaFlowBandModel, idleTimeBand)
 			if (splitIdle != null) {
 				ideaFlowBandModel.addIdleBand(splitIdle)
-				addIdleDuration(ideaFlowBandModel.nestedBands, idleEntity)
+				addIdleDuration(ideaFlowBandModel.nestedBands, idleTimeBand)
 			}
 		}
-	}
-
-	private IdleTimeBandModel toIdleTimeBand(IdleActivityEntity entity) {
-		// TODO: use dozer
-		IdleTimeBandModel.builder()
-				.id(entity.id)
-				.taskId(entity.taskId)
-				.start(TimeConverter.toJodaLocalDateTime(entity.start))
-				.end(TimeConverter.toJodaLocalDateTime(entity.end))
-				.build()
 	}
 
 }

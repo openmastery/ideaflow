@@ -1,6 +1,8 @@
 package org.openmastery.publisher.ideaflow.timeline
 
 import org.joda.time.Duration
+import org.openmastery.mapper.EntityMapper
+import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.timeline.BandTimelineSegment
@@ -30,7 +32,9 @@ class IdleTimeProcessorSpec extends Specification {
 				.build()
 
 		IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
-		idleTimeProcessor.collapseIdleTime(segment.ideaFlowBands, testSupport.getIdleActivityList())
+		EntityMapper entityMapper = new EntityMapper()
+		List<IdleTimeBandModel> idleTimeBandModelList = entityMapper.mapList(testSupport.getIdleActivityList(), IdleTimeBandModel)
+		idleTimeProcessor.collapseIdleTime(segment.ideaFlowBands, idleTimeBandModelList)
 		segment.ideaFlowBands
 	}
 

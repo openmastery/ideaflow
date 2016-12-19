@@ -1,6 +1,7 @@
 package org.openmastery.publisher.ideaflow.timeline
 
 import org.joda.time.Duration
+import org.openmastery.publisher.api.activity.ExecutionActivity
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
@@ -9,6 +10,7 @@ import spock.lang.Specification
 
 import static org.openmastery.publisher.ARandom.aRandom
 
+// TODO: move these tests to org.openmastery.publisher.ideaflow.timeline.IdeaFlowBandGeneratorSpec
 class IdeaFlowTimelineBuilderSpec extends Specification {
 
 	private MockTimeService mockTimeService = new MockTimeService()
@@ -32,7 +34,7 @@ class IdeaFlowTimelineBuilderSpec extends Specification {
 		assert progressBands[0].getDuration() == Duration.standardHours(3)
 	}
 
-	def "generateProgressBands SHOULD create bands WHEN out of order intervals"() {
+	def "generateProgressBands SHOULD create single band which spands out of order intervals"() {
 		given:
 		EventEntity taskStart1 = createEvent(EventType.ACTIVATE, 0)
 		EventEntity taskEnd1 = createEvent(EventType.DEACTIVATE, 3)
@@ -44,9 +46,8 @@ class IdeaFlowTimelineBuilderSpec extends Specification {
 		List<IdeaFlowBandModel> progressBands = timelineBuilder.generateProgressBands()
 
 		then:
-		assert progressBands.size() == 2
-		assert progressBands[0].getDuration() == Duration.standardHours(3)
-		assert progressBands[1].getDuration() == Duration.standardHours(2)
+		assert progressBands[0].getDuration() == Duration.standardHours(6)
+		assert progressBands.size() == 1
 	}
 
 	//in actuality, this should probably prompt a "repair" job, looking at raw activity and creating the missing event
