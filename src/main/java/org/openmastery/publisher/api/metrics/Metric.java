@@ -12,9 +12,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Metric {
-	String metricName;
-	Double metricValue;
-
-	MetricType metricType;
+public class Metric<V> {
+	MetricType type;
+	V value;
 }

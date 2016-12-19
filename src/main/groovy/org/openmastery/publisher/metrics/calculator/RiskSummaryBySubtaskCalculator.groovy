@@ -15,18 +15,42 @@
  */
 package org.openmastery.publisher.metrics.calculator
 
+import org.joda.time.Duration
+import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.metrics.CalculatorSpecification
-import org.openmastery.publisher.api.metrics.GroupBy
-import org.openmastery.publisher.api.metrics.IdeaFlowMetrics
-import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.publisher.api.metrics.SubtaskMetrics
 
-
-public class RiskSummaryBySubtaskCalculator implements MetricsCalculator {
+public class RiskSummaryBySubtaskCalculator implements SubtaskMetricsCalculator {
 
 	@Override
-	IdeaFlowMetrics calculateMetrics(IdeaFlowTimeline timeline) {
+	List<SubtaskMetrics> calculateSubtaskMetrics(IdeaFlowTimeline timeline) {
+
+		List<Event> subtasks = timeline.getEvents().findAll { Event event ->
+			event.type == EventType.SUBTASK
+		}
+
+		List<SubtaskMetrics> subtaskMetrics = []
+
+		subtasks.each { Event subtask ->
+			SubtaskMetrics metrics = new SubtaskMetrics()
+			metrics.id = subtask.id
+			metrics.description = subtask.comment
+			metrics.durationInSeconds = 14546L
+
+			metrics.addMetric(MetricType.IDEAFLOW_STRATEGY, 0.30)
+			metrics.addMetric(MetricType.IDEAFLOW_PROGRESS, 0.50)
+			metrics.addMetric(MetricType.IDEAFLOW_TROUBLESHOOTING, 0.20)
+
+			metrics.addMetric(MetricType.WTFS_PER_DAY, 3.2)
+			metrics.addMetric(MetricType.MAX_BATCH_SIZE, Duration.standardMinutes(15))
+			metrics.addMetric(MetricType.MAX_WTF_DURATION, Duration.standardMinutes(12))
+			metrics.addMetric(MetricType.AVG_FEEDBACK_LOOPS, 5.6)
+			metrics.addMetric(MetricType.AVG_FEEDBACK_LOOP_DURATION, Duration.standardMinutes(12))
+
+			subtaskMetrics.add(metrics)
+		}
 		//slice timeline by subtask
 		//for each timeline slice, generate a list of named metrics
 
@@ -35,13 +59,6 @@ public class RiskSummaryBySubtaskCalculator implements MetricsCalculator {
 
 		//SubtaskId, Metric
 
-		Map<String, List<Metric>> metricsBySubtaskMap = [:]
-		metricsBySubtaskMap.put("subtaskName", [])
-
-		return IdeaFlowMetrics.builder()
-			.groupType(GroupBy.SUB_TASK)
-			.metricResults(metricsBySubtaskMap)
-			.build()
-
+		return subtaskMetrics
 	}
 }

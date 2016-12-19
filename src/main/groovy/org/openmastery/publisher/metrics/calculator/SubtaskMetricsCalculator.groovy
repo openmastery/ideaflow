@@ -16,10 +16,11 @@
 package org.openmastery.publisher.metrics.calculator
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.metrics.IdeaFlowMetrics
+
+import org.openmastery.publisher.api.metrics.SubtaskMetrics
 
 
-public interface MetricsCalculator {
+public interface SubtaskMetricsCalculator {
 
-	IdeaFlowMetrics calculateMetrics(IdeaFlowTimeline timeline);
+	List<SubtaskMetrics> calculateSubtaskMetrics(IdeaFlowTimeline timeline);
 }

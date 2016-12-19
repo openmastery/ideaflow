@@ -17,14 +17,14 @@ package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
-import org.openmastery.publisher.api.metrics.CalculatorSpecification;
-import org.openmastery.publisher.api.metrics.IdeaFlowMetrics;
+import org.openmastery.publisher.api.metrics.SubtaskMetrics;
 import org.openmastery.publisher.ideaflow.IdeaFlowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Component
 @Path(ResourcePaths.IDEAFLOW_PATH)
@@ -55,25 +55,6 @@ public class IdeaFlowResource {
 
 
 	/**
-	 * Run a customizable set of metrics to generate some interesting statistics.
-	 * Analyze your data, with this handful of statistics.
-	 *
-	 * Want more?  Create your own CalculatorSpecification, contribute to OSS,
-	 * give it a new calculator name, and add it to the API!
-	 *
-	 * @param taskId
-	 * @param calculator CalculatorSpecification
-	 * @return IdeaFlowMetrics
-	 */
-
-	@POST
-	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
-	public IdeaFlowMetrics runYourMetrics(@PathParam("taskId") Long taskId, CalculatorSpecification calculator) {
-		return ideaFlowService.runYourMetrics(taskId, calculator);
-	}
-
-
-	/**
 	 *
 	 * Generate summary metrics for all IdeaFlow subtasks
 	 *
@@ -82,8 +63,8 @@ public class IdeaFlowResource {
 	 */
 
 	@GET
-	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}"+ResourcePaths.IDEAFLOW_SUBTASK)
-	public IdeaFlowMetrics generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
+	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
+	public List<SubtaskMetrics> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
 
 		return ideaFlowService.generateRiskSummariesBySubtask(taskId);
 	}
