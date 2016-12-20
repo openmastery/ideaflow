@@ -1,5 +1,6 @@
 package org.openmastery.publisher;
 
+import org.openmastery.publisher.api.batch.RandomNewIFMBatchBuilder;
 import org.openmastery.publisher.core.activity.*;
 import org.openmastery.publisher.core.event.RandomEventEntityBuilder;
 import org.openmastery.publisher.ideaflow.RandomIdeaFlowPartialStateBuilder;
@@ -56,6 +57,10 @@ public class RandomEntityBuilderSupport {
 
 	public RandomTaskEntityBuilder taskEntity() {
 		return new RandomTaskEntityBuilder();
+	}
+
+	public RandomNewIFMBatchBuilder batch() {
+		return new RandomNewIFMBatchBuilder();
 	}
 
 }

@@ -1,9 +1,6 @@
 package org.openmastery.publisher.api.batch;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.activity.*;
 
@@ -16,14 +13,14 @@ import java.util.List;
 public class NewIFMBatch {
 
 	private LocalDateTime timeSent;
-	private List<NewEditorActivity> editorActivityList;
-	private List<NewExternalActivity> externalActivityList;
-	private List<NewIdleActivity> idleActivityList;
-	private List<NewExecutionActivity> executionActivityList;
-	private List<NewModificationActivity> modificationActivityList;
-	private List<NewBlockActivity> blockActivityList;
 
-	private List<NewBatchEvent> eventList;
+	@Singular("editorActivity") private List<NewEditorActivity> editorActivityList;
+	@Singular("externalActivity") private List<NewExternalActivity> externalActivityList;
+	@Singular("idleActivity") private List<NewIdleActivity> idleActivityList;
+	@Singular("executionActivity") private List<NewExecutionActivity> executionActivityList;
+	@Singular("modificationActivity") private List<NewModificationActivity> modificationActivityList;
+	@Singular("blockActivity") private List<NewBlockActivity> blockActivityList;
+	@Singular("event")private List<NewBatchEvent> eventList;
 
 	public boolean isEmpty() {
 		boolean hasContent = editorActivityList != null && !editorActivityList.isEmpty();

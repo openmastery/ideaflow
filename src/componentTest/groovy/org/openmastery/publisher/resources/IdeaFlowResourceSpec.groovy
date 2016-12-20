@@ -41,6 +41,7 @@ import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
+import static org.openmastery.publisher.ARandom.aRandom
 
 @ComponentTest
 class IdeaFlowResourceSpec extends Specification {
@@ -59,15 +60,21 @@ class IdeaFlowResourceSpec extends Specification {
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
 
+
+
 	def "SHOULD generate IdeaFlow timeline with all data types"() {
 		given:
 		Task task = taskClient.createTask("basic", "create basic timeline with all band types", "project")
 
-		batchClient.addBatchEvent(task.id, timeService.now(), EventType.ACTIVATE, "unpause")
-		batchClient.addExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
-		batchClient.addModificationActivity(task.id, timeService.inFuture(1), 30, 80)
-		batchClient.addBlockActivity(task.id, timeService.inFuture(2), 500, "Waiting on stuff")
-		batchClient.addBatchEvent(task.id, timeService.inFuture(3), EventType.DEACTIVATE, "pause")
+		NewIFMBatch batch = aRandom.batch().timeSent(timeService.now())
+			.newEvent(task.id, timeService.now(), EventType.ACTIVATE, "unpause")
+			.newExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
+			.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+			.newBlockActivity(task.id, timeService.inFuture(2), 500, "Waiting on stuff")
+			.newEvent(task.id, timeService.inFuture(3), EventType.DEACTIVATE, "pause")
+			.build()
+
+		batchClient.addIFMBatch(batch)
 
 		when:
 		IdeaFlowTimeline timeline = ideaFlowClient.geTimelineForTask(task.id)
@@ -77,7 +84,7 @@ class IdeaFlowResourceSpec extends Specification {
 		assert timeline.executionEvents.size() == 1
 		assert timeline.modificationActivities.size() == 1
 		assert timeline.blockActivities.size() == 1
-		assert timeline.events.size() == 2
+		assert timeline.events.size() == 3 //calendar event generated too
 
 
 	}

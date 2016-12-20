@@ -1,6 +1,8 @@
 package org.openmastery.publisher.resources
 
 import org.openmastery.mapper.EntityMapper
+import org.openmastery.publisher.api.activity.NewEditorActivity
+import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.BlockActivityEntity
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
@@ -50,8 +52,13 @@ class BatchResourceSpec extends Specification {
 				.taskId(taskId)
 				.build()
 
+		NewIFMBatch batch = aRandom.batch()
+			.timeSent(timeService.now())
+			.newEditorActivity(taskId, timeService.now(), expectedDuration.seconds, expectedActivity.filePath, expectedActivity.modified)
+			.build()
+
 		when:
-		client.addEditorActivity(expectedActivity.taskId, timeService.now(), expectedDuration.seconds, expectedActivity.filePath, expectedActivity.modified)
+		client.addIFMBatch(batch)
 
 		then:
 		List<EditorActivityEntity> activityEntities = persistenceService.getEditorActivityList(expectedActivity.taskId)
@@ -68,8 +75,13 @@ class BatchResourceSpec extends Specification {
 				.taskId(taskId)
 				.build()
 
+		NewIFMBatch batch = aRandom.batch()
+				.timeSent(timeService.now())
+				.newIdleActivity(expectedIdle.taskId, timeService.now(), expectedDuration.seconds)
+				.build()
+
 		when:
-		client.addIdleActivity(expectedIdle.taskId, timeService.now(), expectedDuration.seconds)
+		client.addIFMBatch(batch)
 
 		then:
 		List<IdleActivityEntity> idleEntities = persistenceService.getIdleActivityList(expectedIdle.taskId)
@@ -85,8 +97,13 @@ class BatchResourceSpec extends Specification {
 				.taskId(taskId)
 				.build()
 
+		NewIFMBatch batch = aRandom.batch()
+				.timeSent(timeService.now())
+				.newExternalActivity(expectedExternal.taskId, timeService.now(), expectedDuration.seconds, expectedExternal.comment)
+				.build()
+
 		when:
-		client.addExternalActivity(expectedExternal.taskId, timeService.now(), expectedDuration.seconds, expectedExternal.comment)
+		client.addIFMBatch(batch)
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExternal.taskId)
@@ -102,8 +119,13 @@ class BatchResourceSpec extends Specification {
 				.taskId(taskId)
 				.build()
 
+		NewIFMBatch batch = aRandom.batch()
+				.timeSent(timeService.now())
+				.newBlockActivity(taskId, timeService.now(), expectedDuration.seconds, expectedActivity.comment)
+				.build()
+
 		when:
-		client.addExternalActivity(expectedActivity.taskId, timeService.now(), expectedDuration.seconds, expectedActivity.comment)
+		client.addIFMBatch(batch)
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedActivity.taskId)
@@ -119,10 +141,14 @@ class BatchResourceSpec extends Specification {
 				.taskId(taskId)
 				.build()
 
+		NewIFMBatch batch = aRandom.batch()
+				.timeSent(timeService.now())
+				.newExecutionActivity(expectedExecution.taskId, timeService.now(), expectedDuration.seconds,
+					expectedExecution.processName, expectedExecution.executionTaskType, expectedExecution.exitCode, expectedExecution.isDebug())
+				.build()
+
 		when:
-		// TODO: move this stuff to use test client instead of putting test methods in actual client
-		client.addExecutionActivity(expectedExecution.taskId, timeService.now(), expectedDuration.seconds,
-		                            expectedExecution.processName, expectedExecution.executionTaskType, expectedExecution.exitCode, expectedExecution.isDebug())
+		client.addIFMBatch(batch)
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedExecution.taskId)
@@ -138,10 +164,14 @@ class BatchResourceSpec extends Specification {
 				.taskId(taskId)
 				.build()
 
+		NewIFMBatch batch = aRandom.batch()
+				.timeSent(timeService.now())
+				.newModificationActivity(expectedModification.taskId, timeService.now(), expectedDuration.seconds,
+				expectedModification.modificationCount)
+				.build()
+
 		when:
-		// TODO: move this stuff to use test client instead of putting test methods in actual client
-		client.addModificationActivity(expectedModification.taskId, timeService.now(), expectedDuration.seconds,
-		                               expectedModification.modificationCount)
+		client.addIFMBatch(batch)
 
 		then:
 		List<ActivityEntity> entities = persistenceService.getActivityList(expectedModification.taskId)
@@ -156,8 +186,13 @@ class BatchResourceSpec extends Specification {
 			.taskId(taskId)
 			.build()
 
+		NewIFMBatch batch = aRandom.batch()
+				.timeSent(timeService.now())
+				.newEvent(expectedEvent.taskId, timeService.now(), expectedEvent.type, expectedEvent.comment)
+				.build()
+
 		when:
-		client.addBatchEvent(expectedEvent.taskId, timeService.now(), expectedEvent.type, expectedEvent.comment)
+		client.addIFMBatch(batch)
 
 		then:
 		List<EventEntity> entities = persistenceService.getEventList(expectedEvent.taskId)
