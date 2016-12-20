@@ -137,4 +137,24 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assert ideaFlowBands.size() == 1
 	}
 
+	def "should create progress bands to fill band gaps"() {
+		given:
+		builder.activate()
+				.modifyCodeAndAdvance(30)
+				.wtf()
+				.modifyCodeAndAdvance(30)
+				.awesome()
+				.modifyCodeAndAdvance(30)
+				.deactivate()
+
+		when:
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
+
+		then:
+		assertProgressBand(ideaFlowBands[0], startTime, startTime.plusMinutes(30))
+		assertTroubleshootingBand(ideaFlowBands[1], ideaFlowBands[0].end, startTime.plusMinutes(60))
+		assertProgressBand(ideaFlowBands[2], ideaFlowBands[1].end, startTime.plusMinutes(90))
+		assert ideaFlowBands.size() == 3
+	}
+
 }

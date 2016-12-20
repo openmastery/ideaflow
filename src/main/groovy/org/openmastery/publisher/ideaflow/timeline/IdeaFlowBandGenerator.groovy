@@ -19,20 +19,26 @@ class IdeaFlowBandGenerator {
 		if (positionableList.isEmpty()) {
 			return []
 		}
-		positionableList = positionableList.sort(false, PositionableComparator.INSTANCE)
 
-		List<IdeaFlowBandModel> strategyBands = generateStrategyBands(positionableList)
-		List<IdeaFlowBandModel> troubleshootingBands = generateTroubleshootingBands(positionableList)
+		List<Positionable> sortedPositionableList = positionableList.sort(false, PositionableComparator.INSTANCE)
+
+		List<IdeaFlowBandModel> strategyBands = generateStrategyBands(sortedPositionableList)
+		List<IdeaFlowBandModel> troubleshootingBands = generateTroubleshootingBands(sortedPositionableList)
 		List<IdeaFlowBandModel> ideaFlowBandList = strategyBands + troubleshootingBands
 		ideaFlowBandList.sort(PositionableComparator.INSTANCE)
 
 		List progressBands = []
-		LocalDateTime lastBandEndTime = positionableList.first().position
+		LocalDateTime lastBandEndTime = sortedPositionableList.first().position
 		for (IdeaFlowBandModel ideaFlowBandModel : ideaFlowBandList) {
 			if (ideaFlowBandModel.start.isAfter(lastBandEndTime)) {
 				progressBands << createIdeaFlowBand(lastBandEndTime, ideaFlowBandModel.start, IdeaFlowStateType.PROGRESS)
 			}
 			lastBandEndTime = ideaFlowBandModel.end
+		}
+
+		LocalDateTime endTimeOfLastPositionable = getEndTime(sortedPositionableList.last())
+		if (lastBandEndTime.isBefore(endTimeOfLastPositionable)) {
+			progressBands << createIdeaFlowBand(lastBandEndTime, endTimeOfLastPositionable, IdeaFlowStateType.PROGRESS)
 		}
 
 		ideaFlowBandList.addAll(progressBands)
@@ -49,16 +55,16 @@ class IdeaFlowBandGenerator {
 			tracker.addModificationActivity(positionable)
 			if (tracker.isOverModificationThreshold()) {
 				if (learningBandStartTime != null) {
-					learningBandList << createIdeaFlowBand(learningBandStartTime, tracker.earliestTrackedTime, IdeaFlowStateType.LEARNING)
+					learningBandList << createIdeaFlowBand(learningBandStartTime, tracker.earliestTrackedStartTime, IdeaFlowStateType.LEARNING)
 					learningBandStartTime = null
 				}
 			} else if (learningBandStartTime == null) {
-				learningBandStartTime = tracker.earliestTrackedTime
+				learningBandStartTime = tracker.earliestTrackedStartTime
 			}
 		}
 
 		if (learningBandStartTime != null) {
-			learningBandList << createIdeaFlowBand(learningBandStartTime, tracker.latestTrackedTime, IdeaFlowStateType.LEARNING)
+			learningBandList << createIdeaFlowBand(learningBandStartTime, tracker.latestTrackedEndTime, IdeaFlowStateType.LEARNING)
 		}
 
 		learningBandList.removeAll { IdeaFlowBandModel ideaFlowBandModel ->
@@ -106,6 +112,10 @@ class IdeaFlowBandGenerator {
 				.build()
 	}
 
+	private static LocalDateTime getEndTime(Positionable pos) {
+		(pos instanceof Interval) ? pos.end : pos.position
+	}
+
 
 	private static class ModificationActivityTracker {
 
@@ -134,15 +144,15 @@ class IdeaFlowBandGenerator {
 			modificationCount > modificationCountThreshold
 		}
 
-		LocalDateTime getEarliestTrackedTime() {
+		LocalDateTime getEarliestTrackedStartTime() {
 			recentActivityList.collect { Positionable pos ->
 				pos.position
 			}.sort().first()
 		}
 
-		LocalDateTime getLatestTrackedTime() {
+		LocalDateTime getLatestTrackedEndTime() {
 			recentActivityList.collect { Positionable pos ->
-				(pos instanceof Interval) ? pos.end : pos.position
+				getEndTime(pos)
 			}.sort().last()
 		}
 
