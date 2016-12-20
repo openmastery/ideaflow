@@ -67,6 +67,31 @@ class TaskResourceSpec extends Specification {
 		thrown(NotFoundException)
 	}
 
+	def "SHOULD update existing task"() {
+		given:
+		String name = aRandom.text(10)
+		String description = "task description"
+		String project = "project"
+		LocalDateTime creationDate = timeService.now()
+
+		when:
+		Task createdTask = taskClient.createTask(name, description, project)
+		createdTask.description = "new description"
+		taskClient.update(createdTask)
+
+		then:
+		Task expectedTask = Task.builder()
+				.name(name)
+				.description("new description")
+				.project(project)
+				.creationDate(creationDate)
+				.modifyDate(creationDate)
+				.build()
+		taskComparator.assertEquals(expectedTask, createdTask)
+		assert createdTask.id != null
+	}
+
+
 	def "SHOULD return http conflict (409) if creating task with same name"() {
 		given:
 		Task expectedConflict = Task.builder()

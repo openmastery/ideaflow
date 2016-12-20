@@ -49,6 +49,17 @@ public class TaskResource {
 		return task;
 	}
 
+	@PUT
+	public Task updateTask(Task taskWithUpdates) {
+		Task updatedTask;
+		if (taskWithUpdates == null || taskWithUpdates.getId() == null) {
+			throw new NotFoundException();
+		} else {
+			updatedTask = taskService.updateTask(taskWithUpdates);
+		}
+		return updatedTask;
+	}
+
 	@GET
 	@Path(ResourcePaths.TASK_NAME_PATH + "/{name}")
 	public Task findTaskWithName(@PathParam("name") String taskName) {

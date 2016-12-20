@@ -88,6 +88,14 @@ class TaskService {
 		return entityMapper.mapIfNotNull(taskEntity, Task.class);
 	}
 
+	Task updateTask(Task taskWithUpdates) {
+		TaskEntity taskEntity = persistenceService.findTaskWithId(taskWithUpdates.id)
+		taskEntity.description = taskWithUpdates.description
+		taskEntity.modifyDate = timeService.javaNow()
+		TaskEntity savedEntity = persistenceService.saveTask(taskEntity)
+		return toApiTask(savedEntity);
+	}
+
 
 	static class ConflictingTaskException extends ConflictingEntityException {
 		ConflictingTaskException(Task existingTask) {

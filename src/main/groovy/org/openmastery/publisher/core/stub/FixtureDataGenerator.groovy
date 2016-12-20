@@ -40,7 +40,10 @@ class FixtureDataGenerator {
 	}
 
 	void generateStubTasks(Long userId) {
-		createTask("DE1362", "Barchart is misaligned on screen", "dashboard")
+
+		createTask("US00012", "3-hour feature task with no interruptions", "dashboard")
+		createTask("DE1362", "Sample defect pattern with front-loaded troubleshooting", "dashboard")
+
 		createTask("US12364", "Configure the dashboard layout ", "dashboard")
 		createTask("US12378", "Create a slideout drawer", "dashboard")
 		createTask("US12392", "Make the bar colors prettier", "dashboard")
@@ -51,13 +54,15 @@ class FixtureDataGenerator {
 		createTask("US12425", "Allow reports to be sent to multiple recipients", "reporting")
 		createTask("DE126", "Reporting job fails to start", "reporting")
 
-		createTask("US00012", "Create a new timeline chart", "dashboard")
 	}
 
 	private createTask(String taskName, String description, String project) {
 
 		try {
-			taskClient.findTaskWithName(taskName)
+			Task task = taskClient.findTaskWithName(taskName)
+			task.description = description
+			task.project = project
+			taskClient.update(task)
 		} catch (NotFoundException ex) {
 			Task task = taskClient.createTask(taskName, description, project)
 			NewIFMBatch batch = batchLoader.loadAndAdjust(task.id, task.creationDate, "/stub/task_"+taskName+".batch")
