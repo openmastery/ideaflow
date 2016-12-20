@@ -83,16 +83,16 @@ class IdeaFlowTimelineElementBuilder {
 	IdeaFlowTimelineElementBuilder deactivate() {
 		addEvent(EventType.DEACTIVATE)
 		this
-		/*
-			private List<Event> createSortedTaskActivationEventList() {
-		List<Event> taskActivationEvents = events.findAll { Event event ->
-			event.type == EventType.ACTIVATE || event.type == EventType.DEACTIVATE
-		}
-		Collections.sort(taskActivationEvents, PositionableComparator.INSTANCE);
-		return taskActivationEvents
 	}
 
-		 */
+	IdeaFlowTimelineElementBuilder wtf() {
+		addEvent(EventType.WTF)
+		this
+	}
+
+	IdeaFlowTimelineElementBuilder awesome() {
+		addEvent(EventType.AWESOME)
+		this
 	}
 
 }
