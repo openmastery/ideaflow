@@ -85,6 +85,7 @@ class IdeaFlowBandGenerator {
 			} else if (event.type == EventType.AWESOME) {
 				if (troubleshootingStart != null) {
 					troubleshootingBandList << createIdeaFlowBand(troubleshootingStart, event.position, IdeaFlowStateType.TROUBLESHOOTING)
+					troubleshootingStart = null
 				}
 			}
 		}
