@@ -43,7 +43,7 @@ public class FixtureTimelineInitializer {
 		UserEntity demoUser = initializeUser("demo@openmastery.org");
 
 		fixtureDataGenerator.connect(demoUser.getApiKey());
-		fixtureDataGenerator.generateStubTasks(demoUser.getId());
+		fixtureDataGenerator.generateStubTasks();
 
 	}
 

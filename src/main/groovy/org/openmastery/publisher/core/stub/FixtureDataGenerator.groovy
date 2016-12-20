@@ -45,7 +45,7 @@ class FixtureDataGenerator {
 		batchClient = new BatchClient(hostUri).apiKey(apiKey)
 	}
 
-	void generateStubTasks(Long userId) {
+	void generateStubTasks() {
 
 		createTask("US00012", "3-hour feature task with no interruptions", "dashboard")
 		createTask("DE1362", "Sample defect pattern with front-loaded troubleshooting", "dashboard")
