@@ -43,8 +43,9 @@ class FixtureDataGenerator {
 
 		createTask("US00012", "3-hour feature task with no interruptions", "dashboard")
 		createTask("DE1362", "Sample defect pattern with front-loaded troubleshooting", "dashboard")
+		createTask("US12364", "Multi-day task with idles ", "dashboard")
 
-		createTask("US12364", "Configure the dashboard layout ", "dashboard")
+
 		createTask("US12378", "Create a slideout drawer", "dashboard")
 		createTask("US12392", "Make the bar colors prettier", "dashboard")
 		createTask("DE1405", "Report detail throws exception when null data", "dashboard")

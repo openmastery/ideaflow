@@ -24,6 +24,7 @@ import org.openmastery.publisher.api.activity.NewIdleActivity
 import org.openmastery.publisher.api.activity.NewModificationActivity
 import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.batch.NewIFMBatch
+import org.openmastery.publisher.api.event.EventType
 
 
 class BatchLoader {
@@ -136,15 +137,17 @@ class BatchLoader {
 			if (o.hasProperty("durationInSeconds")) {
 				seconds = o.durationInSeconds
 				relativeTime += seconds
-				currentTime = currentTime.plusSeconds(seconds)
-
 			}
 			if (o.hasProperty("position")) {
-				o.position = currentTime
+				o.position = startTime.plusSeconds((int)relativeTime)
 			}
 
 			if (o.hasProperty("endTime")) {
-				o.endTime = currentTime.plusSeconds(seconds)
+				o.endTime = startTime.plusSeconds((int)(relativeTime + seconds))
+			}
+
+			if (o instanceof NewBatchEvent && o.type == EventType.DEACTIVATE) {
+				relativeTime += 7234
 			}
 		}
 	}
