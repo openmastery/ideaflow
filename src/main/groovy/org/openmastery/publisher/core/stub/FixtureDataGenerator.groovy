@@ -20,6 +20,9 @@ import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.TaskClient
+import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.event.EventEntity
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
@@ -28,6 +31,9 @@ class FixtureDataGenerator {
 
 	@Value('http://localhost:${server.port}')
 	private String hostUri;
+
+	@Autowired
+	private IdeaFlowPersistenceService persistenceService
 
 	private BatchLoader batchLoader = new BatchLoader()
 
@@ -64,15 +70,28 @@ class FixtureDataGenerator {
 			task.description = description
 			task.project = project
 			taskClient.update(task)
-		} catch (NotFoundException ex) {
-			Task task = taskClient.createTask(taskName, description, project)
-			NewIFMBatch batch = batchLoader.loadAndAdjust(task.id, task.creationDate, "/stub/task_"+taskName+".batch")
-			if (batch) {
-				batchClient.addIFMBatch(batch)
+
+			if (noDataExists(task.id)) {
+				loadBatch(task)
 			}
 
+		} catch (NotFoundException ex) {
+			Task task = taskClient.createTask(taskName, description, project)
+			loadBatch(task)
 		}
+	}
 
+	void loadBatch(Task task) {
+		NewIFMBatch batch = batchLoader.loadAndAdjust(task.id, task.creationDate, "/stub/task_"+task.name+".batch")
+		if (batch && !batch.isEmpty()) {
+			println "Loading batch for task ${task.id}!"
+			batchClient.addIFMBatch(batch)
+		}
+	}
+
+	boolean noDataExists(Long taskId) {
+		List<EventEntity> events = persistenceService.getEventList(taskId)
+		return events.isEmpty()
 	}
 
 
