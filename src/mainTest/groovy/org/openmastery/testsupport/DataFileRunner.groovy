@@ -7,16 +7,19 @@ class DataFileRunner {
 
 	public static void main(String [] args) {
 		BatchLoader loader = new BatchLoader()
-		LocalDateTime startTime = new LocalDateTime().minusDays(3)
+		LocalDateTime startTime = new LocalDateTime().minusDays(15)
 
-		List<Object> activityObjects = loader.loadAndAdjustToConsecutiveTime('/stub/task_US12345.batch', -1L, startTime)
+		List<Object> activityObjects = loader.loadAndAdjustToConsecutiveTime('/stub/task_DE1362.in', -1L, startTime)
 
-		File newFile = new File('/Users/janelle/code/ifm-publisher/src/main/resources/stub/task_US12345.out')
+		File newFile = new File('/Users/janelle/code/ifm-publisher/src/main/resources/stub/task_DE1362.batch')
 
 		if (newFile.exists()) newFile.delete()
 		newFile.createNewFile()
 
 		loader.writeRawBatchActivityList(newFile, activityObjects)
+
+		println "Wrote "+newFile.getBytes().length+ "bytes to "+newFile.name
+
 	}
 
 

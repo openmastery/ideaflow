@@ -56,7 +56,10 @@ class BatchLoader {
 				List<String> jsonLines = r.readLines()
 				jsonLines.each { String line ->
 					Object object = jsonConverter.fromJSON(line)
-					batchActivityList.add(object)
+					if (object != null) {
+
+						batchActivityList.add(object)
+					}
 
 				}
 			}
@@ -81,16 +84,16 @@ class BatchLoader {
 
 
 	private NewIFMBatch createEmptyBatch() {
-		NewIFMBatch.builder()
-				.timeSent(LocalDateTime.now())
-				.editorActivityList([])
-				.externalActivityList([])
-				.idleActivityList([])
-				.executionActivityList([])
-				.modificationActivityList([])
-				.blockActivityList([])
-				.eventList([])
-				.build()
+		NewIFMBatch batch = new NewIFMBatch()
+				batch.timeSent = LocalDateTime.now()
+				batch.editorActivityList = []
+				batch.externalActivityList = []
+				batch.idleActivityList = []
+				batch.executionActivityList = []
+				batch.modificationActivityList = []
+				batch.blockActivityList = []
+				batch.eventList =[]
+		return batch
 	}
 
 
@@ -108,7 +111,13 @@ class BatchLoader {
 		} else if (object instanceof NewBlockActivity) {
 			batch.blockActivityList.add(object)
 		} else if (object instanceof NewBatchEvent) {
-			batch.eventList.add(object)
+			try {
+				batch.eventList.add(object)
+			} catch (UnsupportedOperationException ex) {
+				println "AHHH!"
+				throw ex
+			}
+
 		}
 	}
 

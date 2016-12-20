@@ -66,6 +66,9 @@ public class JSONConverter {
 	}
 
 	Object fromJSON(String jsonInString) throws IOException {
+		if (jsonInString.isEmpty()) {
+			return null;
+		}
 		String[] jsonSplit = jsonInString.split("=");
 		String typeName = jsonSplit[0];
 		String jsonContent = jsonSplit[1];
