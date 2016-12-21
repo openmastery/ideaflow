@@ -136,7 +136,6 @@ class BatchLoader {
 		activityObjects.each { Object o ->
 			if (o.hasProperty("durationInSeconds")) {
 				seconds = o.durationInSeconds
-				relativeTime += seconds
 			}
 			if (o.hasProperty("position")) {
 				o.position = startTime.plusSeconds((int)relativeTime)
@@ -144,11 +143,16 @@ class BatchLoader {
 
 			if (o.hasProperty("endTime")) {
 				o.endTime = startTime.plusSeconds((int)(relativeTime + seconds))
+				if (o instanceof NewIdleActivity) {
+					println o.endTime
+				}
 			}
 
 			if (o instanceof NewBatchEvent && o.type == EventType.DEACTIVATE) {
 				relativeTime += 7234
 			}
+
+			relativeTime += seconds
 		}
 	}
 }
