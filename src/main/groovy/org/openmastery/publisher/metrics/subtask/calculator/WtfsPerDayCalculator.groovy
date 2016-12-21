@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.metrics.subtask.calculator
 
+import org.joda.time.LocalDate
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
@@ -33,8 +34,34 @@ class WtfsPerDayCalculator implements MetricsCalculator<Double> {
 			event.type == EventType.WTF
 		}
 
-		metric.value = wtfEvents.size()
+		LocalDate start = timeline.start.toLocalDate();
+		LocalDate end = timeline.end.toLocalDate()
+
+		metric.value = calculateAverageWtfsPerDay(start, end, wtfEvents)
 
 		return metric
+	}
+
+	private double calculateAverageWtfsPerDay(LocalDate start, LocalDate end, List<Event> wtfEvents) {
+		double avgWtfsPerDay = 0
+		double numberSamples = 0
+
+		for (LocalDate currentdate = start; currentdate.isBefore(end) || currentdate.isEqual(end);
+			 currentdate = currentdate.plusDays(1)) {
+
+			int dailyWtfCount = countWtfsForTheDay(wtfEvents, currentdate)
+			numberSamples++
+
+			avgWtfsPerDay = ((avgWtfsPerDay * (numberSamples - 1)) + dailyWtfCount) / numberSamples
+		}
+
+		return avgWtfsPerDay
+	}
+
+	int countWtfsForTheDay(List<Event> wtfEvents, LocalDate currentDate) {
+		List<Event> wtfsForTheDay = wtfEvents.findAll() { Event wtf ->
+			wtf.position.toLocalDate().equals(currentDate)
+		}
+		return wtfsForTheDay.size()
 	}
 }
