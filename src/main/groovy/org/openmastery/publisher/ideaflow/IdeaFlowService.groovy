@@ -15,6 +15,8 @@
  */
 package org.openmastery.publisher.ideaflow
 
+import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 
 import org.openmastery.publisher.api.metrics.SubtaskMetrics
@@ -28,7 +30,7 @@ import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.TaskService
 
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineBuilder
-import org.openmastery.publisher.metrics.calculator.RiskSummaryBySubtaskCalculator
+import org.openmastery.publisher.metrics.subtask.RiskSummaryCalculator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -70,8 +72,16 @@ class IdeaFlowService {
 		return timeline
 	}
 
+	//TODO slice the timeline by subtask, for now, treat the whole timeline as the first subtask
 	List<SubtaskMetrics> generateRiskSummariesBySubtask(Long taskId) {
 		IdeaFlowTimeline timeline = generateIdeaFlowForTask(taskId)
-		return new RiskSummaryBySubtaskCalculator().calculateSubtaskMetrics(timeline)
+
+		List<Event> subtaskEvents = timeline.getEvents().findAll { Event event ->
+			event.type == EventType.SUBTASK
+		}
+
+		SubtaskMetrics subtaskMetrics = new RiskSummaryCalculator().calculateSubtaskMetrics(subtaskEvents.first(), timeline)
+
+		return [subtaskMetrics]
 	}
 }

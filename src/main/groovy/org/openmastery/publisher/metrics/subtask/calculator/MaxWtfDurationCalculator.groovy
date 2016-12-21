@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.calculator
+package org.openmastery.publisher.metrics.subtask.calculator
 
+import org.joda.time.Duration
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.metrics.Metric
+import org.openmastery.publisher.metrics.subtask.MetricsCalculator
 
-import org.openmastery.publisher.api.metrics.SubtaskMetrics
+class MaxWtfDurationCalculator implements MetricsCalculator<Duration> {
 
-
-public interface SubtaskMetricsCalculator {
-
-	List<SubtaskMetrics> calculateSubtaskMetrics(IdeaFlowTimeline timeline);
+	@Override
+	Metric<Duration> calculateMetrics(IdeaFlowTimeline timeline) {
+		return null
+	}
 }

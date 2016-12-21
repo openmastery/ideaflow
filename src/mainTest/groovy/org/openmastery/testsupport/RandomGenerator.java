@@ -85,6 +85,10 @@ public class RandomGenerator {
         return LocalDate.now().minusDays(intBetween(1, numOfDays));
     }
 
+    public LocalDate dateInFuture(int numOfDays) {
+        return LocalDate.now().plusDays(intBetween(1, numOfDays));
+    }
+
     /**
      * Returns a string of random characters.
      */

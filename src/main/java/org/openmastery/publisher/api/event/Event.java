@@ -14,6 +14,7 @@ import org.openmastery.publisher.api.AbstractPositionable;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@Builder
 public class Event extends AbstractPositionable {
 
 	private Long id;

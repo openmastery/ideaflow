@@ -59,8 +59,4 @@ public class RandomEntityBuilderSupport {
 		return new RandomTaskEntityBuilder();
 	}
 
-	public RandomNewIFMBatchBuilder batch() {
-		return new RandomNewIFMBatchBuilder();
-	}
-
 }

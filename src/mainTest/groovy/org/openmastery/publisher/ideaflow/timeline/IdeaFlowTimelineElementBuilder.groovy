@@ -3,6 +3,7 @@ package org.openmastery.publisher.ideaflow.timeline
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.time.MockTimeService
 
