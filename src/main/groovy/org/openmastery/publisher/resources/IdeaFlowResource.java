@@ -57,9 +57,12 @@ public class IdeaFlowResource {
 	/**
 	 *
 	 * Generate summary metrics for all IdeaFlow subtasks
+	 * Will eventually be able to provide your own user-configurable metrics.
+	 *
+	 * Community-contributed, individually-branded OSS IdeaFlow metrics coming soon!
 	 *
 	 * @param taskId
-	 * @return IdeaFlowMetrics
+	 * @return List<SubtaskMetrics>
 	 */
 
 	@GET

@@ -80,7 +80,11 @@ class IdeaFlowService {
 			event.type == EventType.SUBTASK
 		}
 
-		SubtaskMetrics subtaskMetrics = new RiskSummaryCalculator().calculateSubtaskMetrics(subtaskEvents.first(), timeline)
+
+		RiskSummaryCalculator riskSummaryCalculator =  new RiskSummaryCalculator()
+
+		//TODO make this execute in a loop, slice timelines and collect a list of subtask metrics
+		SubtaskMetrics subtaskMetrics = riskSummaryCalculator.calculateSubtaskMetrics(subtaskEvents.first(), timeline)
 
 		return [subtaskMetrics]
 	}

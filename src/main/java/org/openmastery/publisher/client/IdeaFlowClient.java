@@ -20,7 +20,10 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowPartialCompositeState;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateTransition;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
+import org.openmastery.publisher.api.metrics.SubtaskMetrics;
 import org.openmastery.publisher.api.timeline.BandTimeline;
+
+import java.util.List;
 
 public class IdeaFlowClient extends  OpenMasteryClient<Object, IdeaFlowClient> {
 
@@ -28,12 +31,20 @@ public class IdeaFlowClient extends  OpenMasteryClient<Object, IdeaFlowClient> {
 		super(hostUri, ResourcePaths.IDEAFLOW_PATH, Object.class);
 	}
 
-	public IdeaFlowTimeline geTimelineForTask(long taskId) {
+	public IdeaFlowTimeline getTimelineForTask(long taskId) {
 		return (IdeaFlowTimeline) getUntypedCrudClientRequest()
 				.path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK)
 				.path(taskId)
 				.entity(IdeaFlowTimeline.class)
 				.find();
+	}
+
+	public List<SubtaskMetrics> generateRiskSummariesBySubtask(long taskId) {
+		return (List<SubtaskMetrics>) getUntypedCrudClientRequest()
+				.path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK)
+				.path(taskId)
+				.entity(SubtaskMetrics.class)
+				.findMany();
 	}
 
 }

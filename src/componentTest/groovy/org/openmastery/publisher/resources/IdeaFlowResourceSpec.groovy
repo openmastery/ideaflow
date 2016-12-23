@@ -19,28 +19,16 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.metrics.SubtaskMetrics
 import org.openmastery.publisher.api.task.Task
-import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.IdeaFlowClient
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.core.timeline.TimelineValidator
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
-import java.time.Duration
-
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.REWORK
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
-import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESHOOTING
 import static org.openmastery.publisher.ARandom.aRandom
 
 @ComponentTest
@@ -62,7 +50,7 @@ class IdeaFlowResourceSpec extends Specification {
 
 
 
-	def "SHOULD generate IdeaFlow timeline with all data types"() {
+	def "getTimelineForTask SHOULD generate IdeaFlow timeline with all data types"() {
 		given:
 		Task task = taskClient.createTask("basic", "create basic timeline with all band types", "project")
 
@@ -77,7 +65,7 @@ class IdeaFlowResourceSpec extends Specification {
 		batchClient.addIFMBatch(batch)
 
 		when:
-		IdeaFlowTimeline timeline = ideaFlowClient.geTimelineForTask(task.id)
+		IdeaFlowTimeline timeline = ideaFlowClient.getTimelineForTask(task.id)
 
 		then:
 		assert timeline != null
@@ -87,6 +75,40 @@ class IdeaFlowResourceSpec extends Specification {
 		assert timeline.events.size() == 3 //calendar event generated too
 
 
+	}
+
+	def "generateRiskSummariesBySubtask SHOULD generate metrics for each subtask"() {
+		given:
+		Task task = taskClient.createTask("basic", "create basic timeline with a couple subtasks", "project")
+
+		NewIFMBatch batch = aRandom.batch().timeSent(timeService.now())
+				.newEvent(task.id, timeService.now(), EventType.ACTIVATE, "unpause")
+
+				.newEvent(task.id, timeService.now(), EventType.SUBTASK, "Subtask 1")
+				.newExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+				.newExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+
+				.newEvent(task.id, timeService.now(), EventType.SUBTASK, "Subtask 2")
+				.newExecutionActivity(task.id, timeService.now(), 15, "TestYou", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+				.newExecutionActivity(task.id, timeService.now(), 15, "TestYou", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+
+				.newEvent(task.id, timeService.inFuture(3), EventType.DEACTIVATE, "pause")
+				.build()
+
+		batchClient.addIFMBatch(batch)
+
+		when:
+		List<SubtaskMetrics> metrics = ideaFlowClient.generateRiskSummariesBySubtask(task.id)
+
+		then:
+		assert metrics != null
+		assert metrics.size() == 1
+		assert metrics.get(0).description == "Subtask 1"
+		assert metrics.get(0).metrics.size() == 5
 	}
 
 }
