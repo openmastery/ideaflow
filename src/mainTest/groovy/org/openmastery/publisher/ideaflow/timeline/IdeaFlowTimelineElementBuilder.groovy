@@ -3,6 +3,7 @@ package org.openmastery.publisher.ideaflow.timeline
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.time.MockTimeService
@@ -13,6 +14,7 @@ class IdeaFlowTimelineElementBuilder {
 	List<Event> eventList = []
 	List<ModificationActivity> modificationActivityList = []
 	List<IdleTimeBandModel> idleTimeBands = []
+	List<ExecutionEvent> executionEventList = []
 
 	IdeaFlowTimelineElementBuilder() {
 		this(new MockTimeService())
@@ -62,6 +64,20 @@ class IdeaFlowTimelineElementBuilder {
 			modificationActivityList << modificationActivity
 		}
 		this
+	}
+
+	IdeaFlowTimelineElementBuilder executeCode() {
+		ExecutionEvent event = ExecutionEvent.builder()
+			.failed(false)
+			.debug(false)
+			.executionTaskType("JUnit")
+			.processName("MyTestClass")
+			.build()
+		event.setStart(timeService.now())
+
+		executionEventList << event
+
+		return this
 	}
 
 	IdeaFlowTimelineElementBuilder modifyCodeAndAdvance(int minutes) {

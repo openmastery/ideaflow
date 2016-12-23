@@ -13,6 +13,7 @@ import org.openmastery.publisher.api.AbstractPositionable;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@Builder
 public class ExecutionEvent extends AbstractPositionable {
 
 	private String processName;

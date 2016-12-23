@@ -20,7 +20,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.api.metrics.SubtaskMetrics
 import org.openmastery.publisher.metrics.subtask.calculator.AvgFeedbackLoopsCalculator
-import org.openmastery.publisher.metrics.subtask.calculator.MaxBatchSizeCalculator
+import org.openmastery.publisher.metrics.subtask.calculator.MaxHaystackSizeCalculator
 import org.openmastery.publisher.metrics.subtask.calculator.MaxWtfDurationCalculator
 import org.openmastery.publisher.metrics.subtask.calculator.WtfsPerDayCalculator
 
@@ -34,7 +34,7 @@ public class RiskSummaryCalculator {
 		metrics.durationInSeconds = timelineSegment.durationInSeconds
 
 		metrics.addMetric(MetricType.WTFS_PER_DAY, new WtfsPerDayCalculator())
-		metrics.addMetric(MetricType.MAX_BATCH_SIZE, new MaxBatchSizeCalculator())
+		metrics.addMetric(MetricType.MAX_HAYSTACK_SIZE, new MaxHaystackSizeCalculator())
 		metrics.addMetric(MetricType.MAX_WTF_DURATION, new MaxWtfDurationCalculator())
 		metrics.addMetric(MetricType.AVG_FEEDBACK_LOOPS, new AvgFeedbackLoopsCalculator())
 		metrics.addMetric(MetricType.AVG_FEEDBACK_LOOP_DURATION, new AvgFeedbackLoopsCalculator())
