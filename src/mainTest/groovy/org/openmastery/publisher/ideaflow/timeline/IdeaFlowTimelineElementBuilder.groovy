@@ -1,5 +1,7 @@
 package org.openmastery.publisher.ideaflow.timeline
 
+import org.joda.time.Duration
+import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
@@ -7,6 +9,8 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.time.MockTimeService
+import org.openmastery.time.TimeConverter
+
 
 class IdeaFlowTimelineElementBuilder {
 
@@ -15,6 +19,8 @@ class IdeaFlowTimelineElementBuilder {
 	List<ModificationActivity> modificationActivityList = []
 	List<IdleTimeBandModel> idleTimeBands = []
 	List<ExecutionEvent> executionEventList = []
+
+	LocalDateTime activationTime
 
 	IdeaFlowTimelineElementBuilder() {
 		this(new MockTimeService())
@@ -74,6 +80,7 @@ class IdeaFlowTimelineElementBuilder {
 			.processName("MyTestClass")
 			.build()
 		event.setStart(timeService.now())
+		event.relativePositionInSeconds = TimeConverter.between(activationTime, timeService.now()).standardSeconds
 
 		executionEventList << event
 
@@ -94,6 +101,7 @@ class IdeaFlowTimelineElementBuilder {
 
 	IdeaFlowTimelineElementBuilder activate() {
 		addEvent(EventType.ACTIVATE)
+		activationTime = timeService.now()
 		this
 	}
 
