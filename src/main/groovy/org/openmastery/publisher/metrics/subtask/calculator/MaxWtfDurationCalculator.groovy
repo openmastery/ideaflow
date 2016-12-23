@@ -16,14 +16,33 @@
 package org.openmastery.publisher.metrics.subtask.calculator
 
 import org.joda.time.Duration
+import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
+import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
+import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.metrics.subtask.MetricsCalculator
 
 class MaxWtfDurationCalculator implements MetricsCalculator<Duration> {
 
 	@Override
 	Metric<Duration> calculateMetrics(IdeaFlowTimeline timeline) {
-		return null
+
+		List<IdeaFlowBand> troubleshootingBands = timeline.ideaFlowBands.findAll { IdeaFlowBand band ->
+			band.type == IdeaFlowStateType.TROUBLESHOOTING
+		}
+
+		Long maxDuration = 0
+		troubleshootingBands.each { IdeaFlowBand troubleshootingBand ->
+			if (troubleshootingBand.durationInSeconds > maxDuration) {
+				maxDuration = troubleshootingBand.durationInSeconds
+			}
+		}
+
+		Metric<Duration> metric = new Metric<Duration>()
+		metric.type = MetricType.MAX_WTF_DURATION
+		metric.value = Duration.standardSeconds(maxDuration)
+
+		return metric
 	}
 }

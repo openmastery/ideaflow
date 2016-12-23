@@ -38,8 +38,7 @@ class MaxHaystackSizeCalculator implements MetricsCalculator<Duration> {
 
 	@Override
 	Metric<Duration> calculateMetrics(IdeaFlowTimeline timeline) {
-		Metric<Duration> metric = new Metric<Duration>()
-		metric.type = MetricType.MAX_HAYSTACK_SIZE
+
 
 		List<IdeaFlowBand> consecutiveBandPeriods = collapseConsecutiveBandPeriods(timeline.ideaFlowBands)
 		println consecutiveBandPeriods
@@ -67,6 +66,8 @@ class MaxHaystackSizeCalculator implements MetricsCalculator<Duration> {
 			}
 		}
 
+		Metric<Duration> metric = new Metric<Duration>()
+		metric.type = MetricType.MAX_HAYSTACK_SIZE
 		metric.value = Duration.standardSeconds(maxDuration)
 		return metric
 	}
