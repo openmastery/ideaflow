@@ -3,10 +3,10 @@
 Install/setup docker (instructions below), then:
 
 ```
-git clone https://github.com/ideaflow/common-rest.git
+git clone https://github.com/openmastery/common-rest.git
 ./gradlew publishLocal
 
-git clone git@github.com:ideaflow/ifm-publisher.git
+git clone git@github.com:openmastery/ideaflow.git
 ./gradlew bootRun
 ```
 
