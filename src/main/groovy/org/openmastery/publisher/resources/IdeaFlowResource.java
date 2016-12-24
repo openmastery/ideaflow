@@ -68,8 +68,9 @@ public class IdeaFlowResource {
 	@GET
 	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
 	public List<SubtaskMetrics> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
+		IdeaFlowTimeline timeline = ideaFlowService.generateIdeaFlowForTask(taskId);
 
-		return ideaFlowService.generateRiskSummariesBySubtask(taskId);
+		return ideaFlowService.generateRiskSummariesBySubtask(timeline);
 	}
 
 

@@ -73,19 +73,17 @@ class IdeaFlowService {
 	}
 
 	//TODO slice the timeline by subtask, for now, treat the whole timeline as the first subtask
-	List<SubtaskMetrics> generateRiskSummariesBySubtask(Long taskId) {
-		IdeaFlowTimeline timeline = generateIdeaFlowForTask(taskId)
+	List<SubtaskMetrics> generateRiskSummariesBySubtask(IdeaFlowTimeline timeline) {
+
 
 		List<Event> subtaskEvents = timeline.getEvents().findAll { Event event ->
 			event.type == EventType.SUBTASK
 		}
 
-
 		RiskSummaryCalculator riskSummaryCalculator =  new RiskSummaryCalculator()
 
 		//TODO make this execute in a loop, slice timelines and collect a list of subtask metrics
 		SubtaskMetrics subtaskMetrics = riskSummaryCalculator.calculateSubtaskMetrics(subtaskEvents.first(), timeline)
-
 		return [subtaskMetrics]
 	}
 }
