@@ -23,15 +23,12 @@ The following endpoints are available:
 * GET http://localhost:8980/ideaflow/timeline/subtask/{subtaskId}
 * GET http://localhost:8980/ideaflow/metrics/subtask/{subtaskId}
 
+This endpoint will be moved at some point, but it's hanging out in here for now.
 
-There are four available timelines with the taskId equal to the below options:
+* GET http://localhost:8980/user?email=demo@openmastery.org
 
-* taskId:1, taskName: "basic" - A Timeline with three bands and a subtask (subtasks divide into multiple timeline segments)
-* taskId:2, taskName: "learning" - A timeline with nested bands within a learning band (red displayed on top of blue)
-* taskId:3, taskName: "trial" -  A Timeline with trial and error linked together, thus contained within a TimelineGroup.  Grouped bands also contain nested bands.
-* taskId:4, taskName: "detailed" - A Timeline with an example detailed conflict (conflict linked to rework, then rework contains nested conflicts)
-
-The current version does not yet include timeline detail APIs, but we've got support for the timeband visualization (band view), and support for the structured tree model (tree view) with band groups, nested bands, events, etc. The timeline is split into multiple segments according to subtask in the tree. 
+Stub data is loaded on startup in the demo@openmastery.org account that you can use to explore the API.
+The API-Key for the demo account is printed on the screen at startup.
 
 # User Access
 
