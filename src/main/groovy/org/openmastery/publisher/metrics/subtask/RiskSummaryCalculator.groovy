@@ -19,6 +19,7 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.api.metrics.SubtaskMetrics
+import org.openmastery.publisher.metrics.subtask.calculator.AvgFeedbackLoopDurationCalculator
 import org.openmastery.publisher.metrics.subtask.calculator.AvgFeedbackLoopsCalculator
 import org.openmastery.publisher.metrics.subtask.calculator.CapacityDistributionCalculator
 import org.openmastery.publisher.metrics.subtask.calculator.MaxHaystackSizeCalculator
@@ -34,17 +35,21 @@ public class RiskSummaryCalculator {
 		metrics.description = subtask.comment
 		metrics.durationInSeconds = timelineSegment.durationInSeconds
 
-
-		metrics.addMetric(MetricType.WTFS_PER_DAY, new WtfsPerDayCalculator())
-		metrics.addMetric(MetricType.MAX_HAYSTACK_SIZE, new MaxHaystackSizeCalculator())
-		metrics.addMetric(MetricType.MAX_WTF_DURATION, new MaxWtfDurationCalculator())
-		metrics.addMetric(MetricType.AVG_FEEDBACK_LOOPS, new AvgFeedbackLoopsCalculator())
-		metrics.addMetric(MetricType.AVG_FEEDBACK_LOOP_DURATION, new AvgFeedbackLoopsCalculator())
-		metrics.addMetric(MetricType.CAPACITY_DISTRIBUTION, new CapacityDistributionCalculator())
+		addMetric(metrics, new WtfsPerDayCalculator())
+		addMetric(metrics, new MaxHaystackSizeCalculator())
+		addMetric(metrics, new MaxWtfDurationCalculator())
+		addMetric(metrics, new AvgFeedbackLoopsCalculator())
+		addMetric(metrics, new AvgFeedbackLoopDurationCalculator())
+		addMetric(metrics, new CapacityDistributionCalculator())
 
 		metrics.calculate(timelineSegment)
 
 		return metrics
+	}
+
+	void addMetric(SubtaskMetrics metrics, MetricsCalculator calculator) {
+		MetricType metricType = calculator.getMetricType()
+		metrics.addMetric(metricType, calculator)
 	}
 
 

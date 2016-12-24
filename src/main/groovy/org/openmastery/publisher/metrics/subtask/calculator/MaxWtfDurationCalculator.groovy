@@ -21,9 +21,13 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.publisher.metrics.subtask.MetricsCalculator
 
-class MaxWtfDurationCalculator implements MetricsCalculator<Duration> {
+class MaxWtfDurationCalculator extends AbstractMetricsCalculator<Duration> {
+
+	MaxWtfDurationCalculator() {
+		super(MetricType.MAX_WTF_DURATION)
+	}
+
 
 	@Override
 	Metric<Duration> calculateMetrics(IdeaFlowTimeline timeline) {
@@ -40,7 +44,7 @@ class MaxWtfDurationCalculator implements MetricsCalculator<Duration> {
 		}
 
 		Metric<Duration> metric = new Metric<Duration>()
-		metric.type = MetricType.MAX_WTF_DURATION
+		metric.type = getMetricType()
 		metric.value = Duration.standardSeconds(maxDuration)
 
 		return metric

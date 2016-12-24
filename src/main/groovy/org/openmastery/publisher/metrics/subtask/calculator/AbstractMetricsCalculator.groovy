@@ -13,15 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.subtask
+package org.openmastery.publisher.metrics.subtask.calculator
 
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.publisher.metrics.subtask.MetricsCalculator
 
-public interface MetricsCalculator<V> {
+abstract class AbstractMetricsCalculator<T> implements MetricsCalculator<T> {
 
-	MetricType getMetricType();
+	private MetricType metricType;
 
-	Metric<V> calculateMetrics(IdeaFlowTimeline timeline);
+	AbstractMetricsCalculator(MetricType metricType) {
+		this.metricType = metricType
+	}
+
+	@Override
+	public MetricType getMetricType() {
+		return metricType;
+	}
+
+	protected Metric<T> createMetric() {
+		Metric<T> metric = new Metric<T>()
+		metric.type = getMetricType()
+
+		return metric;
+	}
+
 }

@@ -25,7 +25,11 @@ import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.metrics.subtask.MetricsCalculator
 
 
-class CapacityDistributionCalculator implements MetricsCalculator<CapacityDistribution> {
+class CapacityDistributionCalculator extends AbstractMetricsCalculator<CapacityDistribution> {
+
+	CapacityDistributionCalculator() {
+		super(MetricType.CAPACITY_DISTRIBUTION)
+	}
 
 
 	@Override
@@ -38,7 +42,7 @@ class CapacityDistributionCalculator implements MetricsCalculator<CapacityDistri
 		saveTotalDurationForBandType(capacity, timeline, IdeaFlowStateType.TROUBLESHOOTING)
 
 		Metric<CapacityDistribution> metric = new Metric<CapacityDistribution>()
-		metric.type = MetricType.CAPACITY_DISTRIBUTION
+		metric.type = getMetricType()
 		metric.value = capacity
 		return metric
 	}

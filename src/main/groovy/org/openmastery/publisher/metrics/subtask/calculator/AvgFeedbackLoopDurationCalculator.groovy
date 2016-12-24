@@ -22,10 +22,12 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.publisher.metrics.subtask.MetricsCalculator
 
-class AvgFeedbackLoopDurationCalculator implements MetricsCalculator<Duration> {
+class AvgFeedbackLoopDurationCalculator  extends AbstractMetricsCalculator<Duration> {
 
+	AvgFeedbackLoopDurationCalculator() {
+		super(MetricType.AVG_FEEDBACK_LOOP_DURATION)
+	}
 
 	/**
 	 *
@@ -59,7 +61,7 @@ class AvgFeedbackLoopDurationCalculator implements MetricsCalculator<Duration> {
 		}
 
 		Metric<Duration> metric = new Metric<Duration>()
-		metric.type = MetricType.AVG_FEEDBACK_LOOP_DURATION //TODO refactor this stuff out to a property
+		metric.type = getMetricType()
 		metric.value = new Duration((long)(avgDuration * 1000))
 		return metric
 	}

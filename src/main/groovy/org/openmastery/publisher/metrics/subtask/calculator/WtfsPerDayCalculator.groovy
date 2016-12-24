@@ -23,12 +23,15 @@ import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.metrics.subtask.MetricsCalculator
 
-class WtfsPerDayCalculator implements MetricsCalculator<Double> {
+class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
+
+	WtfsPerDayCalculator() {
+		super(MetricType.WTFS_PER_DAY)
+	}
 
 	@Override
 	Metric<Double> calculateMetrics(IdeaFlowTimeline timeline) {
-		Metric<Double> metric = new Metric<Double>()
-		metric.type = MetricType.WTFS_PER_DAY
+		Metric<Double> metric = createMetric()
 
 		List<Event> wtfEvents = timeline.events.findAll() { Event event ->
 			event.type == EventType.WTF

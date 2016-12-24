@@ -34,7 +34,12 @@ import org.openmastery.publisher.metrics.subtask.MetricsCalculator
  * spent in "progress" without any execution events.
  */
 
-class MaxHaystackSizeCalculator implements MetricsCalculator<Duration> {
+class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<Duration> {
+
+	MaxHaystackSizeCalculator() {
+		super(MetricType.MAX_HAYSTACK_SIZE)
+	}
+
 
 	@Override
 	Metric<Duration> calculateMetrics(IdeaFlowTimeline timeline) {
@@ -67,7 +72,7 @@ class MaxHaystackSizeCalculator implements MetricsCalculator<Duration> {
 		}
 
 		Metric<Duration> metric = new Metric<Duration>()
-		metric.type = MetricType.MAX_HAYSTACK_SIZE
+		metric.type = getMetricType()
 		metric.value = Duration.standardSeconds(maxDuration)
 		return metric
 	}

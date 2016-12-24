@@ -15,21 +15,18 @@
  */
 package org.openmastery.publisher.metrics.subtask.calculator
 
-import org.joda.time.Duration
-import org.joda.time.LocalDate
-import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.publisher.metrics.subtask.MetricsCalculator
 
-import java.time.LocalDateTime
+class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 
-
-class AvgFeedbackLoopsCalculator implements MetricsCalculator<Double> {
+	AvgFeedbackLoopsCalculator() {
+		super(MetricType.AVG_FEEDBACK_LOOPS)
+	}
 
 	/**
 	 *
@@ -60,7 +57,7 @@ class AvgFeedbackLoopsCalculator implements MetricsCalculator<Double> {
 		}
 
 		Metric<Double> metric = new Metric<Double>()
-		metric.type = MetricType.AVG_FEEDBACK_LOOPS //TODO refactor this stuff out to a property
+		metric.type = getMetricType()
 		metric.value = avgEventCount
 		return metric
 	}
