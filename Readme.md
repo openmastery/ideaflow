@@ -10,11 +10,19 @@ git clone git@github.com:ideaflow/ifm-publisher.git
 ./gradlew bootRun
 ```
 
-There are three available endpoints:
+The following endpoints are available:
 
-http://localhost:8980/task/{taskId}
-http://localhost:8980/timeline/band?taskId={taskId}
-http://localhost:8980/timeline/tree?taskId={taskId}
+POST http://localhost:8980/ideaflow/collect/batch (publish your IdeaFlow data to the server)
+
+GET http://localhost:8980/ideaflow/task/
+GET http://localhost:8980/ideaflow/task/{taskId}
+
+GET http://localhost:8980/ideaflow/timeline/task/{taskId}
+GET http://localhost:8980/ideaflow/metrics/task/{taskId}
+
+GET http://localhost:8980/ideaflow/timeline/subtask/{subtaskId}
+GET http://localhost:8980/ideaflow/metrics/subtask/{subtaskId}
+
 
 There are four available timelines with the taskId equal to the below options:
 
@@ -36,7 +44,7 @@ To generate an API-Key for a user:
 curl -X POST -H "X-API-KEY: <api-key>" <server-url>/user?email=abc@gmail.com
 ```
 
-Where <api-key> is the default user API-KEY between the *******'s on ifm-publisher startup
+Where <api-key> is the default user API-KEY between the *******'s on ideaflow component startup
 
 # To Build
 
@@ -46,9 +54,9 @@ This project requires
  - IntelliJ annotation processing enabled
 
 ```
-git clone git@github.com:ideaflow/ifm-publisher.git
+git clone git@github.com:openmastery/ideaflow.git
 
-cd ifm-publisher
+cd ideaflow
 
 ./gradlew clean check
 
