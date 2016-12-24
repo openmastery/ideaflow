@@ -13,11 +13,11 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class CapacityDistribution {
+public class CapacityDistribution {
 
 	Map<IdeaFlowStateType, Long> timeSpentPerStateType = new HashMap<IdeaFlowStateType, Long>();
 
-	void addTime(IdeaFlowStateType ideaFlowStateType, Long durationInSeconds) {
+	public void addTotalDurationForType(IdeaFlowStateType ideaFlowStateType, Long durationInSeconds) {
 		Long existingTime = timeSpentPerStateType.get(ideaFlowStateType);
 
 		if (existingTime == null) {

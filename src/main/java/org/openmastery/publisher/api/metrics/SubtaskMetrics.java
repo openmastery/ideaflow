@@ -23,8 +23,6 @@ public class SubtaskMetrics {
 	String description;
 	Long durationInSeconds;
 
-	CapacityDistribution capacityDistribution;
-
 	List<Metric<?>> metrics;
 
 	@JsonIgnore

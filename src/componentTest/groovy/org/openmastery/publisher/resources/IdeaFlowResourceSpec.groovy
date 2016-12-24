@@ -108,7 +108,7 @@ class IdeaFlowResourceSpec extends Specification {
 		assert metrics != null
 		assert metrics.size() == 1
 		assert metrics.get(0).description == "Subtask 1"
-		assert metrics.get(0).metrics.size() == 5
+		assert metrics.get(0).metrics.size() == 6
 	}
 
 }
