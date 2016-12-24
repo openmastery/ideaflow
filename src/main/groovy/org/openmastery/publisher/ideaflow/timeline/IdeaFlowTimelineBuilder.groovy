@@ -35,6 +35,7 @@ import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
+import org.openmastery.time.TimeConverter
 
 class IdeaFlowTimelineBuilder {
 
@@ -67,6 +68,7 @@ class IdeaFlowTimelineBuilder {
 		this.executionEvents = executionActivities.collect { ExecutionActivityEntity entity ->
 			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)
 			execution.failed = entity.exitCode != 0
+			execution.durationInSeconds = TimeConverter.between(entity.start, entity.end).standardSeconds
 			return execution
 		}
 		this
@@ -78,7 +80,6 @@ class IdeaFlowTimelineBuilder {
 	}
 
 	IdeaFlowTimelineBuilder blockActivities(List<BlockActivityEntity> blockActivityEntities) {
-		println "BLOCKS!!! " + blockActivityEntities
 		this.blockActivities = entityMapper.mapList(blockActivityEntities, BlockActivity)
 		this
 	}

@@ -83,7 +83,6 @@ class IdeaFlowTimelineElementBuilder {
 		event.relativePositionInSeconds = TimeConverter.between(activationTime, timeService.now()).standardSeconds
 
 		executionEventList << event
-
 		return this
 	}
 
@@ -96,12 +95,16 @@ class IdeaFlowTimelineElementBuilder {
 		Event event = new Event()
 		event.position = timeService.now()
 		event.type = eventType
+
+		event.relativePositionInSeconds = TimeConverter.between(activationTime, timeService.now()).standardSeconds
 		eventList << event
 	}
 
 	IdeaFlowTimelineElementBuilder activate() {
-		addEvent(EventType.ACTIVATE)
 		activationTime = timeService.now()
+		println "[Configure] activation time: "+activationTime
+
+		addEvent(EventType.ACTIVATE) //TODO temporal coupling, the above must be called first, or you get NPE
 		this
 	}
 

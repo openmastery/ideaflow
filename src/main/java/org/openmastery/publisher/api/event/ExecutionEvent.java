@@ -22,4 +22,6 @@ public class ExecutionEvent extends AbstractPositionable {
 	private boolean debug;
 	private boolean failed;
 
+	private Long durationInSeconds;
+
 }

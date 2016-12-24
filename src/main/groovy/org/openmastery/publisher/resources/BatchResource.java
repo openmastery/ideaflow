@@ -27,7 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Component
-@Path(ResourcePaths.BATCH_PATH)
+@Path(ResourcePaths.IDEAFLOW_PATH + ResourcePaths.COLLECT_PATH + ResourcePaths.BATCH_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class BatchResource {
 

@@ -19,7 +19,7 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.api.metrics.MetricsCalculator
-import org.openmastery.publisher.api.metrics.SubtaskMetrics
+import org.openmastery.publisher.api.metrics.TimelineMetrics
 import org.openmastery.publisher.metrics.subtask.calculator.AvgFeedbackLoopDurationCalculator
 import org.openmastery.publisher.metrics.subtask.calculator.AvgFeedbackLoopsCalculator
 import org.openmastery.publisher.metrics.subtask.calculator.CapacityDistributionCalculator
@@ -29,9 +29,9 @@ import org.openmastery.publisher.metrics.subtask.calculator.WtfsPerDayCalculator
 
 public class RiskSummaryCalculator {
 
-	SubtaskMetrics calculateSubtaskMetrics(Event subtask, IdeaFlowTimeline timelineSegment) {
+	TimelineMetrics calculateSubtaskMetrics(Event subtask, IdeaFlowTimeline timelineSegment) {
 
-		SubtaskMetrics metrics = new SubtaskMetrics()
+		TimelineMetrics metrics = new TimelineMetrics()
 		metrics.id = subtask.id
 		metrics.description = subtask.comment
 		metrics.durationInSeconds = timelineSegment.durationInSeconds
@@ -48,7 +48,7 @@ public class RiskSummaryCalculator {
 		return metrics
 	}
 
-	void addMetric(SubtaskMetrics metrics, MetricsCalculator calculator) {
+	void addMetric(TimelineMetrics metrics, MetricsCalculator calculator) {
 		MetricType metricType = calculator.getMetricType()
 		metrics.addMetric(metricType, calculator)
 	}

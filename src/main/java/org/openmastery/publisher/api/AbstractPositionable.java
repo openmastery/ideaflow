@@ -9,7 +9,7 @@ import org.joda.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class AbstractPositionable implements Positionable {
+public abstract class AbstractPositionable implements Positionable, RelativePositionable {
 
 	private Long taskId;
 	private LocalDateTime position;

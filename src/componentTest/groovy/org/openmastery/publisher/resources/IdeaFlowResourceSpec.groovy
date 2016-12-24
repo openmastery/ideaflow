@@ -19,7 +19,7 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.metrics.SubtaskMetrics
+import org.openmastery.publisher.api.metrics.TimelineMetrics
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.IdeaFlowClient
@@ -102,7 +102,7 @@ class IdeaFlowResourceSpec extends Specification {
 		batchClient.addIFMBatch(batch)
 
 		when:
-		List<SubtaskMetrics> metrics = ideaFlowClient.generateRiskSummariesBySubtask(task.id)
+		List<TimelineMetrics> metrics = ideaFlowClient.generateRiskSummariesBySubtask(task.id)
 
 		then:
 		assert metrics != null

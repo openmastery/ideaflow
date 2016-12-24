@@ -16,7 +16,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubtaskMetrics {
+public class TimelineMetrics {
 
 	Long id;
 	String description;

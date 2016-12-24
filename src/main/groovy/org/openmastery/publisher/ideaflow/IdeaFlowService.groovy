@@ -18,8 +18,8 @@ package org.openmastery.publisher.ideaflow
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-
-import org.openmastery.publisher.api.metrics.SubtaskMetrics
+import org.openmastery.publisher.api.metrics.DetailedSubtaskReport
+import org.openmastery.publisher.api.metrics.TimelineMetrics
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.activity.BlockActivityEntity
@@ -73,7 +73,7 @@ class IdeaFlowService {
 	}
 
 	//TODO slice the timeline by subtask, for now, treat the whole timeline as the first subtask
-	List<SubtaskMetrics> generateRiskSummariesBySubtask(Long taskId) {
+	List<TimelineMetrics> generateRiskSummariesBySubtask(Long taskId) {
 		IdeaFlowTimeline timeline = generateIdeaFlowForTask(taskId)
 
 		List<Event> subtaskEvents = timeline.getEvents().findAll { Event event ->
@@ -84,8 +84,12 @@ class IdeaFlowService {
 		RiskSummaryCalculator riskSummaryCalculator =  new RiskSummaryCalculator()
 
 		//TODO make this execute in a loop, slice timelines and collect a list of subtask metrics
-		SubtaskMetrics subtaskMetrics = riskSummaryCalculator.calculateSubtaskMetrics(subtaskEvents.first(), timeline)
+		TimelineMetrics subtaskMetrics = riskSummaryCalculator.calculateSubtaskMetrics(subtaskEvents.first(), timeline)
 
 		return [subtaskMetrics]
+	}
+
+	DetailedSubtaskReport generateDetailedSubtaskReport(Long taskId, Long subTaskId) {
+		return null;
 	}
 }

@@ -17,7 +17,8 @@ package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
-import org.openmastery.publisher.api.metrics.SubtaskMetrics;
+import org.openmastery.publisher.api.metrics.DetailedSubtaskReport;
+import org.openmastery.publisher.api.metrics.TimelineMetrics;
 import org.openmastery.publisher.ideaflow.IdeaFlowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -62,15 +63,29 @@ public class IdeaFlowResource {
 	 * Community-contributed, individually-branded OSS IdeaFlow metrics coming soon!
 	 *
 	 * @param taskId
-	 * @return List<SubtaskMetrics>
+	 * @return List<TimelineMetrics>
 	 */
 
 	@GET
 	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
-	public List<SubtaskMetrics> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
+	public List<TimelineMetrics> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
 
 		return ideaFlowService.generateRiskSummariesBySubtask(taskId);
 	}
+
+	/**
+	 *
+	 * @param taskId
+	 * @param subTaskId
+	 * @return
+	 */
+	@GET
+	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}" + ResourcePaths.IDEAFLOW_SUBTASK + "/{subTaskId}")
+	public DetailedSubtaskReport generateDetailedSubtaskReport(@PathParam("taskId") Long taskId, @PathParam("subTaskId") Long subTaskId) {
+
+		return ideaFlowService.generateDetailedSubtaskReport(taskId, subTaskId);
+	}
+
 
 
 }

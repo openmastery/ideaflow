@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Component
-@Path(ResourcePaths.TASK_PATH)
+@Path(ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class TaskResource {
 

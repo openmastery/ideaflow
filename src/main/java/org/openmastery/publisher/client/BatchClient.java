@@ -12,10 +12,13 @@ import java.util.Arrays;
 public class BatchClient extends OpenMasteryClient<EditorActivity, BatchClient> {
 
 	public BatchClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.BATCH_PATH, EditorActivity.class);
+		super(baseUrl, ResourcePaths.IDEAFLOW_PATH +
+						ResourcePaths.COLLECT_PATH +
+						ResourcePaths.BATCH_PATH, EditorActivity.class);
 	}
 
 	public void addIFMBatch(NewIFMBatch batch) {
+
 		crudClientRequest.createWithPost(batch);
 	}
 

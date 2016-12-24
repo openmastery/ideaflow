@@ -78,4 +78,8 @@ class TimeConverter {
 		return new Duration(start.toDateTime(DateTimeZone.UTC), end.toDateTime(DateTimeZone.UTC))
 	}
 
+	public static Duration between(LocalDateTime start, LocalDateTime end) {
+		return between(toJodaLocalDateTime(start), toJodaLocalDateTime(end));
+	}
+
 }

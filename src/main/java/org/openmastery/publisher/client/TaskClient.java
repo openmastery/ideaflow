@@ -10,7 +10,7 @@ import java.util.List;
 public class TaskClient extends OpenMasteryClient<Task, TaskClient> {
 
 	public TaskClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.TASK_PATH, Task.class);
+		super(baseUrl, ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH, Task.class);
 	}
 
 	public Task createTask(String taskName, String description, String project) {

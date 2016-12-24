@@ -38,6 +38,14 @@ public class IdeaFlowBand implements Positionable {
 		return start;
 	}
 
+	public Long getRelativeStart() {
+		return relativePositionInSeconds;
+	}
+
+	public Long getRelativeEnd() {
+		return relativePositionInSeconds + durationInSeconds;
+	}
+
 
 	// simplify dozer mapping
 
