@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.subtask
+package org.openmastery.publisher.api.metrics;
 
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.metrics.Metric
-import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
+import org.openmastery.publisher.api.metrics.Metric;
+import org.openmastery.publisher.api.metrics.MetricType;
 
 public interface MetricsCalculator<V> {
 

@@ -17,7 +17,7 @@ package org.openmastery.publisher.metrics.subtask.calculator
 
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.publisher.metrics.subtask.MetricsCalculator
+import org.openmastery.publisher.api.metrics.MetricsCalculator
 
 abstract class AbstractMetricsCalculator<T> implements MetricsCalculator<T> {
 

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
-import org.openmastery.publisher.metrics.subtask.MetricsCalculator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,13 +29,13 @@ public class SubtaskMetrics {
 
 	public void addMetric(MetricType type, MetricsCalculator calculator) {
 		if (calculators == null) {
-			calculators = new HashMap<>();
+			calculators = new HashMap<MetricType, MetricsCalculator>();
 		}
 		calculators.put(type, calculator);
 	}
 
 	public void calculate(IdeaFlowTimeline timeline) {
-		metrics = new ArrayList<>();
+		metrics = new ArrayList<Metric<?>>();
 		for (MetricsCalculator calculator: calculators.values()) {
 			Metric<?> result = calculator.calculateMetrics(timeline);
 			metrics.add(result);

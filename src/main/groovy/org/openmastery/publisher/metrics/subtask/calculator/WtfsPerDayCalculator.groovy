@@ -21,7 +21,6 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.publisher.metrics.subtask.MetricsCalculator
 
 class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 
