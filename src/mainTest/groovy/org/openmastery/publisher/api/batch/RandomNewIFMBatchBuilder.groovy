@@ -25,6 +25,10 @@ class RandomNewIFMBatchBuilder extends NewIFMBatch.NewIFMBatchBuilder {
 			.timeSent(TimeConverter.toJodaLocalDateTime(ARandom.aRandom.dayOfYear()))
 	}
 
+	RandomNewIFMBatchBuilder timeSent(LocalDateTime localDateTime) {
+		super.timeSent(localDateTime)
+		this
+	}
 
 	public RandomNewIFMBatchBuilder newEditorActivity(Long taskId, LocalDateTime endTime, Long durationInSeconds, String filePath, boolean isModified) {
 		NewEditorActivity activity = NewEditorActivity.builder()
