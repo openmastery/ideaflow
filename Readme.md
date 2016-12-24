@@ -12,16 +12,16 @@ git clone git@github.com:openmastery/ideaflow.git
 
 The following endpoints are available:
 
-POST http://localhost:8980/ideaflow/collect/batch (publish your IdeaFlow data to the server)
+* POST http://localhost:8980/ideaflow/collect/batch (publish your IdeaFlow data to the server)
 
-GET http://localhost:8980/ideaflow/task/
-GET http://localhost:8980/ideaflow/task/{taskId}
+* GET http://localhost:8980/ideaflow/task/
+* GET http://localhost:8980/ideaflow/task/{taskId}
 
-GET http://localhost:8980/ideaflow/timeline/task/{taskId}
-GET http://localhost:8980/ideaflow/metrics/task/{taskId}
+* GET http://localhost:8980/ideaflow/timeline/task/{taskId}
+* GET http://localhost:8980/ideaflow/metrics/task/{taskId}
 
-GET http://localhost:8980/ideaflow/timeline/subtask/{subtaskId}
-GET http://localhost:8980/ideaflow/metrics/subtask/{subtaskId}
+* GET http://localhost:8980/ideaflow/timeline/subtask/{subtaskId}
+* GET http://localhost:8980/ideaflow/metrics/subtask/{subtaskId}
 
 
 There are four available timelines with the taskId equal to the below options:
