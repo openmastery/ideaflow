@@ -29,7 +29,7 @@ import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.TaskService
 
-import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineBuilder
+import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineGenerator
 import org.openmastery.publisher.metrics.subtask.RiskSummaryCalculator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -60,26 +60,26 @@ class IdeaFlowService {
 		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(taskId)
 
 
-		IdeaFlowTimeline timeline = new IdeaFlowTimelineBuilder()
+		IdeaFlowTimeline timeline = new IdeaFlowTimelineGenerator()
 				.task(task)
 				.modificationActivities(modifications)
 				.events(events)
 				.executionActivities(executions)
 				.blockActivities(blocks)
 				.idleActivities(idleActivities)
-				.build()
+				.generate()
 
 		return timeline
 	}
 
 	//TODO slice the timeline by subtask, for now, treat the whole timeline as the first subtask
+
 	List<TimelineMetrics> generateRiskSummariesBySubtask(Long taskId) {
 		IdeaFlowTimeline timeline = generateIdeaFlowForTask(taskId)
 
 		List<Event> subtaskEvents = timeline.getEvents().findAll { Event event ->
 			event.type == EventType.SUBTASK
 		}
-
 
 		RiskSummaryCalculator riskSummaryCalculator =  new RiskSummaryCalculator()
 

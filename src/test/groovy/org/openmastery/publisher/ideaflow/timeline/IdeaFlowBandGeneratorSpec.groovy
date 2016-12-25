@@ -4,8 +4,8 @@ import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.time.MockTimeService
-import spock.lang.Ignore;
-import spock.lang.Specification;
+import spock.lang.Ignore
+import spock.lang.Specification
 
 public class IdeaFlowBandGeneratorSpec extends Specification {
 
@@ -178,6 +178,49 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assertTroubleshootingBand(ideaFlowBands[1], ideaFlowBands[0].end, startTime.plusMinutes(60))
 		assertProgressBand(ideaFlowBands[2], ideaFlowBands[1].end, startTime.plusMinutes(90))
 		assert ideaFlowBands.size() == 3
+	}
+
+	def "generateProgressBands SHOULD create a progress band for an activate/deactivate interval"() {
+		given:
+		builder.activate().modifyCodeAndAdvance(30)
+				.deactivate()
+
+		when:
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
+
+		then:
+		assertProgressBand(ideaFlowBands[0], startTime, startTime.plusMinutes(30))
+		assert ideaFlowBands.size() == 1
+	}
+
+	@Ignore // TODO: fix
+	def "generateProgressBands SHOULD create single band which spands out of order intervals"() {
+		given:
+		builder.activate().modifyCodeAndAdvance(30)
+				.deactivate().advanceHours(1)
+				.activate().modifyCodeAndAdvance(60)
+				.deactivate()
+
+		when:
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
+
+		then:
+		assertProgressBand(ideaFlowBands[0], startTime, startTime.plusMinutes(90))
+		assert ideaFlowBands.size() == 1
+	}
+
+	//TODO: in actuality, this should probably prompt a "repair" job, looking at raw activity and creating the missing event
+	def "generateProgressBands SHOULD ignore multiple activates in a row"() {
+		builder.activate().modifyCodeAndAdvance(30)
+				.activate().modifyCodeAndAdvance(90)
+				.deactivate()
+
+		when:
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
+
+		then:
+		assertProgressBand(ideaFlowBands[0], startTime, startTime.plusHours(2))
+		assert ideaFlowBands.size() == 1
 	}
 
 }

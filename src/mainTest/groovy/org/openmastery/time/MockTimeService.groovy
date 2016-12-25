@@ -1,31 +1,65 @@
 package org.openmastery.time
 
-import java.time.LocalDateTime
+import org.joda.time.LocalDateTime
 
 class MockTimeService implements TimeService {
 
 	private LocalDateTime now
 
 	MockTimeService() {
-		now = LocalDateTime.of(2016, 1, 1, 0, 0)
+		now = TimeConverter.toJodaLocalDateTime(java.time.LocalDateTime.of(2016, 1, 1, 0, 0))
 	}
 
 	@Override
-	LocalDateTime javaNow() {
-		return now
+	java.time.LocalDateTime javaNow() {
+		TimeConverter.toJavaLocalDateTime(now)
 	}
 
-	LocalDateTime javaInFuture(int hours) {
+	@Deprecated
+	java.time.LocalDateTime javaInFuture(int hours) {
+		javaHoursInFuture(hours)
+	}
+
+	java.time.LocalDateTime javaDaysInFuture(int days) {
+		TimeConverter.toJavaLocalDateTime(daysInFuture(days))
+	}
+
+	java.time.LocalDateTime javaHoursInFuture(int hours) {
+		TimeConverter.toJavaLocalDateTime(hoursInFuture(hours))
+	}
+
+	java.time.LocalDateTime javaMinutesInFuture(int minutes) {
+		TimeConverter.toJavaLocalDateTime(minutesInFuture(minutes))
+	}
+
+	java.time.LocalDateTime javaSecondsInFuture(int seconds) {
+		TimeConverter.toJavaLocalDateTime(secondsInFuture(seconds))
+	}
+
+	@Override
+	LocalDateTime now() {
+		now
+	}
+
+	@Deprecated
+	LocalDateTime inFuture(int hours) {
+		hoursInFuture(hours)
+	}
+
+	LocalDateTime daysInFuture(int days) {
+		now.plusDays(days)
+	}
+
+	LocalDateTime hoursInFuture(int hours) {
 		now.plusHours(hours)
 	}
 
-	@Override
-	org.joda.time.LocalDateTime now() {
-		return TimeConverter.toJodaLocalDateTime(javaNow())
+	LocalDateTime minutesInFuture(int minutes) {
+		now.plusMinutes(minutes)
 	}
 
-	org.joda.time.LocalDateTime inFuture(int hours) {
-		TimeConverter.toJodaLocalDateTime(now.plusHours(hours))
+	LocalDateTime secondsInFuture(int seconds) {
+		now.plusSeconds(seconds)
 	}
 
 	MockTimeService plusHour() {

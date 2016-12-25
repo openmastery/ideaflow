@@ -4,7 +4,6 @@ import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineBuilder
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification

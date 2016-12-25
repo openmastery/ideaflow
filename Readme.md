@@ -3,35 +3,32 @@
 Install/setup docker (instructions below), then:
 
 ```
-git clone https://github.com/ideaflow/common-rest.git
+git clone https://github.com/openmastery/common-rest.git
 ./gradlew publishLocal
 
-git clone git@github.com:ideaflow/ifm-publisher.git
+git clone git@github.com:openmastery/ideaflow.git
 ./gradlew bootRun
 ```
 
 The following endpoints are available:
 
-POST http://localhost:8980/ideaflow/collect/batch (publish your IdeaFlow data to the server)
+* POST http://localhost:8980/ideaflow/collect/batch (publish your IdeaFlow data to the server)
 
-GET http://localhost:8980/ideaflow/task/
-GET http://localhost:8980/ideaflow/task/{taskId}
+* GET http://localhost:8980/ideaflow/task/
+* GET http://localhost:8980/ideaflow/task/{taskId}
 
-GET http://localhost:8980/ideaflow/timeline/task/{taskId}
-GET http://localhost:8980/ideaflow/metrics/task/{taskId}
+* GET http://localhost:8980/ideaflow/timeline/task/{taskId}
+* GET http://localhost:8980/ideaflow/metrics/task/{taskId}
 
-GET http://localhost:8980/ideaflow/timeline/subtask/{subtaskId}
-GET http://localhost:8980/ideaflow/metrics/subtask/{subtaskId}
+* GET http://localhost:8980/ideaflow/timeline/subtask/{subtaskId}
+* GET http://localhost:8980/ideaflow/metrics/subtask/{subtaskId}
 
+This endpoint will be moved at some point, but it's hanging out in here for now.
 
-There are four available timelines with the taskId equal to the below options:
+* GET http://localhost:8980/user?email=demo@openmastery.org
 
-* taskId:1, taskName: "basic" - A Timeline with three bands and a subtask (subtasks divide into multiple timeline segments)
-* taskId:2, taskName: "learning" - A timeline with nested bands within a learning band (red displayed on top of blue)
-* taskId:3, taskName: "trial" -  A Timeline with trial and error linked together, thus contained within a TimelineGroup.  Grouped bands also contain nested bands.
-* taskId:4, taskName: "detailed" - A Timeline with an example detailed conflict (conflict linked to rework, then rework contains nested conflicts)
-
-The current version does not yet include timeline detail APIs, but we've got support for the timeband visualization (band view), and support for the structured tree model (tree view) with band groups, nested bands, events, etc. The timeline is split into multiple segments according to subtask in the tree. 
+Stub data is loaded on startup in the demo@openmastery.org account that you can use to explore the API.
+The API-Key for the demo account is printed on the screen at startup.
 
 # User Access
 
@@ -155,11 +152,11 @@ Log into heroku
 
 Create the heroku application
 
-`heroku create ifm-publisher`
+`heroku create om-ideaflow`
 
 Or, if the application has already been created, initialize the remote
 
-`heroku git:remote -a ifm-publisher`
+`heroku git:remote -a om-ideaflow`
 
 Create the database (can upgrade to hobby-basic just by associating credit card w/ account)
 

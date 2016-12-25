@@ -19,6 +19,7 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineValidator
 import org.openmastery.publisher.api.metrics.TimelineMetrics
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.BatchClient
@@ -48,7 +49,11 @@ class IdeaFlowResourceSpec extends Specification {
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
 
-
+	private IdeaFlowTimelineValidator getTimelineAndValidator(long taskId) {
+		IdeaFlowTimeline timeline = ideaFlowClient.getTimelineForTask(taskId)
+		assert timeline != null
+		new IdeaFlowTimelineValidator(timeline)
+	}
 
 	def "getTimelineForTask SHOULD generate IdeaFlow timeline with all data types"() {
 		given:
@@ -56,25 +61,27 @@ class IdeaFlowResourceSpec extends Specification {
 
 		NewIFMBatch batch = aRandom.batch().timeSent(timeService.now())
 			.newEvent(task.id, timeService.now(), EventType.ACTIVATE, "unpause")
-			.newExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
-			.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
-			.newBlockActivity(task.id, timeService.inFuture(2), 500, "Waiting on stuff")
-			.newEvent(task.id, timeService.inFuture(3), EventType.DEACTIVATE, "pause")
+			.newExecutionActivity(task.id, timeService.secondsInFuture(15), 15, "TestMe", "JUnit", 0, false)
+			.newModificationActivity(task.id, timeService.hoursInFuture(1), 30, 80)
+			.newBlockActivity(task.id, timeService.hoursInFuture(2), 500, "Waiting on stuff")
+			.newEvent(task.id, timeService.hoursInFuture(3), EventType.DEACTIVATE, "pause")
 			.build()
 
 		batchClient.addIFMBatch(batch)
 
 		when:
-		IdeaFlowTimeline timeline = ideaFlowClient.getTimelineForTask(task.id)
+		IdeaFlowTimelineValidator validator = getTimelineAndValidator(task.id)
 
 		then:
-		assert timeline != null
-		assert timeline.executionEvents.size() == 1
-		assert timeline.modificationActivities.size() == 1
-		assert timeline.blockActivities.size() == 1
-		assert timeline.events.size() == 3 //calendar event generated too
-
-
+		validator.assertExecutionEvents(1)
+		validator.assertModificationActivity(1)
+		validator.assertBlockActivity(1)
+		validator.assertEvents(1, EventType.ACTIVATE)
+		validator.assertEvents(1, EventType.DEACTIVATE)
+		validator.assertEvents(1, EventType.SUBTASK)
+		validator.assertEvents(1, EventType.CALENDAR)
+		validator.assertStrategyBand(0, timeService.now(), timeService.hoursInFuture(3))
+		validator.assertValidationComplete()
 	}
 
 	def "generateRiskSummariesBySubtask SHOULD generate metrics for each subtask"() {
@@ -86,17 +93,17 @@ class IdeaFlowResourceSpec extends Specification {
 
 				.newEvent(task.id, timeService.now(), EventType.SUBTASK, "Subtask 1")
 				.newExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
-				.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+				.newModificationActivity(task.id, timeService.hoursInFuture(1), 30, 80)
 				.newExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
-				.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+				.newModificationActivity(task.id, timeService.hoursInFuture(1), 30, 80)
 
 				.newEvent(task.id, timeService.now(), EventType.SUBTASK, "Subtask 2")
 				.newExecutionActivity(task.id, timeService.now(), 15, "TestYou", "JUnit", 0, false)
-				.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+				.newModificationActivity(task.id, timeService.hoursInFuture(1), 30, 80)
 				.newExecutionActivity(task.id, timeService.now(), 15, "TestYou", "JUnit", 0, false)
-				.newModificationActivity(task.id, timeService.inFuture(1), 30, 80)
+				.newModificationActivity(task.id, timeService.hoursInFuture(1), 30, 80)
 
-				.newEvent(task.id, timeService.inFuture(3), EventType.DEACTIVATE, "pause")
+				.newEvent(task.id, timeService.hoursInFuture(3), EventType.DEACTIVATE, "pause")
 				.build()
 
 		batchClient.addIFMBatch(batch)
@@ -107,7 +114,7 @@ class IdeaFlowResourceSpec extends Specification {
 		then:
 		assert metrics != null
 		assert metrics.size() == 1
-		assert metrics.get(0).description == "Subtask 1"
+		assert metrics.get(0).description == "Initial Strategy"
 		assert metrics.get(0).metrics.size() == 6
 	}
 
