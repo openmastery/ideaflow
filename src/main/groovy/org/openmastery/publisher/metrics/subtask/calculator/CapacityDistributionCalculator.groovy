@@ -17,7 +17,7 @@ package org.openmastery.publisher.metrics.subtask.calculator
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowMetricsTimeline
 import org.openmastery.publisher.api.metrics.CapacityDistribution
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
@@ -30,7 +30,7 @@ class CapacityDistributionCalculator extends AbstractMetricsCalculator<CapacityD
 
 
 	@Override
-	Metric<CapacityDistribution> calculateMetrics(IdeaFlowTimeline timeline) {
+	Metric<CapacityDistribution> calculateMetrics(IdeaFlowMetricsTimeline timeline) {
 
 		CapacityDistribution capacity = new CapacityDistribution()
 
@@ -44,7 +44,7 @@ class CapacityDistributionCalculator extends AbstractMetricsCalculator<CapacityD
 		return metric
 	}
 
-	void saveTotalDurationForBandType(CapacityDistribution capacity, IdeaFlowTimeline timeline, IdeaFlowStateType ideaFlowStateType) {
+	void saveTotalDurationForBandType(CapacityDistribution capacity, IdeaFlowMetricsTimeline timeline, IdeaFlowStateType ideaFlowStateType) {
 
 		List<IdeaFlowBand> bands = timeline.ideaFlowBands.findAll() { IdeaFlowBand band ->
 			band.type == ideaFlowStateType

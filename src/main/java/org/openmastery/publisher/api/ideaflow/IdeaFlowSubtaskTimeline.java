@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowSubtaskTimeline implements Positionable {
+public class IdeaFlowSubtaskTimeline implements Positionable, IdeaFlowMetricsTimeline {
 
 	private Event subtask;
 

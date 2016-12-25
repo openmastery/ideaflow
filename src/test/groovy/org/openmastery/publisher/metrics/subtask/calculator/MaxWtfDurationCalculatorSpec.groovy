@@ -2,9 +2,9 @@ package org.openmastery.publisher.metrics.subtask.calculator
 
 import org.joda.time.Duration
 import org.joda.time.LocalDateTime
-import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
+import org.openmastery.publisher.api.ideaflow.IdeaFlowMetricsTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType

@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowTimeline implements Positionable {
+public class IdeaFlowTimeline implements Positionable, IdeaFlowMetricsTimeline {
 
 	private Task task;
 

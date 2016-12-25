@@ -18,7 +18,7 @@ package org.openmastery.publisher.metrics.subtask.calculator
 import org.joda.time.LocalDate
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowMetricsTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 
@@ -29,7 +29,7 @@ class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 	}
 
 	@Override
-	Metric<Double> calculateMetrics(IdeaFlowTimeline timeline) {
+	Metric<Double> calculateMetrics(IdeaFlowMetricsTimeline timeline) {
 		Metric<Double> metric = createMetric()
 
 		List<Event> wtfEvents = timeline.events.findAll() { Event event ->

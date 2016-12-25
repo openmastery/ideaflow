@@ -11,7 +11,6 @@ import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilde
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
-
 class CapacityDistributionCalculatorSpec extends Specification {
 
 

@@ -18,7 +18,7 @@ package org.openmastery.publisher.metrics.subtask.calculator
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowMetricsTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 
@@ -36,7 +36,7 @@ class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 	 * @return Metric<Double> the resulting metric value
 	 */
 	@Override
-	Metric<Double> calculateMetrics(IdeaFlowTimeline timeline) {
+	Metric<Double> calculateMetrics(IdeaFlowMetricsTimeline timeline) {
 
 		List<IdeaFlowBand> troubleshootingBands = timeline.ideaFlowBands.findAll() { IdeaFlowBand band ->
 			band.type == IdeaFlowStateType.TROUBLESHOOTING
