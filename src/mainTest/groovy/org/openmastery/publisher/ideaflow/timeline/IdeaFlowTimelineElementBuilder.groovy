@@ -117,6 +117,18 @@ class IdeaFlowTimelineElementBuilder {
 		eventList << event
 	}
 
+	private void addEvent(EventType eventType, String comment) {
+		Event event = new Event()
+		event.id = eventId++
+		event.position = timeService.now()
+		event.type = eventType
+		event.comment = comment
+
+		event.relativePositionInSeconds = TimeConverter.between(activationTime, timeService.now()).standardSeconds
+		eventList << event
+	}
+
+
 	IdeaFlowTimelineElementBuilder activate() {
 		activationTime = timeService.now()
 		println "[Configure] activation time: "+activationTime
@@ -132,6 +144,11 @@ class IdeaFlowTimelineElementBuilder {
 
 	IdeaFlowTimelineElementBuilder wtf() {
 		addEvent(EventType.WTF)
+		this
+	}
+
+	IdeaFlowTimelineElementBuilder wtf(String comment) {
+		addEvent(EventType.WTF, comment)
 		this
 	}
 
