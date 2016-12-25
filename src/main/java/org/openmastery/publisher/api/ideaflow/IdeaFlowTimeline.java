@@ -5,7 +5,7 @@ import org.openmastery.publisher.api.event.ExecutionEvent;
 
 import java.util.List;
 
-public interface IdeaFlowMetricsTimeline {
+public interface IdeaFlowTimeline {
 
 	List<IdeaFlowBand> getIdeaFlowBands();
 

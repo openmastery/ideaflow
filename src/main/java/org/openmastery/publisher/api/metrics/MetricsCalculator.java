@@ -15,11 +15,11 @@
  */
 package org.openmastery.publisher.api.metrics;
 
-import org.openmastery.publisher.api.ideaflow.IdeaFlowMetricsTimeline;
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 
 public interface MetricsCalculator<V> {
 
 	MetricType getMetricType();
 
-	Metric<V> calculateMetrics(IdeaFlowMetricsTimeline timeline);
+	Metric<V> calculateMetrics(IdeaFlowTimeline timeline);
 }

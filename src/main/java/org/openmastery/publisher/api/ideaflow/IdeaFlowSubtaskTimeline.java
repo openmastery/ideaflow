@@ -6,11 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.Positionable;
-import org.openmastery.publisher.api.activity.BlockActivity;
-import org.openmastery.publisher.api.activity.ModificationActivity;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.ExecutionEvent;
-import org.openmastery.publisher.api.task.Task;
 
 import java.util.List;
 
@@ -18,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowSubtaskTimeline implements Positionable, IdeaFlowMetricsTimeline {
+public class IdeaFlowSubtaskTimeline implements Positionable, IdeaFlowTimeline {
 
 	private Event subtask;
 

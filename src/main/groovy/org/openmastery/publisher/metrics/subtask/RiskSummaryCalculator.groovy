@@ -16,7 +16,7 @@
 package org.openmastery.publisher.metrics.subtask
 
 import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.ideaflow.IdeaFlowMetricsTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.api.metrics.MetricsCalculator
 import org.openmastery.publisher.api.metrics.TimelineMetrics
@@ -29,7 +29,7 @@ import org.openmastery.publisher.metrics.subtask.calculator.WtfsPerDayCalculator
 
 public class RiskSummaryCalculator {
 
-	TimelineMetrics calculateSubtaskMetrics(Event subtask, IdeaFlowMetricsTimeline timelineSegment) {
+	TimelineMetrics calculateSubtaskMetrics(Event subtask, IdeaFlowTimeline timelineSegment) {
 
 		TimelineMetrics metrics = new TimelineMetrics()
 		metrics.id = subtask.id

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowMetricsTimeline;
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class TimelineMetrics {
 		calculators.put(type, calculator);
 	}
 
-	public void calculate(IdeaFlowMetricsTimeline timeline) {
+	public void calculate(IdeaFlowTimeline timeline) {
 		metrics = new ArrayList<Metric<?>>();
 		for (MetricsCalculator calculator: calculators.values()) {
 			Metric<?> result = calculator.calculateMetrics(timeline);
