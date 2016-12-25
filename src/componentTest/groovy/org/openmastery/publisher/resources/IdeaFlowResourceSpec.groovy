@@ -19,6 +19,7 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineValidator
+import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
 import org.openmastery.publisher.api.metrics.TimelineMetrics
 import org.openmastery.publisher.api.task.Task
@@ -26,8 +27,10 @@ import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.IdeaFlowClient
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
 import spock.lang.Specification
 
 import static org.openmastery.publisher.ARandom.aRandom
@@ -40,6 +43,7 @@ class IdeaFlowResourceSpec extends Specification {
 
 	@Autowired
 	private TaskClient taskClient
+
 	@Autowired
 	private BatchClient batchClient
 
@@ -48,6 +52,9 @@ class IdeaFlowResourceSpec extends Specification {
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
+
+	@Autowired
+	public UserEntity testUser
 
 	private IdeaFlowTimelineValidator getTimelineAndValidator(long taskId) {
 		TaskTimelineOverview overview = ideaFlowClient.getTimelineOverviewForTask(taskId)
@@ -121,6 +128,14 @@ class IdeaFlowResourceSpec extends Specification {
 		assert metrics.get(2).description == "Subtask 2"
 		assert metrics.get(2).metrics.size() == 6
 		assert metrics.size() == 3
+
+		when:
+		SubtaskTimelineOverview subtaskTimelineOverview = ideaFlowClient.getTimelineOverviewForSubtask(task.id, -1)
+
+		then:
+		assert subtaskTimelineOverview != null
+		assert subtaskTimelineOverview.subtaskMetrics.description == "Initial Strategy"
+		assert subtaskTimelineOverview.subtaskMetrics.metrics.size() == 6
 	}
 
 }

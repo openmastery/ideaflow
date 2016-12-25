@@ -16,7 +16,9 @@
 package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline;
+import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview;
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview;
 import org.openmastery.publisher.api.metrics.DetailedSubtaskReport;
 import org.openmastery.publisher.ideaflow.IdeaFlowService;
@@ -55,10 +57,9 @@ public class IdeaFlowResource {
 
 	@GET
 	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}" + ResourcePaths.IDEAFLOW_SUBTASK + "/{subtaskId}")
-	public IdeaFlowTaskTimeline getTimelineOverviewForSubtask(@PathParam("taskId") Long taskId, @PathParam("subtaskId") Long subtaskId) {
+	public SubtaskTimelineOverview getTimelineOverviewForSubtask(@PathParam("taskId") Long taskId, @PathParam("subtaskId") Long subtaskId) {
 
-//		return ideaFlowService.generateIdeaFlowForTask(taskId);
-		throw new RuntimeException("implement");
+		return ideaFlowService.generateTimelineOverviewForSubtask(taskId, subtaskId);
 	}
 
 	/**
