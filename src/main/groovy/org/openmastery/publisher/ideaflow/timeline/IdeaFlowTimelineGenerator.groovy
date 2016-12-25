@@ -76,76 +76,42 @@ class IdeaFlowTimelineGenerator {
 	}
 
 	IdeaFlowTimelineGenerator blockActivities(List<BlockActivityEntity> blockActivityEntities) {
-		println "BLOCKS!!! " + blockActivityEntities
 		this.blockActivities = entityMapper.mapList(blockActivityEntities, BlockActivity)
 		this
 	}
 
-
 	IdeaFlowTimeline generate() {
-		List<IdeaFlowBandModel> progressBands = generateProgressBands()
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBandsBands()
 
 		// NOTE: calendar events MUST be added BEFORE relative time is computed
-		addCalendarEvents(progressBands)
+		addCalendarEvents(ideaFlowBands)
 
 		//when no modification activity above threshold, create learning bands
 		//when WTF, WTF, AWESOME combo, create conflict band that spans this time
 
-		collapseIdleTime(progressBands)
-		computeRelativeTime(progressBands)
+		collapseIdleTime(ideaFlowBands)
+		computeRelativeTime(ideaFlowBands)
 
-		return createIdeaFlowTimeline(progressBands)
+		return createIdeaFlowTimeline(ideaFlowBands)
 	}
 
-	private List<IdeaFlowBandModel> generateProgressBands() {
+	private List<IdeaFlowBandModel> generateIdeaFlowBandsBands() {
 		IdeaFlowBandGenerator bandGenerator = new IdeaFlowBandGenerator()
 
 		List<Positionable> positionables = getAllItemsAsPositionableList()
 		bandGenerator.generateIdeaFlowBands(positionables)
-
-//		List<Event> sortedTaskActivationEvents = createSortedTaskActivationEventList()
-//		List<IdeaFlowBandModel> progressBands = []
-//		IdeaFlowBandModel activeProgressBand = null
-//
-//		sortedTaskActivationEvents.each { Event taskEvent ->
-//			if (activeProgressBand == null && taskEvent.type == EventType.ACTIVATE) {
-//				activeProgressBand = IdeaFlowBandModel.builder()
-//						.type(IdeaFlowStateType.PROGRESS)
-//						.taskId(taskEvent.id)
-//						.start(taskEvent.position)
-//						.nestedBands([])
-//						.idleBands([])
-//						.build()
-//			} else if (activeProgressBand != null && taskEvent.type == EventType.DEACTIVATE) {
-//				activeProgressBand.end = taskEvent.position
-//				progressBands.add(activeProgressBand)
-//				activeProgressBand = null
-//			} else {
-//				//eh... messed up state.  Multiple activates, multiple deactivates
-//				//should trigger a "repair" by looking at raw data and correcting events
-//			}
-//		}
-//		return progressBands
 	}
 
-//	private List<Event> createSortedTaskActivationEventList() {
-//		List<Event> taskActivationEvents = events.findAll { Event event ->
-//			event.type == EventType.ACTIVATE || event.type == EventType.DEACTIVATE
-//		}
-//		Collections.sort(taskActivationEvents, PositionableComparator.INSTANCE);
-//		return taskActivationEvents
-//	}
-
-	private void collapseIdleTime(List<IdeaFlowBandModel> progressBands) {
+	private void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands) {
 		if (idleTimeBands) {
 			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
-			idleTimeProcessor.collapseIdleTime(progressBands, idleTimeBands)
+			idleTimeProcessor.collapseIdleTime(ideaFlowBands, idleTimeBands)
 		}
 	}
 
-	private void computeRelativeTime(List<IdeaFlowBandModel> progressBands) {
+	private void computeRelativeTime(List<IdeaFlowBandModel> ideaFlowBands) {
 		List<Positionable> positionables = getAllItemsAsPositionableList()
-		progressBands.each { IdeaFlowBandModel model ->
+		ideaFlowBands.each { IdeaFlowBandModel model ->
 			positionables.add(model)
 			positionables.addAll(model.getAllContentsFlattenedAsPositionableList())
 		}
@@ -163,9 +129,9 @@ class IdeaFlowTimelineGenerator {
 		positionables
 	}
 
-	private void addCalendarEvents(List<IdeaFlowBandModel> progressBands) {
+	private void addCalendarEvents(List<IdeaFlowBandModel> ideaFlowBands) {
 		List<Interval> intervals = []
-		intervals.addAll(progressBands)
+		intervals.addAll(ideaFlowBands)
 		intervals.addAll(idleTimeBands)
 
 		CalendarEventGenerator calendarEventGenerator = new CalendarEventGenerator()
@@ -174,8 +140,8 @@ class IdeaFlowTimelineGenerator {
 		events.addAll(calendarEvents)
 	}
 
-	private IdeaFlowTimeline createIdeaFlowTimeline(List<IdeaFlowBandModel> progressBands) {
-		List<IdeaFlowBand> ideaFlowBands = entityMapper.mapList(progressBands, IdeaFlowBand)
+	private IdeaFlowTimeline createIdeaFlowTimeline(List<IdeaFlowBandModel> ideaFlowBandModels) {
+		List<IdeaFlowBand> ideaFlowBands = entityMapper.mapList(ideaFlowBandModels, IdeaFlowBand)
 
 		if (ideaFlowBands.isEmpty()) {
 			return IdeaFlowTimeline.builder()
