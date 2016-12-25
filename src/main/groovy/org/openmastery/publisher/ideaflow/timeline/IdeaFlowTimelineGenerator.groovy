@@ -15,12 +15,14 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
+import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.activity.BlockActivity
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
@@ -142,7 +144,6 @@ class IdeaFlowTimelineGenerator {
 
 	private IdeaFlowTimeline createIdeaFlowTimeline(List<IdeaFlowBandModel> ideaFlowBandModels) {
 		List<IdeaFlowBand> ideaFlowBands = entityMapper.mapList(ideaFlowBandModels, IdeaFlowBand)
-
 		if (ideaFlowBands.isEmpty()) {
 			return IdeaFlowTimeline.builder()
 					.task(task)
@@ -150,15 +151,16 @@ class IdeaFlowTimelineGenerator {
 					.build()
 		}
 
-		Collections.sort(events, PositionableComparator.INSTANCE);
-		Collections.sort(executionEvents, PositionableComparator.INSTANCE);
-		Collections.sort(modificationActivities, PositionableComparator.INSTANCE);
-		Collections.sort(blockActivities, PositionableComparator.INSTANCE)
 		Collections.sort(ideaFlowBands, PositionableComparator.INSTANCE);
-
 		IdeaFlowBand firstBand = ideaFlowBands.first()
 		IdeaFlowBand lastBand = ideaFlowBands.last()
 		Long totalDuration = (lastBand.relativePositionInSeconds - firstBand.relativePositionInSeconds) + lastBand.durationInSeconds
+
+		addInitialStrategySubtaskEventAndSortEventsList(firstBand.start)
+
+		Collections.sort(executionEvents, PositionableComparator.INSTANCE);
+		Collections.sort(modificationActivities, PositionableComparator.INSTANCE);
+		Collections.sort(blockActivities, PositionableComparator.INSTANCE)
 
 		return IdeaFlowTimeline.builder()
 				.task(task)
@@ -174,5 +176,22 @@ class IdeaFlowTimelineGenerator {
 				.build()
 	}
 
+	private void addInitialStrategySubtaskEventAndSortEventsList(LocalDateTime timelineStart) {
+		Collections.sort(events, PositionableComparator.INSTANCE);
+		Event firstSubtaskEvent = events.find { it.type == EventType.SUBTASK }
+		if ((firstSubtaskEvent != null) && firstSubtaskEvent.position.isEqual(timelineStart)) {
+			return
+		}
+
+		Event initialStrategySubtaskEvent = Event.builder()
+				.type(EventType.SUBTASK)
+				.comment("Initial Strategy")
+				.build()
+		initialStrategySubtaskEvent.position = timelineStart
+		initialStrategySubtaskEvent.relativePositionInSeconds = 0
+
+		events.add(initialStrategySubtaskEvent)
+		Collections.sort(events, PositionableComparator.INSTANCE);
+	}
 
 }

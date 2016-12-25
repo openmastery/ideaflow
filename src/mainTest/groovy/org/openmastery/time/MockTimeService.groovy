@@ -32,6 +32,10 @@ class MockTimeService implements TimeService {
 		TimeConverter.toJavaLocalDateTime(minutesInFuture(minutes))
 	}
 
+	java.time.LocalDateTime javaSecondsInFuture(int seconds) {
+		TimeConverter.toJavaLocalDateTime(secondsInFuture(seconds))
+	}
+
 	@Override
 	LocalDateTime now() {
 		now
@@ -50,8 +54,12 @@ class MockTimeService implements TimeService {
 		now.plusHours(hours)
 	}
 
-	LocalDateTime minutesInFuture(int hours) {
-		now.plusMinutes(hours)
+	LocalDateTime minutesInFuture(int minutes) {
+		now.plusMinutes(minutes)
+	}
+
+	LocalDateTime secondsInFuture(int seconds) {
+		now.plusSeconds(seconds)
 	}
 
 	MockTimeService plusHour() {

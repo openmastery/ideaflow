@@ -14,9 +14,7 @@ import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.task.Task;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
