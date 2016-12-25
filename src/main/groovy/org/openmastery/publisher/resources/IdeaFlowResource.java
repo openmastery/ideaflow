@@ -17,6 +17,7 @@ package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
+import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview;
 import org.openmastery.publisher.api.metrics.DetailedSubtaskReport;
 import org.openmastery.publisher.api.metrics.TimelineMetrics;
 import org.openmastery.publisher.ideaflow.IdeaFlowService;
@@ -49,11 +50,18 @@ public class IdeaFlowResource {
 
 	@GET
 	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
-	public IdeaFlowTimeline getTimelineForTask(@PathParam("taskId") Long taskId) {
+	public TaskTimelineOverview getTimelineOverviewForTask(@PathParam("taskId") Long taskId) {
 
-		return ideaFlowService.generateIdeaFlowForTask(taskId);
+		return ideaFlowService.generateTimelineOverviewForTask(taskId);
 	}
 
+	@GET
+	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}" + ResourcePaths.IDEAFLOW_SUBTASK + "/{subtaskId}")
+	public IdeaFlowTimeline getTimelineOverviewForSubtask(@PathParam("taskId") Long taskId, @PathParam("subtaskId") Long subtaskId) {
+
+//		return ideaFlowService.generateIdeaFlowForTask(taskId);
+		throw new RuntimeException("implement");
+	}
 
 	/**
 	 *
@@ -66,12 +74,12 @@ public class IdeaFlowResource {
 	 * @return List<TimelineMetrics>
 	 */
 
-	@GET
-	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
-	public List<TimelineMetrics> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
-
-		return ideaFlowService.generateRiskSummariesBySubtask(taskId);
-	}
+//	@GET
+//	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
+//	public List<TimelineMetrics> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
+//
+//		return ideaFlowService.generateRiskSummariesBySubtask(taskId);
+//	}
 
 	/**
 	 *

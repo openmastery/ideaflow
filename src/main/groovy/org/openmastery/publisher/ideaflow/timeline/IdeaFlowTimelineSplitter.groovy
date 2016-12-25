@@ -104,7 +104,7 @@ public class IdeaFlowTimelineSplitter {
 		for (Event subtask : subtaskEvents) {
 			if (previousSubtask != null) {
 				Long durationInSeconds = subtask.getRelativePositionInSeconds() - previousSubtask.getRelativePositionInSeconds();
-				IdeaFlowSubtaskTimeline subtaskTimeline = splitTimeline(filter, previousSubtask.getPosition(), subtask.getPosition(), previousSubtask.getRelativePositionInSeconds(), durationInSeconds);
+				IdeaFlowSubtaskTimeline subtaskTimeline = splitTimeline(filter, previousSubtask, subtask.getPosition(), durationInSeconds);
 				subtaskTimelines.add(subtaskTimeline);
 			}
 			previousSubtask = subtask;
@@ -112,18 +112,21 @@ public class IdeaFlowTimelineSplitter {
 
 		filter = new ItemFilter(true);
 		Long durationInSeconds = durationInSeconds - previousSubtask.getRelativePositionInSeconds();
-		IdeaFlowSubtaskTimeline subtaskTimeline = splitTimeline(filter, previousSubtask.getPosition(), end, previousSubtask.getRelativePositionInSeconds(), durationInSeconds);
+		IdeaFlowSubtaskTimeline subtaskTimeline = splitTimeline(filter, previousSubtask, end, durationInSeconds);
 		subtaskTimelines.add(subtaskTimeline);
 		return subtaskTimelines;
 	}
 
-	private IdeaFlowSubtaskTimeline splitTimeline(ItemFilter filter, LocalDateTime timelineStart, LocalDateTime timelineEnd,
-	                                              Long relativeStartInSeconds, Long durationInSeconds) {
+	private IdeaFlowSubtaskTimeline splitTimeline(ItemFilter filter, Event subtask, LocalDateTime timelineEnd,
+	                                              Long durationInSeconds) {
+		LocalDateTime timelineStart = subtask.getPosition()
+		Long relativeStartInSeconds = subtask.getRelativePositionInSeconds()
 		List<Event> eventsBetween = filter.getItemsBetween(events, timelineStart, timelineEnd);
 		List<ExecutionEvent> executionEventsBetween = filter.getItemsBetween(executionEvents, timelineStart, timelineEnd);
 		List<IdeaFlowBand> splitIdeaFlowBands = getIdeaFlowBandsBetweenSplitOnOverlap(timelineStart, timelineEnd, relativeStartInSeconds, durationInSeconds);
 
 		return IdeaFlowSubtaskTimeline.builder()
+				.subtask(subtask)
 				.start(timelineStart)
 				.end(timelineEnd)
 				.events(eventsBetween)

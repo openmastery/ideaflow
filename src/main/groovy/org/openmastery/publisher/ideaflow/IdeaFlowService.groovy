@@ -15,21 +15,21 @@
  */
 package org.openmastery.publisher.ideaflow
 
-import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
 import org.openmastery.publisher.api.metrics.DetailedSubtaskReport
 import org.openmastery.publisher.api.metrics.TimelineMetrics
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.TaskService
 import org.openmastery.publisher.core.activity.BlockActivityEntity
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.core.TaskService
-
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineGenerator
+import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
 import org.openmastery.publisher.metrics.subtask.RiskSummaryCalculator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -43,6 +43,19 @@ class IdeaFlowService {
 	@Autowired
 	private TaskService taskService
 
+
+	TaskTimelineOverview generateTimelineOverviewForTask(Long taskId) {
+		Task task = taskService.findTaskWithId(taskId)
+		IdeaFlowTimeline timeline = generateIdeaFlowForTask(task);
+		List<TimelineMetrics> subtaskTimelineMetrics = generateTimelineMetricsBySubtask(timeline);
+
+		TaskTimelineOverview.builder()
+				.task(task)
+				.timeline(timeline)
+				.subtaskTimelineMetrics(subtaskTimelineMetrics)
+				.build()
+	}
+
 	/**
 	 * Generates the primary IdeaFlowTimeline that can be used for visualization,
 	 * or input to metrics calculations.
@@ -50,14 +63,13 @@ class IdeaFlowService {
 	 * @param taskId
 	 * @return IdeaFlowTimeline
 	 */
-	IdeaFlowTimeline generateIdeaFlowForTask(Long taskId) {
+	private IdeaFlowTimeline generateIdeaFlowForTask(Task task) {
 
-		Task task = taskService.findTaskWithId(taskId)
-		List<ModificationActivityEntity> modifications = persistenceService.getModificationActivityList(taskId)
-		List<EventEntity> events = persistenceService.getEventList(taskId)
-		List<ExecutionActivityEntity> executions = persistenceService.getExecutionActivityList(taskId)
-		List<BlockActivityEntity> blocks = persistenceService.getBlockActivityList(taskId)
-		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(taskId)
+		List<ModificationActivityEntity> modifications = persistenceService.getModificationActivityList(task.id)
+		List<EventEntity> events = persistenceService.getEventList(task.id)
+		List<ExecutionActivityEntity> executions = persistenceService.getExecutionActivityList(task.id)
+		List<BlockActivityEntity> blocks = persistenceService.getBlockActivityList(task.id)
+		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(task.id)
 
 
 		IdeaFlowTimeline timeline = new IdeaFlowTimelineGenerator()
@@ -72,21 +84,15 @@ class IdeaFlowService {
 		return timeline
 	}
 
-	//TODO slice the timeline by subtask, for now, treat the whole timeline as the first subtask
+	private List<TimelineMetrics> generateTimelineMetricsBySubtask(IdeaFlowTimeline timeline) {
+		RiskSummaryCalculator riskSummaryCalculator = new RiskSummaryCalculator()
+		List<IdeaFlowSubtaskTimeline> subtaskTimelineList = new IdeaFlowTimelineSplitter()
+				.timeline(timeline)
+				.splitBySubtaskEvents()
 
-	List<TimelineMetrics> generateRiskSummariesBySubtask(Long taskId) {
-		IdeaFlowTimeline timeline = generateIdeaFlowForTask(taskId)
-
-		List<Event> subtaskEvents = timeline.getEvents().findAll { Event event ->
-			event.type == EventType.SUBTASK
+		subtaskTimelineList.collect { IdeaFlowSubtaskTimeline subtaskTimeline ->
+			riskSummaryCalculator.calculateSubtaskMetrics(subtaskTimeline.subtask, subtaskTimeline)
 		}
-
-		RiskSummaryCalculator riskSummaryCalculator =  new RiskSummaryCalculator()
-
-		//TODO make this execute in a loop, slice timelines and collect a list of subtask metrics
-		TimelineMetrics subtaskMetrics = riskSummaryCalculator.calculateSubtaskMetrics(subtaskEvents.first(), timeline)
-
-		return [subtaskMetrics]
 	}
 
 	DetailedSubtaskReport generateDetailedSubtaskReport(Long taskId, Long subTaskId) {

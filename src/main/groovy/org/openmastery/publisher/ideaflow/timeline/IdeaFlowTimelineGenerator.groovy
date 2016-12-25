@@ -187,6 +187,7 @@ class IdeaFlowTimelineGenerator {
 		}
 
 		Event initialStrategySubtaskEvent = Event.builder()
+				.id(-1)
 				.type(EventType.SUBTASK)
 				.comment("Initial Strategy")
 				.build()

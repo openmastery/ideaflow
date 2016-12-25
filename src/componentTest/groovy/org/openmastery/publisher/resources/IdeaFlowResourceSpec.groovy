@@ -18,8 +18,8 @@ package org.openmastery.publisher.resources
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineValidator
+import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
 import org.openmastery.publisher.api.metrics.TimelineMetrics
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.BatchClient
@@ -50,9 +50,10 @@ class IdeaFlowResourceSpec extends Specification {
 	private IdeaFlowPersistenceService persistenceService
 
 	private IdeaFlowTimelineValidator getTimelineAndValidator(long taskId) {
-		IdeaFlowTimeline timeline = ideaFlowClient.getTimelineForTask(taskId)
-		assert timeline != null
-		new IdeaFlowTimelineValidator(timeline)
+		TaskTimelineOverview overview = ideaFlowClient.getTimelineOverviewForTask(taskId)
+		assert overview != null
+		assert overview.task.id == taskId
+		new IdeaFlowTimelineValidator(overview.timeline)
 	}
 
 	def "getTimelineForTask SHOULD generate IdeaFlow timeline with all data types"() {
@@ -108,13 +109,18 @@ class IdeaFlowResourceSpec extends Specification {
 		batchClient.addIFMBatch(batch)
 
 		when:
-		List<TimelineMetrics> metrics = ideaFlowClient.generateRiskSummariesBySubtask(task.id)
+		TaskTimelineOverview overview = ideaFlowClient.getTimelineOverviewForTask(task.id)
+		List<TimelineMetrics> metrics = overview.subtaskTimelineMetrics
 
 		then:
 		assert metrics != null
-		assert metrics.size() == 1
 		assert metrics.get(0).description == "Initial Strategy"
 		assert metrics.get(0).metrics.size() == 6
+		assert metrics.get(1).description == "Subtask 1"
+		assert metrics.get(1).metrics.size() == 6
+		assert metrics.get(2).description == "Subtask 2"
+		assert metrics.get(2).metrics.size() == 6
+		assert metrics.size() == 3
 	}
 
 }
