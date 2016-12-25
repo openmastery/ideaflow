@@ -1,7 +1,6 @@
 package org.openmastery.publisher.ideaflow.timeline
 
 import org.joda.time.Duration
-import org.openmastery.publisher.api.activity.ExecutionActivity
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel

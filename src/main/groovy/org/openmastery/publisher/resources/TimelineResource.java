@@ -17,10 +17,8 @@ package org.openmastery.publisher.resources;
 
 import com.bancvue.rest.exception.NotFoundException;
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.publisher.api.timeline.BandTimeline;
-import org.openmastery.publisher.api.timeline.TreeTimeline;
 import org.openmastery.publisher.api.timeline.ActivityTimeline;
-import org.openmastery.publisher.api.timeline.summary.TimelineSummary;
+import org.openmastery.publisher.api.timeline.BandTimeline;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.openmastery.publisher.core.task.TaskEntity;
 import org.openmastery.publisher.core.timeline.TimelineGenerator;
@@ -48,14 +46,6 @@ public class TimelineResource {
 	public BandTimeline getBandTimelineForTask(@QueryParam("taskId") Long optionalTaskId, @QueryParam("taskName") String optionalTaskName) {
 		Long taskId = getTaskId(optionalTaskId, optionalTaskName);
 		return timelineGenerator.createBandTimelineForTask(taskId);
-	}
-
-
-	@GET //TODO implement me
-	@Path(ResourcePaths.TIMELINE_SUMMARY_PATH)
-	public TimelineSummary getTimelineSummaryForTask(@QueryParam("taskId") Long optionalTaskId, @QueryParam("taskName") String optionalTaskName) {
-		Long taskId = getTaskId(optionalTaskId, optionalTaskName);
-		return new TimelineSummary();
 	}
 
 	@GET
