@@ -18,9 +18,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowTimeline implements Positionable {
+public class IdeaFlowSubtaskTimeline implements Positionable {
 
-	private Task task;
+	private Event subtask;
 
 	private LocalDateTime start;
 	private LocalDateTime end;
@@ -29,8 +29,6 @@ public class IdeaFlowTimeline implements Positionable {
 	private Long relativePositionInSeconds;
 
 	private List<IdeaFlowBand> ideaFlowBands;
-	private List<ModificationActivity> modificationActivities;
-	private List<BlockActivity> blockActivities;
 	private List<ExecutionEvent> executionEvents;
 	private List<Event> events;
 

@@ -9,6 +9,7 @@ import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
+import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
 import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeConverter
 

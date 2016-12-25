@@ -1,21 +1,28 @@
-package org.openmastery.publisher.api.ideaflow
+package org.openmastery.publisher.ideaflow.timeline
 
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineBuilder
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineValidator
+import org.openmastery.testsupport.BeanCompare
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
-public class IdeaFlowTimelineSpec extends Specification {
+public class IdeaFlowTimelineSplitterSpec extends Specification {
 
 	private LocalDateTime startTime
 	private MockTimeService mockTimeService = new MockTimeService()
 	private IdeaFlowTimelineBuilder builder = new IdeaFlowTimelineBuilder(mockTimeService)
+	private IdeaFlowTimelineSplitter splitter = new IdeaFlowTimelineSplitter()
+	private BeanCompare subtaskTimelineComparator = new BeanCompare().excludeFields("blockActivities", "modificationActivities", "task", "subtask")
 
 	def setup() {
 		startTime = mockTimeService.now()
 	}
 
-	def "should return timeline if no subtask events defined"() {
+	def "should file if no subtask events defined"() {
 		given:
 		IdeaFlowTimeline timeline = builder.activate()
 				.troubleshootingHours(1).advanceHours(1)
@@ -23,11 +30,10 @@ public class IdeaFlowTimelineSpec extends Specification {
 				.build()
 
 		when:
-		List<IdeaFlowTimeline> timelines = timeline.splitBySubtask()
+		splitter.timeline(timeline).splitBySubtaskEvents()
 
 		then:
-		assert timeline.is(timelines[0])
-		assert timelines.size() == 1
+		thrown(IdeaFlowTimelineSplitter.NoSubtaskInTimelineException)
 	}
 
 	def "should return timeline if subtask declared at timeline start"() {
@@ -38,10 +44,10 @@ public class IdeaFlowTimelineSpec extends Specification {
 				.build()
 
 		when:
-		List<IdeaFlowTimeline> timelines = timeline.splitBySubtask()
+		List<IdeaFlowSubtaskTimeline> timelines = splitter.timeline(timeline).splitBySubtaskEvents()
 
 		then:
-		assert timeline.is(timelines[0])
+		subtaskTimelineComparator.assertEquals(timeline, timelines[0])
 		assert timelines.size() == 1
 	}
 
@@ -53,16 +59,17 @@ public class IdeaFlowTimelineSpec extends Specification {
 				.build()
 
 		when:
-		List<IdeaFlowTimeline> timelines = timeline.splitBySubtask()
+		List<IdeaFlowSubtaskTimeline> timelines = splitter.timeline(timeline).splitBySubtaskEvents()
 
 		then:
-		assert timeline.is(timelines[0])
+		subtaskTimelineComparator.assertEquals(timeline, timelines[0])
 		assert timelines.size() == 1
 	}
 
 	private List<IdeaFlowTimelineValidator> splitBySubtaskAndCreateValidators(IdeaFlowTimeline timeline) {
-		timeline.splitBySubtask().collect {
-			new IdeaFlowTimelineValidator(it)
+		List<IdeaFlowSubtaskTimeline> subtaskTimelines = splitter.timeline(timeline).splitBySubtaskEvents()
+		subtaskTimelines.collect { IdeaFlowSubtaskTimeline subtaskTimeline ->
+			new IdeaFlowTimelineValidator(subtaskTimeline)
 		}
 	}
 
@@ -94,11 +101,9 @@ public class IdeaFlowTimelineSpec extends Specification {
 		validators[0].assertEvents(1, EventType.ACTIVATE)
 		validators[0].assertEvents(1, EventType.SUBTASK)
 		validators[0].assertExecutionEvents(1)
-		validators[0].assertModificationActivity(59)
 
 		and:
 		validators[1].assertStrategyBand(0, startTime.plusHours(1), startTime.plusHours(2))
-		validators[1].assertModificationActivity(61)
 		validators[1].assertEvents(1, EventType.DEACTIVATE)
 		validators[1].assertEvents(1, EventType.SUBTASK)
 

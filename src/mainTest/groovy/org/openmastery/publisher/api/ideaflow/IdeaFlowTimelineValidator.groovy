@@ -5,11 +5,10 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.testsupport.BeanCompare
 
-
 class IdeaFlowTimelineValidator {
 
 	private BeanCompare beanCompare = new BeanCompare()
-	private IdeaFlowTimeline timeline
+	private def timeline
 	private boolean executionEventsValidated = false
 	private boolean modificationActivityValidated = false
 	private boolean blockActivityValidated = false
@@ -17,6 +16,10 @@ class IdeaFlowTimelineValidator {
 	private List<Event> validatedEvents = []
 
 	IdeaFlowTimelineValidator(IdeaFlowTimeline timeline) {
+		this.timeline = timeline
+	}
+
+	IdeaFlowTimelineValidator(IdeaFlowSubtaskTimeline timeline) {
 		this.timeline = timeline
 	}
 
@@ -52,22 +55,14 @@ class IdeaFlowTimelineValidator {
 		modificationActivityValidated = true
 	}
 
-	void assertBlockActivity(int blockCount) {
-		assert timeline.blockActivities.size() == blockCount
-		blockActivityValidated = true
-	}
-
 	void assertValidationComplete() {
 		beanCompare.assertEquals(validatedIdeaFlowBands, timeline.ideaFlowBands)
 		beanCompare.assertEquals(validatedEvents, timeline.events)
 		if (executionEventsValidated == false) {
-			assert timeline.executionEvents.size() == 0 : "Timeline contains execution activity but was not validated, eventCount=${timeline.executionEvents.size()}"
+			assert timeline.executionEvents.size() == 0: "Timeline contains execution activity but was not validated, eventCount=${timeline.executionEvents.size()}"
 		}
-		if (modificationActivityValidated == false) {
-			assert timeline.modificationActivities.size() == 0 : "Timeline contains modification activity but was not validated, activityCount=${timeline.modificationActivities.size()}"
-		}
-		if (blockActivityValidated == false) {
-			assert timeline.blockActivities.size() == 0 : "Timeline contains block activity but was not validated, activityCount=${timeline.blockActivities.size()}"
+		if (timeline instanceof IdeaFlowTimeline && modificationActivityValidated == false) {
+			assert timeline.modificationActivities.size() == 0: "Timeline contains modification activity but was not validated, activityCount=${timeline.modificationActivities.size()}"
 		}
 	}
 
