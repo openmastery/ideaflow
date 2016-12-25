@@ -46,9 +46,7 @@ public class IdeaFlowTimeline implements Positionable {
 
 	@JsonIgnore
 	public List<IdeaFlowTimeline> splitBySubtask() {
-		List<Event> subtaskEvents = events.stream()
-				.filter(e -> e.getType() == EventType.SUBTASK)
-				.collect(Collectors.toList());
+		List<Event> subtaskEvents = getSubtaskEvents();
 
 		if (subtaskEvents.isEmpty()) {
 			return getThisTimelineAsList();
@@ -64,8 +62,19 @@ public class IdeaFlowTimeline implements Positionable {
 	}
 
 	@JsonIgnore
+	private List<Event> getSubtaskEvents() {
+		List<Event> subtaskEvents = new ArrayList<Event>();
+		for (Event event : events) {
+			if (event.getType() == EventType.SUBTASK) {
+				subtaskEvents.add(event);
+			}
+		}
+		return subtaskEvents;
+	}
+
+	@JsonIgnore
 	private List<IdeaFlowTimeline> getThisTimelineAsList() {
-		List<IdeaFlowTimeline> subtaskTimelines = new ArrayList<>();
+		List<IdeaFlowTimeline> subtaskTimelines = new ArrayList<IdeaFlowTimeline>();
 		subtaskTimelines.add(this);
 		return subtaskTimelines;
 	}
@@ -73,7 +82,7 @@ public class IdeaFlowTimeline implements Positionable {
 	private List<IdeaFlowTimeline> splitBySubtask(List<Event> subtaskEvents) {
 		Event previousSubtask = null;
 		ItemFilter filter = new ItemFilter(false);
-		List<IdeaFlowTimeline> subtaskTimelines = new ArrayList<>();
+		List<IdeaFlowTimeline> subtaskTimelines = new ArrayList<IdeaFlowTimeline>();
 
 		for (Event subtask : subtaskEvents) {
 			if (previousSubtask != null) {
@@ -113,7 +122,7 @@ public class IdeaFlowTimeline implements Positionable {
 
 	private List<IdeaFlowBand> getIdeaFlowBandsBetweenSplitOnOverlap(LocalDateTime timelineStart, LocalDateTime timelineEnd,
 	                                                                 Long timelineRelativePositionInSeconds, Long timelineDurationInSeconds) {
-		List<IdeaFlowBand> ideaFlowbandsToReturn = new ArrayList<>();
+		List<IdeaFlowBand> ideaFlowbandsToReturn = new ArrayList<IdeaFlowBand>();
 		for (IdeaFlowBand ideaFlowBand : ideaFlowBands) {
 			LocalDateTime bandStart = ideaFlowBand.getStart();
 			LocalDateTime bandEnd = ideaFlowBand.getEnd();
@@ -150,7 +159,7 @@ public class IdeaFlowTimeline implements Positionable {
 				.relativePositionInSeconds(relativePositionInSeconds)
 				.durationInSeconds(durationInSeconds)
 				.type(type)
-				.nestedBands(new ArrayList<>())
+				.nestedBands(new ArrayList())
 				.build();
 	}
 
@@ -163,9 +172,13 @@ public class IdeaFlowTimeline implements Positionable {
 		}
 
 		<T extends Positionable> List<T> getItemsBetween(List<T> items, LocalDateTime start, LocalDateTime end) {
-			return items.stream()
-					.filter(e -> isOnStartOrBetween(e.getPosition(), start, end))
-					.collect(Collectors.toList());
+			List<T> filteredItems = new ArrayList<T>();
+			for (T item : items) {
+				if (isOnStartOrBetween(item.getPosition(), start, end)) {
+					filteredItems.add(item);
+				}
+			}
+			return filteredItems;
 		}
 
 		private boolean isOnStartOrBetween(LocalDateTime position, LocalDateTime start, LocalDateTime end) {
