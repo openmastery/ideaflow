@@ -18,19 +18,17 @@ package org.openmastery.publisher.resources;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.openmastery.publisher.api.batch.NewBatchEvent;
-import org.openmastery.publisher.api.event.NewEvent;
-import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.publisher.core.event.EventEntity;
+import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.core.EventService;
 import org.openmastery.publisher.security.InvocationContext;
-import org.openmastery.time.TimeService;
-import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -40,53 +38,10 @@ import java.util.List;
 public class EventResource {
 
 	@Autowired
-	private TimeService timeService;
-	@Autowired
-	private IdeaFlowPersistenceService persistenceService;
-	@Autowired
 	private InvocationContext invocationContext;
 
 	@Autowired
 	private EventService eventService;
-
-	private EventEntity toEventEntity(NewEvent event, EventType type) {
-		return EventEntity.builder()
-				.id(null)
-				.ownerId(invocationContext.getUserId())
-				.position(timeService.javaNow())
-				.taskId(event.getTaskId())
-				.comment(event.getComment())
-				.type(type)
-				.build();
-	}
-
-	@POST
-	@Path(ResourcePaths.EVENT_NOTE_PATH)
-	public void createNote(NewEvent event) {
-		EventEntity eventEntity = toEventEntity(event, EventType.NOTE);
-		persistenceService.saveEvent(eventEntity);
-	}
-
-	@POST
-	@Path(ResourcePaths.EVENT_SUBTASK_PATH)
-	public void createSubtask(NewEvent event) {
-		EventEntity eventEntity = toEventEntity(event, EventType.SUBTASK);
-		persistenceService.saveEvent(eventEntity);
-	}
-
-	@POST
-	@Path(ResourcePaths.EVENT_WTF_PATH)
-	public void createWTF(NewEvent event) {
-		EventEntity eventEntity = toEventEntity(event, EventType.WTF);
-		persistenceService.saveEvent(eventEntity);
-	}
-
-	@POST
-	@Path(ResourcePaths.EVENT_AWESOME_PATH)
-	public void createAwesome(NewEvent event) {
-		EventEntity eventEntity = toEventEntity(event, EventType.AWESOME);
-		persistenceService.saveEvent(eventEntity);
-	}
 
 	@GET
 	@Path(ResourcePaths.EVENT_BATCH_PATH)

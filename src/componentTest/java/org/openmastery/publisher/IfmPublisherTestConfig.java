@@ -40,46 +40,50 @@ public class IfmPublisherTestConfig {
 	private String serverBaseUrl;
 	@Value("${test-server.base_url:http://localhost}:${server.port}")
 	private String hostUri;
-	private UserEntity testUser = UserEntity.builder()
-			.id(42L)
-			.apiKey(UUID.randomUUID().toString())
-			.email("test-user@openmastery.org")
-			.build();
+
+	@Bean
+	public UserEntity testUser() {
+		return UserEntity.builder()
+				.id(42L)
+				.apiKey(UUID.randomUUID().toString())
+				.email("test-user@openmastery.org")
+				.build();
+	}
 
 	@Bean
 	@Primary
 	public UserIdResolver userIdResolver() {
-		return new StubUserIdResolver(testUser);
+		return new StubUserIdResolver(testUser());
 	}
 
 	@Bean
 	public IdeaFlowClient ideaFlowClient() {
 		return new IdeaFlowClient(hostUri)
-				.apiKey(testUser.getApiKey());
+				.apiKey(testUser().getApiKey());
 	}
 
 	@Bean
 	public EventClient eventClient() {
 		return new EventClient(hostUri)
-				.apiKey(testUser.getApiKey());
+				.apiKey(testUser().getApiKey());
 	}
 
 	@Bean
 	public BatchClient activityClient() {
 		return new BatchClient(hostUri)
-				.apiKey(testUser.getApiKey());
+				.apiKey(testUser().getApiKey());
 	}
 
 	@Bean
 	public TaskClient taskClient() {
 		return new TaskClient(hostUri)
-				.apiKey(testUser.getApiKey());
+				.apiKey(testUser().getApiKey());
 	}
 
 	@Bean
 	public TimelineClient timelineClient() {
 		return new TimelineClient(hostUri)
-				.apiKey(testUser.getApiKey());
+				.apiKey(testUser().getApiKey());
 	}
 
 	@Bean

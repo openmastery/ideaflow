@@ -1,13 +1,8 @@
 package org.openmastery.publisher.client;
 
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.publisher.api.activity.*;
-import org.openmastery.publisher.api.batch.NewBatchEvent;
+import org.openmastery.publisher.api.activity.EditorActivity;
 import org.openmastery.publisher.api.batch.NewIFMBatch;
-import org.openmastery.publisher.api.event.EventType;
-
-import java.util.Arrays;
 
 public class BatchClient extends OpenMasteryClient<EditorActivity, BatchClient> {
 

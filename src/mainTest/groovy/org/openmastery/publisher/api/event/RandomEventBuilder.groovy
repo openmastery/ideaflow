@@ -13,4 +13,5 @@ class RandomEventBuilder extends Event.EventBuilder {
 		.comment(aRandom.text(30))
 		.type(EventType.NOTE)
 	}
+
 }

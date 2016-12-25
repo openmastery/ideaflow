@@ -1,10 +1,12 @@
 package org.openmastery.publisher.resources
 
-import org.openmastery.mapper.EntityMapper
-import org.openmastery.publisher.api.activity.NewEditorActivity
+import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
+import org.openmastery.publisher.client.BatchClient
+import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.BlockActivityEntity
+import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
@@ -12,11 +14,7 @@ import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.testsupport.BeanCompare
-import org.openmastery.publisher.ComponentTest
-import org.openmastery.publisher.client.BatchClient
 import org.openmastery.time.TimeService
-import org.openmastery.publisher.core.activity.EditorActivityEntity
-import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
@@ -34,7 +32,6 @@ class BatchResourceSpec extends Specification {
 	@Autowired
 	private TimeService timeService
 	private BeanCompare comparator = new BeanCompare().excludeFields("id", "ownerId", "metadata", "metadataContainer")
-	private EntityMapper entityMapper = new EntityMapper()
 
 	private Long taskId
 
