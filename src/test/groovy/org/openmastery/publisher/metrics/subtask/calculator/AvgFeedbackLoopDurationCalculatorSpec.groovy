@@ -4,8 +4,7 @@ import org.joda.time.Duration
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowMetricsTimeline
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
@@ -44,7 +43,7 @@ class AvgFeedbackLoopDurationCalculatorSpec extends Specification {
 		builder.executeCode()
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(ideaFlowBands: [troubleshootingBand], executionEvents: builder.executionEventList)
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshootingBand], executionEvents: builder.executionEventList)
 		Metric<Duration> metric = calculator.calculateMetrics(timeline)
 
 		then:
@@ -77,7 +76,7 @@ class AvgFeedbackLoopDurationCalculatorSpec extends Specification {
 		builder.executeCode()
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(ideaFlowBands: [troubleshootingBand, troubleshootingBand2], executionEvents: builder.executionEventList)
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshootingBand, troubleshootingBand2], executionEvents: builder.executionEventList)
 		Metric<Duration> metric = calculator.calculateMetrics(timeline)
 
 		then:

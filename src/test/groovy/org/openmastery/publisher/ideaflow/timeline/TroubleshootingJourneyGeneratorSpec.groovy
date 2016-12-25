@@ -5,7 +5,6 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification

@@ -2,17 +2,17 @@ package org.openmastery.publisher.ideaflow.timeline
 
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
-public class IdeaFlowTimelineGeneratorSpec extends Specification {
+public class IdeaFlowTaskTimelineGeneratorSpec extends Specification {
 
 	private MockTimeService mockTimeService = new MockTimeService()
 	private IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
-	private IdeaFlowTimelineGenerator timelineGenerator = new IdeaFlowTimelineGenerator()
+	private IdeaFlowTaskTimelineGenerator timelineGenerator = new IdeaFlowTaskTimelineGenerator()
 
-	private IdeaFlowTimeline createTimeline() {
+	private IdeaFlowTaskTimeline createTimeline() {
 		timelineGenerator.events = builder.eventList
 		timelineGenerator.idleTimeBands = builder.idleTimeBands
 		timelineGenerator.modificationActivities = builder.modificationActivityList
@@ -26,7 +26,7 @@ public class IdeaFlowTimelineGeneratorSpec extends Specification {
 				.deactivate()
 
 		when:
-		IdeaFlowTimeline timeline = createTimeline()
+		IdeaFlowTaskTimeline timeline = createTimeline()
 
 		then:
 		Event subtaskEvent = timeline.events.find { it.type == EventType.SUBTASK }
@@ -43,7 +43,7 @@ public class IdeaFlowTimelineGeneratorSpec extends Specification {
 				.deactivate()
 
 		when:
-		IdeaFlowTimeline timeline = createTimeline()
+		IdeaFlowTaskTimeline timeline = createTimeline()
 
 		then:
 		Event subtaskEvent = timeline.events.find { it.type == EventType.SUBTASK }
@@ -61,7 +61,7 @@ public class IdeaFlowTimelineGeneratorSpec extends Specification {
 				.deactivate()
 
 		when:
-		IdeaFlowTimeline timeline = createTimeline()
+		IdeaFlowTaskTimeline timeline = createTimeline()
 
 		then:
 		Event subtaskEvent = timeline.events.find { it.type == EventType.SUBTASK }

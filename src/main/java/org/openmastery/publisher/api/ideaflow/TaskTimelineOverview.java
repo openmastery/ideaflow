@@ -16,7 +16,7 @@ import java.util.List;
 public class TaskTimelineOverview {
 
 	private Task task;
-	private IdeaFlowTimeline timeline;
+	private IdeaFlowTaskTimeline timeline;
 	private List<TimelineMetrics> subtaskTimelineMetrics;
 
 }

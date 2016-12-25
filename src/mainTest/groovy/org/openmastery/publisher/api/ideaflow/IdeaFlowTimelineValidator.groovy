@@ -15,7 +15,7 @@ class IdeaFlowTimelineValidator {
 	private List<IdeaFlowBand> validatedIdeaFlowBands = []
 	private List<Event> validatedEvents = []
 
-	IdeaFlowTimelineValidator(IdeaFlowTimeline timeline) {
+	IdeaFlowTimelineValidator(IdeaFlowTaskTimeline timeline) {
 		this.timeline = timeline
 	}
 
@@ -61,7 +61,7 @@ class IdeaFlowTimelineValidator {
 		if (executionEventsValidated == false) {
 			assert timeline.executionEvents.size() == 0: "Timeline contains execution activity but was not validated, eventCount=${timeline.executionEvents.size()}"
 		}
-		if (timeline instanceof IdeaFlowTimeline && modificationActivityValidated == false) {
+		if (timeline instanceof IdeaFlowTaskTimeline && modificationActivityValidated == false) {
 			assert timeline.modificationActivities.size() == 0: "Timeline contains modification activity but was not validated, activityCount=${timeline.modificationActivities.size()}"
 		}
 	}

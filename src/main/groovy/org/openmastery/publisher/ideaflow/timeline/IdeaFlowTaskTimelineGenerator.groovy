@@ -25,7 +25,7 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.core.activity.BlockActivityEntity
@@ -37,7 +37,7 @@ import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.time.TimeConverter
 
-class IdeaFlowTimelineGenerator {
+class IdeaFlowTaskTimelineGenerator {
 
 	private Task task
 
@@ -49,22 +49,22 @@ class IdeaFlowTimelineGenerator {
 
 	private EntityMapper entityMapper = new EntityMapper()
 
-	IdeaFlowTimelineGenerator task(Task task) {
+	IdeaFlowTaskTimelineGenerator task(Task task) {
 		this.task = task
 		this
 	}
 
-	IdeaFlowTimelineGenerator idleActivities(List<IdleActivityEntity> idleActivities) {
+	IdeaFlowTaskTimelineGenerator idleActivities(List<IdleActivityEntity> idleActivities) {
 		this.idleTimeBands = entityMapper.mapList(idleActivities, IdleTimeBandModel)
 		this
 	}
 
-	IdeaFlowTimelineGenerator events(List<EventEntity> events) {
+	IdeaFlowTaskTimelineGenerator events(List<EventEntity> events) {
 		this.events = entityMapper.mapList(events, Event)
 		this
 	}
 
-	IdeaFlowTimelineGenerator executionActivities(List<ExecutionActivityEntity> executionActivities) {
+	IdeaFlowTaskTimelineGenerator executionActivities(List<ExecutionActivityEntity> executionActivities) {
 		this.executionEvents = executionActivities.collect { ExecutionActivityEntity entity ->
 			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)
 			execution.failed = entity.exitCode != 0
@@ -74,18 +74,18 @@ class IdeaFlowTimelineGenerator {
 		this
 	}
 
-	IdeaFlowTimelineGenerator modificationActivities(List<ModificationActivityEntity> modificationActivities) {
+	IdeaFlowTaskTimelineGenerator modificationActivities(List<ModificationActivityEntity> modificationActivities) {
 		this.modificationActivities = entityMapper.mapList(modificationActivities, ModificationActivity)
 		this
 	}
 
 
-	IdeaFlowTimelineGenerator blockActivities(List<BlockActivityEntity> blockActivityEntities) {
+	IdeaFlowTaskTimelineGenerator blockActivities(List<BlockActivityEntity> blockActivityEntities) {
 		this.blockActivities = entityMapper.mapList(blockActivityEntities, BlockActivity)
 		this
 	}
 
-	IdeaFlowTimeline generate() {
+	IdeaFlowTaskTimeline generate() {
 		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBandsBands()
 
 		// NOTE: calendar events MUST be added BEFORE relative time is computed
@@ -145,10 +145,10 @@ class IdeaFlowTimelineGenerator {
 		events.addAll(calendarEvents)
 	}
 
-	private IdeaFlowTimeline createIdeaFlowTimeline(List<IdeaFlowBandModel> ideaFlowBandModels) {
+	private IdeaFlowTaskTimeline createIdeaFlowTimeline(List<IdeaFlowBandModel> ideaFlowBandModels) {
 		List<IdeaFlowBand> ideaFlowBands = entityMapper.mapList(ideaFlowBandModels, IdeaFlowBand)
 		if (ideaFlowBands.isEmpty()) {
-			return IdeaFlowTimeline.builder()
+			return IdeaFlowTaskTimeline.builder()
 					.task(task)
 					.durationInSeconds(0)
 					.build()
@@ -165,7 +165,7 @@ class IdeaFlowTimelineGenerator {
 		Collections.sort(modificationActivities, PositionableComparator.INSTANCE);
 		Collections.sort(blockActivities, PositionableComparator.INSTANCE)
 
-		return IdeaFlowTimeline.builder()
+		return IdeaFlowTaskTimeline.builder()
 				.task(task)
 				.start(firstBand.start)
 				.end(lastBand.end)

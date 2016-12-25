@@ -3,7 +3,7 @@ package org.openmastery.publisher.metrics.subtask.calculator
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.metrics.CapacityDistribution
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
@@ -42,7 +42,7 @@ class CapacityDistributionCalculatorSpec extends Specification {
 				.build()
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(ideaFlowBands: [troubleshootingBand1, troubleshootingBand2])
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshootingBand1, troubleshootingBand2])
 		Metric<CapacityDistribution> metric = calculator.calculateMetrics(timeline)
 
 		then:
@@ -72,7 +72,7 @@ class CapacityDistributionCalculatorSpec extends Specification {
 				.build()
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(ideaFlowBands: [learningBand, progressBand, troubleshootingBand])
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [learningBand, progressBand, troubleshootingBand])
 		Metric<CapacityDistribution> metric = calculator.calculateMetrics(timeline)
 
 		then:

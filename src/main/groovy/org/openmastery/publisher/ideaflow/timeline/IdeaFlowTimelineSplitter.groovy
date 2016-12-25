@@ -23,11 +23,11 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 
 public class IdeaFlowTimelineSplitter {
 
-	private IdeaFlowTimeline timeline;
+	private IdeaFlowTaskTimeline timeline;
 
 	private Long getDurationInSeconds() {
 		timeline.durationInSeconds
@@ -57,7 +57,7 @@ public class IdeaFlowTimelineSplitter {
 		timeline.start
 	}
 
-	public IdeaFlowTimelineSplitter timeline(IdeaFlowTimeline timeline) {
+	public IdeaFlowTimelineSplitter timeline(IdeaFlowTaskTimeline timeline) {
 		this.timeline = timeline
 		this
 	}

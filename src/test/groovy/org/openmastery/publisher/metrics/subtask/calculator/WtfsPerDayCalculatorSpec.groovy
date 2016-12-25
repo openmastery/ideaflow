@@ -1,7 +1,7 @@
 package org.openmastery.publisher.metrics.subtask.calculator
 
 import org.joda.time.LocalDateTime
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
@@ -36,7 +36,7 @@ class WtfsPerDayCalculatorSpec extends Specification {
 				.deactivate()
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(start: start, events: builder.eventList, end: mockTimeService.now())
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(start: start, events: builder.eventList, end: mockTimeService.now())
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
@@ -55,7 +55,7 @@ class WtfsPerDayCalculatorSpec extends Specification {
 		.deactivate()
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(start: start, events: builder.eventList, end: mockTimeService.now())
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(start: start, events: builder.eventList, end: mockTimeService.now())
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:

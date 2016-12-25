@@ -16,7 +16,7 @@
 package org.openmastery.publisher.ideaflow
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
 import org.openmastery.publisher.api.metrics.DetailedSubtaskReport
 import org.openmastery.publisher.api.metrics.TimelineMetrics
@@ -28,7 +28,7 @@ import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineGenerator
+import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTaskTimelineGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
 import org.openmastery.publisher.metrics.subtask.RiskSummaryCalculator
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,7 +46,7 @@ class IdeaFlowService {
 
 	TaskTimelineOverview generateTimelineOverviewForTask(Long taskId) {
 		Task task = taskService.findTaskWithId(taskId)
-		IdeaFlowTimeline timeline = generateIdeaFlowForTask(task);
+		IdeaFlowTaskTimeline timeline = generateIdeaFlowForTask(task);
 		List<TimelineMetrics> subtaskTimelineMetrics = generateTimelineMetricsBySubtask(timeline);
 
 		TaskTimelineOverview.builder()
@@ -63,7 +63,7 @@ class IdeaFlowService {
 	 * @param taskId
 	 * @return IdeaFlowTimeline
 	 */
-	private IdeaFlowTimeline generateIdeaFlowForTask(Task task) {
+	private IdeaFlowTaskTimeline generateIdeaFlowForTask(Task task) {
 
 		List<ModificationActivityEntity> modifications = persistenceService.getModificationActivityList(task.id)
 		List<EventEntity> events = persistenceService.getEventList(task.id)
@@ -72,7 +72,7 @@ class IdeaFlowService {
 		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(task.id)
 
 
-		IdeaFlowTimeline timeline = new IdeaFlowTimelineGenerator()
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimelineGenerator()
 				.task(task)
 				.modificationActivities(modifications)
 				.events(events)
@@ -84,7 +84,7 @@ class IdeaFlowService {
 		return timeline
 	}
 
-	private List<TimelineMetrics> generateTimelineMetricsBySubtask(IdeaFlowTimeline timeline) {
+	private List<TimelineMetrics> generateTimelineMetricsBySubtask(IdeaFlowTaskTimeline timeline) {
 		RiskSummaryCalculator riskSummaryCalculator = new RiskSummaryCalculator()
 		List<IdeaFlowSubtaskTimeline> subtaskTimelineList = new IdeaFlowTimelineSplitter()
 				.timeline(timeline)

@@ -3,7 +3,7 @@ package org.openmastery.publisher.ideaflow.timeline
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineBuilder
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineValidator
 import org.openmastery.testsupport.BeanCompare
@@ -24,10 +24,10 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 
 	def "should file if no subtask events defined"() {
 		given:
-		IdeaFlowTimeline timeline = builder.activate()
+		IdeaFlowTaskTimeline timeline = builder.activate()
 				.troubleshootingHours(1).advanceHours(1)
 				.deactivate()
-				.build()
+				.buildTaskTimeline()
 
 		when:
 		splitter.timeline(timeline).splitBySubtaskEvents()
@@ -37,11 +37,11 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 	}
 
 	def "should return timeline if subtask declared at timeline start"() {
-		IdeaFlowTimeline timeline = builder.activate()
+		IdeaFlowTaskTimeline timeline = builder.activate()
 				.subtask()
 				.troubleshootingHours(1).advanceHours(1)
 				.deactivate()
-				.build()
+				.buildTaskTimeline()
 
 		when:
 		List<IdeaFlowSubtaskTimeline> timelines = splitter.timeline(timeline).splitBySubtaskEvents()
@@ -52,11 +52,11 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 	}
 
 	def "should return timeline if subtask declared at timeline end"() {
-		IdeaFlowTimeline timeline = builder.activate()
+		IdeaFlowTaskTimeline timeline = builder.activate()
 				.troubleshootingHours(1).advanceHours(1)
 				.subtask()
 				.deactivate()
-				.build()
+				.buildTaskTimeline()
 
 		when:
 		List<IdeaFlowSubtaskTimeline> timelines = splitter.timeline(timeline).splitBySubtaskEvents()
@@ -66,7 +66,7 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 		assert timelines.size() == 1
 	}
 
-	private List<IdeaFlowTimelineValidator> splitBySubtaskAndCreateValidators(IdeaFlowTimeline timeline) {
+	private List<IdeaFlowTimelineValidator> splitBySubtaskAndCreateValidators(IdeaFlowTaskTimeline timeline) {
 		List<IdeaFlowSubtaskTimeline> subtaskTimelines = splitter.timeline(timeline).splitBySubtaskEvents()
 		subtaskTimelines.collect { IdeaFlowSubtaskTimeline subtaskTimeline ->
 			new IdeaFlowTimelineValidator(subtaskTimeline)
@@ -82,7 +82,7 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 
 	def "should return two sub-timelines and split elements if subtask started in middle of timeline"() {
 		given:
-		IdeaFlowTimeline timeline = builder.activate()
+		IdeaFlowTaskTimeline timeline = builder.activate()
 				.subtask()
 				.strategyHours(2)
 				.readCodeAndAdvanceMinutes(30)
@@ -91,7 +91,7 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 				.subtask()
 				.readCodeAndAdvanceHours(1)
 				.deactivate()
-				.build()
+				.buildTaskTimeline()
 
 		when:
 		List<IdeaFlowTimelineValidator> validators = splitBySubtaskAndCreateValidators(timeline)
@@ -114,7 +114,7 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 
 	def "should spit band multiple times if necessary"() {
 		given:
-		IdeaFlowTimeline timeline = builder.activate()
+		IdeaFlowTaskTimeline timeline = builder.activate()
 				.subtask()
 				.strategyHours(6)
 				.awesome().advanceHours(2)
@@ -122,7 +122,7 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 				.awesome().advanceHours(2)
 				.subtask().advanceHours(2)
 				.deactivate()
-				.build()
+				.buildTaskTimeline()
 
 		when:
 		List<IdeaFlowTimelineValidator> validators = splitBySubtaskAndCreateValidators(timeline)

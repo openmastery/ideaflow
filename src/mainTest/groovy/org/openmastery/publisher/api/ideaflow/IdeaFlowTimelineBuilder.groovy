@@ -9,7 +9,6 @@ import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
-import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
 import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeConverter
 
@@ -211,7 +210,7 @@ class IdeaFlowTimelineBuilder {
 		this
 	}
 
-	IdeaFlowTimeline build() {
+	IdeaFlowTaskTimeline buildTaskTimeline() {
 		List<Positionable> allThings = ideaFlowBandList + modificationActivityList + blockActivityList + executionEventList + eventList
 		allThings.sort(PositionableComparator.INSTANCE)
 
@@ -222,7 +221,7 @@ class IdeaFlowTimelineBuilder {
 			end = end.plus(last.duration)
 		}
 
-		IdeaFlowTimeline.builder()
+		IdeaFlowTaskTimeline.builder()
 				.start(start)
 				.end(end)
 				.relativePositionInSeconds(0)

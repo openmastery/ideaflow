@@ -20,8 +20,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.Experiment
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.springframework.stereotype.Component
 
@@ -46,7 +45,7 @@ class TroubleshootingJourneyGenerator {
 		return journey
 	}
 
-	List<TroubleshootingJourney> createFromTimeline(IdeaFlowTimeline timeline) {
+	List<TroubleshootingJourney> createFromTimeline(IdeaFlowTaskTimeline timeline) {
 		List<Event> wtfYayEvents = timeline.events.findAll { Event event ->
 			event.type == EventType.WTF || event.type == EventType.AWESOME
 		}

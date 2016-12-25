@@ -5,8 +5,7 @@ import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowMetricsTimeline
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
@@ -37,7 +36,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 		ExecutionEvent event = new ExecutionEvent(relativePositionInSeconds: 2)
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(ideaFlowBands: [progressBand], executionEvents: [event])
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand], executionEvents: [event])
 		Metric<Duration> metric = calculator.calculateMetrics(timeline)
 
 		then:
@@ -54,7 +53,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 				.build()
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(ideaFlowBands: [progressBand], executionEvents: [])
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand], executionEvents: [])
 		Metric<Duration> metric = calculator.calculateMetrics(timeline)
 
 		then:
@@ -80,7 +79,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 		ExecutionEvent event = new ExecutionEvent(relativePositionInSeconds: 2)
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(ideaFlowBands: [progressBand, consecutiveBand], executionEvents: [event])
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand, consecutiveBand], executionEvents: [event])
 		Metric<Duration> metric = calculator.calculateMetrics(timeline)
 
 		then:
@@ -105,7 +104,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 		ExecutionEvent event = new ExecutionEvent(relativePositionInSeconds: 2)
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(ideaFlowBands: [progressBand1, progressBand2], executionEvents: [event])
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand1, progressBand2], executionEvents: [event])
 		Metric<Duration> metric = calculator.calculateMetrics(timeline)
 
 		then:
@@ -132,7 +131,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 
 
 		when:
-		IdeaFlowTimeline timeline = new IdeaFlowTimeline(ideaFlowBands: [learningBand, progressBand], executionEvents: [eventInLearning, eventInProgress])
+		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [learningBand, progressBand], executionEvents: [eventInLearning, eventInProgress])
 		Metric<Duration> metric = calculator.calculateMetrics(timeline)
 
 		then:

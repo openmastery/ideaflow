@@ -5,7 +5,6 @@ import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 import org.openmastery.publisher.api.metrics.TimelineMetrics;
 
 import java.util.ArrayList;
