@@ -82,7 +82,6 @@ class IdeaFlowResourceSpec extends Specification {
 
 		then:
 		validator.assertExecutionEvents(1)
-		validator.assertModificationActivity(1)
 		validator.assertEvents(1, EventType.ACTIVATE)
 		validator.assertEvents(1, EventType.DEACTIVATE)
 		validator.assertEvents(1, EventType.SUBTASK)

@@ -227,8 +227,6 @@ class IdeaFlowTimelineBuilder {
 				.relativePositionInSeconds(0)
 				.durationInSeconds(timeSinceStartInSeconds(end))
 				.ideaFlowBands(ideaFlowBandList.sort(false, PositionableComparator.INSTANCE))
-				.modificationActivities(modificationActivityList.sort(false, PositionableComparator.INSTANCE))
-				.blockActivities(blockActivityList.sort(false, PositionableComparator.INSTANCE))
 				.executionEvents(executionEventList.sort(false, PositionableComparator.INSTANCE))
 				.events(eventList.sort(false, PositionableComparator.INSTANCE))
 				.build()

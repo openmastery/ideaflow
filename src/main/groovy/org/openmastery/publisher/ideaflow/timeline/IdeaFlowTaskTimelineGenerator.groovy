@@ -19,6 +19,7 @@ import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
+import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.api.activity.BlockActivity
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
@@ -27,14 +28,13 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.task.Task
-import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.core.activity.BlockActivityEntity
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
+import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.time.TimeConverter
 
 class IdeaFlowTaskTimelineGenerator {
@@ -173,8 +173,6 @@ class IdeaFlowTaskTimelineGenerator {
 				.durationInSeconds(totalDuration)
 				.events(events)
 				.executionEvents(executionEvents)
-				.modificationActivities(modificationActivities)
-				.blockActivities(blockActivities)
 				.ideaFlowBands(ideaFlowBands)
 				.build()
 	}

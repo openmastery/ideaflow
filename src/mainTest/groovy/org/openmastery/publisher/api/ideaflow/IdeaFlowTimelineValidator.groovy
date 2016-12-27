@@ -10,8 +10,6 @@ class IdeaFlowTimelineValidator {
 	private BeanCompare beanCompare = new BeanCompare()
 	private def timeline
 	private boolean executionEventsValidated = false
-	private boolean modificationActivityValidated = false
-	private boolean blockActivityValidated = false
 	private List<IdeaFlowBand> validatedIdeaFlowBands = []
 	private List<Event> validatedEvents = []
 
@@ -50,19 +48,11 @@ class IdeaFlowTimelineValidator {
 		executionEventsValidated = true
 	}
 
-	void assertModificationActivity(int activityCount) {
-		assert timeline.modificationActivities.size() == activityCount
-		modificationActivityValidated = true
-	}
-
 	void assertValidationComplete() {
 		beanCompare.assertEquals(validatedIdeaFlowBands, timeline.ideaFlowBands)
 		beanCompare.assertEquals(validatedEvents, timeline.events)
 		if (executionEventsValidated == false) {
 			assert timeline.executionEvents.size() == 0: "Timeline contains execution activity but was not validated, eventCount=${timeline.executionEvents.size()}"
-		}
-		if (timeline instanceof IdeaFlowTaskTimeline && modificationActivityValidated == false) {
-			assert timeline.modificationActivities.size() == 0: "Timeline contains modification activity but was not validated, activityCount=${timeline.modificationActivities.size()}"
 		}
 	}
 

@@ -17,20 +17,20 @@ package org.openmastery.publisher.core.stub
 
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
+import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.metrics.machine.IdeaFlowStateMachine
 import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.metrics.machine.IdeaFlowStateMachine
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeConverter
 import org.openmastery.time.TimeService
 
 import java.time.LocalDateTime
 
-import static IdeaFlowStateType.TROUBLESHOOTING
 import static IdeaFlowStateType.LEARNING
 import static IdeaFlowStateType.REWORK
+import static IdeaFlowStateType.TROUBLESHOOTING
 
 class TestDataSupport {
 
