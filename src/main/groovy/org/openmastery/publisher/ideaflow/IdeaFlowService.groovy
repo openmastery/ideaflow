@@ -15,6 +15,8 @@
  */
 package org.openmastery.publisher.ideaflow
 
+import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
@@ -40,6 +42,17 @@ import org.springframework.stereotype.Component
 @Component
 class IdeaFlowService {
 
+	private static final List<EventType> TASK_TIMELINE_EVENTS_TO_RETAIN = [
+			EventType.SUBTASK,
+			EventType.CALENDAR,
+	]
+	private static final List<EventType> SUBTASK_TIMELINE_EVENTS_TO_RETAIN = [
+			EventType.NOTE,
+			EventType.WTF,
+			EventType.AWESOME,
+			EventType.CALENDAR,
+	]
+
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService;
 	@Autowired
@@ -53,11 +66,20 @@ class IdeaFlowService {
 		IdeaFlowTaskTimeline timeline = generateTaskTimeline(task);
 		List<TimelineMetrics> subtaskTimelineMetrics = generateTimelineMetricsBySubtask(timeline);
 
+		List<Event> filteredEvents = filterEventsByType(timeline.events, TASK_TIMELINE_EVENTS_TO_RETAIN)
+		timeline.setEvents(filteredEvents)
+
 		TaskTimelineOverview.builder()
 				.task(task)
 				.timeline(timeline)
 				.subtaskTimelineMetrics(subtaskTimelineMetrics)
 				.build()
+	}
+
+	private List<Event> filterEventsByType(List<Event> events, List<EventType> eventTypesToRetain) {
+		events.findAll { Event event ->
+			eventTypesToRetain.contains(event.type)
+		}
 	}
 
 	SubtaskTimelineOverview generateTimelineOverviewForSubtask(Long taskId, Long subtaskId) {
@@ -68,6 +90,9 @@ class IdeaFlowService {
 		TimelineMetrics metrics = calculator.calculateSubtaskMetrics(subtaskTimeline.subtask, subtaskTimeline)
 
 		List<TroubleshootingJourney> troubleshootingJourneys = troubleshootingJourneyGenerator.createFromTimeline(subtaskTimeline);
+
+		List<Event> filteredEvents = filterEventsByType(subtaskTimeline.events, SUBTASK_TIMELINE_EVENTS_TO_RETAIN)
+		subtaskTimeline.setEvents(filteredEvents)
 
 		SubtaskTimelineOverview.builder()
 				.subtask(subtaskTimeline.subtask)
