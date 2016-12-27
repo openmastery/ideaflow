@@ -7,7 +7,7 @@ import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
-import org.openmastery.publisher.api.metrics.SubtaskOverview;
+import org.openmastery.publisher.api.metrics.Metric;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,23 +27,23 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 
 	Set<String> tags; //derived from WTF/YAY #hashtags
 
-	List<DiscoverySession> discoverySessions;
-	SubtaskOverview metrics;
+	List<PartialDiscovery> partialDiscoveries;
+	List<Metric<?>> metrics;
 
 	public TroubleshootingJourney(IdeaFlowBand band) {
 		this.band = band;
 		setRelativeStart(band.getRelativePositionInSeconds());
 		setDurationInSeconds(band.getDurationInSeconds());
 
-		this.discoverySessions = new ArrayList<DiscoverySession>();
+		this.partialDiscoveries = new ArrayList<PartialDiscovery>();
 		this.tags = new HashSet<String>();
 	}
 
-	public void addDiscoverySession(Event wtfYayEvent, Long durationInSeconds) {
-		DiscoverySession discoverySession = new DiscoverySession(wtfYayEvent, durationInSeconds);
-		tags.addAll(discoverySession.tags);
+	public void addPartialDiscovery(Event wtfYayEvent, Long durationInSeconds) {
+		PartialDiscovery partialDiscovery = new PartialDiscovery(wtfYayEvent, durationInSeconds);
+		tags.addAll(partialDiscovery.tags);
 
-		discoverySessions.add(discoverySession);
+		partialDiscoveries.add(partialDiscovery);
 	}
 
 	public void fillWithActivity(List<ExecutionEvent> executionEvents) {
@@ -55,7 +55,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	}
 
 	private void addExecutionEvent(ExecutionEvent event) {
-		for (DiscoverySession experiment : discoverySessions) {
+		for (PartialDiscovery experiment : partialDiscoveries) {
 			if (experiment.shouldContain(event)) {
 				experiment.addExecutionEvent(event);
 			}

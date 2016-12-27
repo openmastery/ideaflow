@@ -47,8 +47,8 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 
 		then:
 		assert journey.band == troubleshootingBand
-		assert journey.discoverySessions != null
-		assert journey.discoverySessions.size() == 3
+		assert journey.partialDiscoveries != null
+		assert journey.partialDiscoveries.size() == 3
 	}
 
 	def "splitIntoJourneys SHOULD break up WTFs across bands"() {
@@ -83,12 +83,12 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 		assert journeys.size() == 2
 
 		assert journeys.get(0).band == troubleshootingBand
-		assert journeys.get(0).discoverySessions != null
-		assert journeys.get(0).discoverySessions.size() == 1
+		assert journeys.get(0).partialDiscoveries != null
+		assert journeys.get(0).partialDiscoveries.size() == 1
 
 		assert journeys.get(1).band == troubleshootingBand2
-		assert journeys.get(1).discoverySessions != null
-		assert journeys.get(1).discoverySessions.size() == 2
+		assert journeys.get(1).partialDiscoveries != null
+		assert journeys.get(1).partialDiscoveries.size() == 2
 
 	}
 
@@ -119,10 +119,10 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 		then:
 
 		assert journey.band == troubleshootingBand
-		assert journey.discoverySessions != null
-		assert journey.discoverySessions.size() == 2
-		assert journey.discoverySessions.get(0).experimentCycles.size() == 1
-		assert journey.discoverySessions.get(1).experimentCycles.size() == 2
+		assert journey.partialDiscoveries != null
+		assert journey.partialDiscoveries.size() == 2
+		assert journey.partialDiscoveries.get(0).experimentCycles.size() == 1
+		assert journey.partialDiscoveries.get(1).experimentCycles.size() == 2
 
 	}
 
@@ -152,11 +152,11 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 
 		assert journey.band == troubleshootingBand
 
-		assert journey.discoverySessions.get(0).experimentCycles.size() == 4
-		assert journey.discoverySessions.get(0).experimentCycles.get(0).durationInSeconds == (2 * 60L)
-		assert journey.discoverySessions.get(0).experimentCycles.get(1).durationInSeconds == (5 * 60L)
-		assert journey.discoverySessions.get(0).experimentCycles.get(2).durationInSeconds == (3 * 60L)
-		assert journey.discoverySessions.get(0).experimentCycles.get(3).durationInSeconds == (19 * 60L)
+		assert journey.partialDiscoveries.get(0).experimentCycles.size() == 4
+		assert journey.partialDiscoveries.get(0).experimentCycles.get(0).durationInSeconds == (2 * 60L)
+		assert journey.partialDiscoveries.get(0).experimentCycles.get(1).durationInSeconds == (5 * 60L)
+		assert journey.partialDiscoveries.get(0).experimentCycles.get(2).durationInSeconds == (3 * 60L)
+		assert journey.partialDiscoveries.get(0).experimentCycles.get(3).durationInSeconds == (19 * 60L)
 
 	}
 
@@ -181,9 +181,9 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 		assert journey.band == troubleshootingBand
 		assert journey.tags == expectedTags
 
-		assert journey.discoverySessions != null
-		assert journey.discoverySessions.size() == 1
-		assert journey.discoverySessions.first().tags == expectedTags
+		assert journey.partialDiscoveries != null
+		assert journey.partialDiscoveries.size() == 1
+		assert journey.partialDiscoveries.first().tags == expectedTags
 	}
 
 

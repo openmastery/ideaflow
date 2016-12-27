@@ -47,7 +47,9 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 		List<IdeaFlowSubtaskTimeline> timelines = splitter.timeline(timeline).splitBySubtaskEvents()
 
 		then:
+
 		subtaskTimelineComparator.assertEquals(timeline, timelines[0])
+
 		assert timelines.size() == 1
 	}
 
@@ -63,6 +65,7 @@ public class IdeaFlowTimelineSplitterSpec extends Specification {
 
 		then:
 		subtaskTimelineComparator.assertEquals(timeline, timelines[0])
+
 		assert timelines.size() == 1
 	}
 

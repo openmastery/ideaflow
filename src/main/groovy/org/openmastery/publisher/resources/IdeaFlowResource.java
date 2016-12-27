@@ -16,11 +16,8 @@
 package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline;
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview;
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview;
-import org.openmastery.publisher.api.metrics.DetailedSubtaskReport;
 import org.openmastery.publisher.ideaflow.IdeaFlowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,12 +35,8 @@ public class IdeaFlowResource {
 
 
 	/**
-	 * Uses the automated data collection from IdeaFlowMetrics to generate an IdeaFlowTimeline.
-	 * The timeline includes both the automated data collection, as well as a set of named ToggleableOverlays.
+	 * Uses the automated data collection from Idea Flow plugins to generate a timeline and metrics overview.
 	 *
-	 * DetailedStatistics are also available on demand, queryable by subtask.
-	 *
-	 * @see "http://github.com/openmastery/ideaflowmetrics"
 	 * @param taskId
 	 * @return IdeaFlowTimeline
 	 */
@@ -55,6 +48,14 @@ public class IdeaFlowResource {
 		return ideaFlowService.generateTimelineOverviewForTask(taskId);
 	}
 
+
+	/**
+	 * Generate drill-downable detailed overview of a subtask, along with a timeline, progress, and metrics overview
+	 *
+	 * @param taskId
+	 * @param subtaskId
+	 * @return SubtaskTimelineOverview
+	 */
 	@GET
 	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}" + ResourcePaths.IDEAFLOW_SUBTASK + "/{subtaskId}")
 	public SubtaskTimelineOverview getTimelineOverviewForSubtask(@PathParam("taskId") Long taskId, @PathParam("subtaskId") Long subtaskId) {
@@ -62,36 +63,6 @@ public class IdeaFlowResource {
 		return ideaFlowService.generateTimelineOverviewForSubtask(taskId, subtaskId);
 	}
 
-	/**
-	 *
-	 * Generate summary allMetrics for all IdeaFlow subtasks
-	 * Will eventually be able to provide your own user-configurable allMetrics.
-	 *
-	 * Community-contributed, individually-branded OSS IdeaFlow allMetrics coming soon!
-	 *
-	 * @param taskId
-	 * @return List<SubtaskOverview>
-	 */
-
-//	@GET
-//	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
-//	public List<SubtaskOverview> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
-//
-//		return ideaFlowService.generateRiskSummariesBySubtask(taskId);
-//	}
-
-	/**
-	 *
-	 * @param taskId
-	 * @param subTaskId
-	 * @return
-	 */
-	@GET
-	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}" + ResourcePaths.IDEAFLOW_SUBTASK + "/{subTaskId}")
-	public DetailedSubtaskReport generateDetailedSubtaskReport(@PathParam("taskId") Long taskId, @PathParam("subTaskId") Long subTaskId) {
-
-		return ideaFlowService.generateDetailedSubtaskReport(taskId, subTaskId);
-	}
 
 
 

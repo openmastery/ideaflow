@@ -22,6 +22,8 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
+import org.openmastery.publisher.metrics.subtask.MetricsService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
@@ -29,6 +31,9 @@ import org.springframework.stereotype.Component
  */
 @Component
 class TroubleshootingJourneyGenerator {
+
+	@Autowired
+	MetricsService metricsService
 
 	TroubleshootingJourney createJourney(List<Event> events, IdeaFlowBand band) {
 		List<Event> wtfYayEvents = events.findAll { it.type == EventType.WTF }
@@ -57,10 +62,14 @@ class TroubleshootingJourneyGenerator {
 		List<TroubleshootingJourney> journeys = splitIntoJourneys(wtfYayEvents, troubleshootingBands)
 		journeys.each { TroubleshootingJourney journey ->
 			journey.fillWithActivity(timeline.executionEvents)
+
+			journey.metrics = metricsService.generateJourneyMetrics(new JourneyTimeline(journey))
+
 		}
 
 		return journeys
 	}
+
 
 
 	private List<TroubleshootingJourney> splitIntoJourneys(List<Event> wtfYayEvents, List<IdeaFlowBand> troubleshootingBands) {
@@ -82,12 +91,12 @@ class TroubleshootingJourneyGenerator {
 					if (wtfYayEvents.size() > activeIndex + 1) {
 						Event peekAtNextEvent = wtfYayEvents.get(activeIndex + 1)
 						durationInSeconds = peekAtNextEvent.relativePositionInSeconds - wtfYayEvent.relativePositionInSeconds
-						//println "[Calculate] DiscoverySession duration (peek): " + durationInSeconds
+						//println "[Calculate] PartialDiscovery duration (peek): " + durationInSeconds
 					} else {
 						durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
-						//println "[Calculate] DiscoverySession duration (band-end): " + durationInSeconds
+						//println "[Calculate] PartialDiscovery duration (band-end): " + durationInSeconds
 					}
-					journey.addDiscoverySession(wtfYayEvent, durationInSeconds);
+					journey.addPartialDiscovery(wtfYayEvent, durationInSeconds);
 				}
 			}
 
@@ -97,4 +106,5 @@ class TroubleshootingJourneyGenerator {
 		return journeyList
 
 	}
+
 }

@@ -33,26 +33,4 @@ public class SubtaskOverview {
 		return subtaskEvent.getComment();
 	}
 
-	@JsonIgnore
-	Map<MetricType, MetricsCalculator> calculators;
-
-	public void addMetric(MetricType type, MetricsCalculator calculator) {
-		if (calculators == null) {
-			calculators = new HashMap<MetricType, MetricsCalculator>();
-		}
-		calculators.put(type, calculator);
-	}
-
-	public void calculate(IdeaFlowTimeline timeline) {
-		allMetrics = new ArrayList<Metric<?>>();
-		for (MetricsCalculator calculator: calculators.values()) {
-			Metric<?> result = calculator.calculateMetrics(timeline);
-
-			if (result.isDanger()) {
-				dangerMetrics.add(result);
-			}
-
-			allMetrics.add(result);
-		}
-	}
 }
