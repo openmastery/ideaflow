@@ -31,6 +31,7 @@ public class IdeaFlowSubtaskTimeline implements Positionable, IdeaFlowTimeline {
 	private List<ExecutionEvent> executionEvents;
 	private List<Event> events;
 
+	@JsonIgnore
 	@Override
 	public LocalDateTime getPosition() {
 		return start;

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 
 import java.util.ArrayList;
@@ -16,10 +17,9 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimelineMetrics {
+public class SubtaskMetrics {
 
-	Long id;
-	String description;
+	Event subtask;
 	Long durationInSeconds;
 
 	List<Metric<?>> metrics;

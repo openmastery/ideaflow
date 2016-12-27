@@ -21,7 +21,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineValidator
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
-import org.openmastery.publisher.api.metrics.TimelineMetrics
+import org.openmastery.publisher.api.metrics.SubtaskMetrics
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.IdeaFlowClient
@@ -30,7 +30,6 @@ import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
 import spock.lang.Specification
 
 import static org.openmastery.publisher.ARandom.aRandom
@@ -114,15 +113,15 @@ class IdeaFlowResourceSpec extends Specification {
 
 		when:
 		TaskTimelineOverview overview = ideaFlowClient.getTimelineOverviewForTask(task.id)
-		List<TimelineMetrics> metrics = overview.subtaskTimelineMetrics
+		List<SubtaskMetrics> metrics = overview.subtaskTimelineMetrics
 
 		then:
 		assert metrics != null
-		assert metrics.get(0).description == "Initial Strategy"
+		assert metrics.get(0).subtask.comment == "Initial Strategy"
 		assert metrics.get(0).metrics.size() == 6
-		assert metrics.get(1).description == "Subtask 1"
+		assert metrics.get(1).subtask.comment == "Subtask 1"
 		assert metrics.get(1).metrics.size() == 6
-		assert metrics.get(2).description == "Subtask 2"
+		assert metrics.get(2).subtask.comment == "Subtask 2"
 		assert metrics.get(2).metrics.size() == 6
 		assert metrics.size() == 3
 
@@ -131,7 +130,7 @@ class IdeaFlowResourceSpec extends Specification {
 
 		then:
 		assert subtaskTimelineOverview != null
-		assert subtaskTimelineOverview.subtaskMetrics.description == "Initial Strategy"
+		assert subtaskTimelineOverview.subtaskMetrics.subtask.comment == "Initial Strategy"
 		assert subtaskTimelineOverview.subtaskMetrics.metrics.size() == 6
 	}
 

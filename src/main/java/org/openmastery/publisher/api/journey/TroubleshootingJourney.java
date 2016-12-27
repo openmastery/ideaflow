@@ -5,10 +5,9 @@ import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
-import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
-import org.openmastery.publisher.api.metrics.TimelineMetrics;
+import org.openmastery.publisher.api.metrics.SubtaskMetrics;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,7 +28,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	Set<String> tags; //derived from WTF/YAY #hashtags
 
 	List<DiscoverySession> discoverySessions;
-	TimelineMetrics metrics;
+	SubtaskMetrics metrics;
 
 	public TroubleshootingJourney(IdeaFlowBand band) {
 		this.band = band;

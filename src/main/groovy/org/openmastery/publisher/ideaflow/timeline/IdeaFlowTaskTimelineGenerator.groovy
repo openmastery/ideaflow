@@ -159,7 +159,7 @@ class IdeaFlowTaskTimelineGenerator {
 		IdeaFlowBand lastBand = ideaFlowBands.last()
 		Long totalDuration = (lastBand.relativePositionInSeconds - firstBand.relativePositionInSeconds) + lastBand.durationInSeconds
 
-		addInitialStrategySubtaskEventAndSortEventsList(firstBand.start)
+		addInitialStrategySubtaskEventAndSortEventsList(task.id, firstBand.start)
 
 		Collections.sort(executionEvents, PositionableComparator.INSTANCE);
 		Collections.sort(modificationActivities, PositionableComparator.INSTANCE);
@@ -177,7 +177,7 @@ class IdeaFlowTaskTimelineGenerator {
 				.build()
 	}
 
-	private void addInitialStrategySubtaskEventAndSortEventsList(LocalDateTime timelineStart) {
+	private void addInitialStrategySubtaskEventAndSortEventsList(Long taskId, LocalDateTime timelineStart) {
 		Collections.sort(events, PositionableComparator.INSTANCE);
 		Event firstSubtaskEvent = events.find { it.type == EventType.SUBTASK }
 		if ((firstSubtaskEvent != null) && firstSubtaskEvent.position.isEqual(timelineStart)) {
@@ -189,6 +189,7 @@ class IdeaFlowTaskTimelineGenerator {
 				.type(EventType.SUBTASK)
 				.comment("Initial Strategy")
 				.build()
+		initialStrategySubtaskEvent.taskId = taskId
 		initialStrategySubtaskEvent.position = timelineStart
 		initialStrategySubtaskEvent.relativePositionInSeconds = 0
 

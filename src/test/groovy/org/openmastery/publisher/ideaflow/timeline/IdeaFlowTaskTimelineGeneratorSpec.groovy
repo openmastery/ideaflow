@@ -3,6 +3,7 @@ package org.openmastery.publisher.ideaflow.timeline
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
+import org.openmastery.publisher.api.task.Task
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
@@ -17,6 +18,7 @@ public class IdeaFlowTaskTimelineGeneratorSpec extends Specification {
 		timelineGenerator.idleTimeBands = builder.idleTimeBands
 		timelineGenerator.modificationActivities = builder.modificationActivityList
 		timelineGenerator.executionEvents = builder.executionEventList
+		timelineGenerator.task(new Task(id: 4))
 		timelineGenerator.generate()
 	}
 

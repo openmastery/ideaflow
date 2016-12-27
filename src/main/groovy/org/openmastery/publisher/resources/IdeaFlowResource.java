@@ -70,12 +70,12 @@ public class IdeaFlowResource {
 	 * Community-contributed, individually-branded OSS IdeaFlow metrics coming soon!
 	 *
 	 * @param taskId
-	 * @return List<TimelineMetrics>
+	 * @return List<SubtaskMetrics>
 	 */
 
 //	@GET
 //	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
-//	public List<TimelineMetrics> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
+//	public List<SubtaskMetrics> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
 //
 //		return ideaFlowService.generateRiskSummariesBySubtask(taskId);
 //	}

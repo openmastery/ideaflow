@@ -75,6 +75,7 @@ public class IdeaFlowTimelineSplitter {
 			}
 		}
 		splitBySubtask(subtaskEvents);
+
 	}
 
 	private List<Event> getSubtaskEvents() {
@@ -114,9 +115,10 @@ public class IdeaFlowTimelineSplitter {
 		Long durationInSeconds = durationInSeconds - previousSubtask.getRelativePositionInSeconds();
 		IdeaFlowSubtaskTimeline subtaskTimeline = splitTimeline(filter, previousSubtask, end, durationInSeconds);
 		subtaskTimelines.add(subtaskTimeline);
+
 		return subtaskTimelines;
 	}
-
+	
 	private IdeaFlowSubtaskTimeline splitTimeline(ItemFilter filter, Event subtask, LocalDateTime timelineEnd,
 	                                              Long durationInSeconds) {
 		LocalDateTime timelineStart = subtask.getPosition()
@@ -132,6 +134,8 @@ public class IdeaFlowTimelineSplitter {
 				.events(eventsBetween)
 				.executionEvents(executionEventsBetween)
 				.ideaFlowBands(splitIdeaFlowBands)
+				.relativePositionInSeconds(relativeStartInSeconds)
+				.durationInSeconds(durationInSeconds)
 				.build();
 	}
 
