@@ -5,6 +5,7 @@ import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
@@ -42,10 +43,10 @@ class MaxWtfDurationCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshooting1, troubleshooting2])
-		Metric<Duration> metric = calculator.calculateMetrics(timeline)
+		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
 		assert metric.type == MetricType.MAX_WTF_DURATION
-		assert metric.value == Duration.standardSeconds(60)
+		assert metric.value == new DurationInSeconds(60)
 	}
 }

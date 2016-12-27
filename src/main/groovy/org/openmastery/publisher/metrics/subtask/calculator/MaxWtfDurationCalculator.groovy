@@ -19,10 +19,11 @@ import org.joda.time.Duration
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 
-class MaxWtfDurationCalculator extends AbstractMetricsCalculator<Duration> {
+class MaxWtfDurationCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
 	MaxWtfDurationCalculator() {
 		super(MetricType.MAX_WTF_DURATION)
@@ -30,7 +31,7 @@ class MaxWtfDurationCalculator extends AbstractMetricsCalculator<Duration> {
 
 
 	@Override
-	Metric<Duration> calculateMetrics(IdeaFlowTimeline timeline) {
+	Metric<DurationInSeconds> calculateMetrics(IdeaFlowTimeline timeline) {
 
 		List<IdeaFlowBand> troubleshootingBands = timeline.ideaFlowBands.findAll { IdeaFlowBand band ->
 			band.type == IdeaFlowStateType.TROUBLESHOOTING
@@ -43,9 +44,9 @@ class MaxWtfDurationCalculator extends AbstractMetricsCalculator<Duration> {
 			}
 		}
 
-		Metric<Duration> metric = new Metric<Duration>()
+		Metric<DurationInSeconds> metric = createMetric()
 		metric.type = getMetricType()
-		metric.value = Duration.standardSeconds(maxDuration)
+		metric.value = new DurationInSeconds(maxDuration)
 
 		return metric
 	}

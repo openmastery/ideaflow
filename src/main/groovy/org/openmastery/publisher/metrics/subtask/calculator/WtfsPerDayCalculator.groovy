@@ -30,7 +30,6 @@ class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 
 	@Override
 	Metric<Double> calculateMetrics(IdeaFlowTimeline timeline) {
-		Metric<Double> metric = createMetric()
 
 		List<Event> wtfEvents = timeline.events.findAll() { Event event ->
 			event.type == EventType.WTF
@@ -39,6 +38,7 @@ class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 		LocalDate start = timeline.start.toLocalDate();
 		LocalDate end = timeline.end.toLocalDate()
 
+		Metric<Double> metric = createMetric()
 		metric.value = calculateAverageWtfsPerDay(start, end, wtfEvents)
 
 		return metric

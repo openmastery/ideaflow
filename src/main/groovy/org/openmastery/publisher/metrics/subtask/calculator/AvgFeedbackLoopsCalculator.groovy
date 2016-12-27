@@ -56,83 +56,19 @@ class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 			avgEventCount = (avgEventCount *(sampleCount - 1) + eventCount)/sampleCount
 		}
 
-		Metric<Double> metric = new Metric<Double>()
+		Metric<Double> metric = createMetric()
 		metric.type = getMetricType()
 		metric.value = avgEventCount
 		return metric
 	}
 
 	int countExecutionEventsInRange(List<ExecutionEvent> executionEvents, Long relativeStart, Long relativeEnd ) {
-		println relativeStart + " : " + relativeEnd
 		List<ExecutionEvent> eventsWithinRange = executionEvents.findAll() { ExecutionEvent event ->
-			println event.relativePositionInSeconds
 			event.relativePositionInSeconds > relativeStart &&
 					event.relativePositionInSeconds < relativeEnd
 		}
-		println eventsWithinRange
 		return eventsWithinRange.size()
 	}
 
-	List<IdeaFlowBand> collapseConsecutiveBandPeriods(List<IdeaFlowBand> bands) {
-		List<IdeaFlowBand> filteredBands = bands.findAll() { IdeaFlowBand band ->
-			(band.type == IdeaFlowStateType.PROGRESS || band.type == IdeaFlowStateType.TROUBLESHOOTING)
-		}
 
-		filteredBands = filteredBands.sort { IdeaFlowBand band ->
-			band.relativePositionInSeconds
-		}
-
-		List<IdeaFlowBand> consecutiveBandPeriods = []
-		IdeaFlowBand lastBand = null
-		filteredBands.each { IdeaFlowBand band ->
-			if (lastBand == null) {
-				lastBand = band
-			} else {
-				if (bandsAreAdjacent(lastBand, band)) {
-					IdeaFlowBand newBand = IdeaFlowBand.builder()
-							.relativePositionInSeconds(lastBand.relativePositionInSeconds)
-							.durationInSeconds(lastBand.durationInSeconds + band.durationInSeconds)
-							.build()
-					lastBand = newBand
-				} else {
-					consecutiveBandPeriods.add(lastBand)
-					lastBand = band
-				}
-			}
-		}
-		if (lastBand) consecutiveBandPeriods.add(lastBand)
-
-		return consecutiveBandPeriods
-	}
-
-	boolean bandsAreAdjacent(IdeaFlowBand prevBand, IdeaFlowBand nextBand) {
-		Long prevBandEnd = prevBand.relativePositionInSeconds + prevBand.durationInSeconds
-		return (prevBandEnd == nextBand.relativePositionInSeconds)
-	}
-
-
-	List<Long> findRelativePositionsWithinRange(List<ExecutionEvent> allEvents, Long relativeStart, Long relativeEnd) {
-		List<ExecutionEvent> eventsWithinBand = findEventsWithinRange(allEvents, relativeStart, relativeEnd)
-		List<Long> relativeTimes = createRelativePositionsList(eventsWithinBand)
-		relativeTimes.add(relativeStart)
-		relativeTimes.add(relativeEnd)
-
-		Collections.sort(relativeTimes)
-		return relativeTimes
-	}
-
-	List<Long> createRelativePositionsList(List<ExecutionEvent> events) {
-		List<Long> relativeTimes = events.collect { ExecutionEvent event ->
-			event.relativePositionInSeconds
-		}
-		Collections.sort(relativeTimes)
-		return relativeTimes
-	}
-
-
-	List<ExecutionEvent> findEventsWithinRange(List<ExecutionEvent> events, Long relativeStart, Long relativeEnd) {
-		return events.findAll() { ExecutionEvent event ->
-			event.relativePositionInSeconds > relativeStart && event.relativePositionInSeconds < relativeEnd
-		}
-	}
 }

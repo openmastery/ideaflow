@@ -48,7 +48,7 @@ class CapacityDistributionCalculatorSpec extends Specification {
 		then:
 		assert metric.type == MetricType.CAPACITY_DISTRIBUTION
 		assert metric.value != null
-		assert metric.value.timeSpentPerStateType.get(IdeaFlowStateType.TROUBLESHOOTING, 45)
+		assert metric.value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING, 45)
 	}
 
 	def "calculateMetrics SHOULD add up the duration for bands by type"() {
@@ -78,9 +78,9 @@ class CapacityDistributionCalculatorSpec extends Specification {
 		then:
 		assert metric.type == MetricType.CAPACITY_DISTRIBUTION
 		assert metric.value != null
-		assert metric.value.timeSpentPerStateType.get(IdeaFlowStateType.LEARNING, 30)
-		assert metric.value.timeSpentPerStateType.get(IdeaFlowStateType.PROGRESS, 40)
-		assert metric.value.timeSpentPerStateType.get(IdeaFlowStateType.TROUBLESHOOTING, 15)
+		assert metric.value.capacityDistributionByType.get(IdeaFlowStateType.LEARNING, 30)
+		assert metric.value.capacityDistributionByType.get(IdeaFlowStateType.PROGRESS, 40)
+		assert metric.value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING, 15)
 	}
 
 }

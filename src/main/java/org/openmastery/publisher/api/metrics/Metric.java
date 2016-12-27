@@ -15,4 +15,14 @@ import java.util.Map;
 public class Metric<V> {
 	MetricType type;
 	V value;
+
+	private String valueType;
+
+	public void setValue(V value) {
+		if (value != null) {
+			valueType = value.getClass().getSimpleName();
+		}
+		this.value = value;
+	}
+
 }

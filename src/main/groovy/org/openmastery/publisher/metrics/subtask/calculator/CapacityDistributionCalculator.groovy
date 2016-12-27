@@ -38,7 +38,7 @@ class CapacityDistributionCalculator extends AbstractMetricsCalculator<CapacityD
 		saveTotalDurationForBandType(capacity, timeline, IdeaFlowStateType.PROGRESS)
 		saveTotalDurationForBandType(capacity, timeline, IdeaFlowStateType.TROUBLESHOOTING)
 
-		Metric<CapacityDistribution> metric = new Metric<CapacityDistribution>()
+		Metric<CapacityDistribution> metric = createMetric()
 		metric.type = getMetricType()
 		metric.value = capacity
 		return metric

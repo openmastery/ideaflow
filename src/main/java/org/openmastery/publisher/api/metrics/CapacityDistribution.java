@@ -15,15 +15,15 @@ import java.util.Map;
 @AllArgsConstructor
 public class CapacityDistribution {
 
-	Map<IdeaFlowStateType, Long> timeSpentPerStateType = new HashMap<IdeaFlowStateType, Long>();
+	Map<IdeaFlowStateType, Long> capacityDistributionByType = new HashMap<IdeaFlowStateType, Long>();
 
 	public void addTotalDurationForType(IdeaFlowStateType ideaFlowStateType, Long durationInSeconds) {
-		Long existingTime = timeSpentPerStateType.get(ideaFlowStateType);
+		Long existingTime = capacityDistributionByType.get(ideaFlowStateType);
 
 		if (existingTime == null) {
-			timeSpentPerStateType.put(ideaFlowStateType, durationInSeconds);
+			capacityDistributionByType.put(ideaFlowStateType, durationInSeconds);
 		} else {
-			timeSpentPerStateType.put(ideaFlowStateType, existingTime + durationInSeconds);
+			capacityDistributionByType.put(ideaFlowStateType, existingTime + durationInSeconds);
 		}
 	}
 }

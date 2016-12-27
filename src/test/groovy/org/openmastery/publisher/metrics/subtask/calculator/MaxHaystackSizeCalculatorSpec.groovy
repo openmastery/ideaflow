@@ -6,6 +6,7 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
@@ -37,11 +38,11 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand], executionEvents: [event])
-		Metric<Duration> metric = calculator.calculateMetrics(timeline)
+		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
 		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
-		assert metric.value == Duration.standardSeconds(28)
+		assert metric.value == new DurationInSeconds(28)
 	}
 
 	def "calculateMetrics SHOULD return entire interval when no execution events"() {
@@ -54,11 +55,11 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand], executionEvents: [])
-		Metric<Duration> metric = calculator.calculateMetrics(timeline)
+		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
 		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
-		assert metric.value == Duration.standardSeconds(30)
+		assert metric.value == new DurationInSeconds(30)
 	}
 
 
@@ -80,11 +81,11 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand, consecutiveBand], executionEvents: [event])
-		Metric<Duration> metric = calculator.calculateMetrics(timeline)
+		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
 		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
-		assert metric.value == Duration.standardSeconds(88)
+		assert metric.value == new DurationInSeconds(88)
 	}
 
 	def "calculateMetrics SHOULD restart the count when there are time gaps"() {
@@ -105,11 +106,11 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand1, progressBand2], executionEvents: [event])
-		Metric<Duration> metric = calculator.calculateMetrics(timeline)
+		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
 		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
-		assert metric.value == Duration.standardSeconds(28)
+		assert metric.value == new DurationInSeconds(28)
 	}
 
 	def "calculateMetrics SHOULD ignore learning bands"() {
@@ -132,11 +133,11 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [learningBand, progressBand], executionEvents: [eventInLearning, eventInProgress])
-		Metric<Duration> metric = calculator.calculateMetrics(timeline)
+		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
 		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
-		assert metric.value == Duration.standardSeconds(55)
+		assert metric.value == new DurationInSeconds(55)
 	}
 
 

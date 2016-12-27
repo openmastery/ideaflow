@@ -42,6 +42,7 @@ class WtfsPerDayCalculatorSpec extends Specification {
 		then:
 		assert metric.type == MetricType.WTFS_PER_DAY
 		assert metric.value == 2.0D
+		assert metric.valueType == "Double"
 
 	}
 

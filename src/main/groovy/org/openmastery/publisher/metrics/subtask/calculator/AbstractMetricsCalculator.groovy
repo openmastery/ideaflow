@@ -35,7 +35,6 @@ abstract class AbstractMetricsCalculator<T> implements MetricsCalculator<T> {
 	protected Metric<T> createMetric() {
 		Metric<T> metric = new Metric<T>()
 		metric.type = getMetricType()
-
 		return metric;
 	}
 

@@ -20,6 +20,7 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 
@@ -32,7 +33,7 @@ import org.openmastery.publisher.api.metrics.MetricType
  * spent in "progress" without any execution events.
  */
 
-class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<Duration> {
+class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
 	MaxHaystackSizeCalculator() {
 		super(MetricType.MAX_HAYSTACK_SIZE)
@@ -40,11 +41,10 @@ class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<Duration> {
 
 
 	@Override
-	Metric<Duration> calculateMetrics(IdeaFlowTimeline timeline) {
+	Metric<DurationInSeconds> calculateMetrics(IdeaFlowTimeline timeline) {
 
 
 		List<IdeaFlowBand> consecutiveBandPeriods = collapseConsecutiveBandPeriods(timeline.ideaFlowBands)
-		println consecutiveBandPeriods
 		Long maxDuration = 0
 
 		consecutiveBandPeriods.each { IdeaFlowBand band ->
@@ -55,7 +55,6 @@ class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<Duration> {
 
 			Long previousTime = null
 
-			println relativeEventTimes
 			relativeEventTimes.each { Long currentTime ->
 				if (previousTime == null) {
 					previousTime = currentTime
@@ -69,9 +68,9 @@ class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<Duration> {
 			}
 		}
 
-		Metric<Duration> metric = new Metric<Duration>()
+		Metric<DurationInSeconds> metric = createMetric()
 		metric.type = getMetricType()
-		metric.value = Duration.standardSeconds(maxDuration)
+		metric.value = new DurationInSeconds(maxDuration)
 		return metric
 	}
 
