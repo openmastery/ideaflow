@@ -18,10 +18,7 @@ The following endpoints are available:
 * GET http://localhost:8980/ideaflow/task/{taskId}
 
 * GET http://localhost:8980/ideaflow/timeline/task/{taskId}
-* GET http://localhost:8980/ideaflow/metrics/task/{taskId}
-
 * GET http://localhost:8980/ideaflow/timeline/subtask/{subtaskId}
-* GET http://localhost:8980/ideaflow/metrics/subtask/{subtaskId}
 
 This endpoint will be moved at some point, but it's hanging out in here for now.
 
