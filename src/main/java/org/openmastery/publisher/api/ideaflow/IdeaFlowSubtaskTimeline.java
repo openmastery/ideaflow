@@ -37,4 +37,15 @@ public class IdeaFlowSubtaskTimeline implements Positionable, IdeaFlowTimeline {
 		return start;
 	}
 
+	@JsonIgnore
+	public Long getRelativeStart() {
+		return relativePositionInSeconds;
+	}
+
+	@JsonIgnore
+	public Long getRelativeEnd() {
+		return relativePositionInSeconds + durationInSeconds;
+	}
+
+
 }

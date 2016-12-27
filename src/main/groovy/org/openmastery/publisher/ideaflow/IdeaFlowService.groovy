@@ -21,6 +21,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
+import org.openmastery.publisher.api.journey.ProgressMilestone
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DetailedSubtaskReport
 import org.openmastery.publisher.api.metrics.SubtaskOverview
@@ -94,12 +95,45 @@ class IdeaFlowService {
 		List<Event> filteredEvents = filterEventsByType(subtaskTimeline.events, SUBTASK_TIMELINE_EVENTS_TO_RETAIN)
 		subtaskTimeline.setEvents(filteredEvents)
 
+		List<ProgressMilestone> progressBreakdown = generateProgressMilestones(subtaskTimeline.relativeStart, subtaskTimeline.relativeEnd, filteredEvents)
+
 		SubtaskTimelineOverview.builder()
 				.subtask(subtaskTimeline.subtask)
-				.subtaskTimeline(subtaskTimeline)
+				.timeline(subtaskTimeline)
 				.overview(metrics)
+				.progressBreakdown(progressBreakdown)
 				.troubleshootingJourneys(troubleshootingJourneys)
 				.build()
+	}
+
+	List<ProgressMilestone> generateProgressMilestones(Long relativeStart, Long relativeEnd, List<Event> allEvents) {
+		List<Event> progressNotes = allEvents.findAll { Event event ->
+			event.type == EventType.NOTE
+		}
+
+		ProgressMilestone lastMilestone = null
+		List<ProgressMilestone> progressMilestones = []
+
+		progressNotes.each { Event progressNote ->
+			ProgressMilestone milestone = new ProgressMilestone(progressNote)
+			if (lastMilestone != null) {
+				milestone.durationInSeconds = progressNote.relativePositionInSeconds - milestone.relativePositionInSeconds
+				progressMilestones.add(milestone)
+				lastMilestone = milestone
+			}
+		}
+		if (lastMilestone != null) {
+			lastMilestone.durationInSeconds = relativeEnd - lastMilestone.relativePositionInSeconds
+		} else {
+			Event defaultEvent = new Event(-1, "Total progress", EventType.NOTE);
+			defaultEvent.relativePositionInSeconds = relativeStart
+			ProgressMilestone defaultMilestone = new ProgressMilestone(defaultEvent)
+			defaultMilestone.durationInSeconds = relativeEnd - relativeStart
+
+			progressMilestones.add(defaultMilestone)
+		}
+
+		return progressMilestones
 	}
 
 	private IdeaFlowSubtaskTimeline generateSubtaskTimeline(Task task, long subtaskId) {
