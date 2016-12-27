@@ -22,4 +22,6 @@ public interface MetricsCalculator<V> {
 	MetricType getMetricType();
 
 	Metric<V> calculateMetrics(IdeaFlowTimeline timeline);
+
+	V getDangerThreshold();
 }

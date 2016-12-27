@@ -23,7 +23,6 @@ public class SubtaskOverview {
 	Long durationInSeconds;
 
 	List<Metric<?>> allMetrics;
-	List<Metric<?>> dangerMetrics;
 
 	public Long getSubtaskId() {
 		return subtaskEvent.getId();

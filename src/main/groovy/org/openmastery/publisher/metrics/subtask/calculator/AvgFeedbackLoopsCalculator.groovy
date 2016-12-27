@@ -59,6 +59,7 @@ class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 		Metric<Double> metric = createMetric()
 		metric.type = getMetricType()
 		metric.value = avgEventCount
+		metric.danger = metric.value > getDangerThreshold()
 		return metric
 	}
 
@@ -68,6 +69,11 @@ class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 					event.relativePositionInSeconds < relativeEnd
 		}
 		return eventsWithinRange.size()
+	}
+
+	@Override
+	Double getDangerThreshold() {
+		return 15D
 	}
 
 

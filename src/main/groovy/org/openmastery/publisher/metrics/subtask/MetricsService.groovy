@@ -56,7 +56,6 @@ public class MetricsService {
 		metricSet.calculate(timelineSegment)
 
 		overview.allMetrics = metricSet.allMetrics
-		overview.dangerMetrics = metricSet.dangerMetrics
 
 		return overview
 	}
@@ -67,8 +66,7 @@ public class MetricsService {
 		Map<MetricType, MetricsCalculator> calculators;
 
 		List<Metric<?>> allMetrics = new ArrayList<Metric<?>>();
-		List<Metric<?>> dangerMetrics = new ArrayList<Metric<?>>();
-
+		
 		public void addMetric(MetricType type, MetricsCalculator calculator) {
 			if (calculators == null) {
 				calculators = new HashMap<MetricType, MetricsCalculator>();
@@ -80,10 +78,6 @@ public class MetricsService {
 
 			for (MetricsCalculator calculator: calculators.values()) {
 				Metric<?> result = calculator.calculateMetrics(timeline);
-				if (result.isDanger()) {
-					dangerMetrics.add(result);
-				}
-
 				allMetrics.add(result);
 			}
 		}

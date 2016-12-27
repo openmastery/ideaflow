@@ -10,4 +10,13 @@ import lombok.NoArgsConstructor;
 public class DurationInSeconds {
 
 	Long durationInSeconds;
+
+
+	public boolean greaterThan(DurationInSeconds durationObj) {
+		boolean isGreaterThan = false;
+		if (durationInSeconds > durationObj.durationInSeconds) {
+			isGreaterThan = true;
+		}
+		return isGreaterThan;
+	}
 }

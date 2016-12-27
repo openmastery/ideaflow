@@ -47,7 +47,13 @@ class MaxWtfDurationCalculator extends AbstractMetricsCalculator<DurationInSecon
 		Metric<DurationInSeconds> metric = createMetric()
 		metric.type = getMetricType()
 		metric.value = new DurationInSeconds(maxDuration)
+		metric.danger = metric.value.greaterThan(getDangerThreshold())
 
 		return metric
+	}
+
+	@Override
+	DurationInSeconds getDangerThreshold() {
+		return new DurationInSeconds(30 * 60)
 	}
 }

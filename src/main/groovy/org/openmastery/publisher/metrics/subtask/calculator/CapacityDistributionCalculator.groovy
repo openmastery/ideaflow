@@ -41,7 +41,13 @@ class CapacityDistributionCalculator extends AbstractMetricsCalculator<CapacityD
 		Metric<CapacityDistribution> metric = createMetric()
 		metric.type = getMetricType()
 		metric.value = capacity
+
 		return metric
+	}
+
+	@Override
+	CapacityDistribution getDangerThreshold() {
+		return null
 	}
 
 	void saveTotalDurationForBandType(CapacityDistribution capacity, IdeaFlowTimeline timeline, IdeaFlowStateType ideaFlowStateType) {

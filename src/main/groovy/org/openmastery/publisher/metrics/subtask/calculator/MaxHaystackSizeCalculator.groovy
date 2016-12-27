@@ -71,8 +71,17 @@ class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<DurationInSeco
 		Metric<DurationInSeconds> metric = createMetric()
 		metric.type = getMetricType()
 		metric.value = new DurationInSeconds(maxDuration)
+		metric.danger = metric.value.greaterThan(getDangerThreshold())
+
 		return metric
 	}
+
+	@Override
+	DurationInSeconds getDangerThreshold() {
+		return new DurationInSeconds(60 * 60)
+	}
+
+
 
 	List<IdeaFlowBand> collapseConsecutiveBandPeriods(List<IdeaFlowBand> bands) {
 		List<IdeaFlowBand> filteredBands = bands.findAll() { IdeaFlowBand band ->
@@ -136,4 +145,6 @@ class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<DurationInSeco
 			event.relativePositionInSeconds > relativeStart && event.relativePositionInSeconds < relativeEnd
 		}
 	}
+
+
 }

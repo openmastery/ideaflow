@@ -40,8 +40,15 @@ class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 
 		Metric<Double> metric = createMetric()
 		metric.value = calculateAverageWtfsPerDay(start, end, wtfEvents)
-
+		metric.danger = metric.value > getDangerThreshold()
 		return metric
+	}
+
+
+
+	@Override
+	Double getDangerThreshold() {
+		return 10D
 	}
 
 	private double calculateAverageWtfsPerDay(LocalDate start, LocalDate end, List<Event> wtfEvents) {

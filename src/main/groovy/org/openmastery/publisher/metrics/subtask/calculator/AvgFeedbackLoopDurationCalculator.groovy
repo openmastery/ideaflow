@@ -60,7 +60,13 @@ class AvgFeedbackLoopDurationCalculator  extends AbstractMetricsCalculator<Durat
 
 		Metric<DurationInSeconds> metric = createMetric()
 		metric.value = new DurationInSeconds((long)avgDuration);
+		metric.danger = metric.value.greaterThan(getDangerThreshold())
 		return metric
+	}
+
+	@Override
+	DurationInSeconds getDangerThreshold() {
+		return new DurationInSeconds(10 * 60)
 	}
 
 	int countExecutionEventsInRange(List<ExecutionEvent> executionEvents, Long relativeStart, Long relativeEnd ) {

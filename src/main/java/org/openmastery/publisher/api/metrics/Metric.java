@@ -17,7 +17,7 @@ public class Metric<V> {
 	V value;
 
 	private String valueType;
-	private boolean isDanger;
+	private boolean danger;
 
 	public void setValue(V value) {
 		if (value != null) {
