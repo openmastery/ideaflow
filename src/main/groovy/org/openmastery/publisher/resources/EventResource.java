@@ -18,22 +18,22 @@ package org.openmastery.publisher.resources;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.openmastery.mapper.EntityMapper;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.batch.NewBatchEvent;
+import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.core.EventService;
+import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.security.InvocationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Component
-@Path(ResourcePaths.EVENT_PATH)
+@Path(ResourcePaths.IDEAFLOW_PATH + ResourcePaths.EVENT_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class EventResource {
 
@@ -43,13 +43,28 @@ public class EventResource {
 	@Autowired
 	private EventService eventService;
 
+
+
+
 	@GET
-	@Path(ResourcePaths.EVENT_BATCH_PATH)
-	public List<NewBatchEvent> getLatestEvents(@QueryParam("afterDate") String afterDate, @QueryParam("limit") Integer limit) {
+	public List<Event> getLatestEvents(@QueryParam("afterDate") String afterDate, @QueryParam("limit") Integer limit) {
 		Long userId = invocationContext.getUserId();
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd_HHmmss");
 		LocalDateTime jodaAfterDate = formatter.parseLocalDateTime(afterDate);
 		return eventService.getLatestEvents(userId, jodaAfterDate, limit);
+	}
+
+	/**
+	 * Update a comment in a note, subtask, disruption, WTF, YAY or any other event type
+	 * @param eventToUpdate
+	 * @return Event the updated event as returned from the DB
+	 */
+
+	@PUT
+	public Event update(Event eventToUpdate) {
+		Long userId = invocationContext.getUserId();
+
+		return eventService.updateEvent(userId, eventToUpdate);
 	}
 
 

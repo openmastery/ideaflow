@@ -18,6 +18,7 @@ package org.openmastery.publisher.core
 import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.batch.NewBatchEvent
+import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.time.TimeConverter
@@ -32,14 +33,31 @@ class EventService {
 	private IdeaFlowPersistenceService persistenceService
 
 
-	public List<NewBatchEvent> getLatestEvents(Long userId, LocalDateTime afterDate, Integer limit) {
+	public List<Event> getLatestEvents(Long userId, LocalDateTime afterDate, Integer limit) {
 		List<EventEntity> eventEntityList = persistenceService.findRecentEvents(userId, TimeConverter.toSqlTimestamp(afterDate), limit)
 
-		List<NewBatchEvent> eventList = eventEntityList.collect() { EventEntity entity ->
+		List<Event> eventList = eventEntityList.collect() { EventEntity entity ->
 			EntityMapper mapper = new EntityMapper()
-			mapper.mapIfNotNull(entity, NewBatchEvent.class)
+			mapper.mapIfNotNull(entity, Event.class)
 		}
 		return eventList
 	}
 
+	Event updateEvent(Long userId, Event eventToUpdate) {
+		EventEntity entityToSave = toEntity(eventToUpdate);
+		entityToSave.ownerId = userId
+		EventEntity savedEntity = persistenceService.saveEvent(entityToSave);
+
+		return toApi(savedEntity)
+	}
+
+	Event toApi(EventEntity entity) {
+		EntityMapper mapper = new EntityMapper()
+		return mapper.mapIfNotNull(entity, Event.class)
+	}
+
+	EventEntity toEntity(Event event) {
+		EntityMapper mapper = new EntityMapper()
+		return mapper.mapIfNotNull(event, EventEntity.class)
+	}
 }
