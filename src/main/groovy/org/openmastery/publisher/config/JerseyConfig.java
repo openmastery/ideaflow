@@ -39,7 +39,8 @@ public class JerseyConfig extends ResourceConfig {
 		packages("org.openmastery.publisher.resources");
 		register(LoggingFilter.class);
 		register(CORSResponseFilter.class);
-		register(ObjectMapperContextResolver.class);
+		//register(ObjectMapperContextResolver.class);
+		register(CustomValueTypeResolver.class);
 		register(authorizationFilter);
 	}
 
