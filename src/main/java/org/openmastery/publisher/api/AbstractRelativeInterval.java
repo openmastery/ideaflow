@@ -12,10 +12,10 @@ public class AbstractRelativeInterval implements RelativeInterval {
 
 	Long durationInSeconds;
 
-	@JsonIgnore //only used for metrics
+	@JsonIgnore //only used for allMetrics
 	Long relativeStart;
 
-	@JsonIgnore //only used for metrics
+	@JsonIgnore //only used for allMetrics
 	public Long getRelativeEnd() {
 		return relativeStart + durationInSeconds;
 	}

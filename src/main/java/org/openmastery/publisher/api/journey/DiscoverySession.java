@@ -4,7 +4,7 @@ import lombok.*;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.ExecutionEvent;
-import org.openmastery.publisher.api.metrics.SubtaskMetrics;
+import org.openmastery.publisher.api.metrics.SubtaskOverview;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,7 +27,7 @@ public class DiscoverySession extends AbstractRelativeInterval {
 
 	List<ExperimentCycle> experimentCycles;
 
-	SubtaskMetrics metrics;
+	SubtaskOverview metrics;
 
 	public DiscoverySession(Event wtfYayEvent, Long durationInSeconds) {
 		this.event = wtfYayEvent;

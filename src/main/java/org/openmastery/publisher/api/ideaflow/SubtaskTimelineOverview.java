@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.journey.TroubleshootingJourney;
-import org.openmastery.publisher.api.metrics.SubtaskMetrics;
+import org.openmastery.publisher.api.metrics.SubtaskOverview;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class SubtaskTimelineOverview {
 
 	private Event subtask;
 	private IdeaFlowSubtaskTimeline subtaskTimeline;
-	private SubtaskMetrics subtaskMetrics;
+	private SubtaskOverview overview;
 	private List<TroubleshootingJourney> troubleshootingJourneys;
 
 }

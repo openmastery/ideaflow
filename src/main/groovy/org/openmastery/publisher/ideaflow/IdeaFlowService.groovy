@@ -23,7 +23,7 @@ import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DetailedSubtaskReport
-import org.openmastery.publisher.api.metrics.SubtaskMetrics
+import org.openmastery.publisher.api.metrics.SubtaskOverview
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.TaskService
@@ -64,7 +64,7 @@ class IdeaFlowService {
 	TaskTimelineOverview generateTimelineOverviewForTask(Long taskId) {
 		Task task = taskService.findTaskWithId(taskId)
 		IdeaFlowTaskTimeline timeline = generateTaskTimeline(task);
-		List<SubtaskMetrics> subtaskTimelineMetrics = generateTimelineMetricsBySubtask(timeline);
+		List<SubtaskOverview> subtaskTimelineMetrics = generateTimelineMetricsBySubtask(timeline);
 
 		List<Event> filteredEvents = filterEventsByType(timeline.events, TASK_TIMELINE_EVENTS_TO_RETAIN)
 		timeline.setEvents(filteredEvents)
@@ -72,7 +72,7 @@ class IdeaFlowService {
 		TaskTimelineOverview.builder()
 				.task(task)
 				.timeline(timeline)
-				.subtaskTimelineMetrics(subtaskTimelineMetrics)
+				.subtaskOverviews(subtaskTimelineMetrics)
 				.build()
 	}
 
@@ -87,7 +87,7 @@ class IdeaFlowService {
 		IdeaFlowSubtaskTimeline subtaskTimeline = generateSubtaskTimeline(task, subtaskId)
 
 		RiskSummaryCalculator calculator = new RiskSummaryCalculator()
-		SubtaskMetrics metrics = calculator.calculateSubtaskMetrics(subtaskTimeline.subtask, subtaskTimeline)
+		SubtaskOverview metrics = calculator.generateSubtaskOverview(subtaskTimeline.subtask, subtaskTimeline)
 
 		List<TroubleshootingJourney> troubleshootingJourneys = troubleshootingJourneyGenerator.createFromTimeline(subtaskTimeline);
 
@@ -97,7 +97,7 @@ class IdeaFlowService {
 		SubtaskTimelineOverview.builder()
 				.subtask(subtaskTimeline.subtask)
 				.subtaskTimeline(subtaskTimeline)
-				.subtaskMetrics(metrics)
+				.overview(metrics)
 				.troubleshootingJourneys(troubleshootingJourneys)
 				.build()
 	}
@@ -120,7 +120,7 @@ class IdeaFlowService {
 
 	/**
 	 * Generates the primary IdeaFlowTimeline that can be used for visualization,
-	 * or input to metrics calculations.
+	 * or input to allMetrics calculations.
 	 *
 	 * @param taskId
 	 * @return IdeaFlowTimeline
@@ -146,12 +146,12 @@ class IdeaFlowService {
 		return timeline
 	}
 
-	private List<SubtaskMetrics> generateTimelineMetricsBySubtask(IdeaFlowTaskTimeline timeline) {
+	private List<SubtaskOverview> generateTimelineMetricsBySubtask(IdeaFlowTaskTimeline timeline) {
 		RiskSummaryCalculator riskSummaryCalculator = new RiskSummaryCalculator()
 		List<IdeaFlowSubtaskTimeline> subtaskTimelineList = splitTimelineBySubtaskEvents(timeline)
 
 		subtaskTimelineList.collect { IdeaFlowSubtaskTimeline subtaskTimeline ->
-			riskSummaryCalculator.calculateSubtaskMetrics(subtaskTimeline.subtask, subtaskTimeline)
+			riskSummaryCalculator.generateSubtaskOverview(subtaskTimeline.subtask, subtaskTimeline)
 		}
 	}
 

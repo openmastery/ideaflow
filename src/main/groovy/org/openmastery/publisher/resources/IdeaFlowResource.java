@@ -64,18 +64,18 @@ public class IdeaFlowResource {
 
 	/**
 	 *
-	 * Generate summary metrics for all IdeaFlow subtasks
-	 * Will eventually be able to provide your own user-configurable metrics.
+	 * Generate summary allMetrics for all IdeaFlow subtasks
+	 * Will eventually be able to provide your own user-configurable allMetrics.
 	 *
-	 * Community-contributed, individually-branded OSS IdeaFlow metrics coming soon!
+	 * Community-contributed, individually-branded OSS IdeaFlow allMetrics coming soon!
 	 *
 	 * @param taskId
-	 * @return List<SubtaskMetrics>
+	 * @return List<SubtaskOverview>
 	 */
 
 //	@GET
 //	@Path(ResourcePaths.IDEAFLOW_METRICS + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
-//	public List<SubtaskMetrics> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
+//	public List<SubtaskOverview> generateRiskSummariesBySubtask(@PathParam("taskId") Long taskId) {
 //
 //		return ideaFlowService.generateRiskSummariesBySubtask(taskId);
 //	}

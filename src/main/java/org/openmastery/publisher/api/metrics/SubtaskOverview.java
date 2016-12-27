@@ -17,12 +17,21 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubtaskMetrics {
+public class SubtaskOverview {
 
-	Event subtask;
+	Event subtaskEvent;
 	Long durationInSeconds;
 
-	List<Metric<?>> metrics;
+	List<Metric<?>> allMetrics;
+	List<Metric<?>> dangerMetrics;
+
+	public Long getSubtaskId() {
+		return subtaskEvent.getId();
+	}
+
+	public String getDescription() {
+		return subtaskEvent.getComment();
+	}
 
 	@JsonIgnore
 	Map<MetricType, MetricsCalculator> calculators;
@@ -35,10 +44,15 @@ public class SubtaskMetrics {
 	}
 
 	public void calculate(IdeaFlowTimeline timeline) {
-		metrics = new ArrayList<Metric<?>>();
+		allMetrics = new ArrayList<Metric<?>>();
 		for (MetricsCalculator calculator: calculators.values()) {
 			Metric<?> result = calculator.calculateMetrics(timeline);
-			metrics.add(result);
+
+			if (result.isDanger()) {
+				dangerMetrics.add(result);
+			}
+
+			allMetrics.add(result);
 		}
 	}
 }
