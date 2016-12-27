@@ -1,5 +1,6 @@
 package org.openmastery.publisher.api.ideaflow;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class IdeaFlowTaskTimeline implements Positionable, IdeaFlowTimeline {
 
+	@JsonIgnore
 	private Task task;
 
 	private LocalDateTime start;

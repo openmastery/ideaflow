@@ -18,7 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 public class IdeaFlowBand implements Positionable {
 
+	@JsonIgnore //will these ever be persistent?
 	private long id;
+
+	@JsonIgnore //should we be populating taskId on everything or does this even matter?
 	private Long taskId;
 
 	private LocalDateTime start;
@@ -26,22 +29,28 @@ public class IdeaFlowBand implements Positionable {
 	private Long durationInSeconds;
 	private Long relativePositionInSeconds;
 
-	private String startingComment;
-	private String endingComent;
-
 	private IdeaFlowStateType type;
 
+	@JsonIgnore //deprecated
+	private String startingComment;
+	@JsonIgnore //deprecated
+	private String endingComent;
+
+	@JsonIgnore
 	private List<IdeaFlowBand> nestedBands = new ArrayList<IdeaFlowBand>();
 
+	@JsonIgnore //redundant field
 	@Override
 	public LocalDateTime getPosition() {
 		return start;
 	}
 
+	@JsonIgnore //refactor into AbstractRelativeInterval
 	public Long getRelativeStart() {
 		return relativePositionInSeconds;
 	}
 
+	@JsonIgnore //refactor into AbstractRelativeInterval
 	public Long getRelativeEnd() {
 		return relativePositionInSeconds + durationInSeconds;
 	}

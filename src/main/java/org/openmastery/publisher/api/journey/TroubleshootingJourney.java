@@ -1,8 +1,11 @@
 package org.openmastery.publisher.api.journey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
 import org.openmastery.publisher.api.metrics.TimelineMetrics;
@@ -20,12 +23,12 @@ import java.util.Set;
 @Builder
 public class TroubleshootingJourney extends AbstractRelativeInterval {
 
-	Long id;
+	@JsonIgnore
 	IdeaFlowBand band;
 
 	Set<String> tags; //derived from WTF/YAY #hashtags
 
-	List<Experiment> experiments;
+	List<DiscoverySession> discoverySessions;
 	TimelineMetrics metrics;
 
 	public TroubleshootingJourney(IdeaFlowBand band) {
@@ -33,17 +36,16 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		setRelativeStart(band.getRelativePositionInSeconds());
 		setDurationInSeconds(band.getDurationInSeconds());
 
-		this.experiments = new ArrayList<Experiment>();
+		this.discoverySessions = new ArrayList<DiscoverySession>();
 		this.tags = new HashSet<String>();
 	}
 
-	public void addExperiment(Event wtfYayEvent, Long durationInSeconds) {
-		Experiment experiment = new Experiment(wtfYayEvent, durationInSeconds);
-		tags.addAll(experiment.tags);
+	public void addDiscoverySession(Event wtfYayEvent, Long durationInSeconds) {
+		DiscoverySession discoverySession = new DiscoverySession(wtfYayEvent, durationInSeconds);
+		tags.addAll(discoverySession.tags);
 
-		experiments.add(experiment);
+		discoverySessions.add(discoverySession);
 	}
-
 
 	public void fillWithActivity(List<ExecutionEvent> executionEvents) {
 		for (ExecutionEvent executionEvent : executionEvents) {
@@ -54,11 +56,20 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	}
 
 	private void addExecutionEvent(ExecutionEvent event) {
-		for (Experiment experiment : experiments ) {
+		for (DiscoverySession experiment : discoverySessions) {
 			if (experiment.shouldContain(event)) {
 				experiment.addExecutionEvent(event);
 			}
 		}
 
 	}
+
+	public LocalDateTime getStart() {
+		return band.getStart();
+	}
+
+	public LocalDateTime getEnd() {
+		return band.getEnd();
+	}
+
 }

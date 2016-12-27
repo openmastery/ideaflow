@@ -74,22 +74,20 @@ class TroubleshootingJourneyGenerator {
 			for (int activeIndex = 0; activeIndex < wtfYayEvents.size(); activeIndex++) {
 				Event wtfYayEvent = wtfYayEvents.get(activeIndex)
 				Long eventPosition = wtfYayEvent.relativePositionInSeconds
-				println "Event [" + eventPosition + ", " + wtfYayEvent.type + "]"
+				//println "Event [" + eventPosition + ", " + wtfYayEvent.type + "]"
 
 				if (eventPosition >= journey.relativeStart && eventPosition <= journey.relativeEnd) {
-					println "inside!"
 
 					Long durationInSeconds = 0;
 					if (wtfYayEvents.size() > activeIndex + 1) {
 						Event peekAtNextEvent = wtfYayEvents.get(activeIndex + 1)
 						durationInSeconds = peekAtNextEvent.relativePositionInSeconds - wtfYayEvent.relativePositionInSeconds
-						println "[Calculate] Experiment duration (peek): " + durationInSeconds
+						//println "[Calculate] DiscoverySession duration (peek): " + durationInSeconds
 					} else {
 						durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
-						println "[Calculate] Experiment duration (band-end): " + durationInSeconds
+						//println "[Calculate] DiscoverySession duration (band-end): " + durationInSeconds
 					}
-
-					journey.addExperiment(wtfYayEvent, durationInSeconds);
+					journey.addDiscoverySession(wtfYayEvent, durationInSeconds);
 				}
 			}
 

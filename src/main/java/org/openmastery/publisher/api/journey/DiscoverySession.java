@@ -19,40 +19,36 @@ import java.util.regex.Pattern;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class Experiment extends AbstractRelativeInterval {
+public class DiscoverySession extends AbstractRelativeInterval {
 
-	Event wtfYayEvent;
+	Event event;
 
 	Set<String> tags; //derived from WTF/YAY #hashtags
 
-	List<ExecutionCycle> executionCycles;
+	List<ExperimentCycle> experimentCycles;
 
 	TimelineMetrics metrics;
 
-	public Experiment(Event wtfYayEvent, Long durationInSeconds) {
-		this.wtfYayEvent = wtfYayEvent;
-		this.executionCycles = new ArrayList<ExecutionCycle>();
+	public DiscoverySession(Event wtfYayEvent, Long durationInSeconds) {
+		this.event = wtfYayEvent;
+		this.experimentCycles = new ArrayList<ExperimentCycle>();
 		this.tags = extractHashTags(wtfYayEvent.getComment());
 
 		setRelativeStart(wtfYayEvent.getRelativePositionInSeconds());
 		setDurationInSeconds(durationInSeconds);
 	}
 
-	public Long getId() {
-		return wtfYayEvent.getId();
-	}
+	public void addExecutionEvent(ExecutionEvent executionEvent) {
+		updateEndTimeOfLastExecutionCycle(executionEvent.getRelativePositionInSeconds());
 
-	public void addExecutionEvent(ExecutionEvent event) {
-		updateEndTimeOfLastExecutionCycle(event.getRelativePositionInSeconds());
-
-		Long durationInSeconds = getRelativeEnd() - event.getRelativePositionInSeconds();
-		ExecutionCycle executionCycle = new ExecutionCycle(event, durationInSeconds);
-		executionCycles.add(executionCycle);
+		Long durationInSeconds = getRelativeEnd() - executionEvent.getRelativePositionInSeconds();
+		ExperimentCycle experimentCycle = new ExperimentCycle(executionEvent, durationInSeconds);
+		experimentCycles.add(experimentCycle);
 	}
 
 	void updateEndTimeOfLastExecutionCycle(Long beginningOfNextExecutionCycle) {
-		if (executionCycles.size() > 0) {
-			ExecutionCycle lastCycle = executionCycles.get(executionCycles.size() - 1);
+		if (experimentCycles.size() > 0) {
+			ExperimentCycle lastCycle = experimentCycles.get(experimentCycles.size() - 1);
 			lastCycle.setDurationInSeconds(beginningOfNextExecutionCycle - lastCycle.getRelativeStart());
 		}
 	}
