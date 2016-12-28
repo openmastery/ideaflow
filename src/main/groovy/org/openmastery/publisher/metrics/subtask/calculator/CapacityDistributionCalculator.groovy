@@ -19,18 +19,11 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.CapacityDistribution
-import org.openmastery.publisher.api.metrics.Metric
-import org.openmastery.publisher.api.metrics.MetricType
 
-class CapacityDistributionCalculator extends AbstractMetricsCalculator<CapacityDistribution> {
-
-	CapacityDistributionCalculator() {
-		super(MetricType.CAPACITY_DISTRIBUTION)
-	}
+class CapacityDistributionCalculator {
 
 
-	@Override
-	Metric<CapacityDistribution> calculateMetrics(IdeaFlowTimeline timeline) {
+	CapacityDistribution calculateCapacityDistribution(IdeaFlowTimeline timeline) {
 
 		CapacityDistribution capacity = new CapacityDistribution()
 
@@ -38,17 +31,30 @@ class CapacityDistributionCalculator extends AbstractMetricsCalculator<CapacityD
 		saveTotalDurationForBandType(capacity, timeline, IdeaFlowStateType.PROGRESS)
 		saveTotalDurationForBandType(capacity, timeline, IdeaFlowStateType.TROUBLESHOOTING)
 
-		Metric<CapacityDistribution> metric = createMetric()
-		metric.type = getMetricType()
-		metric.value = capacity
-
-		return metric
+		return capacity
 	}
 
-	@Override
-	CapacityDistribution getDangerThreshold() {
-		return null
+	CapacityDistribution calculateCapacityWithinWindow(IdeaFlowTimeline timeline, Long windowStart, Long windowEnd) {
+
+		CapacityDistribution distribution = new CapacityDistribution()
+		distribution.addDurationForType(IdeaFlowStateType.LEARNING, 0)
+		distribution.addDurationForType(IdeaFlowStateType.PROGRESS, 0)
+		distribution.addDurationForType(IdeaFlowStateType.TROUBLESHOOTING, 0)
+
+		timeline.ideaFlowBands.each { IdeaFlowBand band ->
+			if (band.relativeStart >= windowStart && band.relativeStart < windowEnd) {
+				long endPoint = Math.min(band.relativeEnd, windowEnd)
+				long timeWithinWindow = endPoint - band.relativeStart
+				distribution.addDurationForType(band.type, timeWithinWindow)
+			} else if (band.relativeEnd >= windowStart && band.relativeEnd < windowEnd) {
+				long timeWithinWindow = band.relativeEnd - windowStart
+				distribution.addDurationForType(band.type, timeWithinWindow)
+			}
+		}
+
+		return distribution
 	}
+
 
 	void saveTotalDurationForBandType(CapacityDistribution capacity, IdeaFlowTimeline timeline, IdeaFlowStateType ideaFlowStateType) {
 
@@ -62,7 +68,7 @@ class CapacityDistributionCalculator extends AbstractMetricsCalculator<CapacityD
 			totalDuration += band.durationInSeconds
 		}
 
-		capacity.addTotalDurationForType(ideaFlowStateType, totalDuration)
+		capacity.addDurationForType(ideaFlowStateType, totalDuration)
 
 	}
 }

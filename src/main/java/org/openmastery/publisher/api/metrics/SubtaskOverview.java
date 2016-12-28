@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 
@@ -24,6 +26,8 @@ public class SubtaskOverview {
 
 	List<Metric<?>> allMetrics;
 
+	CapacityDistribution capacityDistribution;
+
 	public Long getSubtaskId() {
 		return subtaskEvent.getId();
 	}
@@ -31,5 +35,7 @@ public class SubtaskOverview {
 	public String getDescription() {
 		return subtaskEvent.getComment();
 	}
+
+	public LocalDateTime getStart() { return subtaskEvent.getPosition(); }
 
 }

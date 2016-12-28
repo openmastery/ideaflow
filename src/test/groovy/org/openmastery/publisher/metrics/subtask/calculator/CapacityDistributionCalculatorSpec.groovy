@@ -27,7 +27,7 @@ class CapacityDistributionCalculatorSpec extends Specification {
 	}
 
 
-	def "calculateMetrics SHOULD add up the duration for multiple bands of same type"() {
+	def "calculateCapacityDistribution SHOULD add up the duration for multiple bands of same type"() {
 		given:
 		IdeaFlowBand troubleshootingBand1 = IdeaFlowBand.builder()
 				.type(IdeaFlowStateType.TROUBLESHOOTING)
@@ -43,15 +43,13 @@ class CapacityDistributionCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshootingBand1, troubleshootingBand2])
-		Metric<CapacityDistribution> metric = calculator.calculateMetrics(timeline)
+		CapacityDistribution value = calculator.calculateCapacityDistribution(timeline)
 
 		then:
-		assert metric.type == MetricType.CAPACITY_DISTRIBUTION
-		assert metric.value != null
-		assert metric.value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING, 45)
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING, 45)
 	}
 
-	def "calculateMetrics SHOULD add up the duration for bands by type"() {
+	def "calculateCapacityDistribution SHOULD add up the duration for bands by type"() {
 		given:
 		IdeaFlowBand learningBand = IdeaFlowBand.builder()
 				.type(IdeaFlowStateType.LEARNING)
@@ -73,14 +71,13 @@ class CapacityDistributionCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [learningBand, progressBand, troubleshootingBand])
-		Metric<CapacityDistribution> metric = calculator.calculateMetrics(timeline)
+		CapacityDistribution value = calculator.calculateCapacityDistribution(timeline)
 
 		then:
-		assert metric.type == MetricType.CAPACITY_DISTRIBUTION
-		assert metric.value != null
-		assert metric.value.capacityDistributionByType.get(IdeaFlowStateType.LEARNING, 30)
-		assert metric.value.capacityDistributionByType.get(IdeaFlowStateType.PROGRESS, 40)
-		assert metric.value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING, 15)
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.LEARNING, 30)
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.PROGRESS, 40)
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING, 15)
 	}
+
 
 }

@@ -17,7 +17,7 @@ public class CapacityDistribution {
 
 	Map<IdeaFlowStateType, Long> capacityDistributionByType = new HashMap<IdeaFlowStateType, Long>();
 
-	public void addTotalDurationForType(IdeaFlowStateType ideaFlowStateType, Long durationInSeconds) {
+	public void addDurationForType(IdeaFlowStateType ideaFlowStateType, Long durationInSeconds) {
 		Long existingTime = capacityDistributionByType.get(ideaFlowStateType);
 
 		if (existingTime == null) {

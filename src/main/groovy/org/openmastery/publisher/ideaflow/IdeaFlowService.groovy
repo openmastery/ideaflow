@@ -19,6 +19,7 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
 import org.openmastery.publisher.api.journey.ProgressMilestone
@@ -89,29 +90,45 @@ class IdeaFlowService {
 
 	SubtaskTimelineOverview generateTimelineOverviewForSubtask(Long taskId, Long subtaskId) {
 		Task task = taskService.findTaskWithId(taskId)
+
 		IdeaFlowSubtaskTimeline subtaskTimeline = generateSubtaskTimeline(task, subtaskId)
-
-		MetricsService calculator = new MetricsService()
-		SubtaskOverview metrics = calculator.generateSubtaskOverview(subtaskTimeline.subtask, subtaskTimeline)
-
-		List<TroubleshootingJourney> troubleshootingJourneys = troubleshootingJourneyGenerator.createFromTimeline(subtaskTimeline);
-
 		List<Event> filteredEvents = filterEventsByType(subtaskTimeline.events, SUBTASK_TIMELINE_EVENTS_TO_RETAIN)
 		subtaskTimeline.setEvents(filteredEvents)
 
-		List<ProgressMilestone> progressBreakdown = generateProgressMilestones(subtaskTimeline.relativeStart, subtaskTimeline.relativeEnd, filteredEvents)
+		List<ProgressMilestone> progressMilestones = generateProgressMilestones(subtaskTimeline)
+		List<TroubleshootingJourney> troubleshootingJourneys = troubleshootingJourneyGenerator.createFromTimeline(subtaskTimeline);
+
+		distributeJourneysByMilestone(progressMilestones, troubleshootingJourneys)
+
+		SubtaskOverview metrics = metricsService.generateSubtaskOverview(subtaskTimeline.subtask, subtaskTimeline)
+
+		progressMilestones.each { ProgressMilestone milestone ->
+			milestone.capacityDistribution = metricsService.calculateCapacityDistribution(subtaskTimeline, milestone)
+		}
 
 		SubtaskTimelineOverview.builder()
 				.subtask(subtaskTimeline.subtask)
 				.timeline(subtaskTimeline)
 				.overview(metrics)
-				.progressBreakdown(progressBreakdown)
-				.troubleshootingJourneys(troubleshootingJourneys)
+				.progressMilestones(progressMilestones)
 				.build()
 	}
 
-	List<ProgressMilestone> generateProgressMilestones(Long relativeStart, Long relativeEnd, List<Event> allEvents) {
-		List<Event> progressNotes = allEvents.findAll { Event event ->
+	void distributeJourneysByMilestone(List<ProgressMilestone> progressMilestones, List<TroubleshootingJourney> troubleshootingJourneys) {
+		progressMilestones.each { ProgressMilestone milestone ->
+			troubleshootingJourneys.each { TroubleshootingJourney journey ->
+				if (milestone.shouldContain(journey)) {
+					milestone.addJourney(journey)
+				}
+			}
+		}
+	}
+
+	List<ProgressMilestone> generateProgressMilestones(IdeaFlowSubtaskTimeline subtaskTimeline) {
+		Long relativeStart = subtaskTimeline.relativeStart
+		Long relativeEnd = subtaskTimeline.relativeEnd
+
+		List<Event> progressNotes = subtaskTimeline.events.findAll { Event event ->
 			event.type == EventType.NOTE
 		}
 
@@ -129,8 +146,7 @@ class IdeaFlowService {
 		if (lastMilestone != null) {
 			lastMilestone.durationInSeconds = relativeEnd - lastMilestone.relativePositionInSeconds
 		} else {
-			Event defaultEvent = new Event(-1, "Total progress", EventType.NOTE);
-			defaultEvent.relativePositionInSeconds = relativeStart
+			Event defaultEvent = subtaskTimeline.subtask
 			ProgressMilestone defaultMilestone = new ProgressMilestone(defaultEvent)
 			defaultMilestone.durationInSeconds = relativeEnd - relativeStart
 

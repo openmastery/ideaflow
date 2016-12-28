@@ -20,7 +20,5 @@ public class SubtaskTimelineOverview {
 	private Event subtask;
 	private IdeaFlowSubtaskTimeline timeline;
 	private SubtaskOverview overview;
-	private List<ProgressMilestone> progressBreakdown;
-	private List<TroubleshootingJourney> troubleshootingJourneys;
-
+	private List<ProgressMilestone> progressMilestones;
 }

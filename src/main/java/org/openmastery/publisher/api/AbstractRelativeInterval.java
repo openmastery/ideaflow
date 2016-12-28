@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AbstractRelativeInterval implements RelativeInterval {
+public class AbstractRelativeInterval implements RelativeInterval, RelativePositionable {
 
 	Long durationInSeconds;
 

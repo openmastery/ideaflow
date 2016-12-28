@@ -15,8 +15,10 @@
  */
 package org.openmastery.publisher.metrics.subtask
 
+import org.openmastery.publisher.api.RelativeInterval
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.metrics.CapacityDistribution
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.api.metrics.MetricsCalculator
@@ -44,6 +46,7 @@ public class MetricsService {
 		overview.subtaskEvent = subtask
 		overview.durationInSeconds = timelineSegment.durationInSeconds
 
+		overview.capacityDistribution = calculateCapacityDistribution(timelineSegment)
 
 		MetricSetCalculator metricSet = new MetricSetCalculator()
 		addMetric(metricSet, new WtfsPerDayCalculator())
@@ -51,13 +54,23 @@ public class MetricsService {
 		addMetric(metricSet, new MaxWtfDurationCalculator())
 		addMetric(metricSet, new AvgFeedbackLoopsCalculator())
 		addMetric(metricSet, new AvgFeedbackLoopDurationCalculator())
-		addMetric(metricSet, new CapacityDistributionCalculator())
 
 		metricSet.calculate(timelineSegment)
 
 		overview.allMetrics = metricSet.allMetrics
 
 		return overview
+	}
+
+	public CapacityDistribution calculateCapacityDistribution(IdeaFlowTimeline timeline) {
+		CapacityDistributionCalculator calculator = new CapacityDistributionCalculator();
+		return calculator.calculateCapacityDistribution(timeline)
+	}
+
+	public CapacityDistribution calculateCapacityDistribution(IdeaFlowTimeline timeline, RelativeInterval interval) {
+
+		CapacityDistributionCalculator calculator = new CapacityDistributionCalculator();
+		return calculator.calculateCapacityWithinWindow(timeline, interval.relativeStart, interval.relativeEnd)
 	}
 
 

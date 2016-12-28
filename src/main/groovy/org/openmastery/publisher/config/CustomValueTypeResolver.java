@@ -27,6 +27,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.openmastery.publisher.api.metrics.CapacityDistribution;
 import org.openmastery.publisher.api.metrics.DurationInSeconds;
 
 import javax.ws.rs.ext.ContextResolver;
@@ -55,8 +56,21 @@ public class CustomValueTypeResolver  implements ContextResolver<ObjectMapper> {
 
 			}
 		});
+
+		module.addSerializer(CapacityDistribution.class, new StdSerializer<CapacityDistribution>(CapacityDistribution.class) {
+			@Override
+			public void serialize(CapacityDistribution value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+				if (value == null) {
+					jgen.writeNull();
+				} else {
+					jgen.writeObject(value.getCapacityDistributionByType());
+				}
+
+			}
+		});
 		return module;
 	}
+
 
 	@Override
 	public ObjectMapper getContext(Class<?> type) {

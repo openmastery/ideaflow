@@ -30,6 +30,8 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	List<PartialDiscovery> partialDiscoveries;
 	List<Metric<?>> metrics;
 
+	Long eventId;
+
 	public TroubleshootingJourney(IdeaFlowBand band) {
 		this.band = band;
 		setRelativeStart(band.getRelativePositionInSeconds());
@@ -42,6 +44,10 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	public void addPartialDiscovery(Event wtfYayEvent, Long durationInSeconds) {
 		PartialDiscovery partialDiscovery = new PartialDiscovery(wtfYayEvent, durationInSeconds);
 		tags.addAll(partialDiscovery.tags);
+
+		if (eventId == null) {
+			eventId = wtfYayEvent.getId();
+		}
 
 		partialDiscoveries.add(partialDiscovery);
 	}
