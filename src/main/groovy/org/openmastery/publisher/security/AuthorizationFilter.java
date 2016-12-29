@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.Priority;
 import javax.inject.Named;
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -55,6 +56,10 @@ public class AuthorizationFilter implements ContainerRequestFilter, WriterInterc
 
 	@Override
 	public void filter(ContainerRequestContext request) {
+		if (HttpMethod.OPTIONS.equals(request.getRequest().getMethod())) {
+			return;
+		}
+
 		String apiKey = request.getHeaderString(ResourcePaths.API_KEY_HEADER);
 		if (apiKey == null) {
 			throw new ForbiddenException("Missing API key, header=" + ResourcePaths.API_KEY_HEADER);

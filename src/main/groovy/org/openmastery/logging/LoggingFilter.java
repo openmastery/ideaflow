@@ -17,9 +17,11 @@ package org.openmastery.logging;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
 import org.glassfish.jersey.message.MessageUtils;
 
 import javax.annotation.Priority;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -87,7 +89,9 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 	@Override
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
 		logResponse("Server response: ", responseContext.getStatus(), requestContext.getMethod(), requestContext.getUriInfo().getRequestUri());
-		logResponsePayload(requestContext, responseContext);
+		if (HttpMethod.OPTIONS.equals(requestContext.getMethod()) == false) {
+			logResponsePayload(requestContext, responseContext);
+		}
 	}
 
 	private void logResponsePayload(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
