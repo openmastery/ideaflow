@@ -64,7 +64,7 @@ class EventService {
 		return mapper.mapIfNotNull(event, EventEntity.class)
 	}
 
-	FAQAnnotation annotateWithFAQ(Long userId, Long eventId, FAQAnnotation annotation) {
+	FAQAnnotation annotateWithFAQ(Long userId, Long eventId, String faqComment) {
 		EventEntity eventEntity = persistenceService.findEventById(eventId)
 		if (eventEntity == null) {
 			throw new NotFoundException("Unable to annotate event.  EventId = $eventId not found.")
@@ -76,7 +76,7 @@ class EventService {
 				.ownerId(userId)
 				.taskId(eventEntity.taskId)
 				.eventId(eventId)
-				.comment(annotation.faq).build()
+				.comment(faqComment).build()
 
 		persistenceService.saveAnnotation(faqAnnotationEntity)
 

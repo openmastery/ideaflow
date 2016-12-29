@@ -29,9 +29,9 @@ public class EventClient extends OpenMasteryClient<Event, EventClient> {
 				.updateWithPut(event);
 	}
 
-	public FAQAnnotation annotateWithFAQ(FAQAnnotation annotation) {
+	public FAQAnnotation annotateWithFAQ(Long eventId, String annotation) {
 		return (FAQAnnotation) getUntypedCrudClientRequest()
-				.path(annotation.getEventId())
+				.path(eventId)
 				.path(ResourcePaths.EVENT_ANNOTATION_PATH)
 				.path(ResourcePaths.EVENT_FAQ_PATH)
 				.entity(FAQAnnotation.class)

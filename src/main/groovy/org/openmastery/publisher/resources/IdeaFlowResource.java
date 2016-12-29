@@ -35,7 +35,8 @@ public class IdeaFlowResource {
 
 
 	/**
-	 * Uses the automated data collection from Idea Flow plugins to generate a timeline and metrics overview.
+	 * Generate an IdeaFlowTimeline and calculate metrics for each subtask to give an overview of a task.
+	 * Tasks are broken down into subtasks
 	 *
 	 * @param taskId
 	 * @return IdeaFlowTimeline

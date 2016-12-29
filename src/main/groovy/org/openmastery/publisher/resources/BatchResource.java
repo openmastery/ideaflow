@@ -34,6 +34,13 @@ public class BatchResource {
 	@Autowired
 	private IFMBatchService ifmBatchService;
 
+	/**
+	 * Save a batch of miscellaneous Idea Flow Map activities and events generated with "Idea Flow" plugin
+	 * or other data collection tools.  Timestamps will be adjusted to server time on submission.
+	 *
+	 * @param batch miscellaneous batch of IFM activity
+	 */
+
 	@POST
 	public void addIFMBatch(NewIFMBatch batch) {
 		ifmBatchService.addIFMBatch(batch);

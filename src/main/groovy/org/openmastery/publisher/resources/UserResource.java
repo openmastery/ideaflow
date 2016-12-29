@@ -34,6 +34,11 @@ public class UserResource {
 	@Autowired
 	private UserRepository userRepository;
 
+	/**
+	 * Create a new user API-Key based on the specified email.
+	 * @param userEmail a unique email account
+	 * @return API-Key
+	 */
 	@POST
 	public String createUser(@QueryParam("email") String userEmail) {
 
@@ -45,6 +50,12 @@ public class UserResource {
 
 		return user.getApiKey() + "\n";
 	}
+
+	/**
+	 * Retrieve the API-Key of an existing user
+	 * @param userEmail a unique email account
+	 * @return API-Key
+	 */
 
 	@GET
 	@Path(ResourcePaths.APIKEY_PATH)

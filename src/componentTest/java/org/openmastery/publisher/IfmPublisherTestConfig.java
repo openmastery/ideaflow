@@ -81,12 +81,6 @@ public class IfmPublisherTestConfig {
 	}
 
 	@Bean
-	public TimelineClient timelineClient() {
-		return new TimelineClient(hostUri)
-				.apiKey(testUser().getApiKey());
-	}
-
-	@Bean
 	@Primary
 	public TimeService timeService() {
 		return new MockTimeService();

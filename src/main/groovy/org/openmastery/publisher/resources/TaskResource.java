@@ -39,6 +39,11 @@ public class TaskResource {
 		return taskService.create(newTask);
 	}
 
+	/**
+	 * Retrieve the details for a specific task
+	 * @param taskId the persistent id
+	 * @return Task
+	 */
 	@GET
 	@Path(ResourcePaths.ID_PATH + "/{id}")
 	public Task findTaskWithId(@PathParam("id") Long taskId) {
@@ -48,6 +53,15 @@ public class TaskResource {
 		}
 		return task;
 	}
+
+
+	/**
+	 * Updates details for a task like name, description, and project.
+	 * Intended to be used for inline editing of task details
+	 *
+	 * @param taskWithUpdates Task object with updates in it
+	 * @return Task
+	 */
 
 	@PUT
 	public Task updateTask(Task taskWithUpdates) {
@@ -60,6 +74,13 @@ public class TaskResource {
 		return updatedTask;
 	}
 
+	/**
+	 * Find a task using the name rather than the id.
+	 * Task names must be unique for a specific user
+	 *
+	 * @param taskName The name of the task
+	 * @return Task
+	 */
 	@GET
 	@Path(ResourcePaths.TASK_NAME_PATH + "/{name}")
 	public Task findTaskWithName(@PathParam("name") String taskName) {
@@ -70,12 +91,21 @@ public class TaskResource {
 		return task;
 	}
 
-	@GET //TODO implement paging
+	/**
+	 * List all the recent tasks sorted by most recently modified tasks.
+	 * Tasks are modified everytime new event or activity data is saved for the task
+	 *
+	 * @param page the page number to retrieve, defaults to page 0
+	 * @param perPage the number of tasks per page to retrieve, defaults to 10
+	 * @return List<Task>
+	 */
+
+	@GET
 	public List<Task> findRecentTasks(@QueryParam("page") Integer page,
 									  @QueryParam("per_page") Integer perPage) {
 
 		Integer activePage = page == null ? 0 : page;
-		Integer activePerPage = perPage == null ? 20 : perPage;
+		Integer activePerPage = perPage == null ? 10 : perPage;
 
 		return taskService.findRecentTasks(activePage, activePerPage);
 	}

@@ -31,8 +31,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	private EventClient eventClient
 	@Autowired
 	private BatchClient batchClient
-	@Autowired
-	private TimelineClient timelineClient
+
 	private LocalDateTime start
 
 	def setup() {

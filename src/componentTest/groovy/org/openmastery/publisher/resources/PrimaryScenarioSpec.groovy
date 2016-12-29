@@ -36,8 +36,7 @@ class PrimaryScenarioSpec extends Specification {
 	private EventClient eventClient
 	@Autowired
 	private BatchClient activityClient
-	@Autowired
-	private TimelineClient timelineClient
+
 	private LocalDateTime start
 
 	def setup() {

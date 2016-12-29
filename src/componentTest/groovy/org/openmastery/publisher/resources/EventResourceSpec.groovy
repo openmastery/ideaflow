@@ -76,10 +76,8 @@ class EventResourceSpec extends Specification {
 		EventEntity eventEntity = aRandom.eventEntity().build()
 		EventEntity savedEntity = persistenceService.saveEvent(eventEntity)
 
-		FAQAnnotation faqAnnotation = new FAQAnnotation(savedEntity.id, "My FAQ!")
-
 		when:
-		FAQAnnotation savedAnnotation = eventClient.annotateWithFAQ(faqAnnotation)
+		FAQAnnotation savedAnnotation = eventClient.annotateWithFAQ(savedEntity.id, "My FAQ!")
 
 		then:
 		assert savedAnnotation != null
@@ -90,17 +88,13 @@ class EventResourceSpec extends Specification {
 		EventEntity eventEntity = aRandom.eventEntity().build()
 		EventEntity savedEntity = persistenceService.saveEvent(eventEntity)
 
-		FAQAnnotation faqAnnotation = new FAQAnnotation(savedEntity.id, "My FAQ!")
-
 		when:
-		eventClient.annotateWithFAQ(faqAnnotation)
-		faqAnnotation.faq = "Modified!"
-
-		FAQAnnotation updatedAnnotation = eventClient.annotateWithFAQ(faqAnnotation)
+		eventClient.annotateWithFAQ(savedEntity.id, "MY FAQ")
+		FAQAnnotation updatedAnnotation = eventClient.annotateWithFAQ(savedEntity.id, "Modified!")
 
 		then:
 		assert updatedAnnotation != null
-		assert updatedAnnotation == faqAnnotation
+		assert updatedAnnotation.faq == "Modified!"
 	}
 
 }

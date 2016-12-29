@@ -91,6 +91,7 @@ class TaskService {
 	Task updateTask(Task taskWithUpdates) {
 		TaskEntity taskEntity = persistenceService.findTaskWithId(taskWithUpdates.id)
 		taskEntity.description = taskWithUpdates.description
+		taskEntity.project = taskWithUpdates.project
 		taskEntity.modifyDate = timeService.javaNow()
 		TaskEntity savedEntity = persistenceService.saveTask(taskEntity)
 		return toApiTask(savedEntity);
