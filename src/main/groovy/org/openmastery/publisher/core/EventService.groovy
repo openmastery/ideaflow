@@ -15,11 +15,14 @@
  */
 package org.openmastery.publisher.core
 
+import com.bancvue.rest.exception.NotFoundException
 import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
+import org.openmastery.publisher.api.annotation.FAQAnnotation
 import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
@@ -59,5 +62,24 @@ class EventService {
 	EventEntity toEntity(Event event) {
 		EntityMapper mapper = new EntityMapper()
 		return mapper.mapIfNotNull(event, EventEntity.class)
+	}
+
+	FAQAnnotation annotateWithFAQ(Long userId, Long eventId, FAQAnnotation annotation) {
+		EventEntity eventEntity = persistenceService.findEventById(eventId)
+		if (eventEntity == null) {
+			throw new NotFoundException("Unable to annotate event.  EventId = $eventId not found.")
+		}
+
+		persistenceService.deleteFAQAnnotation(eventId)
+
+		FaqAnnotationEntity faqAnnotationEntity = FaqAnnotationEntity.builder()
+				.ownerId(userId)
+				.taskId(eventEntity.taskId)
+				.eventId(eventId)
+				.comment(annotation.faq).build()
+
+		persistenceService.saveAnnotation(faqAnnotationEntity)
+
+		return new FAQAnnotation(eventId: faqAnnotationEntity.eventId, faq: faqAnnotationEntity.comment);
 	}
 }

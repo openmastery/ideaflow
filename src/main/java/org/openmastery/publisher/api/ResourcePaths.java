@@ -49,7 +49,9 @@ public class ResourcePaths {
 	public static final String EVENT_SUBTASK_PATH = "/subtask";
 	public static final String EVENT_WTF_PATH = "/wtf";
 	public static final String EVENT_AWESOME_PATH = "/awesome";
-	public static final String EVENT_BATCH_PATH = "/batch";
+	public static final String EVENT_ANNOTATION_PATH = "/annotation";
+	public static final String EVENT_FAQ_PATH = "/faq";
+
 
 	// timeline paths
 	public static final String TIMELINE_PATH = "/timeline";

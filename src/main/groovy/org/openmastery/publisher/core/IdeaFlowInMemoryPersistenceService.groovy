@@ -110,6 +110,16 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 		return findAllAnnotationsByType(SnippetAnnotationEntity, taskId);
 	}
 
+	@Override
+	EventEntity findEventById(long eventId) {
+		return eventList.find { it.id == eventId }
+	}
+
+	@Override
+	void deleteFAQAnnotation(long eventId) {
+		annotationList.removeAll { it.eventId == eventId && it instanceof FaqAnnotationEntity}
+	}
+
 	private <T> List<T> findAllActivitiesOfType(Class<T> type, long taskId) {
 		activityList.findAll { type.isInstance(it) && it.taskId == taskId }
 	}

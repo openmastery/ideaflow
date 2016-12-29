@@ -2,9 +2,11 @@ package org.openmastery.publisher.client;
 
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.annotation.FAQAnnotation;
 import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.NewEvent;
+import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview;
 
 import java.util.List;
 
@@ -23,7 +25,17 @@ public class EventClient extends OpenMasteryClient<Event, EventClient> {
 
 	public Event updateEvent(Event event) {
 		return (Event) getUntypedCrudClientRequest()
+				.path(event.getId())
 				.updateWithPut(event);
+	}
+
+	public FAQAnnotation annotateWithFAQ(FAQAnnotation annotation) {
+		return (FAQAnnotation) getUntypedCrudClientRequest()
+				.path(annotation.getEventId())
+				.path(ResourcePaths.EVENT_ANNOTATION_PATH)
+				.path(ResourcePaths.EVENT_FAQ_PATH)
+				.entity(FAQAnnotation.class)
+				.createWithPost(annotation);
 	}
 
 }

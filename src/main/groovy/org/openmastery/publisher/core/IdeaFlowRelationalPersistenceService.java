@@ -126,6 +126,16 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
+	public EventEntity findEventById(long eventId) {
+		return eventRepository.findOne(eventId);
+	}
+
+	@Override
+	public void deleteFAQAnnotation(long eventId) {
+		annotationRespository.deleteByEventAndType(eventId, "faq");
+	}
+
+	@Override
 	public LocalDateTime getMostRecentActivityEnd(long taskId) {
 		ActivityEntity activity = activityRepository.findMostRecentActivityForTask(taskId);
 		return activity != null ? activity.getEnd() : null;

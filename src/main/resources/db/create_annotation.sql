@@ -10,5 +10,6 @@ create table annotation (
   task_id bigint not null,
   event_id bigint not null,
   type varchar(20),
-  metadata varchar(1000)
+  metadata varchar(1000),
+  UNIQUE (event_id, type)
 )

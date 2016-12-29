@@ -15,8 +15,10 @@
  */
 package org.openmastery.publisher.core.annotation;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,5 +31,8 @@ public interface AnnotationRespository extends PagingAndSortingRepository<Annota
 	@Query(nativeQuery = true, value = "select * from annotation where type = 'snippet' and task_id = ?1")
 	List<SnippetAnnotationEntity> findSnippetsByTaskId(long taskId);
 
-
+	@Modifying
+	@Transactional
+	@Query(value="delete from annotation where event_id = ?1 and type = ?2")
+	void deleteByEventAndType(long eventId, String faq);
 }

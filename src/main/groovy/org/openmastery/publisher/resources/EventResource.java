@@ -20,6 +20,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.mapper.EntityMapper;
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.annotation.FAQAnnotation;
 import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.core.EventService;
@@ -44,8 +45,6 @@ public class EventResource {
 	private EventService eventService;
 
 
-
-
 	@GET
 	public List<Event> getLatestEvents(@QueryParam("afterDate") String afterDate, @QueryParam("limit") Integer limit) {
 		Long userId = invocationContext.getUserId();
@@ -61,11 +60,22 @@ public class EventResource {
 	 */
 
 	@PUT
-	public Event update(Event eventToUpdate) {
+	@Path("/{eventId}")
+	public Event update(@PathParam("eventId") Long eventId, Event eventToUpdate) {
 		Long userId = invocationContext.getUserId();
 
 		return eventService.updateEvent(userId, eventToUpdate);
 	}
+
+	@POST
+	@Path("/{eventId}"+ ResourcePaths.EVENT_ANNOTATION_PATH + ResourcePaths.EVENT_FAQ_PATH)
+	public FAQAnnotation saveAnnotation(@PathParam("eventId") Long eventId, FAQAnnotation annotation) {
+		Long userId = invocationContext.getUserId();
+
+		return eventService.annotateWithFAQ(userId, eventId, annotation);
+	}
+
+
 
 
 	//Developers have been creating "note types" manually using [Subtask] and [Prediction] as prefixes in their comments.

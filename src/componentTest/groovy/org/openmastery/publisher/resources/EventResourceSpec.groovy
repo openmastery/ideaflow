@@ -1,6 +1,7 @@
 package org.openmastery.publisher.resources
 
 import org.openmastery.mapper.EntityMapper
+import org.openmastery.publisher.api.annotation.FAQAnnotation
 import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.Event
@@ -68,6 +69,38 @@ class EventResourceSpec extends Specification {
 
 		then:
 		assert savedEvent != null
+	}
+
+	def "Should update FAQ on POST for existing event"() {
+		given:
+		EventEntity eventEntity = aRandom.eventEntity().build()
+		EventEntity savedEntity = persistenceService.saveEvent(eventEntity)
+
+		FAQAnnotation faqAnnotation = new FAQAnnotation(savedEntity.id, "My FAQ!")
+
+		when:
+		FAQAnnotation savedAnnotation = eventClient.annotateWithFAQ(faqAnnotation)
+
+		then:
+		assert savedAnnotation != null
+	}
+
+	def "Should overwrite FAQ on POST if annotation already exists"() {
+		given:
+		EventEntity eventEntity = aRandom.eventEntity().build()
+		EventEntity savedEntity = persistenceService.saveEvent(eventEntity)
+
+		FAQAnnotation faqAnnotation = new FAQAnnotation(savedEntity.id, "My FAQ!")
+
+		when:
+		eventClient.annotateWithFAQ(faqAnnotation)
+		faqAnnotation.faq = "Modified!"
+
+		FAQAnnotation updatedAnnotation = eventClient.annotateWithFAQ(faqAnnotation)
+
+		then:
+		assert updatedAnnotation != null
+		assert updatedAnnotation == faqAnnotation
 	}
 
 }

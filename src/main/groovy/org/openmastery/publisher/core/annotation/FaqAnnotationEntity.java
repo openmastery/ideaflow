@@ -49,6 +49,10 @@ public class FaqAnnotationEntity extends AnnotationEntity {
 		setMetadataField(COMMENT_KEY, comment);
 	}
 
+	public static FaqAnnotationEntityBuilder builder() {
+		return new FaqAnnotationEntityBuilder();
+	}
+
 	public static class FaqAnnotationEntityBuilder extends AnnotationEntityBuilder<FaqAnnotationEntityBuilder> {
 
 		private String comment;
