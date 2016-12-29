@@ -33,6 +33,8 @@ import org.openmastery.publisher.core.activity.BlockActivityEntity
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
+import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
+import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTaskTimelineGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
@@ -98,6 +100,10 @@ class IdeaFlowService {
 		List<ProgressMilestone> progressMilestones = generateProgressMilestones(subtaskTimeline)
 		List<TroubleshootingJourney> troubleshootingJourneys = troubleshootingJourneyGenerator.createFromTimeline(subtaskTimeline);
 
+		List<FaqAnnotationEntity> faqs = persistenceService.getFaqAnnotationList(taskId)
+		List<SnippetAnnotationEntity> snippets = persistenceService.getSnippetAnnotationList(taskId)
+		troubleshootingJourneyGenerator.annotateJourneys(troubleshootingJourneys, faqs, snippets)
+
 		distributeJourneysByMilestone(progressMilestones, troubleshootingJourneys)
 
 		SubtaskOverview metrics = metricsService.generateSubtaskOverview(subtaskTimeline.subtask, subtaskTimeline)
@@ -113,6 +119,7 @@ class IdeaFlowService {
 				.progressMilestones(progressMilestones)
 				.build()
 	}
+
 
 	void distributeJourneysByMilestone(List<ProgressMilestone> progressMilestones, List<TroubleshootingJourney> troubleshootingJourneys) {
 		progressMilestones.each { ProgressMilestone milestone ->

@@ -22,6 +22,8 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
+import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
+import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.metrics.subtask.MetricsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -68,6 +70,24 @@ class TroubleshootingJourneyGenerator {
 		}
 
 		return journeys
+	}
+
+	void annotateJourneys(List<TroubleshootingJourney> journeys, List<FaqAnnotationEntity> faqs, List<SnippetAnnotationEntity> snippets) {
+
+		journeys.each { TroubleshootingJourney journey ->
+			faqs.each { FaqAnnotationEntity faqEntity ->
+				if (journey.containsEvent(faqEntity.eventId)) {
+					journey.addFAQ(faqEntity.eventId, faqEntity.comment)
+				}
+			}
+
+			snippets.each { SnippetAnnotationEntity snippetEntity ->
+				if (journey.containsEvent(snippetEntity.eventId)) {
+					journey.addSnippet(snippetEntity.eventId, snippetEntity.source, snippetEntity.snippet)
+				}
+			}
+		}
+
 	}
 
 

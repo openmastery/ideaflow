@@ -6,6 +6,8 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
+import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
+import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
@@ -22,8 +24,6 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 	def setup() {
 		start = mockTimeService.now()
 	}
-
-
 
 	def "createJourney SHOULD break up WTFs within band ranges"() {
 		given:
@@ -186,6 +186,62 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 		assert journey.partialDiscoveries.first().tags == expectedTags
 	}
 
+	def "annotateJourneys SHOULD annotate events with matching FAQs and Snippets"() {
+		given:
+		IdeaFlowBand troubleshootingBand = IdeaFlowBand.builder()
+				.type(IdeaFlowStateType.TROUBLESHOOTING)
+				.relativePositionInSeconds(0)
+				.durationInSeconds(15 * 60)
+				.build()
 
+		builder.activate()
+		builder.advanceMinutes(5)
+		builder.wtf()
 
+		Event event = builder.eventList.find() { it.type == EventType.WTF }
+		FaqAnnotationEntity faq = new FaqAnnotationEntity(eventId: event.id , comment:"My FAQ")
+		SnippetAnnotationEntity snippet = new SnippetAnnotationEntity(eventId: event.id, source:"file.java", snippet: "code")
+
+		when:
+		TroubleshootingJourney journey = journeyGenerator.createJourney(builder.eventList, troubleshootingBand)
+
+		journeyGenerator.annotateJourneys([journey], [faq], [snippet])
+
+		then:
+
+		assert journey.partialDiscoveries != null
+		assert journey.partialDiscoveries.size() == 1
+		assert journey.partialDiscoveries.get(0).faqComment == "My FAQ"
+		assert journey.partialDiscoveries.get(0).formattableSnippet.contents == "code"
+
+	}
+
+	def "annotateJourneys SHOULD ignore annotations that don't match any ids"() {
+		given:
+		IdeaFlowBand troubleshootingBand = IdeaFlowBand.builder()
+				.type(IdeaFlowStateType.TROUBLESHOOTING)
+				.relativePositionInSeconds(0)
+				.durationInSeconds(15 * 60)
+				.build()
+
+		builder.activate()
+		builder.advanceMinutes(5)
+		builder.wtf()
+
+		FaqAnnotationEntity faq = new FaqAnnotationEntity(eventId: -1 , comment:"My FAQ")
+		SnippetAnnotationEntity snippet = new SnippetAnnotationEntity(eventId: -1, source:"file.java", snippet: "code")
+
+		when:
+		TroubleshootingJourney journey = journeyGenerator.createJourney(builder.eventList, troubleshootingBand)
+
+		journeyGenerator.annotateJourneys([journey], [faq], [snippet])
+
+		then:
+
+		assert journey.partialDiscoveries != null
+		assert journey.partialDiscoveries.size() == 1
+		assert journey.partialDiscoveries.get(0).faqComment == null
+		assert journey.partialDiscoveries.get(0).formattableSnippet == null
+
+	}
 }

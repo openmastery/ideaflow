@@ -52,6 +52,37 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		partialDiscoveries.add(partialDiscovery);
 	}
 
+	public boolean containsEvent(long eventId) {
+		boolean containsEvent = false;
+
+		for (PartialDiscovery partialDiscovery : partialDiscoveries) {
+			if (partialDiscovery.event.getId() == eventId) {
+				containsEvent = true;
+				break;
+			}
+		}
+		return containsEvent;
+	}
+
+
+	public void addFAQ(long eventId, String faqComment) {
+		for (PartialDiscovery partialDiscovery : partialDiscoveries) {
+			if (partialDiscovery.event.getId() == eventId) {
+				partialDiscovery.faqComment = faqComment;
+				break;
+			}
+		}
+	}
+
+	public void addSnippet(long eventId, String source, String snippet) {
+		for (PartialDiscovery partialDiscovery : partialDiscoveries) {
+			if (partialDiscovery.event.getId() == eventId) {
+				partialDiscovery.formattableSnippet = new FormattableSnippet(source, snippet);
+				break;
+			}
+		}
+	}
+
 	public void fillWithActivity(List<ExecutionEvent> executionEvents) {
 		for (ExecutionEvent executionEvent : executionEvents) {
 			if (shouldContain(executionEvent)) {
@@ -61,9 +92,9 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	}
 
 	private void addExecutionEvent(ExecutionEvent event) {
-		for (PartialDiscovery experiment : partialDiscoveries) {
-			if (experiment.shouldContain(event)) {
-				experiment.addExecutionEvent(event);
+		for (PartialDiscovery partialDiscovery : partialDiscoveries) {
+			if (partialDiscovery.shouldContain(event)) {
+				partialDiscovery.addExecutionEvent(event);
 			}
 		}
 
@@ -76,5 +107,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	public LocalDateTime getEnd() {
 		return band.getEnd();
 	}
+
+
 
 }

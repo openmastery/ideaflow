@@ -23,7 +23,9 @@ import java.util.regex.Pattern;
 public class PartialDiscovery extends AbstractRelativeInterval {
 
 	Event event;
+	String faqComment;
 
+	FormattableSnippet formattableSnippet;
 	Set<String> tags; //derived from WTF/YAY #hashtags
 
 	List<ExperimentCycle> experimentCycles;
@@ -65,4 +67,5 @@ public class PartialDiscovery extends AbstractRelativeInterval {
 
 		return hashtags;
 	}
+
 }
