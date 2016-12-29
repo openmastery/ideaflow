@@ -3,6 +3,7 @@ package org.openmastery.publisher.api.batch;
 import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.activity.*;
+import org.openmastery.publisher.api.event.NewSnippetEvent;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class NewIFMBatch {
 	@Singular("modificationActivity") private List<NewModificationActivity> modificationActivityList;
 	@Singular("blockActivity") private List<NewBlockActivity> blockActivityList;
 	@Singular("event")private List<NewBatchEvent> eventList;
+	@Singular("snippetEvent") private List<NewSnippetEvent> snippetEventList;
 
 	public boolean isEmpty() {
 		boolean hasContent = editorActivityList != null && !editorActivityList.isEmpty();
@@ -30,7 +32,7 @@ public class NewIFMBatch {
 		hasContent |= modificationActivityList != null && !modificationActivityList.isEmpty();
 		hasContent |= blockActivityList != null && !blockActivityList.isEmpty();
 		hasContent |= eventList != null && !eventList.isEmpty();
-
+		hasContent |= snippetEventList != null && !snippetEventList.isEmpty();
 
 		return !hasContent;
 	}
