@@ -19,6 +19,7 @@ import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.activity.NewActivity
 import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.batch.NewIFMBatch
+import org.openmastery.publisher.api.event.NewSnippetEvent
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.BlockActivityEntity
@@ -27,6 +28,7 @@ import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
+import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.security.InvocationContext
@@ -64,6 +66,10 @@ class IFMBatchService {
 
 		saveActivities(activityEntities)
 		saveEvents(eventEntities)
+
+		//TODO clean this up, coupled to persistance because eventId is used in snippet annotation, and coupled to taskModifyDates too
+		entityBuilder.buildAndSaveSnippets(batch, adjustment, persistenceService)
+
 		saveTaskModifyDates(entityBuilder.getTaskModificationDates())
 
 	}
@@ -119,6 +125,28 @@ class IFMBatchService {
 			}
 		}
 
+		void buildAndSaveSnippets(NewIFMBatch batch, Duration adjustment, IdeaFlowPersistenceService persistenceService) {
+			EntityMapper entityMapper = new EntityMapper()
+
+			batch.snippetEventList.each { NewSnippetEvent snippet ->
+				EventEntity eventEntity = entityMapper.mapIfNotNull(snippet, EventEntity.class)
+				LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(snippet.position)
+				eventEntity.setPosition(endTime.plus(adjustment))
+				eventEntity.setOwnerId(userId)
+
+				EventEntity savedEvent = persistenceService.saveEvent(eventEntity)
+
+				SnippetAnnotationEntity annotationEntity = entityMapper.mapIfNotNull(snippet, SnippetAnnotationEntity.class)
+				annotationEntity.setOwnerId(userId)
+				annotationEntity.setEventId(savedEvent.id)
+
+				persistenceService.saveAnnotation(annotationEntity)
+
+				println "Snippet:" + savedEvent.position
+				recordTaskModification(savedEvent.taskId, savedEvent.position)
+			}
+		}
+
 		Map<Long, LocalDateTime> getTaskModificationDates() {
 			Map<Long, LocalDateTime> taskModificationDates = taskModificationDates
 			this.taskModificationDates = Collections.unmodifiableMap(taskModificationDates)
@@ -153,6 +181,9 @@ class IFMBatchService {
 			recordTaskModification(entity.taskId, entity.position)
 			return entity
 		}
+
+
+
 
 		private void recordTaskModification(Long taskId, LocalDateTime modifyDate) {
 			LocalDateTime lastModified = taskModificationDates.get(taskId)

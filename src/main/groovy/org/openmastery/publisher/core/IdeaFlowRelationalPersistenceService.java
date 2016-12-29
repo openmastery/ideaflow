@@ -16,6 +16,10 @@
 package org.openmastery.publisher.core;
 
 import org.openmastery.publisher.core.activity.*;
+import org.openmastery.publisher.core.annotation.AnnotationEntity;
+import org.openmastery.publisher.core.annotation.AnnotationRespository;
+import org.openmastery.publisher.core.annotation.FaqAnnotationEntity;
+import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.event.EventRepository;
 import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity;
@@ -45,6 +49,8 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	private EventRepository eventRepository;
 	@Autowired
 	private TaskRepository taskRepository;
+	@Autowired
+	private AnnotationRespository annotationRespository;
 
 	private IdeaFlowPartialStateEntity getPartialState(long taskId, IdeaFlowPartialStateScope scope) {
 		IdeaFlowPartialStateEntity.PrimaryKey pk = IdeaFlowPartialStateEntity.PrimaryKey.builder()
@@ -109,6 +115,15 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 		return activityRepository.findBlockActivityByTaskId(taskId);
 	}
 
+	@Override
+	public List<FaqAnnotationEntity> getFaqAnnotationList(long taskId) {
+		return annotationRespository.findFaqAnnotationsByTaskId(taskId);
+	}
+
+	@Override
+	public List<SnippetAnnotationEntity> getSnippetAnnotationList(long taskId) {
+		return annotationRespository.findSnippetsByTaskId(taskId);
+	}
 
 	@Override
 	public LocalDateTime getMostRecentActivityEnd(long taskId) {
@@ -144,6 +159,12 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 		return activityRepository.save(activity);
 	}
 
+
+	@Override
+	public <T extends AnnotationEntity> T saveAnnotation(T annotation) {
+		return annotationRespository.save(annotation);
+	}
+
 	@Override
 	public EventEntity saveEvent(EventEntity event) {
 		return eventRepository.save(event);
@@ -153,6 +174,8 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	public TaskEntity saveTask(TaskEntity task) {
 		return taskRepository.save(task);
 	}
+
+
 
 	@Override
 	public TaskEntity findTaskWithId(long taskId) {

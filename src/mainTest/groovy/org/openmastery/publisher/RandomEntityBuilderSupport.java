@@ -2,6 +2,8 @@ package org.openmastery.publisher;
 
 import org.openmastery.publisher.api.batch.RandomNewIFMBatchBuilder;
 import org.openmastery.publisher.core.activity.*;
+import org.openmastery.publisher.core.annotation.RandomFaqAnnotationEntityBuilder;
+import org.openmastery.publisher.core.annotation.RandomSnippetAnnotationEntityBuilder;
 import org.openmastery.publisher.core.event.RandomEventEntityBuilder;
 import org.openmastery.publisher.ideaflow.RandomIdeaFlowPartialStateBuilder;
 import org.openmastery.publisher.ideaflow.RandomIdeaFlowStateEntityBuilder;
@@ -58,5 +60,10 @@ public class RandomEntityBuilderSupport {
 	public RandomTaskEntityBuilder taskEntity() {
 		return new RandomTaskEntityBuilder();
 	}
+
+	public RandomFaqAnnotationEntityBuilder faqAnnotationEntity() { return new RandomFaqAnnotationEntityBuilder(); }
+
+	public RandomSnippetAnnotationEntityBuilder snippetAnnotationEntity() { return new RandomSnippetAnnotationEntityBuilder(); }
+
 
 }

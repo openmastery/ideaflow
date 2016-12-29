@@ -22,6 +22,9 @@ import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
+import org.openmastery.publisher.core.annotation.AnnotationEntity
+import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
+import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
@@ -38,12 +41,14 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	private long eventId = 1L
 	private long taskId = 1L
 	private long activityId = 1L
+	private long annotationId = 1L
 	private IdeaFlowPartialStateEntity activeState
 	private IdeaFlowPartialStateEntity containingState
 	private List<IdeaFlowStateEntity> stateList = []
 	private List<ActivityEntity> activityList = []
 	private List<EventEntity> eventList = []
 	private List<TaskEntity> taskList = []
+	private List<AnnotationEntity> annotationList = []
 
 	@Override
 	public IdeaFlowPartialStateEntity getActiveState(long taskId) {
@@ -95,9 +100,24 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 		findAllActivitiesOfType(BlockActivityEntity, taskId)
 	}
 
+	@Override
+	public List<FaqAnnotationEntity> getFaqAnnotationList(long taskId) {
+		return findAllAnnotationsByType(FaqAnnotationEntity, taskId);
+	}
+
+	@Override
+	public List<SnippetAnnotationEntity> getSnippetAnnotationList(long taskId) {
+		return findAllAnnotationsByType(SnippetAnnotationEntity, taskId);
+	}
+
 	private <T> List<T> findAllActivitiesOfType(Class<T> type, long taskId) {
 		activityList.findAll { type.isInstance(it) && it.taskId == taskId }
 	}
+
+	private <T> List<T> findAllAnnotationsByType(Class<T> type, long taskId) {
+		annotationList.findAll { type.isInstance(it) && it.taskId == taskId }
+	}
+
 
 	@Override
 	LocalDateTime getMostRecentActivityEnd(long taskId) {
@@ -138,6 +158,13 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 		activity.id = activityId++
 		activityList.add(activity)
 		activity
+	}
+
+	@Override
+	public <T extends AnnotationEntity> T saveAnnotation(T annotation) {
+		annotation.id = annotationId++
+		annotationList.add(annotation)
+		annotation
 	}
 
 	@Override

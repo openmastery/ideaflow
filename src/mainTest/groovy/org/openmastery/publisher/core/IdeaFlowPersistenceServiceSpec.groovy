@@ -8,6 +8,8 @@ import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity.ExternalActivityEntityBuilder
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity.IdleActivityEntityBuilder
+import org.openmastery.publisher.core.annotation.AnnotationEntity
+import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.time.MockTimeService
@@ -135,6 +137,33 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		assert activity.metadata == savedActivity.metadata
 		assert activity.metadata.length() > 2
 	}
+
+	def "saveAnnotation should persist metadata"() {
+		given:
+		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().build()
+
+		when:
+		FaqAnnotationEntity savedAnnotation = persistenceService.saveAnnotation(annotation)
+
+		then:
+		assert annotation.metadata == savedAnnotation.metadata
+		assert savedAnnotation.metadata.length() > 2
+	}
+
+	def "findAnnotationsByTask should retrieve all available annotations"() {
+		given:
+		Long taskId = 312L;
+		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(taskId).build()
+
+		when:
+		persistenceService.saveAnnotation(annotation)
+		List<FaqAnnotationEntity> faqs = persistenceService.getFaqAnnotationList(taskId)
+
+		then:
+		assert faqs.size() == 1
+		assert faqs.get(0).comment == annotation.comment
+	}
+
 
 	def "saveActiveState should save active and containing state"() {
 		given:

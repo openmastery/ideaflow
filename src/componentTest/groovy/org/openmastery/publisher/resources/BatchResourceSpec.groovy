@@ -2,6 +2,8 @@ package org.openmastery.publisher.resources
 
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
+import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.event.NewSnippetEvent
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.activity.ActivityEntity
@@ -11,6 +13,7 @@ import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
+import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.testsupport.BeanCompare
@@ -196,6 +199,32 @@ class BatchResourceSpec extends Specification {
 		comparator.assertEquals(expectedEvent, entities.last())
 		assert entities.last().id != null
 
+	}
+
+	def "SHOULD post snippets"() {
+		given:
+		NewSnippetEvent snippetEvent = NewSnippetEvent.builder().taskId(taskId).position(timeService.now())
+																.comment("WTF is this?!")
+																.eventType(EventType.WTF)
+																.source("MyClass.java")
+																.snippet("foreach { loop(); }").build()
+
+		NewIFMBatch batch = aRandom.batch()
+				.timeSent(timeService.now())
+				.snippetEvent(snippetEvent)
+				.build()
+
+		when:
+		client.addIFMBatch(batch)
+
+		then:
+		List<EventEntity> events = persistenceService.getEventList(snippetEvent.taskId)
+		assert events.last().comment == "WTF is this?!"
+
+		List<SnippetAnnotationEntity> snippets = persistenceService.getSnippetAnnotationList(snippetEvent.taskId)
+		assert snippets.size() == 1
+		assert snippets.get(0).source == "MyClass.java"
+		assert snippets.get(0).snippet == "foreach { loop(); }"
 	}
 
 }

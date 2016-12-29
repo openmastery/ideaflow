@@ -22,6 +22,7 @@ class RandomNewIFMBatchBuilder extends NewIFMBatch.NewIFMBatchBuilder {
 			.modificationActivityList([])
 			.idleActivityList([])
 			.eventList([])
+			.snippetEventList([])
 			.timeSent(TimeConverter.toJodaLocalDateTime(ARandom.aRandom.dayOfYear()))
 	}
 

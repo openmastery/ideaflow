@@ -16,6 +16,9 @@
 package org.openmastery.publisher.core;
 
 import org.openmastery.publisher.core.activity.*;
+import org.openmastery.publisher.core.annotation.AnnotationEntity;
+import org.openmastery.publisher.core.annotation.FaqAnnotationEntity;
+import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity;
 import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity;
 import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity;
@@ -64,6 +67,8 @@ public interface IdeaFlowPersistenceService {
 
 	TaskEntity saveTask(TaskEntity task);
 
+	<T extends AnnotationEntity> T saveAnnotation(T annotation);
+
 	TaskEntity findTaskWithId(long taskId);
 
 	TaskEntity findTaskWithName(Long userId, String taskName);
@@ -71,5 +76,9 @@ public interface IdeaFlowPersistenceService {
 	List<EventEntity> findRecentEvents(Long userId, Timestamp afterDate, Integer limit);
 
 	List<TaskEntity> findRecentTasks(Long userId, int limit);
+
+	List<FaqAnnotationEntity> getFaqAnnotationList(long taskId);
+
+	List<SnippetAnnotationEntity> getSnippetAnnotationList(long taskId);
 
 }
