@@ -23,3 +23,6 @@ databaseChangeLog:
 
   - include:
        file: db/create_annotation.sql
+
+  - include:
+       file: db/patch_broken_snippet_event_data.sql
