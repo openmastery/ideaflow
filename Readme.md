@@ -1,31 +1,31 @@
+# IdeaFlow Metrics Server 
+
+The "/ideaflow" service acts as a centralized endpoint for IdeaFlow data collection (@see https://plugins.jetbrains.com/idea/plugin/9239) and low-level metrics profiling on individual Idea Flow Maps (@see github.com/openmastery/ideaflow-profiler).
+
+The service is implemented with SpringBoot, and Gradle, and designed to be run as a SaaS platform or run on-prem.  The project is OSS under a GPL 3.0 license.  The client-tools.jar that connects to the ideaflow server is under Apache 2.0 license.
+
+## What does the service do?
+
+The following endpoints are available (swagger docs coming soon):
+
+* POST http://localhost:8980/ideaflow/collect/batch (publish your IdeaFlow data to the server)
+
+* GET http://localhost:8980/ideaflow/task/ (list tasks available for viewing)
+
+* GET http://localhost:8980/ideaflow/timeline/task/{taskId} (get metrics profile for a task)
+* GET http://localhost:8980/ideaflow/timeline/subtask/{subtaskId} (get detailed metrics profile for a subtask)
+
+Stub data is loaded on startup in the demo@openmastery.org account that you can use to explore the API.
+The API-Key for the demo account is printed on the screen at startup.  You'll need to pass the API-Key as a header to all API calls.  To setup new user accounts, see instructions below.
+
 # To Run
 
 Install/setup docker (instructions below), then:
 
 ```
-git clone https://github.com/openmastery/common-rest.git
-./gradlew publishLocal
-
 git clone git@github.com:openmastery/ideaflow.git
 ./gradlew bootRun
 ```
-
-The following endpoints are available:
-
-* POST http://localhost:8980/ideaflow/collect/batch (publish your IdeaFlow data to the server)
-
-* GET http://localhost:8980/ideaflow/task/
-* GET http://localhost:8980/ideaflow/task/{taskId}
-
-* GET http://localhost:8980/ideaflow/timeline/task/{taskId}
-* GET http://localhost:8980/ideaflow/timeline/subtask/{subtaskId}
-
-This endpoint will be moved at some point, but it's hanging out in here for now.
-
-* GET http://localhost:8980/user?email=demo@openmastery.org
-
-Stub data is loaded on startup in the demo@openmastery.org account that you can use to explore the API.
-The API-Key for the demo account is printed on the screen at startup.
 
 # User Access
 
@@ -140,6 +140,10 @@ Then bounce the server.
 
 
 ## Heroku
+
+This application is currently deployed on Heroku at http://om-ideaflow.herokuapp.com.  For an API-Key on the shared service, please contact janelle@openmastery.org.  We will have account creation setup soon, but while this project is still in early development, accounts are created manually.
+
+To deploy to Heroku:
 
 Install heroku cli (google)
 
