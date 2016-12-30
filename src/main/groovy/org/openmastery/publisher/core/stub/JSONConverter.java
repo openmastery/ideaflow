@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openmastery.publisher.api.activity.*;
 import org.openmastery.publisher.api.batch.NewBatchEvent;
+import org.openmastery.publisher.api.event.NewSnippetEvent;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class JSONConverter {
 		idToClassMap.put("IdleActivity", NewIdleActivity.class);
 		idToClassMap.put("BlockActivity", NewBlockActivity.class);
 		idToClassMap.put("Event", NewBatchEvent.class);
+		idToClassMap.put("SnippetEvent", NewSnippetEvent.class);
 		return idToClassMap;
 	}
 
@@ -69,12 +71,15 @@ public class JSONConverter {
 		if (jsonInString.isEmpty()) {
 			return null;
 		}
-		String[] jsonSplit = jsonInString.split("=");
-		String typeName = jsonSplit[0];
-		String jsonContent = jsonSplit[1];
+		int index = jsonInString.indexOf("=");
+
+		String typeName = jsonInString.substring(0, index);
+		String jsonContent = jsonInString.substring(index+1, jsonInString.length());
+
 		Class clazz = idToClassMap.get(typeName);
 		return mapper.readValue(jsonContent, clazz);
 	}
+
 
 	static class UnsupportedObjectType extends RuntimeException {
 

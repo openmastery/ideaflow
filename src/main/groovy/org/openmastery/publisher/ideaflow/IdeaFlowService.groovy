@@ -49,12 +49,16 @@ class IdeaFlowService {
 	private static final List<EventType> TASK_TIMELINE_EVENTS_TO_RETAIN = [
 			EventType.SUBTASK,
 			EventType.CALENDAR,
+			EventType.WTF,
+			EventType.AWESOME,
+			EventType.DISTRACTION
 	]
 	private static final List<EventType> SUBTASK_TIMELINE_EVENTS_TO_RETAIN = [
 			EventType.NOTE,
 			EventType.WTF,
 			EventType.AWESOME,
 			EventType.CALENDAR,
+			EventType.DISTRACTION
 	]
 
 	@Autowired
@@ -142,23 +146,22 @@ class IdeaFlowService {
 		ProgressMilestone lastMilestone = null
 		List<ProgressMilestone> progressMilestones = []
 
+		Event defaultEvent = subtaskTimeline.subtask
+		ProgressMilestone defaultMilestone = new ProgressMilestone(defaultEvent)
+		defaultMilestone.durationInSeconds = relativeEnd - relativeStart
+		progressMilestones.add(defaultMilestone)
+
+		lastMilestone = defaultMilestone
+
 		progressNotes.each { Event progressNote ->
 			ProgressMilestone milestone = new ProgressMilestone(progressNote)
-			if (lastMilestone != null) {
-				milestone.durationInSeconds = progressNote.relativePositionInSeconds - milestone.relativePositionInSeconds
-				progressMilestones.add(milestone)
-				lastMilestone = milestone
-			}
-		}
-		if (lastMilestone != null) {
-			lastMilestone.durationInSeconds = relativeEnd - lastMilestone.relativePositionInSeconds
-		} else {
-			Event defaultEvent = subtaskTimeline.subtask
-			ProgressMilestone defaultMilestone = new ProgressMilestone(defaultEvent)
-			defaultMilestone.durationInSeconds = relativeEnd - relativeStart
+			progressMilestones.add(milestone)
 
-			progressMilestones.add(defaultMilestone)
+			lastMilestone.durationInSeconds = progressNote.relativePositionInSeconds - lastMilestone.relativePositionInSeconds
+			lastMilestone = milestone
 		}
+
+		lastMilestone.durationInSeconds = relativeEnd - lastMilestone.relativePositionInSeconds
 
 		return progressMilestones
 	}

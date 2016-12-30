@@ -133,6 +133,7 @@ class IFMBatchService {
 				LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(snippet.position)
 				eventEntity.setPosition(endTime.plus(adjustment))
 				eventEntity.setOwnerId(userId)
+				eventEntity.setType(snippet.eventType)
 
 				EventEntity savedEvent = persistenceService.saveEvent(eventEntity)
 
@@ -142,7 +143,6 @@ class IFMBatchService {
 
 				persistenceService.saveAnnotation(annotationEntity)
 
-				println "Snippet:" + savedEvent.position
 				recordTaskModification(savedEvent.taskId, savedEvent.position)
 			}
 		}

@@ -9,9 +9,9 @@ class DataFileRunner {
 		BatchLoader loader = new BatchLoader()
 		LocalDateTime startTime = new LocalDateTime().minusDays(15)
 
-		List<Object> activityObjects = loader.loadAndAdjustToConsecutiveTime('/stub/task_US12364.in', -1L, startTime)
+		List<Object> activityObjects = loader.loadAndAdjustToConsecutiveTime('/stub/task_US12378.in', -1L, startTime)
 
-		File newFile = new File('/Users/janelle/code/ifm-publisher/src/main/resources/stub/task_US12364.batch')
+		File newFile = new File('/Users/janelle/code/openmastery/ideaflow/src/main/resources/stub/task_US12378.batch')
 
 		if (newFile.exists()) newFile.delete()
 		newFile.createNewFile()

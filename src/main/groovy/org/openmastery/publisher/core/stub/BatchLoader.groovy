@@ -25,6 +25,7 @@ import org.openmastery.publisher.api.activity.NewModificationActivity
 import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.event.NewSnippetEvent
 
 
 class BatchLoader {
@@ -33,6 +34,7 @@ class BatchLoader {
 
 	public NewIFMBatch loadAndAdjust(Long taskId, LocalDateTime startTime, String resourceName) {
 		List<Object> batchActivityList = loadObjects(resourceName)
+
 		adjustTaskId(batchActivityList, taskId)
 		adjustTimeAndMakeConsecutive(batchActivityList, startTime)
 
@@ -94,6 +96,7 @@ class BatchLoader {
 				batch.modificationActivityList = []
 				batch.blockActivityList = []
 				batch.eventList =[]
+				batch.snippetEventList = []
 		return batch
 	}
 
@@ -111,14 +114,12 @@ class BatchLoader {
 			batch.modificationActivityList.add(object)
 		} else if (object instanceof NewBlockActivity) {
 			batch.blockActivityList.add(object)
+		} else if (object instanceof NewSnippetEvent) {
+			batch.snippetEventList.add(object)
 		} else if (object instanceof NewBatchEvent) {
-			try {
-				batch.eventList.add(object)
-			} catch (UnsupportedOperationException ex) {
-				println "AHHH!"
-				throw ex
-			}
-
+			batch.eventList.add(object)
+		} else {
+			throw new UnsupportedOperationException("Unsupported object type being added to batch! "+object)
 		}
 	}
 

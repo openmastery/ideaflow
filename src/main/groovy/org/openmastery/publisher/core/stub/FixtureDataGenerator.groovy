@@ -47,12 +47,11 @@ class FixtureDataGenerator {
 
 	void generateStubTasks() {
 
-		createTask("US00012", "3-hour feature task with no interruptions", "dashboard")
-		createTask("DE1362", "Sample defect pattern with front-loaded troubleshooting", "dashboard")
-		createTask("US12364", "Multi-day task with idles ", "dashboard")
+		createTask("US00012", "*** 3-hour feature task with no interruptions", "dashboard")
+		createTask("DE1362", "*** Sample defect pattern with front-loaded troubleshooting", "dashboard")
+		createTask("US12364", "*** Multi-day task with idles ", "dashboard")
+		createTask("US12378", "*** Subtask with detailed notes and snippets", "dashboard")
 
-
-		createTask("US12378", "Create a slideout drawer", "dashboard")
 		createTask("US12392", "Make the bar colors prettier", "dashboard")
 		createTask("DE1405", "Report detail throws exception when null data", "dashboard")
 		createTask("US12406", "Send email notifications on update", "reporting")
@@ -64,7 +63,6 @@ class FixtureDataGenerator {
 	}
 
 	private createTask(String taskName, String description, String project) {
-
 		try {
 			Task task = taskClient.findTaskWithName(taskName)
 			task.description = description
@@ -84,7 +82,6 @@ class FixtureDataGenerator {
 	void loadBatch(Task task) {
 		NewIFMBatch batch = batchLoader.loadAndAdjust(task.id, task.creationDate, "/stub/task_"+task.name+".batch")
 		if (batch && !batch.isEmpty()) {
-			println "Loading batch for task ${task.id}!"
 			batchClient.addIFMBatch(batch)
 		}
 	}
