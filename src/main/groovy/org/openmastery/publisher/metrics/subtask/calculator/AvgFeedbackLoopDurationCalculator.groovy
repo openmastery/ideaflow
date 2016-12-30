@@ -49,13 +49,12 @@ class AvgFeedbackLoopDurationCalculator  extends AbstractMetricsCalculator<Durat
 
 		troubleshootingBands.each { IdeaFlowBand band ->
 			int eventCount = countExecutionEventsInRange(timeline.executionEvents, band.relativeStart, band.relativeEnd)
-			//println "Event count: "+eventCount
-			Double durationRatio = ((double) band.durationInSeconds) / eventCount
-			//println band.durationInSeconds
-			//println durationRatio
-			sampleCount++
-			avgDuration = (avgDuration *(sampleCount - 1) + durationRatio)/sampleCount
 
+			if (eventCount > 0) {
+				Double durationRatio = ((double) band.durationInSeconds) / eventCount
+				sampleCount++
+				avgDuration = (avgDuration *(sampleCount - 1) + durationRatio)/sampleCount
+			}
 		}
 
 		Metric<DurationInSeconds> metric = createMetric()

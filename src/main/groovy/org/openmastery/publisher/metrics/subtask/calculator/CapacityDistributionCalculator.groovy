@@ -49,6 +49,8 @@ class CapacityDistributionCalculator {
 			} else if (band.relativeEnd >= windowStart && band.relativeEnd < windowEnd) {
 				long timeWithinWindow = band.relativeEnd - windowStart
 				distribution.addDurationForType(band.type, timeWithinWindow)
+			} else if (band.relativeStart <= windowStart && band.relativeEnd >= windowEnd) {
+				distribution.addDurationForType(band.type, windowEnd - windowStart)
 			}
 		}
 
