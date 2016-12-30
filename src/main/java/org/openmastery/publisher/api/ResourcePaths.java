@@ -31,7 +31,7 @@ public class ResourcePaths {
 	public static final String IDEAFLOW_PATH = "/ideaflow";
 
 	public static final String IDEAFLOW_TIMELINE = "/timeline";
-	public static final String IDEAFLOW_METRICS = "/allMetrics";
+	public static final String IDEAFLOW_METRICS = "/metrics";
 	public static final String IDEAFLOW_TASK = "/task";
 	public static final String IDEAFLOW_SUBTASK = "/subtask";
 

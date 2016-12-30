@@ -24,7 +24,7 @@ public class SubtaskOverview {
 	Event subtaskEvent;
 	Long durationInSeconds;
 
-	List<Metric<?>> allMetrics;
+	List<Metric<?>> metrics;
 
 	CapacityDistribution capacityDistribution;
 

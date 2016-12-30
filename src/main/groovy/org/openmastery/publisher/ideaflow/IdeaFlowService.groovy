@@ -184,7 +184,7 @@ class IdeaFlowService {
 
 	/**
 	 * Generates the primary IdeaFlowTimeline that can be used for visualization,
-	 * or input to allMetrics calculations.
+	 * or input to metrics calculations.
 	 *
 	 * @param taskId
 	 * @return IdeaFlowTimeline

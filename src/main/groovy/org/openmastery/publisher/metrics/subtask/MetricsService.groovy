@@ -57,7 +57,7 @@ public class MetricsService {
 
 		metricSet.calculate(timelineSegment)
 
-		overview.allMetrics = metricSet.allMetrics
+		overview.metrics = metricSet.allMetrics
 
 		return overview
 	}

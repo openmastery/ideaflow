@@ -118,11 +118,11 @@ class IdeaFlowResourceSpec extends Specification {
 		then:
 		assert metrics != null
 		assert metrics.get(0).description == "Initial Strategy"
-		assert metrics.get(0).allMetrics.size() == 5
+		assert metrics.get(0).metrics.size() == 5
 		assert metrics.get(1).description == "Subtask 1"
-		assert metrics.get(1).allMetrics.size() == 5
+		assert metrics.get(1).metrics.size() == 5
 		assert metrics.get(2).description == "Subtask 2"
-		assert metrics.get(2).allMetrics.size() == 5
+		assert metrics.get(2).metrics.size() == 5
 		assert metrics.size() == 3
 
 		when:
@@ -131,7 +131,7 @@ class IdeaFlowResourceSpec extends Specification {
 		then:
 		assert subtaskTimelineOverview != null
 		assert subtaskTimelineOverview.overview.description == "Initial Strategy"
-		assert subtaskTimelineOverview.overview.getAllMetrics().size() == 5
+		assert subtaskTimelineOverview.overview.getMetrics().size() == 5
 	}
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ProgressMilestone extends AbstractRelativeInterval {
 
-	Event progressEvent;
+	Event event;
 
 	CapacityDistribution capacityDistribution;
 	List<TroubleshootingJourney> troubleshootingJourneys = new ArrayList<TroubleshootingJourney>();
@@ -24,7 +24,7 @@ public class ProgressMilestone extends AbstractRelativeInterval {
 
 
 	public ProgressMilestone(Event progressEvent) {
-		this.progressEvent = progressEvent;
+		this.event = progressEvent;
 		setRelativeStart(progressEvent.getRelativePositionInSeconds());
 	}
 
@@ -34,11 +34,11 @@ public class ProgressMilestone extends AbstractRelativeInterval {
 	}
 
 	public LocalDateTime getStart() {
-		return progressEvent.getPosition();
+		return event.getPosition();
 	}
 
 	public String getDescription() {
-		return progressEvent.getComment();
+		return event.getComment();
 	}
 
 	private void addDangerLinks(TroubleshootingJourney journey) {
