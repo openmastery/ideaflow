@@ -1,5 +1,6 @@
 package org.openmastery.publisher.ideaflow.timeline
 
+import org.joda.time.Duration
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
@@ -19,7 +20,9 @@ class IdeaFlowTimelineElementBuilder {
 	List<IdleTimeBandModel> idleTimeBands = []
 	List<ExecutionEvent> executionEventList = []
 
-	LocalDateTime activationTime
+	Duration idleDuration = Duration.standardSeconds(0)
+	LocalDateTime deactivationTime
+	LocalDateTime startTime
 
 	IdeaFlowTimelineElementBuilder() {
 		this(new MockTimeService())
@@ -27,6 +30,7 @@ class IdeaFlowTimelineElementBuilder {
 
 	IdeaFlowTimelineElementBuilder(MockTimeService timeService) {
 		this.timeService = timeService
+		startTime = timeService.now()
 	}
 
 	IdeaFlowTimelineElementBuilder advanceDays(int days) {
@@ -45,6 +49,7 @@ class IdeaFlowTimelineElementBuilder {
 	}
 
 	IdeaFlowTimelineElementBuilder idleDays(int days) {
+		idleDuration = idleDuration.plus(Duration.standardDays(days))
 		idleTimeBands << IdleTimeBandModel.builder()
 				.id(idleTimeBandId++)
 				.start(timeService.now())
@@ -54,6 +59,7 @@ class IdeaFlowTimelineElementBuilder {
 	}
 
 	IdeaFlowTimelineElementBuilder idleHours(int hours) {
+		idleDuration = idleDuration.plus(Duration.standardHours(hours))
 		idleTimeBands << IdleTimeBandModel.builder()
 				.id(idleTimeBandId++)
 				.start(timeService.now())
@@ -63,6 +69,7 @@ class IdeaFlowTimelineElementBuilder {
 	}
 
 	IdeaFlowTimelineElementBuilder idleMinutes(int minutes) {
+		idleDuration = idleDuration.plus(Duration.standardMinutes(minutes))
 		idleTimeBands << IdleTimeBandModel.builder()
 				.id(idleTimeBandId++)
 				.start(timeService.now())
@@ -101,20 +108,14 @@ class IdeaFlowTimelineElementBuilder {
 				.processName("MyTestClass")
 				.build()
 		event.setStart(timeService.now())
-		event.relativePositionInSeconds = TimeConverter.between(activationTime, timeService.now()).standardSeconds
+		event.relativePositionInSeconds = computeRelativePositionInSeconds()
 
 		executionEventList << event
 		return this
 	}
 
 	private void addEvent(EventType eventType) {
-		Event event = new Event()
-		event.id = eventId++
-		event.position = timeService.now()
-		event.type = eventType
-
-		event.relativePositionInSeconds = TimeConverter.between(activationTime, timeService.now()).standardSeconds
-		eventList << event
+		addEvent(eventType, null)
 	}
 
 	private void addEvent(EventType eventType, String comment) {
@@ -123,21 +124,24 @@ class IdeaFlowTimelineElementBuilder {
 		event.position = timeService.now()
 		event.type = eventType
 		event.comment = comment
-
-		event.relativePositionInSeconds = TimeConverter.between(activationTime, timeService.now()).standardSeconds
+		event.relativePositionInSeconds = computeRelativePositionInSeconds()
 		eventList << event
 	}
 
+	private Long computeRelativePositionInSeconds() {
+		TimeConverter.between(startTime, timeService.now()).minus(idleDuration).standardSeconds
+	}
 
 	IdeaFlowTimelineElementBuilder activate() {
-		activationTime = timeService.now()
-		println "[Configure] activation time: "+activationTime
-
-		addEvent(EventType.ACTIVATE) //TODO temporal coupling, the above must be called first, or you get NPE
+		if (deactivationTime != null) {
+			idleDuration.plus(TimeConverter.between(deactivationTime, timeService.now()))
+		}
+		addEvent(EventType.ACTIVATE)
 		this
 	}
 
 	IdeaFlowTimelineElementBuilder deactivate() {
+		deactivationTime = timeService.now()
 		addEvent(EventType.DEACTIVATE)
 		this
 	}
