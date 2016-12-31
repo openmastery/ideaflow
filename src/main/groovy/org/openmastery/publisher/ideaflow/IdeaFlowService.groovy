@@ -19,12 +19,10 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
 import org.openmastery.publisher.api.journey.ProgressMilestone
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
-
 import org.openmastery.publisher.api.metrics.SubtaskOverview
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
@@ -76,10 +74,13 @@ class IdeaFlowService {
 	TaskTimelineOverview generateTimelineOverviewForTask(Long taskId) {
 		Task task = taskService.findTaskWithId(taskId)
 		IdeaFlowTaskTimeline timeline = generateTaskTimeline(task);
-		List<SubtaskOverview> subtaskTimelineMetrics = generateTimelineMetricsBySubtask(timeline);
+		List<SubtaskOverview> subtaskTimelineMetrics = []
 
-		List<Event> filteredEvents = filterEventsByType(timeline.events, TASK_TIMELINE_EVENTS_TO_RETAIN)
-		timeline.setEvents(filteredEvents)
+		if (timeline != null) {
+			subtaskTimelineMetrics = generateTimelineMetricsBySubtask(timeline);
+			List<Event> filteredEvents = filterEventsByType(timeline.events, TASK_TIMELINE_EVENTS_TO_RETAIN)
+			timeline.setEvents(filteredEvents)
+		}
 
 		TaskTimelineOverview.builder()
 				.task(task)

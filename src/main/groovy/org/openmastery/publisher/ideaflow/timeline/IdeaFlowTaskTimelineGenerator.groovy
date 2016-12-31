@@ -148,10 +148,7 @@ class IdeaFlowTaskTimelineGenerator {
 	private IdeaFlowTaskTimeline createIdeaFlowTimeline(List<IdeaFlowBandModel> ideaFlowBandModels) {
 		List<IdeaFlowBand> ideaFlowBands = entityMapper.mapList(ideaFlowBandModels, IdeaFlowBand)
 		if (ideaFlowBands.isEmpty()) {
-			return IdeaFlowTaskTimeline.builder()
-					.task(task)
-					.durationInSeconds(0)
-					.build()
+			return null
 		}
 
 		Collections.sort(ideaFlowBands, PositionableComparator.INSTANCE);

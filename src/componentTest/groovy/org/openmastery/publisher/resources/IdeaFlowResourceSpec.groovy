@@ -62,6 +62,19 @@ class IdeaFlowResourceSpec extends Specification {
 		new IdeaFlowTimelineValidator(overview.timeline)
 	}
 
+	def "getTimelineForTask SHOULD not explode if the task is empty"() {
+		given:
+		Task task = taskClient.createTask("empty", "empty task", "project")
+
+		when:
+		TaskTimelineOverview overview = ideaFlowClient.getTimelineOverviewForTask(task.id)
+
+		then:
+		assert overview.task.id == task.id
+		assert overview.timeline == null
+		assert overview.subtaskOverviews == []
+	}
+
 	def "getTimelineForTask SHOULD generate IdeaFlow timeline with all data types"() {
 		given:
 		Task task = taskClient.createTask("basic", "create basic timeline with all band types", "project")
