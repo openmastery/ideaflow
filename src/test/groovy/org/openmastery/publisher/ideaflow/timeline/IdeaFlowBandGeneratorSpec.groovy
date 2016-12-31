@@ -223,4 +223,23 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assert ideaFlowBands.size() == 1
 	}
 
+	def "generateProgressBands should not generate strategy bands if under minimum learning band threshold"() {
+		generator.learningBandMinimumDurationInMinutes = 25
+		builder.activate()
+				.readCodeAndAdvance(20)
+				.modifyCodeAndAdvance(5)
+				.readCodeAndAdvance(20)
+				.modifyCodeAndAdvance(5)
+				.readCodeAndAdvance(20)
+				.deactivate()
+
+		when:
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
+
+		then:
+		ideaFlowBands.each { println it }
+		assertProgressBand(ideaFlowBands[0], startTime, startTime.plusMinutes(70))
+		assert ideaFlowBands.size() == 1
+	}
+
 }

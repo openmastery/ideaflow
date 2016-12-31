@@ -24,11 +24,13 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
+import org.openmastery.time.TimeConverter
 
 class IdeaFlowBandGenerator {
 
 	private int learningTimeThresholdInMinutes = 5
 	private int learningModificationCountThreshold = 150
+	private int learningBandMinimumDurationInMinutes = 20
 
 	public List<IdeaFlowBandModel> generateIdeaFlowBands(List<Positionable> positionableList) {
 		if (positionableList.isEmpty()) {
@@ -69,16 +71,16 @@ class IdeaFlowBandGenerator {
 		for (Positionable positionable : sortedPositionableList) {
 			tracker.addModificationActivity(positionable)
 			if (tracker.isOverModificationThreshold()) {
-				if (learningBandStartTime != null) {
+				if (isOverMinimumLearningBandDuration(learningBandStartTime, tracker.earliestTrackedStartTime)) {
 					learningBandList << createIdeaFlowBand(learningBandStartTime, tracker.earliestTrackedStartTime, IdeaFlowStateType.LEARNING)
-					learningBandStartTime = null
 				}
+				learningBandStartTime = null
 			} else if (learningBandStartTime == null) {
 				learningBandStartTime = tracker.earliestTrackedStartTime
 			}
 		}
 
-		if (learningBandStartTime != null) {
+		if (isOverMinimumLearningBandDuration(learningBandStartTime, tracker.latestTrackedEndTime)) {
 			learningBandList << createIdeaFlowBand(learningBandStartTime, tracker.latestTrackedEndTime, IdeaFlowStateType.LEARNING)
 		}
 
@@ -86,6 +88,13 @@ class IdeaFlowBandGenerator {
 			ideaFlowBandModel.start.plusMinutes(learningTimeThresholdInMinutes).isAfter(ideaFlowBandModel.end)
 		}
 		learningBandList
+	}
+
+	private boolean isOverMinimumLearningBandDuration(LocalDateTime start, LocalDateTime end) {
+		if (start == null) {
+			return false
+		}
+		TimeConverter.between(start, end).toStandardMinutes().minutes >= learningBandMinimumDurationInMinutes
 	}
 
 	private List<IdeaFlowBandModel> generateTroubleshootingBands(List<Positionable> sortedPositionableList) {
