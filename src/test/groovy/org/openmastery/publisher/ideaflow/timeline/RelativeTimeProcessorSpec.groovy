@@ -3,6 +3,7 @@ package org.openmastery.publisher.ideaflow.timeline
 import org.joda.time.Duration
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableAndIntervalListBuilder
+import org.openmastery.publisher.api.PositionableComparator
 import spock.lang.Specification
 
 class RelativeTimeProcessorSpec extends Specification {
@@ -12,7 +13,7 @@ class RelativeTimeProcessorSpec extends Specification {
 	private List<Positionable> processRelativeTime() {
 		List<Positionable> positionables = builder.buildPositionables()
 		new RelativeTimeProcessor().computeRelativeTime(positionables)
-		positionables
+		positionables.sort(false, PositionableComparator.INSTANCE)
 	}
 
 	private long hoursToSeconds(int hours) {
@@ -137,6 +138,26 @@ class RelativeTimeProcessorSpec extends Specification {
 		assert positionables[0].relativePositionInSeconds == 0l
 		assert positionables[1].relativePositionInSeconds == hoursToSeconds(2)
 		assert positionables[2].relativePositionInSeconds == hoursToSeconds(4)
+	}
+
+	def "should set relative time to start of idle if positionable within idle band"() {
+		given:
+		builder.interval(0, 8)
+				.idle(2, 6)
+				.position(3)
+				.position(5)
+				.position(7)
+
+		when:
+		List<Positionable> positionables = processRelativeTime()
+
+		then:
+		assert positionables[0].relativePositionInSeconds == 0l
+		assert positionables[1].relativePositionInSeconds == hoursToSeconds(2)
+		assert positionables[2].relativePositionInSeconds == hoursToSeconds(2)
+		assert positionables[3].relativePositionInSeconds == hoursToSeconds(2)
+		assert positionables[4].relativePositionInSeconds == hoursToSeconds(3)
+		assert positionables.size() == 5
 	}
 
 }

@@ -50,12 +50,19 @@ class RelativeTimeProcessor {
 
 		long relativeTime = 0
 		Positionable previousPositionable = null
+		IdleTimeBandModel previousIdleBand = null
 		for (Positionable positionable : positionables) {
 			if (previousPositionable != null) {
 				Duration duration
-				if (previousPositionable instanceof IdleTimeBandModel) {
-					duration = TimeConverter.between(previousPositionable.end, positionable.getPosition())
-				} else {
+				if (previousIdleBand != null) {
+					if (previousIdleBand.contains(positionable.position)) {
+						duration = Duration.ZERO
+					} else if (previousIdleBand.contains(previousPositionable.position)) {
+						duration = TimeConverter.between(previousIdleBand.end, positionable.getPosition())
+					}
+				}
+
+				if (duration == null) {
 					duration = TimeConverter.between(previousPositionable.getPosition(), positionable.getPosition())
 				}
 
@@ -67,6 +74,9 @@ class RelativeTimeProcessor {
 
 			positionable.relativePositionInSeconds = relativeTime
 			previousPositionable = positionable
+			if (positionable instanceof IdleTimeBandModel) {
+				previousIdleBand = positionable
+			}
 		}
 	}
 
