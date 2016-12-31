@@ -3,27 +3,35 @@ package org.openmastery.publisher.core.timeline
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
-import org.openmastery.publisher.core.task.TaskEntity
-import org.openmastery.publisher.security.InvocationContext
-import org.openmastery.time.MockTimeService
+import org.openmastery.publisher.core.IdeaFlowInMemoryPersistenceService
 import org.openmastery.publisher.core.activity.EditorActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.core.IdeaFlowInMemoryPersistenceService
+import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.metrics.machine.IdeaFlowStateMachine
+import org.openmastery.publisher.security.InvocationContext
+import org.openmastery.time.MockTimeService
 
-import static IdeaFlowStateType.TROUBLESHOOTING
 import static IdeaFlowStateType.LEARNING
 import static IdeaFlowStateType.REWORK
+import static IdeaFlowStateType.TROUBLESHOOTING
 
 class TimelineTestSupport {
 
 	private IdeaFlowStateMachine stateMachine
-	private MockTimeService timeService = new MockTimeService()
+	private MockTimeService timeService
 	private IdeaFlowInMemoryPersistenceService persistenceService = new IdeaFlowInMemoryPersistenceService()
 	private long taskId
+
+	TimelineTestSupport() {
+		this(new MockTimeService())
+	}
+
+	TimelineTestSupport(MockTimeService timeService) {
+		this.timeService = timeService
+	}
 
 	long getTaskId() {
 		return taskId
@@ -85,13 +93,7 @@ class TimelineTestSupport {
 	}
 
 	void startSubtaskAndAdvanceHours(String comment, int hours) {
-		EventEntity event = EventEntity.builder()
-				.taskId(taskId)
-				.type(EventType.SUBTASK)
-				.position(timeService.javaNow())
-				.comment(comment)
-				.build()
-		persistenceService.saveEvent(event)
+		event(EventType.SUBTASK, comment)
 		timeService.plusHours(hours)
 	}
 
@@ -119,18 +121,30 @@ class TimelineTestSupport {
 		persistenceService.saveActivity(editorActivity)
 	}
 
+	void event(EventType eventType, String comment) {
+		EventEntity event = EventEntity.builder()
+				.taskId(taskId)
+				.comment(comment)
+				.position(timeService.javaNow())
+				.type(eventType)
+				.build()
+		persistenceService.saveEvent(event)
+	}
+
 	void note() {
 		note("")
 	}
 
 	void note(String comment) {
-		EventEntity event = EventEntity.builder()
-				.taskId(taskId)
-				.comment(comment)
-				.position(timeService.javaNow())
-				.type(EventType.NOTE)
-				.build()
-		persistenceService.saveEvent(event)
+		event(EventType.NOTE, comment)
+	}
+
+	void activate() {
+		event(EventType.ACTIVATE, "activate")
+	}
+
+	void deactivate() {
+		event(EventType.DEACTIVATE, "deactivate")
 	}
 
 	void startBand(IdeaFlowStateType type, String comment) {

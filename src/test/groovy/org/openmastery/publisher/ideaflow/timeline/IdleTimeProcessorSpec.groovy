@@ -1,6 +1,7 @@
 package org.openmastery.publisher.ideaflow.timeline
 
 import org.joda.time.Duration
+import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
@@ -9,6 +10,7 @@ import org.openmastery.publisher.core.timeline.BandTimelineSegment
 import org.openmastery.publisher.core.timeline.BandTimelineSegmentBuilder
 import org.openmastery.publisher.core.timeline.TimelineSegmentValidator
 import org.openmastery.publisher.core.timeline.TimelineTestSupport
+import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
@@ -17,8 +19,11 @@ import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.TROUBLESH
 
 class IdleTimeProcessorSpec extends Specification {
 
+	MockTimeService timeService = new MockTimeService()
 	TimelineSegmentValidator validator = new TimelineSegmentValidator()
-	TimelineTestSupport testSupport = new TimelineTestSupport()
+	TimelineTestSupport testSupport = new TimelineTestSupport(timeService)
+	IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(timeService)
+	IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 
 	def setup() {
 		testSupport.startTaskAndAdvanceHours(1)
@@ -31,7 +36,6 @@ class IdleTimeProcessorSpec extends Specification {
 				.events(testSupport.getEventList())
 				.build()
 
-		IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 		EntityMapper entityMapper = new EntityMapper()
 		List<IdleTimeBandModel> idleTimeBandModelList = entityMapper.mapList(testSupport.getIdleActivityList(), IdleTimeBandModel)
 		idleTimeProcessor.collapseIdleTime(segment.ideaFlowBands, idleTimeBandModelList)
@@ -86,6 +90,42 @@ class IdleTimeProcessorSpec extends Specification {
 		then:
 		validator.assertTimeBand(ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
 		validator.assertTimeBand(ideaFlowBands, 1, LEARNING, Duration.standardHours(4), Duration.standardHours(6))
+	}
+
+	def "generateIdleTimeBandsFromDeativationEvents should generate idle for deactivation/activation pair"() {
+		given:
+		LocalDateTime idleStartTime = timeService.now()
+		builder.deactivate()
+				.advanceHours(2)
+				.activate()
+
+		when:
+		List<IdleTimeBandModel> idleBands = idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(builder.eventList)
+
+		then:
+		assert idleBands[0].duration == Duration.standardHours(2)
+		assert idleBands[0].start == idleStartTime
+		assert idleBands.size() == 1
+	}
+
+	def "generateIdleTimeBandsFromDeativationEvents should ignore spurious deactivation and activation events"() {
+		given:
+		LocalDateTime idleStartTime = timeService.now()
+		builder.deactivate()
+				.advanceHours(1)
+				.deactivate()
+				.advanceHours(2)
+				.activate()
+				.advanceHours(1)
+				.activate()
+
+		when:
+		List<IdleTimeBandModel> idleBands = idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(builder.eventList)
+
+		then:
+		assert idleBands[0].duration == Duration.standardHours(3)
+		assert idleBands[0].start == idleStartTime
+		assert idleBands.size() == 1
 	}
 
 }

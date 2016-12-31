@@ -86,7 +86,7 @@ class IdeaFlowTaskTimelineGenerator {
 	}
 
 	IdeaFlowTaskTimeline generate() {
-		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBandsBands()
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
 
 		// NOTE: calendar events MUST be added BEFORE relative time is computed
 		addCalendarEvents(ideaFlowBands)
@@ -100,7 +100,7 @@ class IdeaFlowTaskTimelineGenerator {
 		return createIdeaFlowTimeline(ideaFlowBands)
 	}
 
-	private List<IdeaFlowBandModel> generateIdeaFlowBandsBands() {
+	private List<IdeaFlowBandModel> generateIdeaFlowBands() {
 		IdeaFlowBandGenerator bandGenerator = new IdeaFlowBandGenerator()
 
 		List<Positionable> positionables = getAllItemsAsPositionableList()
@@ -108,21 +108,33 @@ class IdeaFlowTaskTimelineGenerator {
 	}
 
 	private void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands) {
+		IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
+
+		if (events) {
+			List<IdleTimeBandModel> deactivationIdleEvents = idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(events)
+			idleTimeBands.addAll(deactivationIdleEvents)
+		}
+
 		if (idleTimeBands) {
-			IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
 			idleTimeProcessor.collapseIdleTime(ideaFlowBands, idleTimeBands)
 		}
 	}
 
 	private void computeRelativeTime(List<IdeaFlowBandModel> ideaFlowBands) {
 		List<Positionable> positionables = getAllItemsAsPositionableList()
-		ideaFlowBands.each { IdeaFlowBandModel model ->
-			positionables.add(model)
-			positionables.addAll(model.getAllContentsFlattenedAsPositionableList())
-		}
+		positionables.addAll(getIdeaFlowBandsWithContents(ideaFlowBands))
 
 		RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 		relativeTimeProcessor.computeRelativeTime(positionables)
+	}
+
+	Set<Positionable> getIdeaFlowBandsWithContents(List<IdeaFlowBandModel> ideaFlowBands) {
+		Set<Positionable> positionableSet = []
+		ideaFlowBands.each { IdeaFlowBandModel model ->
+			positionableSet.add(model)
+			positionableSet.addAll(model.getAllContentsFlattenedAsPositionableList())
+		}
+		positionableSet
 	}
 
 	private List getAllItemsAsPositionableList() {

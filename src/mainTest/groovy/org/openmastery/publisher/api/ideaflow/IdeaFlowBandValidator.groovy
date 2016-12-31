@@ -18,4 +18,14 @@ class IdeaFlowBandValidator {
 		this
 	}
 
+	IdeaFlowBandValidator assertRelativePositionInSeconds(Long expectedRelativePositionInSeconds) {
+		assert ideaFlowBand.relativePositionInSeconds == expectedRelativePositionInSeconds
+		this
+	}
+
+	IdeaFlowBandValidator assertDurationInSeconds(Long expectedDurationInSeconds) {
+		assert ideaFlowBand.durationInSeconds == expectedDurationInSeconds
+		this
+	}
+
 }

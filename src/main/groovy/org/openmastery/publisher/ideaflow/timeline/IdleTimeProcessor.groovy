@@ -15,6 +15,9 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
+import org.openmastery.publisher.api.PositionableComparator
+import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.core.timeline.TimeBandIdleCalculator
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
@@ -22,6 +25,41 @@ import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 class IdleTimeProcessor {
 
 	private TimeBandIdleCalculator timeBandCalculator = new TimeBandIdleCalculator()
+
+	public List<IdleTimeBandModel> generateIdleTimeBandsFromDeativationEvents(List<Event> events) {
+		List<Event> deactivationEvents = getSortedActivationAndDeactivationEvents(events)
+
+		List<IdleTimeBandModel> idleTimeBandModelList = []
+		Event matchingDeactivationEvent = null
+		for (Event event : deactivationEvents) {
+			if (event.type == EventType.DEACTIVATE) {
+				if (matchingDeactivationEvent == null) {
+					matchingDeactivationEvent = event
+				}
+			} else if (event.type == EventType.ACTIVATE && matchingDeactivationEvent != null) {
+				idleTimeBandModelList << createIdleTimeBand(matchingDeactivationEvent, event)
+				matchingDeactivationEvent = null
+			}
+		}
+		idleTimeBandModelList
+	}
+
+	private List<Event> getSortedActivationAndDeactivationEvents(List<Event> events) {
+		List<Event> deactivationEvents = events.findAll { Event event ->
+			event.type == EventType.ACTIVATE || event.type == EventType.DEACTIVATE
+		}
+		deactivationEvents.sort(PositionableComparator.INSTANCE)
+		deactivationEvents
+	}
+
+	private IdleTimeBandModel createIdleTimeBand(Event deactivationEvent, Event activationEvent) {
+		IdleTimeBandModel.builder()
+				.start(deactivationEvent.position)
+				.end(activationEvent.position)
+				.comment(deactivationEvent.comment)
+				.auto(true)
+				.build()
+	}
 
 	public void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands, List<IdleTimeBandModel> idleTimeBandList) {
 		for (IdleTimeBandModel idleTimeBandModel : idleTimeBandList) {
