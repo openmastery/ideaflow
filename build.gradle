@@ -104,7 +104,7 @@ publishing_ext {
 
 license {
 	sourceSets = sourceSets.matching { it.name == "main" }
-	excludes(["**/*.properties", "**/*.xml", "db/**", "licenses/**"])
+	excludes(["**/*.properties", "**/*.xml", "db/**", "licenses/**", "static/**"])
 	excludes(["org/openmastery/rest/**", "org/openmastery/publisher/api/**", "org/openmastery/publisher/client/**"])
 }
 
