@@ -139,6 +139,14 @@ docker start postgres
 Then bounce the server.
 
 
+## Swagger
+
+Swagger docs are generated automatically as part of the build.  Once a server is running, navigate to /s/index.html
+(e.g. localhost, http://localhost:8080/s/index.html) to bring up the swagger docs.  To upgrade Swagger UI, checkout
+https://github.com/swagger-api/swagger-ui and copy the dist directory into src/main/resources/static.  You'll also
+need to update index.html and set url = "/s/api-json/service.json" rather than the default petstore url.
+
+
 ## Heroku
 
 This application is currently deployed on Heroku at http://om-ideaflow.herokuapp.com.  For an API-Key on the shared service, please contact janelle@openmastery.org.  We will have account creation setup soon, but while this project is still in early development, accounts are created manually.

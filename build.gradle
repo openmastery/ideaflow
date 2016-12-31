@@ -16,6 +16,10 @@ buildscript {
 	}
 }
 
+plugins {
+	id 'org.detoeuf.swagger-codegen' version '1.6.3'
+}
+
 apply plugin: "com.bancvue.core-oss"
 apply plugin: "com.bancvue.maven-publish-ext"
 apply plugin: "spring-boot"
@@ -31,6 +35,9 @@ repositories {
 
 configurations {
 	client
+	doclet {
+		extendsFrom compile
+	}
 }
 
 sourceSets {
@@ -78,6 +85,9 @@ dependencies {
 	testCompile "org.springframework.boot:spring-boot-starter-test"
 	testCompile "commons-io:commons-io:2.4"
 	testCompile "cglib:cglib-nodep:3.2.0"
+
+	doclet 'com.tenxerconsulting:swagger-doclet:1.1.3'
+	doclet 'javax.ws.rs:javax.ws.rs-api:2.0'
 }
 
 sourceSets.main.java.srcDirs = []
@@ -131,3 +141,18 @@ componentTest.mustRunAfter setSkipTestsTrue
 task stage {
 	dependsOn setSkipTestsTrue, build
 }
+
+task generateRestApiDocs(type: Javadoc) {
+	source = sourceSets.main.allJava
+	destinationDir = file('build/resources/main/static/api-json')
+	options.classpath = configurations.doclet.files.asType(List)
+	options.docletpath = configurations.doclet.files.asType(List)
+	options.doclet = "com.tenxerconsulting.swagger.doclet.ServiceDoclet"
+	options.addStringOption("apiVersion", "1")
+	options.addStringOption("docBasePath", "/s/api-json")
+	options.addStringOption("apiBasePath", "/")
+	options.addBooleanOption("skipUiFiles", true)
+	options.addStringOption("stringTypePrefixes", "java.net.URI");
+}
+
+processResources.dependsOn(generateRestApiDocs)

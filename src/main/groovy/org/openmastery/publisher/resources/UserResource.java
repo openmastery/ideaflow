@@ -36,6 +36,7 @@ public class UserResource {
 
 	/**
 	 * Create a new user API-Key based on the specified email.
+	 * @exclude
 	 * @param userEmail a unique email account
 	 * @return API-Key
 	 */
@@ -53,6 +54,7 @@ public class UserResource {
 
 	/**
 	 * Retrieve the API-Key of an existing user
+	 * @exclude
 	 * @param userEmail a unique email account
 	 * @return API-Key
 	 */
