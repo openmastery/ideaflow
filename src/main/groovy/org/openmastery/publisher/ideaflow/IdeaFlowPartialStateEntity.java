@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 New Iron Group, Inc.
+ * Copyright 2017 New Iron Group, Inc.
  *
  * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3 (the "License");
  * you may not use this file except in compliance with the License.
