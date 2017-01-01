@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.config;
 
-import com.bancvue.rest.config.ObjectMapperContextResolver;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.openmastery.logging.LoggingFilter;
@@ -36,6 +35,7 @@ public class JerseyConfig extends ResourceConfig {
 	@PostConstruct
 	public void initialize() {
 		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+		packages("com.bancvue.rest.exception.mapper");
 		packages("org.openmastery.publisher.resources");
 		packages("org.openmastery.storyweb.resources");
 		register(LoggingFilter.class);
