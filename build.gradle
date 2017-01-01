@@ -142,17 +142,17 @@ task stage {
 	dependsOn setSkipTestsTrue, build
 }
 
-task generateRestApiDocs(type: Javadoc) {
+task generateRestApiDocs(type: Javadoc, dependsOn: [compileJava, compileGroovy]) {
 	source = sourceSets.main.allJava
 	destinationDir = file('build/resources/main/static/api-json')
-	options.classpath = configurations.doclet.files.asType(List)
-	options.docletpath = configurations.doclet.files.asType(List)
+	options.classpath = configurations.doclet.files.asType(List) + sourceSets.main.output.files.asType(List)
+	options.docletpath = configurations.doclet.files.asType(List) + sourceSets.main.output.files.asType(List)
 	options.doclet = "com.tenxerconsulting.swagger.doclet.ServiceDoclet"
 	options.addStringOption("apiVersion", "1")
 	options.addStringOption("docBasePath", "/s/api-json")
 	options.addStringOption("apiBasePath", "/")
 	options.addBooleanOption("skipUiFiles", true)
-	options.addStringOption("stringTypePrefixes", "java.net.URI");
+	options.addStringOption("stringTypePrefixes", "java.net.URI")
 }
 
 processResources.dependsOn(generateRestApiDocs)
