@@ -37,7 +37,7 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assertBand(band, IdeaFlowStateType.TROUBLESHOOTING, expectedStartTime, expectedEndType)
 	}
 
-	def "should create strategy band if no modification made"() {
+	def "generateIdeaFlowBands should create strategy band if no modification made"() {
 		given:
 		builder.activate()
 				.advanceHours(1)
@@ -53,11 +53,11 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assert ideaFlowBands.size() == 1
 	}
 
-	def "should create strategy band when not modifying and progress band when modifying"() {
+	def "generateIdeaFlowBands should create strategy band when not modifying and progress band when modifying"() {
 		given:
 		builder.activate()
-				.readCodeAndAdvance(60)
-				.modifyCodeAndAdvance(30)
+				.readCodeAndAdvance(57)
+				.modifyCodeAndAdvance(60)
 				.readCodeAndAdvance(60)
 				.deactivate()
 
@@ -65,13 +65,13 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
 
 		then:
-		assertStrategyBand(ideaFlowBands[0], startTime, startTime.plusMinutes(58))
-		assertProgressBand(ideaFlowBands[1], ideaFlowBands[0].end, ideaFlowBands[0].end.plusMinutes(29))
-		assertStrategyBand(ideaFlowBands[2], ideaFlowBands[1].end, startTime.plusHours(2).plusMinutes(30))
+		assertStrategyBand(ideaFlowBands[0], startTime, startTime.plusMinutes(60))
+		assertProgressBand(ideaFlowBands[1], startTime.plusMinutes(60), startTime.plusHours(1).plusMinutes(54))
+		assertStrategyBand(ideaFlowBands[2], ideaFlowBands[1].end, startTime.plusHours(2).plusMinutes(57))
 		ideaFlowBands.size() == 3
 	}
 
-	def "should create troubleshooting band when wtf event followed by awesome"() {
+	def "generateIdeaFlowBands should create troubleshooting band when wtf event followed by awesome"() {
 		given:
 		builder.activate()
 				.wtf()
@@ -87,7 +87,7 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assert ideaFlowBands.size() == 1
 	}
 
-	def "should not create additional troubleshooting band if wtf followed by multiple awesome events"() {
+	def "generateIdeaFlowBands should not create additional troubleshooting band if wtf followed by multiple awesome events"() {
 		given:
 		builder.activate()
 				.wtf()
@@ -107,9 +107,10 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 	}
 
 	@Ignore
-	def "should create troubleshooting band at first wtf when multiple wtf events followed by awesome"() {
+	def "generateIdeaFlowBands should create troubleshooting band at first wtf when multiple wtf events followed by awesome"() {
 		given:
-		builder.wtf()
+		builder.activate()
+				.wtf()
 				.advanceMinutes(30)
 				.wtf()
 				.advanceMinutes(30)
@@ -123,44 +124,87 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assert ideaFlowBands.size() == 1
 	}
 
-	@Ignore
-	def "should stop strategy band at start of troubleshooting if troubleshooting starts during but ends after strategy"() {
+	def "generateIdeaFlowBands should start strategy band at end of troubleshooting if troubleshooting starts during but ends after strategy"() {
 		given:
-		builder.readCodeAndAdvance(30)
+		builder.activate()
 				.wtf()
-				.readCodeAndAdvance(30)
-				.modifyCodeAndAdvance(30)
+				.readCodeAndAdvance(60)
 				.awesome()
+				.readCodeAndAdvance(30)
+				.deactivate()
 
 		when:
 		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
 
 		then:
-		assertStrategyBand(ideaFlowBands[0], startTime, startTime.plusMinutes(28))
-		assertTroubleshootingBand(ideaFlowBands[1], ideaFlowBands[0].end, startTime.plusMinutes(90))
+		assertTroubleshootingBand(ideaFlowBands[0], startTime, startTime.plusMinutes(60))
+		assertStrategyBand(ideaFlowBands[1], startTime.plusMinutes(60), startTime.plusMinutes(90))
 		assert ideaFlowBands.size() == 2
 	}
 
-	@Ignore
-	def "should nest troubleshooting within strategy if troubleshooting starts and ends within strategy band"() {
+	def "generateIdeaFlowBands should stop strategy band at start of troubleshooting if troubleshooting starts during but ends after strategy"() {
 		given:
-		builder.readCodeAndAdvance(30)
+		builder.activate()
+				.readCodeAndAdvance(60)
 				.wtf()
 				.readCodeAndAdvance(30)
 				.awesome()
-				.readCodeAndAdvance(30)
+				.deactivate()
 
 		when:
 		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
 
 		then:
-		assertStrategyBand(ideaFlowBands[0], startTime, startTime.plusMinutes(90))
-		assertTroubleshootingBand(ideaFlowBands[0].nestedBands[0], startTime.plusMinutes(30), startTime.plusMinutes(60))
-		assert ideaFlowBands.nestedBands.size() == 1
+		assertStrategyBand(ideaFlowBands[0], startTime, startTime.plusMinutes(60))
+		assertTroubleshootingBand(ideaFlowBands[1], startTime.plusMinutes(60), startTime.plusMinutes(90))
+		assert ideaFlowBands.size() == 2
+	}
+
+	def "generateIdeaFlowBands should split strategy band if troubleshooting starts and ends within strategy band"() {
+		given:
+		builder.activate()
+				.readCodeAndAdvance(30)
+				.wtf()
+				.readCodeAndAdvance(30)
+				.awesome()
+				.readCodeAndAdvance(5)
+				.wtf()
+				.readCodeAndAdvance(30)
+				.awesome()
+				.readCodeAndAdvance(30)
+				.deactivate()
+
+		when:
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
+
+		then:
+		assertStrategyBand(ideaFlowBands[0], startTime, startTime.plusMinutes(30))
+		assertTroubleshootingBand(ideaFlowBands[1], startTime.plusMinutes(30), startTime.plusMinutes(60))
+		assertProgressBand(ideaFlowBands[2], startTime.plusMinutes(60), startTime.plusMinutes(65))
+		assertTroubleshootingBand(ideaFlowBands[3], startTime.plusMinutes(65), startTime.plusMinutes(95))
+		assertStrategyBand(ideaFlowBands[4], startTime.plusMinutes(95), startTime.plusMinutes(125))
+		assert ideaFlowBands.size() == 5
+	}
+
+	def "generateIdeaFlowBands should ignore strategy band if strategy starts and ends within troubleshooting band"() {
+		given:
+		builder.activate()
+				.wtf()
+				.modifyCodeAndAdvance(30)
+				.readCodeAndAdvance(60)
+				.modifyCodeAndAdvance(30)
+				.awesome()
+				.deactivate()
+
+		when:
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
+
+		then:
+		assertTroubleshootingBand(ideaFlowBands[0], startTime, startTime.plusHours(2))
 		assert ideaFlowBands.size() == 1
 	}
 
-	def "should create progress bands to fill band gaps"() {
+	def "generateIdeaFlowBands should create progress bands to fill band gaps"() {
 		given:
 		builder.activate()
 				.modifyCodeAndAdvance(30)
@@ -180,7 +224,7 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assert ideaFlowBands.size() == 3
 	}
 
-	def "generateProgressBands SHOULD create a progress band for an activate/deactivate interval"() {
+	def "generateIdeaFlowBands SHOULD create a progress band for an activate/deactivate interval"() {
 		given:
 		builder.activate().modifyCodeAndAdvance(30)
 				.deactivate()
@@ -193,8 +237,7 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assert ideaFlowBands.size() == 1
 	}
 
-	@Ignore // TODO: fix
-	def "generateProgressBands SHOULD create single band which spands out of order intervals"() {
+	def "generateIdeaFlowBands SHOULD create single band which spands out of order intervals"() {
 		given:
 		builder.activate().modifyCodeAndAdvance(30)
 				.deactivate().advanceHours(1)
@@ -205,12 +248,12 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
 
 		then:
-		assertProgressBand(ideaFlowBands[0], startTime, startTime.plusMinutes(90))
+		assertProgressBand(ideaFlowBands[0], startTime, startTime.plusHours(2).plusMinutes(30))
 		assert ideaFlowBands.size() == 1
 	}
 
 	//TODO: in actuality, this should probably prompt a "repair" job, looking at raw activity and creating the missing event
-	def "generateProgressBands SHOULD ignore multiple activates in a row"() {
+	def "generateIdeaFlowBands SHOULD ignore multiple activates in a row"() {
 		builder.activate().modifyCodeAndAdvance(30)
 				.activate().modifyCodeAndAdvance(90)
 				.deactivate()
@@ -223,7 +266,7 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assert ideaFlowBands.size() == 1
 	}
 
-	def "generateProgressBands should not generate strategy bands if under minimum learning band threshold"() {
+	def "generateIdeaFlowBands should not generate strategy bands if under minimum learning band threshold"() {
 		generator.learningBandMinimumDurationInMinutes = 25
 		builder.activate()
 				.readCodeAndAdvance(20)
@@ -237,7 +280,6 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
 
 		then:
-		ideaFlowBands.each { println it }
 		assertProgressBand(ideaFlowBands[0], startTime, startTime.plusMinutes(70))
 		assert ideaFlowBands.size() == 1
 	}

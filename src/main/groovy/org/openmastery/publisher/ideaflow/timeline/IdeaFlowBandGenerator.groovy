@@ -39,8 +39,8 @@ class IdeaFlowBandGenerator {
 
 		List<Positionable> sortedPositionableList = positionableList.sort(false, PositionableComparator.INSTANCE)
 
-		List<IdeaFlowBandModel> strategyBands = generateStrategyBands(sortedPositionableList)
 		List<IdeaFlowBandModel> troubleshootingBands = generateTroubleshootingBands(sortedPositionableList)
+		List<IdeaFlowBandModel> strategyBands = generateStrategyBands(sortedPositionableList, troubleshootingBands)
 		List<IdeaFlowBandModel> ideaFlowBandList = strategyBands + troubleshootingBands
 		ideaFlowBandList.sort(PositionableComparator.INSTANCE)
 
@@ -63,7 +63,7 @@ class IdeaFlowBandGenerator {
 		ideaFlowBandList
 	}
 
-	private List<IdeaFlowBandModel> generateStrategyBands(List<Positionable> sortedPositionableList) {
+	private List<IdeaFlowBandModel> generateStrategyBands(List<Positionable> sortedPositionableList, List<IdeaFlowBandModel> troubleshootingBands) {
 		List<IdeaFlowBandModel> learningBandList = []
 
 		LocalDateTime learningBandStartTime = sortedPositionableList.first().position
@@ -72,7 +72,7 @@ class IdeaFlowBandGenerator {
 			tracker.addModificationActivity(positionable)
 			if (tracker.isOverModificationThreshold()) {
 				if (isOverMinimumLearningBandDuration(learningBandStartTime, tracker.earliestTrackedStartTime)) {
-					learningBandList << createIdeaFlowBand(learningBandStartTime, tracker.earliestTrackedStartTime, IdeaFlowStateType.LEARNING)
+					addStrategyBand(troubleshootingBands, learningBandList, learningBandStartTime, tracker.latestTrackedEndTime)
 				}
 				learningBandStartTime = null
 			} else if (learningBandStartTime == null) {
@@ -81,13 +81,10 @@ class IdeaFlowBandGenerator {
 		}
 
 		if (isOverMinimumLearningBandDuration(learningBandStartTime, tracker.latestTrackedEndTime)) {
-			learningBandList << createIdeaFlowBand(learningBandStartTime, tracker.latestTrackedEndTime, IdeaFlowStateType.LEARNING)
+			addStrategyBand(troubleshootingBands, learningBandList, learningBandStartTime, tracker.latestTrackedEndTime)
 		}
 
-		learningBandList.removeAll { IdeaFlowBandModel ideaFlowBandModel ->
-			ideaFlowBandModel.start.plusMinutes(learningTimeThresholdInMinutes).isAfter(ideaFlowBandModel.end)
-		}
-		learningBandList
+		learningBandList.findAll { it != null }
 	}
 
 	private boolean isOverMinimumLearningBandDuration(LocalDateTime start, LocalDateTime end) {
@@ -95,6 +92,36 @@ class IdeaFlowBandGenerator {
 			return false
 		}
 		TimeConverter.between(start, end).toStandardMinutes().minutes >= learningBandMinimumDurationInMinutes
+	}
+
+	private void addStrategyBand(List<IdeaFlowBandModel> troubleshootingBands, List<IdeaFlowBandModel> strategyBandList, LocalDateTime start, LocalDateTime end) {
+		for (IdeaFlowBandModel troubleshootingBand : troubleshootingBands) {
+			if (troubleshootingBand.startsOnOrAfter(end) || troubleshootingBand.endsOnOrBefore(start)) {
+				continue
+			} else if (isWithinBand(start, end, troubleshootingBand)) {
+				return
+			}
+
+			if (start.isBefore(troubleshootingBand.start) && end.isAfter(troubleshootingBand.start)) {
+				// add the band but keep iterating in case a strategy band contains multiple troubleshooting bands
+				addStrategyBandIfOverThreshold(strategyBandList, start, troubleshootingBand.start)
+				start = troubleshootingBand.end
+			} else if (start.isBefore(troubleshootingBand.end) && end.isAfter(troubleshootingBand.end)) {
+				start = troubleshootingBand.end
+			}
+		}
+
+		addStrategyBandIfOverThreshold(strategyBandList, start, end)
+	}
+
+	private void addStrategyBandIfOverThreshold(List<IdeaFlowBandModel> strategyBandList, LocalDateTime start, LocalDateTime end) {
+		if (isOverMinimumLearningBandDuration(start, end)) {
+			strategyBandList << createIdeaFlowBand(start, end, IdeaFlowStateType.LEARNING)
+		}
+	}
+
+	private boolean isWithinBand(LocalDateTime start, LocalDateTime end, IdeaFlowBandModel band) {
+		band.contains(start) && band.contains(end)
 	}
 
 	private List<IdeaFlowBandModel> generateTroubleshootingBands(List<Positionable> sortedPositionableList) {
