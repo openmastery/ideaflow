@@ -15,18 +15,12 @@
  */
 package org.openmastery.publisher.config;
 
-import com.bancvue.rest.config.ObjectMapperContextResolver;
+import com.bancvue.rest.config.StandardObjectMapperFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.publisher.api.metrics.CapacityDistribution;
 import org.openmastery.publisher.api.metrics.DurationInSeconds;
 
@@ -35,10 +29,12 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 @Provider
-public class CustomValueTypeResolver  implements ContextResolver<ObjectMapper> {
-	private static ObjectMapper mapper = new ObjectMapperContextResolver().getContext(null);
+public class CustomValueTypeResolver implements ContextResolver<ObjectMapper> {
+
+	private static final ObjectMapper mapper;
 
 	static {
+		mapper = new StandardObjectMapperFactory().createObjectMapper();
 		mapper.registerModule(createCustomMetricValueModule());
 	}
 
@@ -76,4 +72,5 @@ public class CustomValueTypeResolver  implements ContextResolver<ObjectMapper> {
 	public ObjectMapper getContext(Class<?> type) {
 		return mapper;
 	}
+
 }
