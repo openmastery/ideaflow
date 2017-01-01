@@ -36,6 +36,8 @@ import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.time.TimeConverter
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 class IdeaFlowTaskTimelineGenerator {
 
@@ -47,7 +49,12 @@ class IdeaFlowTaskTimelineGenerator {
 	private List<ExecutionEvent> executionEvents = []
 	private List<BlockActivity> blockActivities = []
 
+	private IdeaFlowBandGenerator bandGenerator
 	private EntityMapper entityMapper = new EntityMapper()
+
+	IdeaFlowTaskTimelineGenerator(IdeaFlowBandGenerator bandGenerator) {
+		this.bandGenerator = bandGenerator
+	}
 
 	IdeaFlowTaskTimelineGenerator task(Task task) {
 		this.task = task
@@ -101,8 +108,6 @@ class IdeaFlowTaskTimelineGenerator {
 	}
 
 	private List<IdeaFlowBandModel> generateIdeaFlowBands() {
-		IdeaFlowBandGenerator bandGenerator = new IdeaFlowBandGenerator()
-
 		List<Positionable> positionables = getAllItemsAsPositionableList()
 		bandGenerator.generateIdeaFlowBands(positionables)
 	}
@@ -204,6 +209,19 @@ class IdeaFlowTaskTimelineGenerator {
 
 		events.add(initialStrategySubtaskEvent)
 		Collections.sort(events, PositionableComparator.INSTANCE);
+	}
+
+
+	@Component
+	public static class Factory {
+
+		@Autowired
+		private IdeaFlowBandGenerator bandGenerator = new IdeaFlowBandGenerator()
+
+		public IdeaFlowTaskTimelineGenerator create() {
+			return new IdeaFlowTaskTimelineGenerator(bandGenerator)
+		}
+
 	}
 
 }

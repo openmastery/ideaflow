@@ -15,9 +15,14 @@ public class IdeaFlowTaskTimelineGeneratorSpec extends Specification {
 
 	private MockTimeService mockTimeService = new MockTimeService()
 	private IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
-	private IdeaFlowTaskTimelineGenerator timelineGenerator = new IdeaFlowTaskTimelineGenerator()
+	private IdeaFlowTaskTimelineGenerator timelineGenerator
 
 	private IdeaFlowTaskTimeline createTimeline() {
+		IdeaFlowBandGenerator bandGenerator = new IdeaFlowBandGenerator()
+		bandGenerator.strategyModificationActivityThresholdInMinutes = 5
+		bandGenerator.strategyModificationCountThreshold = 150
+		bandGenerator.strategyBandMinimumDurationInMinutes = 20
+		timelineGenerator = new IdeaFlowTaskTimelineGenerator(bandGenerator)
 		timelineGenerator.events = builder.eventList
 		timelineGenerator.idleTimeBands = builder.idleTimeBands
 		timelineGenerator.modificationActivities = builder.modificationActivityList

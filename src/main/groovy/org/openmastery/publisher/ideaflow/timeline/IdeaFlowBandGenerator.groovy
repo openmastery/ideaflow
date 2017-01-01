@@ -25,12 +25,18 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.time.TimeConverter
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 
+@Component
 class IdeaFlowBandGenerator {
 
-	private int learningTimeThresholdInMinutes = 5
-	private int learningModificationCountThreshold = 150
-	private int learningBandMinimumDurationInMinutes = 20
+	@Value('${org.ideaflow.strategy.modificationActivityThresholdInMinutes}')
+	private int strategyModificationActivityThresholdInMinutes
+	@Value('${org.ideaflow.strategy.modificationCountThreshold}')
+	private int strategyModificationCountThreshold
+	@Value('${org.ideaflow.strategy.bandMinimumDurationInMinutes}')
+	private int strategyBandMinimumDurationInMinutes
 
 	public List<IdeaFlowBandModel> generateIdeaFlowBands(List<Positionable> positionableList) {
 		if (positionableList.isEmpty()) {
@@ -67,7 +73,7 @@ class IdeaFlowBandGenerator {
 		List<IdeaFlowBandModel> learningBandList = []
 
 		LocalDateTime learningBandStartTime = sortedPositionableList.first().position
-		ModificationActivityTracker tracker = new ModificationActivityTracker(learningTimeThresholdInMinutes, learningModificationCountThreshold)
+		ModificationActivityTracker tracker = new ModificationActivityTracker(strategyModificationActivityThresholdInMinutes, strategyModificationCountThreshold)
 		for (Positionable positionable : sortedPositionableList) {
 			tracker.addModificationActivity(positionable)
 			if (tracker.isOverModificationThreshold()) {
@@ -91,7 +97,7 @@ class IdeaFlowBandGenerator {
 		if (start == null) {
 			return false
 		}
-		TimeConverter.between(start, end).toStandardMinutes().minutes >= learningBandMinimumDurationInMinutes
+		TimeConverter.between(start, end).toStandardMinutes().minutes >= strategyBandMinimumDurationInMinutes
 	}
 
 	private void addStrategyBand(List<IdeaFlowBandModel> troubleshootingBands, List<IdeaFlowBandModel> strategyBandList, LocalDateTime start, LocalDateTime end) {

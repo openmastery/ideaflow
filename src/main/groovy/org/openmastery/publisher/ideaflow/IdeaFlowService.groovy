@@ -64,11 +64,11 @@ class IdeaFlowService {
 	@Autowired
 	private TroubleshootingJourneyGenerator troubleshootingJourneyGenerator;
 	@Autowired
+	private IdeaFlowTaskTimelineGenerator.Factory timelineGeneratorFactory
+	@Autowired
 	private TaskService taskService
-
 	@Autowired
 	private MetricsService metricsService
-
 
 
 	TaskTimelineOverview generateTimelineOverviewForTask(Long taskId) {
@@ -198,8 +198,7 @@ class IdeaFlowService {
 		List<BlockActivityEntity> blocks = persistenceService.getBlockActivityList(task.id)
 		List<IdleActivityEntity> idleActivities = persistenceService.getIdleActivityList(task.id)
 
-
-		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimelineGenerator()
+		IdeaFlowTaskTimeline timeline = timelineGeneratorFactory.create()
 				.task(task)
 				.modificationActivities(modifications)
 				.events(events)

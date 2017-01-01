@@ -4,7 +4,6 @@ import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.time.MockTimeService
-import spock.lang.Ignore
 import spock.lang.Specification
 
 public class IdeaFlowBandGeneratorSpec extends Specification {
@@ -13,6 +12,12 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 	LocalDateTime startTime = mockTimeService.now()
 	IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
 	IdeaFlowBandGenerator generator = new IdeaFlowBandGenerator()
+
+	def setup() {
+		generator.strategyModificationActivityThresholdInMinutes = 5
+		generator.strategyModificationCountThreshold = 150
+		generator.strategyBandMinimumDurationInMinutes = 20
+	}
 
 	private List<IdeaFlowBandModel> generateIdeaFlowBands() {
 		List positionableList = builder.eventList + builder.modificationActivityList + builder.idleTimeBands
@@ -264,7 +269,7 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 	}
 
 	def "generateIdeaFlowBands should not generate strategy bands if under minimum learning band threshold"() {
-		generator.learningBandMinimumDurationInMinutes = 25
+		generator.strategyBandMinimumDurationInMinutes = 25
 		builder.activate()
 				.readCodeAndAdvance(20)
 				.modifyCodeAndAdvance(5)
