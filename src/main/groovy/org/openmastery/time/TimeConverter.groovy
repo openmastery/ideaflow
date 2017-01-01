@@ -41,6 +41,9 @@ class TimeConverter {
 	}
 
 	public static LocalDateTime toJavaLocalDateTime(Timestamp timestamp) {
+		if (timestamp == null) {
+			return null
+		}
 		LocalDateTime.of(timestamp.getYear(),
 				timestamp.getMonthOfYear(),
 				timestamp.getDayOfMonth(),

@@ -15,11 +15,15 @@
  */
 package org.openmastery.publisher.core.annotation;
 
+import org.openmastery.storyweb.api.FaqSummary;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AnnotationRespository extends PagingAndSortingRepository<AnnotationEntity, Long> {
@@ -30,8 +34,23 @@ public interface AnnotationRespository extends PagingAndSortingRepository<Annota
 	@Query(nativeQuery = true, value = "select * from annotation where type = 'snippet' and task_id = ?1")
 	List<SnippetAnnotationEntity> findSnippetsByTaskId(long taskId);
 
+	@Query(nativeQuery = true, value = "select faq.task_id, faq.event_id, e.comment eventComment, faq.metadata faqJson, e.position " +
+			"from event e, annotation faq where e.id = faq.event_id and faq.type = 'faq' " +
+			"and (lower(faq.metadata) similar to (?1) or lower(e.comment) similar to (?1))")
+	List<Object []> findFaqsBySearchCriteria(String pattern);
+
+	//select event.taskId, event.eventId, event.comment, faq.comment from event, annotation faq
+	// where event.id = faq.eventId and faq.type = 'faq'
+	// and event.position between ?startDate and ?endDate
+	// and (faq.comment like '%tag1' or faq.comment like '%tag2')
+
 	@Modifying
 	@Transactional
 	@Query(value="delete from annotation where event_id = ?1 and type = ?2")
 	void deleteByEventAndType(long eventId, String faq);
+
+
+
+
+
 }
