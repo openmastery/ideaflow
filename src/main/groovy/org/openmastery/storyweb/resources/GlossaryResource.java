@@ -51,4 +51,6 @@ public class GlossaryResource {
 		return entityMapper.mapList(glossaryRepository.findAll(), GlossaryEntry.class);
 	}
 
+	//TODO need to be able to find entries for a specific tag set
+
 }

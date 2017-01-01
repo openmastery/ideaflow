@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FaqSummary {
-	List<String> tags;
+	Set<String> tags;
 	String eventComment;
 	String faqComment;
 

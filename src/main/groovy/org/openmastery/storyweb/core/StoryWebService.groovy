@@ -18,6 +18,7 @@ package org.openmastery.storyweb.core
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.storyweb.api.FaqSummary
+import org.openmastery.tags.TagsUtil
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -34,24 +35,32 @@ class StoryWebService {
 
 
 	public List<FaqSummary> findAllFaqMatchingCriteria(List<String> tags) {
-		String searchPattern = "%(" + tags.collect { "#"+it }.join("|") + ")%";
+		String searchPattern = "%(" + tags.collect { "#" + it }.join("|") + ")%";
 
-		List<Object []> results = annotationRepository.findFaqsBySearchCriteria(searchPattern)
-		List<FaqSummary> faqSummaries = results.collect { Object [] row ->
+		List<Object[]> results = annotationRepository.findFaqsBySearchCriteria(searchPattern)
+		List<FaqSummary> faqSummaries = results.collect { Object[] row ->
 			FaqSummary faqSummary = new FaqSummary()
 			faqSummary.taskId = (Long) row[0]
 			faqSummary.eventId = (Long) row[1]
 			faqSummary.eventComment = row[2]
 			faqSummary.faqComment = extractCommentFromJSON(row[3].toString())
-			faqSummary.position = TimeConverter.toJodaLocalDateTime((Timestamp)row[4])
-
+			faqSummary.position = TimeConverter.toJodaLocalDateTime((Timestamp) row[4])
+			faqSummary.tags = extractUniqueTags(faqSummary.eventComment, faqSummary.faqComment)
 			return faqSummary
 		}
 
 		return faqSummaries;
 	}
 
-	String extractCommentFromJSON(String jsonMetadata) {
+	private Set<String> extractUniqueTags(String eventComment, String faqComment) {
+		Set<String> tagSet = []
+		tagSet.addAll (TagsUtil.extractUniqueHashTags(eventComment))
+		tagSet.addAll (TagsUtil.extractUniqueHashTags(faqComment))
+
+		return tagSet
+	}
+
+	private String extractCommentFromJSON(String jsonMetadata) {
 		CommentHolder commentHolder = jsonMapper.readValue(jsonMetadata, CommentHolder.class)
 		return commentHolder.comment
 	}
@@ -61,7 +70,6 @@ class StoryWebService {
 
 		CommentHolder() {}
 	}
-
 
 
 }

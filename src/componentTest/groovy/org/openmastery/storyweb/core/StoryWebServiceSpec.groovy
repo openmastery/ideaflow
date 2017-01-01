@@ -27,22 +27,23 @@ class StoryWebServiceSpec extends Specification {
 	private StoryWebService storyWebService
 
 
-
-
 	def "findFaqsBySearchCriteria should join event and faq information"() {
 		given:
 		Long taskId = 312L;
 
 		EventEntity event = aRandom.eventEntity().taskId(taskId).build()
-		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(taskId).comment("This #tag")build()
+		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(taskId).comment("for #this and #that")build()
 
 		EventEntity savedEvent = persistenceService.saveEvent(event)
 		annotation.eventId = savedEvent.id
 		persistenceService.saveAnnotation(annotation)
 
+		Set<String> expectedTags = new HashSet<>()
+		expectedTags.add("#this")
+		expectedTags.add("#that")
 		when:
 
-		List<FaqSummary> faqs = storyWebService.findAllFaqMatchingCriteria(["tag", "othertag"]);
+		List<FaqSummary> faqs = storyWebService.findAllFaqMatchingCriteria(["this", "othertag"]);
 		then:
 		assert faqs.size() == 1
 		assert faqs.get(0).taskId == event.taskId
@@ -50,7 +51,7 @@ class StoryWebServiceSpec extends Specification {
 		assert faqs.get(0).position == TimeConverter.toJodaLocalDateTime(event.position)
 		assert faqs.get(0).faqComment == annotation.comment
 		assert faqs.get(0).eventComment == event.comment
-
+		assert faqs.get(0).tags == expectedTags
 
 	}
 }

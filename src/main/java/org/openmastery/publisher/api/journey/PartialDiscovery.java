@@ -6,6 +6,7 @@ import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.metrics.Metric;
 import org.openmastery.publisher.api.metrics.SubtaskOverview;
+import org.openmastery.tags.TagsUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,7 +34,7 @@ public class PartialDiscovery extends AbstractRelativeInterval {
 	public PartialDiscovery(Event wtfYayEvent, Long durationInSeconds) {
 		this.event = wtfYayEvent;
 		this.experimentCycles = new ArrayList<ExperimentCycle>();
-		this.tags = extractHashTags(wtfYayEvent.getComment());
+		this.tags = TagsUtil.extractUniqueHashTags(wtfYayEvent.getComment());
 
 		setRelativeStart(wtfYayEvent.getRelativePositionInSeconds());
 		setDurationInSeconds(durationInSeconds);
@@ -54,18 +55,6 @@ public class PartialDiscovery extends AbstractRelativeInterval {
 		}
 	}
 
-	private Set<String> extractHashTags(String commentWithTags) {
-		Set<String> hashtags = new HashSet<String>();
 
-		if (commentWithTags != null) {
-			Pattern hashTagPattern = Pattern.compile("(#\\w+)");
-			Matcher matcher = hashTagPattern.matcher(commentWithTags);
-			while (matcher.find()) {
-				hashtags.add(matcher.group(1));
-			}
-		}
-
-		return hashtags;
-	}
 
 }
