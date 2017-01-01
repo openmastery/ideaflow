@@ -54,7 +54,7 @@ public class ModificationActivityEntity extends ActivityEntity {
 		return new ModificationActivityEntityBuilder();
 	}
 
-	public static class ModificationActivityEntityBuilder extends ActivityEntityBuilder<ModificationActivityEntityBuilder> {
+	public static class ModificationActivityEntityBuilder extends ActivityEntityBuilder<ModificationActivityEntity, ModificationActivityEntityBuilder> {
 
 		private int modificationCount;
 

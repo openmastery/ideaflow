@@ -19,10 +19,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import java.time.LocalDateTime;
 
 @Entity
@@ -64,7 +62,7 @@ public class EditorActivityEntity extends ActivityEntity {
 		return new EditorActivityEntityBuilder();
 	}
 
-	public static class EditorActivityEntityBuilder extends ActivityEntityBuilder<EditorActivityEntityBuilder> {
+	public static class EditorActivityEntityBuilder extends ActivityEntityBuilder<EditorActivityEntity, EditorActivityEntityBuilder> {
 
 		private String filePath;
 		private boolean modified;

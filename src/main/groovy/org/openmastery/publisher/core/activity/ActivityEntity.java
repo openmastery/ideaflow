@@ -101,7 +101,7 @@ public abstract class ActivityEntity {
 		return Duration.between(start, end);
 	}
 
-	public static abstract class ActivityEntityBuilder<T extends ActivityEntityBuilder> {
+	public static abstract class ActivityEntityBuilder<ENTITY, BUILDER extends ActivityEntityBuilder> {
 
 		protected long id;
 		protected long ownerId;
@@ -109,29 +109,31 @@ public abstract class ActivityEntity {
 		protected LocalDateTime start;
 		protected LocalDateTime end;
 
-		public T id(long id) {
+		public abstract ENTITY build();
+
+		public BUILDER id(long id) {
 			this.id = id;
-			return (T) this;
+			return (BUILDER) this;
 		}
 
-		public T ownerId(long ownerId) {
+		public BUILDER ownerId(long ownerId) {
 			this.ownerId = ownerId;
-			return (T) this;
+			return (BUILDER) this;
 		}
 
-		public T taskId(long taskId) {
+		public BUILDER taskId(long taskId) {
 			this.taskId = taskId;
-			return (T) this;
+			return (BUILDER) this;
 		}
 
-		public T start(LocalDateTime start) {
+		public BUILDER start(LocalDateTime start) {
 			this.start = start;
-			return (T) this;
+			return (BUILDER) this;
 		}
 
-		public T end(LocalDateTime end) {
+		public BUILDER end(LocalDateTime end) {
 			this.end = end;
-			return (T) this;
+			return (BUILDER) this;
 		}
 
 	}

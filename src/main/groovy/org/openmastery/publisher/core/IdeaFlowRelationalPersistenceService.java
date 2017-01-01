@@ -185,6 +185,11 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 		return taskRepository.save(task);
 	}
 
+	@Override
+	public void deleteTask(TaskEntity task) {
+		taskRepository.delete(task);
+	}
+
 
 
 	@Override

@@ -47,7 +47,7 @@ public class ExternalActivityEntity extends ActivityEntity {
 		setMetadataField(COMMENT_KEY, comment);
 	}
 
-	public static class ExternalActivityEntityBuilder extends ActivityEntityBuilder<ExternalActivityEntityBuilder> {
+	public static class ExternalActivityEntityBuilder extends ActivityEntityBuilder<ExternalActivityEntity, ExternalActivityEntityBuilder> {
 
 		private String comment;
 

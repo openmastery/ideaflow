@@ -41,6 +41,10 @@ class EventResourceSpec extends Specification {
 		taskId = persistenceService.saveTask(taskEntity).id
 	}
 
+	private EventEntity createRandomEvent() {
+		aRandom.eventEntity().taskId(taskId).build()
+	}
+
 	def "Should retrieve recent events equal or after the specified afterDate"() {
 		given:
 		NewIFMBatch batch = aRandom.batch()
@@ -59,7 +63,7 @@ class EventResourceSpec extends Specification {
 
 	def "Should update event with PUT"() {
 		given:
-		EventEntity eventEntity = aRandom.eventEntity().build()
+		EventEntity eventEntity = createRandomEvent()
 		persistenceService.saveEvent(eventEntity)
 		EntityMapper mapper = new EntityMapper()
 		Event event = mapper.mapIfNotNull(eventEntity, Event.class)
@@ -73,7 +77,7 @@ class EventResourceSpec extends Specification {
 
 	def "Should update FAQ on POST for existing event"() {
 		given:
-		EventEntity eventEntity = aRandom.eventEntity().build()
+		EventEntity eventEntity = createRandomEvent()
 		EventEntity savedEntity = persistenceService.saveEvent(eventEntity)
 
 		when:
@@ -85,7 +89,7 @@ class EventResourceSpec extends Specification {
 
 	def "Should overwrite FAQ on POST if annotation already exists"() {
 		given:
-		EventEntity eventEntity = aRandom.eventEntity().build()
+		EventEntity eventEntity = createRandomEvent()
 		EventEntity savedEntity = persistenceService.saveEvent(eventEntity)
 
 		when:

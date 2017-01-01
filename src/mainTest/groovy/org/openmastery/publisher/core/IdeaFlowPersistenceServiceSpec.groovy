@@ -8,10 +8,9 @@ import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.ExternalActivityEntity.ExternalActivityEntityBuilder
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity.IdleActivityEntityBuilder
-import org.openmastery.publisher.core.annotation.AnnotationEntity
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
-import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.time.MockTimeService
 import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.Ignore
@@ -23,32 +22,35 @@ import static org.openmastery.publisher.ARandom.aRandom
 abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	private MockTimeService mockTimeService = new MockTimeService()
-	private long taskId = aRandom.intBetween(1, 100000)
+	private TaskEntity task
 
 	protected abstract IdeaFlowPersistenceService getPersistenceService()
+
+	def setup() {
+		task = persistenceService.saveTask(aRandom.taskEntity().build())
+	}
 
 	private TaskEntity saveTask(TaskEntity.TaskEntityBuilder builder) {
 		persistenceService.saveTask(builder.build())
 	}
 
 	private ActivityEntity saveActivity(ActivityEntityBuilder builder) {
-		ActivityEntity entity = builder.taskId(taskId).build()
-		println "ENTITY: ${entity}"
+		ActivityEntity entity = builder.taskId(task.id).build()
 		persistenceService.saveActivity(entity)
 	}
 
 	private EditorActivityEntity saveEditorActivity(EditorActivityEntityBuilder builder) {
-		EditorActivityEntity entity = builder.taskId(taskId).build()
+		EditorActivityEntity entity = builder.taskId(task.id).build()
 		persistenceService.saveActivity(entity)
 	}
 
 	private IdleActivityEntity saveIdleActivity(IdleActivityEntityBuilder builder) {
-		IdleActivityEntity entity = builder.taskId(taskId).build()
+		IdleActivityEntity entity = builder.taskId(task.id).build()
 		persistenceService.saveActivity(entity)
 	}
 
 	private ExternalActivityEntity saveExternalActivity(ExternalActivityEntityBuilder builder) {
-		ExternalActivityEntity entity = builder.taskId(taskId).build()
+		ExternalActivityEntity entity = builder.taskId(task.id).build()
 		persistenceService.saveActivity(entity)
 	}
 
@@ -73,12 +75,12 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		TaskEntity mostRecent = saveTask(aRandom.taskEntity().modifyDate(mockTimeService.javaInFuture(24)))
 		for (int i = 0; i < 5; i++) {
 			saveTask(aRandom.taskEntity()
-					.ownerId(mostRecent.ownerId)
-					.modifyDate(mockTimeService.javaInFuture(i)))
+					         .ownerId(mostRecent.ownerId)
+					         .modifyDate(mockTimeService.javaInFuture(i)))
 		}
 		TaskEntity secondMostRecent = saveTask(aRandom.taskEntity()
-				.ownerId(mostRecent.ownerId)
-				.modifyDate(mockTimeService.javaInFuture(23)))
+				                                       .ownerId(mostRecent.ownerId)
+				                                       .modifyDate(mockTimeService.javaInFuture(23)))
 
 		when:
 		List<TaskEntity> taskList = persistenceService.findRecentTasks(mostRecent.ownerId, 2)
@@ -121,7 +123,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		}
 
 		expect:
-		assert mostRecentActivity.end == persistenceService.getMostRecentActivityEnd(taskId)
+		assert mostRecentActivity.end == persistenceService.getMostRecentActivityEnd(task.id)
 	}
 
 	def "getMostRecentActivityEnd SHOULD return null WHEN there's no activity"() {
@@ -134,7 +136,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "saveActivity should persist metadata"() {
 		given:
-		EditorActivityEntity activity = aRandom.editorActivityEntity().build()
+		EditorActivityEntity activity = aRandom.editorActivityEntity().taskId(task.id).build()
 
 		when:
 		EditorActivityEntity savedActivity = persistenceService.saveActivity(activity)
@@ -146,7 +148,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "saveAnnotation should persist metadata"() {
 		given:
-		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().build()
+		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(task.id).build()
 
 		when:
 		FaqAnnotationEntity savedAnnotation = persistenceService.saveAnnotation(annotation)
@@ -158,12 +160,11 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "findAnnotationsByTask should retrieve all available annotations"() {
 		given:
-		Long taskId = 312L;
-		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(taskId).build()
+		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(task.id).build()
 
 		when:
 		persistenceService.saveAnnotation(annotation)
-		List<FaqAnnotationEntity> faqs = persistenceService.getFaqAnnotationList(taskId)
+		List<FaqAnnotationEntity> faqs = persistenceService.getFaqAnnotationList(task.id)
 
 		then:
 		assert faqs.size() == 1
@@ -173,7 +174,9 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "saveActiveState should save active and containing state"() {
 		given:
-		IdeaFlowPartialStateEntity activeState = aRandom.ideaFlowPartialStateEntity().build()
+		IdeaFlowPartialStateEntity activeState = aRandom.ideaFlowPartialStateEntity()
+				.taskId(task.id)
+				.build()
 		IdeaFlowPartialStateEntity containingState = aRandom.ideaFlowPartialStateEntity()
 				.taskId(activeState.taskId)
 				.build()
@@ -190,6 +193,22 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 		then:
 		assert persistenceService.getContainingState(containingState.taskId) == null
+	}
+
+	def "deleteTask should delete referring entities"() {
+		given:
+		TaskEntity task = persistenceService.saveTask(aRandom.taskEntity().build())
+		persistenceService.saveActivity(aRandom.executionActivityEntity().taskId(task.id).build())
+		persistenceService.saveEvent(aRandom.eventEntity().taskId(task.id).build())
+		persistenceService.saveAnnotation(aRandom.faqAnnotationEntity().taskId(task.id).build())
+
+		when:
+		persistenceService.deleteTask(task)
+
+		then:
+		assert persistenceService.getExecutionActivityList(task.id) == []
+		assert persistenceService.getEventList(task.id) == []
+		assert persistenceService.getFaqAnnotationList(task.id) == []
 	}
 
 }

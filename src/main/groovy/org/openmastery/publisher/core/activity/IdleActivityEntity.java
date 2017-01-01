@@ -39,7 +39,7 @@ public class IdleActivityEntity extends ActivityEntity {
 		return new IdleActivityEntityBuilder();
 	}
 
-	public static class IdleActivityEntityBuilder extends ActivityEntityBuilder<IdleActivityEntityBuilder> {
+	public static class IdleActivityEntityBuilder extends ActivityEntityBuilder<IdleActivityEntity, IdleActivityEntityBuilder> {
 
 		public IdleActivityEntity build() {
 			return new IdleActivityEntity(id, ownerId, taskId, start, end);

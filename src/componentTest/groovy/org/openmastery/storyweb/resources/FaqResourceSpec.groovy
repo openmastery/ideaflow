@@ -4,6 +4,7 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.storyweb.api.FaqSummary
 import org.openmastery.storyweb.client.FaqClient
 import org.openmastery.time.TimeConverter
@@ -21,6 +22,12 @@ class FaqResourceSpec extends Specification {
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
 
+	private long taskId
+
+	def setup() {
+		taskId = persistenceService.saveTask(aRandom.taskEntity().build()).id
+	}
+
 
 	//TODO please define all tests this way -
 
@@ -30,8 +37,6 @@ class FaqResourceSpec extends Specification {
 
 	def "findAllFaqMatchingCriteria SHOULD match the search criteria WHEN comment includes one or more tags"() {
 		given:
-		Long taskId = 312L;
-
 		EventEntity event = aRandom.eventEntity().taskId(taskId).build()
 		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(taskId).comment("for #this and #that")build()
 

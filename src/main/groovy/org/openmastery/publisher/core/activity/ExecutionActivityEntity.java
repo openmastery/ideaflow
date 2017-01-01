@@ -84,7 +84,7 @@ public class ExecutionActivityEntity extends ActivityEntity {
 		return new ExecutionActivityEntityBuilder();
 	}
 
-	public static class ExecutionActivityEntityBuilder extends ActivityEntityBuilder<ExecutionActivityEntityBuilder> {
+	public static class ExecutionActivityEntityBuilder extends ActivityEntityBuilder<ExecutionActivityEntity, ExecutionActivityEntityBuilder> {
 
 		private String processName;
 		private int exitCode;

@@ -67,6 +67,8 @@ public interface IdeaFlowPersistenceService {
 
 	TaskEntity saveTask(TaskEntity task);
 
+	void deleteTask(TaskEntity task);
+
 	<T extends AnnotationEntity> T saveAnnotation(T annotation);
 
 	TaskEntity findTaskWithId(long taskId);

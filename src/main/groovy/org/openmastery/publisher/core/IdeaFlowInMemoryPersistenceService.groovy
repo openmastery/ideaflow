@@ -196,6 +196,11 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
+	void deleteTask(TaskEntity task) {
+		taskList.remove(task)
+	}
+
+	@Override
 	TaskEntity findTaskWithId(long taskId) {
 		taskList.find {
 			it.id == taskId

@@ -20,3 +20,6 @@ databaseChangeLog:
 
   - include:
       file: db/glossary/db.changelog-glossary.yaml
+
+  - include:
+      file: db/create_foreign_keys.sql
