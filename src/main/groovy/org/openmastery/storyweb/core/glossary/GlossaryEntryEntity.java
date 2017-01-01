@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.core.task;
+package org.openmastery.storyweb.core.glossary;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-public interface TaskRepository extends PagingAndSortingRepository<TaskEntity, Long> {
-
-	TaskEntity findByOwnerIdAndName(Long ownerId, String name);
-
-	@Query(nativeQuery = true, value = "select * from task where owner_id=:ownerId order by modify_date desc limit :limit")
-	List<TaskEntity> findRecent(@Param("ownerId") Long userId, @Param("limit") int limit);
-
+@Entity(name = "glossary")
+@Data
+@EqualsAndHashCode(of = "name")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class GlossaryEntryEntity {
+	@Id
+	private String name;
+	private String description;
 }

@@ -23,6 +23,7 @@ import org.openmastery.publisher.client.TaskClient;
 import org.openmastery.publisher.client.TimelineClient;
 import org.openmastery.publisher.core.user.UserEntity;
 import org.openmastery.publisher.security.UserIdResolver;
+import org.openmastery.storyweb.client.GlossaryClient;
 import org.openmastery.time.MockTimeService;
 import org.openmastery.time.TimeService;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,6 +78,12 @@ public class IfmPublisherTestConfig {
 	@Bean
 	public TaskClient taskClient() {
 		return new TaskClient(hostUri)
+				.apiKey(testUser().getApiKey());
+	}
+
+	@Bean
+	public GlossaryClient glossaryClient() {
+		return new GlossaryClient(hostUri)
 				.apiKey(testUser().getApiKey());
 	}
 

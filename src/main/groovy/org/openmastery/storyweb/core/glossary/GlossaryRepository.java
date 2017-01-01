@@ -13,20 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.core.event;
+package org.openmastery.storyweb.core.glossary;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
 
-import java.sql.Timestamp;
-import java.util.List;
-
-public interface EventRepository extends PagingAndSortingRepository<EventEntity, Long> {
-
-	List<EventEntity> findByTaskId(long taskId);
-
-
-	@Query(nativeQuery = true, value = "select * from event where owner_id=:ownerId and position >= :position order by position asc limit :limit")
-	List<EventEntity> findRecentEvents(@Param("ownerId") Long userId, @Param("position") Timestamp afterDate,  @Param("limit") Integer limit);
+public interface GlossaryRepository extends PagingAndSortingRepository<GlossaryEntryEntity, String> {
 }

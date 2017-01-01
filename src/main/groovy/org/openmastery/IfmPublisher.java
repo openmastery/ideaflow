@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher;
+package org.openmastery;
 
 import org.openmastery.publisher.core.stub.FixtureTimelineInitializer;
 import org.openmastery.publisher.security.AuthorizationFilter;

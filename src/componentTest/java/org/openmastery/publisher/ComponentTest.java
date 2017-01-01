@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher;
 
+import org.openmastery.IfmPublisherConfig;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.jdbc.Sql;

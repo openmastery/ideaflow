@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher;
+package org.openmastery;
 
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
 import org.openmastery.publisher.core.IdeaFlowRelationalPersistenceService;
@@ -23,11 +23,12 @@ import org.springframework.boot.actuate.autoconfigure.ManagementWebSecurityAutoC
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
+import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("org.openmastery.publisher")
+@ComponentScan({"org.openmastery.publisher", "org.openmastery.storyweb"})
 @EnableAutoConfiguration(exclude = {
 		SecurityAutoConfiguration.class,
 		ManagementWebSecurityAutoConfiguration.class})

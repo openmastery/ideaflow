@@ -37,6 +37,7 @@ public class JerseyConfig extends ResourceConfig {
 	public void initialize() {
 		property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
 		packages("org.openmastery.publisher.resources");
+		packages("org.openmastery.storyweb.resources");
 		register(LoggingFilter.class);
 		register(CORSResponseFilter.class);
 		//register(ObjectMapperContextResolver.class);

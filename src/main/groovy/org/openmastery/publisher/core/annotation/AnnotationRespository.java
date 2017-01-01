@@ -24,7 +24,6 @@ import java.util.List;
 
 public interface AnnotationRespository extends PagingAndSortingRepository<AnnotationEntity, Long> {
 
-
 	@Query(nativeQuery = true, value = "select * from annotation where type = 'faq' and task_id = ?1")
 	List<FaqAnnotationEntity> findFaqAnnotationsByTaskId(long taskId);
 

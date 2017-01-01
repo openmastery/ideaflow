@@ -47,6 +47,8 @@ sourceSets {
 			include "org/openmastery/rest/**"
 			include "org/openmastery/publisher/api/**"
 			include "org/openmastery/publisher/client/**"
+			include "org/openmastery/storyweb/api/**"
+			include "org/openmastery/storyweb/client/**"
 		}
 	}
 }
@@ -105,7 +107,8 @@ publishing_ext {
 license {
 	sourceSets = sourceSets.matching { it.name == "main" }
 	excludes(["**/*.properties", "**/*.xml", "db/**", "licenses/**", "static/**"])
-	excludes(["org/openmastery/rest/**", "org/openmastery/publisher/api/**", "org/openmastery/publisher/client/**"])
+	excludes(["org/openmastery/rest/**", "org/openmastery/publisher/api/**", "org/openmastery/publisher/client/**",
+	          "org/openmastery/storyweb/api/**", "org/openmastery/storyweb/client/**"])
 }
 
 task pullPostgres(type: Exec) {

@@ -26,3 +26,6 @@ databaseChangeLog:
 
   - include:
        file: db/patch_broken_snippet_event_data.sql
+
+  - include:
+       file: db/create_storyweb.sql
