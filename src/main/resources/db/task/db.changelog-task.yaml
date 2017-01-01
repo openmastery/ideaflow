@@ -1,0 +1,7 @@
+databaseChangeLog:
+
+  - include:
+      file: db/task/create_task.sql
+
+  - include:
+      file: db/task/add_task_columns_project_and_last_modified.sql

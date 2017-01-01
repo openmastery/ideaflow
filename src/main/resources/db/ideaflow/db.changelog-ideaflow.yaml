@@ -1,0 +1,8 @@
+databaseChangeLog:
+
+  - include:
+      file: db/ideaflow/create_idea_flow_state.sql
+
+  - include:
+      file: db/ideaflow/create_idea_flow_partial_state.sql
+

@@ -1,0 +1,4 @@
+databaseChangeLog:
+
+  - include:
+      file: db/annotation/create_annotation.sql

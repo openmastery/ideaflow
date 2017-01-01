@@ -10,5 +10,5 @@ create table idea_flow_partial_state (
   starting_comment varchar(250),
   is_nested boolean,
   is_linked_to_previous boolean,
-  primary key (task_id, scope)
+  constraint idea_flow_partial_state_pk primary key (task_id, scope)
 )

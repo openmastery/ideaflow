@@ -87,12 +87,18 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		assert taskList == [mostRecent, secondMostRecent]
 	}
 
-	def "saveTask should fail if task with existing name is created"() {
+	def "saveTask should fail if task with existing name and owner_id is created"() {
 		given:
-		saveTask(aRandom.taskEntity().name("task"))
+		saveTask(aRandom.taskEntity().name("task").ownerId(1))
 
 		when:
-		saveTask(aRandom.taskEntity().name("task"))
+		saveTask(aRandom.taskEntity().name("task").ownerId(2))
+
+		then:
+		notThrown(DataIntegrityViolationException)
+
+		when:
+		saveTask(aRandom.taskEntity().name("task").ownerId(1))
 
 		then:
 		thrown(DataIntegrityViolationException)

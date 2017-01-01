@@ -1,0 +1,22 @@
+databaseChangeLog:
+
+  - include:
+      file: db/ideaflow/db.changelog-ideaflow.yaml
+
+  - include:
+      file: db/event/db.changelog-event.yaml
+
+  - include:
+      file: db/activity/db.changelog-activity.yaml
+
+  - include:
+      file: db/task/db.changelog-task.yaml
+
+  - include:
+      file: db/user/db.changelog-user.yaml
+
+  - include:
+      file: db/annotation/db.changelog-annotation.yaml
+
+  - include:
+      file: db/glossary/db.changelog-glossary.yaml

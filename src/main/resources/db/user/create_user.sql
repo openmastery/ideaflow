@@ -8,7 +8,6 @@ create table om_user (
   id bigint constraint user_pk primary key,
   email varchar(100),
   api_key varchar(40),
-  unique (email),
-  unique (api_key)
+  constraint om_user_email_ux unique (email),
+  constraint om_user_api_key_ux unique(api_key)
 )
-

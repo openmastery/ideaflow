@@ -1,0 +1,4 @@
+databaseChangeLog:
+
+  - include:
+      file: db/activity/create_activity.sql

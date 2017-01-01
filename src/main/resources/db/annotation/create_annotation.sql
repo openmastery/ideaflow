@@ -11,5 +11,5 @@ create table annotation (
   event_id bigint not null,
   type varchar(20),
   metadata varchar(1000),
-  UNIQUE (event_id, type)
+  constraint annotation_event_id_type_ux unique (event_id, type)
 )

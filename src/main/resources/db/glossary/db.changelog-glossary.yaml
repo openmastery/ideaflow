@@ -1,0 +1,4 @@
+databaseChangeLog:
+
+  - include:
+      file: db/glossary/create_glossary.sql

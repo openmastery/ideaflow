@@ -1,0 +1,4 @@
+databaseChangeLog:
+
+  - include:
+      file: db/user/create_user.sql

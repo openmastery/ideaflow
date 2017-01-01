@@ -1,0 +1,4 @@
+databaseChangeLog:
+
+  - include:
+      file: db/event/create_event.sql
