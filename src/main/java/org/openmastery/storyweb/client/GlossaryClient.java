@@ -1,19 +1,22 @@
 package org.openmastery.storyweb.client;
 
-import org.openmastery.storyweb.api.GlossaryEntry;
+import com.bancvue.rest.client.crud.CrudClientRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.openmastery.storyweb.api.FaqSummary;
+import org.openmastery.storyweb.api.GlossaryDefinition;
 import org.openmastery.storyweb.api.ResourcePaths;
 
 import java.util.List;
 
-
-public class GlossaryClient extends StorywebClient<GlossaryEntry, GlossaryClient> {
+@Slf4j
+public class GlossaryClient extends StorywebClient<GlossaryDefinition, GlossaryClient> {
 
 	public GlossaryClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.GLOSSARY_PATH, GlossaryEntry.class);
+		super(baseUrl, ResourcePaths.GLOSSARY_PATH, GlossaryDefinition.class);
 	}
 
-	public void addEntry(String name, String description) {
-		GlossaryEntry entry = GlossaryEntry.builder()
+	public void defineTag(String name, String description) {
+		GlossaryDefinition entry = GlossaryDefinition.builder()
 				.name(name)
 				.description(description)
 				.build();
@@ -21,8 +24,24 @@ public class GlossaryClient extends StorywebClient<GlossaryEntry, GlossaryClient
 		crudClientRequest.updateWithPut(entry);
 	}
 
-	public List<GlossaryEntry> findAllEntries() {
+	public List<GlossaryDefinition> findAllDefinitions() {
 		return crudClientRequest.findMany();
+	}
+
+	public List<GlossaryDefinition> findDefinitionsbyTag(List<String> tags) {
+		CrudClientRequest<GlossaryDefinition> findFilteredRequest = crudClientRequest;
+
+		log.debug("Client request: findDefinitionsbyTag "+tags);
+		for (String tag : tags) {
+			findFilteredRequest = findFilteredRequest.queryParam("tag", tag);
+		}
+
+		return findFilteredRequest.findMany();
+
+	}
+
+	public void createBlankGlossaryDefinitionWhenNotExists(List<String> tags) {
+		crudClientRequest.path(ResourcePaths.TAG_PATH).createWithPost(tags);
 	}
 
 }

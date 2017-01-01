@@ -5,3 +5,4 @@ truncate table idea_flow_partial_state cascade;
 truncate table task cascade;
 truncate table om_user cascade;
 truncate table annotation cascade;
+truncate table glossary cascade;

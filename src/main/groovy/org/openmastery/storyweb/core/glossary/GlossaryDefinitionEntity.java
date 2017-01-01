@@ -30,7 +30,7 @@ import javax.persistence.Id;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GlossaryEntryEntity {
+public class GlossaryDefinitionEntity {
 	@Id
 	private String name;
 	private String description;

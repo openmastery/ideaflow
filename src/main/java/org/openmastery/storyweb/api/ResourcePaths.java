@@ -20,6 +20,7 @@ public class ResourcePaths {
 	public static final String API_KEY_HEADER = "X-API-KEY";
 
 	public static final String GLOSSARY_PATH = "/glossary";
+	public static final String TAG_PATH = "/tag";
 
 
 

@@ -15,42 +15,68 @@
  */
 package org.openmastery.storyweb.resources;
 
-import org.openmastery.mapper.EntityMapper;
-import org.openmastery.storyweb.api.GlossaryEntry;
+import lombok.extern.slf4j.Slf4j;
+import org.openmastery.storyweb.api.GlossaryDefinition;
 import org.openmastery.storyweb.api.ResourcePaths;
-import org.openmastery.storyweb.core.glossary.GlossaryEntryEntity;
+import org.openmastery.storyweb.core.StoryWebService;
 import org.openmastery.storyweb.core.glossary.GlossaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Component
 @Path(ResourcePaths.GLOSSARY_PATH)
 @Produces(MediaType.APPLICATION_JSON)
+@Slf4j
 public class GlossaryResource {
 
 	@Autowired
+	private StoryWebService storyWebService;
+
+	@Autowired
 	private GlossaryRepository glossaryRepository;
-	private EntityMapper entityMapper = new EntityMapper();
 
+	/**
+	 * Create or update a single glossary definition
+	 * @param glossaryDefinition provide a definition for the term
+	 * @return GlossaryDefinition
+	 */
 	@PUT
-	public GlossaryEntry createOrUpdate(GlossaryEntry entry) {
-		GlossaryEntryEntity entryEntity = entityMapper.mapIfNotNull(entry, GlossaryEntryEntity.class);
-		glossaryRepository.save(entryEntity);
-		return entry;
+	public GlossaryDefinition createOrUpdateSingle(GlossaryDefinition glossaryDefinition) {
+		return storyWebService.createOrUpdateGlossaryDefinition(glossaryDefinition);
+
 	}
 
+	/**
+	 * Make sure all the provided tags are available in the glossary,
+	 * if not, create new blank definitions
+	 *
+	 * @param tags List of tags
+	 */
+
+	@POST
+	@Path(ResourcePaths.TAG_PATH)
+	public void createBlankGlossaryDefinitionWhenNotExists(List<String> tags) {
+		storyWebService.createGlossaryDefinitionsWhenNotExists(tags);
+	}
+
+
+	/**
+	 * Retrieve all glossary definitions, or if tags are specified, filter by tags
+	 * @param tags Return only the specified tags
+	 * @return List<GlossaryDefinition>
+	 */
 	@GET
-	public List<GlossaryEntry> findAll() {
-		return entityMapper.mapList(glossaryRepository.findAll(), GlossaryEntry.class);
+	public List<GlossaryDefinition> findGlossaryDefinitionsByTag(@QueryParam("tag") List<String> tags) {
+		log.debug("findGlossaryDefinitionsByTag : " + tags);
+		if (tags == null || tags.isEmpty()) {
+			return storyWebService.findAllGlossaryDefinitions();
+		} else {
+			return storyWebService.findGlossaryDefinitionsByTag(tags);
+		}
 	}
-
-	//TODO need to be able to find entries for a specific tag set
 
 }

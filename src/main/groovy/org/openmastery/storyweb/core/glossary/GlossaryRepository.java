@@ -15,7 +15,17 @@
  */
 package org.openmastery.storyweb.core.glossary;
 
+import org.openmastery.storyweb.api.GlossaryDefinition;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface GlossaryRepository extends PagingAndSortingRepository<GlossaryEntryEntity, String> {
+import java.util.List;
+
+public interface GlossaryRepository extends PagingAndSortingRepository<GlossaryDefinitionEntity, String> {
+
+	@Query(nativeQuery = true, value = "select * from glossary order by name")
+	List<GlossaryDefinitionEntity> findAll();
+
+	@Query(nativeQuery = true, value = "select * from glossary where lower(name) similar to ?1 order by name")
+	List<GlossaryDefinitionEntity> findByTagsLike(String searchStr);
 }

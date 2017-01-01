@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GlossaryEntry {
+public class GlossaryDefinition {
 
 	private String name;
 	private String description;

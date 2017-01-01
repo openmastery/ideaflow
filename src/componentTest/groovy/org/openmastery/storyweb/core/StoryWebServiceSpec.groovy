@@ -40,7 +40,7 @@ class StoryWebServiceSpec extends Specification {
 
 		when:
 
-		List<FaqSummary> faqs = storyWebService.findAllFaqMatchingCriteria(["this", "othertag"]);
+		List<FaqSummary> faqs = storyWebService.findAllFaqMatchingTags(["this", "othertag"]);
 		then:
 		assert faqs.size() == 1
 		assert faqs.get(0).taskId == event.taskId
