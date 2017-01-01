@@ -87,32 +87,29 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assert ideaFlowBands.size() == 1
 	}
 
-	def "generateIdeaFlowBands should not create additional troubleshooting band if wtf followed by multiple awesome events"() {
-		given:
-		builder.activate()
-				.wtf()
-				.modifyCodeAndAdvance(30)
-				.awesome()
-				.modifyCodeAndAdvance(30)
-				.awesome()
-				.deactivate()
-
-		when:
-		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
-
-		then:
-		assertTroubleshootingBand(ideaFlowBands[0], startTime, startTime.plusMinutes(30))
-		assertProgressBand(ideaFlowBands[1], ideaFlowBands[0].end, startTime.plusMinutes(60))
-		assert ideaFlowBands.size() == 2
-	}
-
-	@Ignore
 	def "generateIdeaFlowBands should create troubleshooting band at first wtf when multiple wtf events followed by awesome"() {
 		given:
 		builder.activate()
 				.wtf()
 				.advanceMinutes(30)
 				.wtf()
+				.advanceMinutes(30)
+				.awesome()
+
+		when:
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
+
+		then:
+		assertTroubleshootingBand(ideaFlowBands[0], startTime, startTime.plusMinutes(60))
+		assert ideaFlowBands.size() == 1
+	}
+
+	def "generateIdeaFlowBands should create troubleshooting band ends at last awesome event if wtf followed by multiple awesome events"() {
+		given:
+		builder.activate()
+				.wtf()
+				.advanceMinutes(30)
+				.awesome()
 				.advanceMinutes(30)
 				.awesome()
 

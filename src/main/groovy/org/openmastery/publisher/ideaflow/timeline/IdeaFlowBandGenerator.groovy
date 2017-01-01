@@ -127,18 +127,28 @@ class IdeaFlowBandGenerator {
 	private List<IdeaFlowBandModel> generateTroubleshootingBands(List<Positionable> sortedPositionableList) {
 		List<IdeaFlowBandModel> troubleshootingBandList = []
 		LocalDateTime troubleshootingStart = null
+		LocalDateTime troubleshootingEnd = null
 		List<Event> troubleshootingEvents = getTroubleshootingEvents(sortedPositionableList)
 		for (Event event : troubleshootingEvents) {
 			if (event.type == EventType.WTF) {
+				if (troubleshootingEnd != null) {
+					troubleshootingBandList << createIdeaFlowBand(troubleshootingStart, troubleshootingEnd, IdeaFlowStateType.TROUBLESHOOTING)
+					troubleshootingStart = null
+					troubleshootingEnd = null
+				}
+
 				if (troubleshootingStart == null) {
 					troubleshootingStart = event.position
 				}
 			} else if (event.type == EventType.AWESOME) {
 				if (troubleshootingStart != null) {
-					troubleshootingBandList << createIdeaFlowBand(troubleshootingStart, event.position, IdeaFlowStateType.TROUBLESHOOTING)
-					troubleshootingStart = null
+					troubleshootingEnd = event.position
 				}
 			}
+		}
+
+		if (troubleshootingEnd != null) {
+			troubleshootingBandList << createIdeaFlowBand(troubleshootingStart, troubleshootingEnd, IdeaFlowStateType.TROUBLESHOOTING)
 		}
 		troubleshootingBandList
 	}
