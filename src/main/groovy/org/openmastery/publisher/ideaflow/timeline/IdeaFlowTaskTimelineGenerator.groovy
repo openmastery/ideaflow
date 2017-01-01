@@ -26,6 +26,7 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
+import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.activity.BlockActivityEntity
@@ -37,6 +38,7 @@ import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 class IdeaFlowTaskTimelineGenerator {
@@ -49,11 +51,13 @@ class IdeaFlowTaskTimelineGenerator {
 	private List<ExecutionEvent> executionEvents = []
 	private List<BlockActivity> blockActivities = []
 
-	private IdeaFlowBandGenerator bandGenerator
 	private EntityMapper entityMapper = new EntityMapper()
+	private IdeaFlowBandGenerator bandGenerator
+	private int strategyBandMinimumDurationInMinutes
 
 	IdeaFlowTaskTimelineGenerator(IdeaFlowBandGenerator bandGenerator) {
 		this.bandGenerator = bandGenerator
+		this.strategyBandMinimumDurationInMinutes = bandGenerator.strategyBandMinimumDurationInMinutes
 	}
 
 	IdeaFlowTaskTimelineGenerator task(Task task) {
@@ -102,9 +106,18 @@ class IdeaFlowTaskTimelineGenerator {
 		//when WTF, WTF, AWESOME combo, create conflict band that spans this time
 
 		collapseIdleTime(ideaFlowBands)
+		convertLearningBandsUnderMinimumThresholdToProgress(ideaFlowBands)
 		computeRelativeTime(ideaFlowBands)
 
 		return createIdeaFlowTimeline(ideaFlowBands)
+	}
+
+	void convertLearningBandsUnderMinimumThresholdToProgress(List<IdeaFlowBandModel> ideaFlowBandModels) {
+		ideaFlowBandModels.each { IdeaFlowBandModel band ->
+			if (band.type == IdeaFlowStateType.LEARNING && (band.duration.standardMinutes < strategyBandMinimumDurationInMinutes)) {
+				band.type = IdeaFlowStateType.PROGRESS
+			}
+		}
 	}
 
 	private List<IdeaFlowBandModel> generateIdeaFlowBands() {

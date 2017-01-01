@@ -38,6 +38,10 @@ class IdeaFlowBandGenerator {
 	@Value('${org.ideaflow.strategy.bandMinimumDurationInMinutes}')
 	private int strategyBandMinimumDurationInMinutes
 
+	public int getStrategyBandMinimumDurationInMinutes() {
+		return strategyBandMinimumDurationInMinutes
+	}
+
 	public List<IdeaFlowBandModel> generateIdeaFlowBands(List<Positionable> positionableList) {
 		if (positionableList.isEmpty()) {
 			return []
