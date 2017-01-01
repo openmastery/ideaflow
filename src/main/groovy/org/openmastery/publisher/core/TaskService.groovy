@@ -16,6 +16,7 @@
 package org.openmastery.publisher.core
 
 import com.bancvue.rest.exception.ConflictingEntityException
+import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.task.NewTask
 import org.openmastery.publisher.api.task.Task
@@ -70,6 +71,9 @@ class TaskService {
 
 	public Task findTaskWithId(Long taskId) {
 		TaskEntity taskEntity = persistenceService.findTaskWithId(taskId);
+		if (taskEntity == null) {
+			throw new NotFoundException("No task found with id=${taskId}");
+		}
 		return toApiTask(taskEntity);
 	}
 

@@ -47,11 +47,7 @@ public class TaskResource {
 	@GET
 	@Path(ResourcePaths.ID_PATH + "/{id}")
 	public Task findTaskWithId(@PathParam("id") Long taskId) {
-		Task task = taskService.findTaskWithId(taskId);
-		if (task == null) {
-			throw new NotFoundException();
-		}
-		return task;
+		return taskService.findTaskWithId(taskId);
 	}
 
 

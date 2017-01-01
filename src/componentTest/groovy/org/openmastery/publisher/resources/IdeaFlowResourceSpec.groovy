@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.resources
 
+import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
@@ -60,6 +61,14 @@ class IdeaFlowResourceSpec extends Specification {
 		assert overview != null
 		assert overview.task.id == taskId
 		new IdeaFlowTimelineValidator(overview.timeline)
+	}
+
+	def "getTimelineForTask SHOULD return 404 if there is no task"() {
+		when:
+		ideaFlowClient.getTimelineOverviewForTask(Integer.MIN_VALUE)
+
+		then:
+		thrown(NotFoundException)
 	}
 
 	def "getTimelineForTask SHOULD not explode if the task is empty"() {
