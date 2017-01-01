@@ -46,7 +46,7 @@ public class FaqResource {
 	 * @return List<FaqSummary>
 	 */
 	@GET
-	List<FaqSummary> findAllFaqMatchingCriteria(@QueryParam("tag") List<String> tags) {
+	public List<FaqSummary> findAllFaqMatchingCriteria(@QueryParam("tag") List<String> tags) {
 
 		return persistenceService.findAllFaqMatchingCriteria(tags);
 	}

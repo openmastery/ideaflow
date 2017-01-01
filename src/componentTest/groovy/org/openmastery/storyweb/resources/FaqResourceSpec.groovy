@@ -1,11 +1,11 @@
-package org.openmastery.storyweb.core
+package org.openmastery.storyweb.resources
 
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.storyweb.api.FaqSummary
-import org.openmastery.time.MockTimeService
+import org.openmastery.storyweb.client.FaqClient
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
@@ -13,21 +13,22 @@ import spock.lang.Specification
 import static org.openmastery.publisher.ARandom.aRandom
 
 @ComponentTest
-class StoryWebServiceSpec extends Specification {
+class FaqResourceSpec extends Specification {
 
-
-	private MockTimeService mockTimeService = new MockTimeService()
-	private long taskId = aRandom.intBetween(1, 100000)
+	@Autowired
+	FaqClient faqClient
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
 
 
-	@Autowired
-	private StoryWebService storyWebService
+	//TODO please define all tests this way -
 
+	// 1. "<the name of the behavior under test> (usually a method name)"
+	// 2. SHOULD <characteristics you wish to observe>
+	// 3. WHEN <the specific context (environment or state) in which the behavior occurs> (specify for any case other than "ALWAYS")
 
-	def "findFaqsBySearchCriteria SHOULD join event and faq details"() {
+	def "findAllFaqMatchingCriteria SHOULD match the search criteria WHEN comment includes one or more tags"() {
 		given:
 		Long taskId = 312L;
 
@@ -40,7 +41,7 @@ class StoryWebServiceSpec extends Specification {
 
 		when:
 
-		List<FaqSummary> faqs = storyWebService.findAllFaqMatchingCriteria(["this", "othertag"]);
+		List<FaqSummary> faqs = faqClient.findAllFaqMatchingCriteria(["this", "othertag"]);
 		then:
 		assert faqs.size() == 1
 		assert faqs.get(0).taskId == event.taskId
@@ -49,7 +50,6 @@ class StoryWebServiceSpec extends Specification {
 		assert faqs.get(0).faqComment == annotation.comment
 		assert faqs.get(0).eventComment == event.comment
 		assert faqs.get(0).tags == ["#this", "#that"].toSet()
-
 
 	}
 }
