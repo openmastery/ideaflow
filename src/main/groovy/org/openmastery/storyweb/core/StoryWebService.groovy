@@ -16,10 +16,13 @@
 package org.openmastery.storyweb.core
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.joda.time.LocalDate
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.annotation.AnnotationRespository
+import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.FaqSummary
 import org.openmastery.storyweb.api.GlossaryDefinition
+import org.openmastery.storyweb.api.SPCChart
 import org.openmastery.storyweb.core.glossary.GlossaryDefinitionEntity
 import org.openmastery.storyweb.core.glossary.GlossaryRepository
 import org.openmastery.tags.TagsUtil
@@ -38,13 +41,19 @@ class StoryWebService {
 	@Autowired
 	GlossaryRepository glossaryRepository
 
+	@Autowired
+	SPCChartGenerator spcChartGenerator
+
+	@Autowired
+	InvocationContext invocationContext
+
 	private EntityMapper entityMapper = new EntityMapper();
 
 	private ObjectMapper jsonMapper = new ObjectMapper()
 
 
 	public List<FaqSummary> findAllFaqMatchingTags(List<String> tags) {
-		String searchPattern = createSearchPattern(tags)
+		String searchPattern = TagsUtil.createSearchPattern(tags)
 
 		List<Object[]> results = annotationRepository.findFaqsBySearchCriteria(searchPattern)
 		List<FaqSummary> faqSummaries = results.collect { Object[] row ->
@@ -62,22 +71,11 @@ class StoryWebService {
 	}
 
 	public List<GlossaryDefinition> findGlossaryDefinitionsByTag(List<String> tags) {
-		String searchPattern = createSearchPattern(tags)
+		String searchPattern = TagsUtil.createSearchPattern(tags)
 		entityMapper.mapList(glossaryRepository.findByTagsLike(searchPattern), GlossaryDefinition.class)
 	}
 
-	private String createSearchPattern(List<String> tags) {
-		List<String> prefixedHashtags = tags.collect {
-			if (it.startsWith('#')) {
-				return it
-			} else {
-				return "#" + it
-			}
-		}
 
-
-		return "%(" + prefixedHashtags.join("|") + ")%";
-	}
 
 	private Set<String> extractUniqueTags(String eventComment, String faqComment) {
 		Set<String> tagSet = []
@@ -103,7 +101,7 @@ class StoryWebService {
 	}
 
 	void createGlossaryDefinitionsWhenNotExists(List<String> tags) {
-		String searchPattern = createSearchPattern(tags)
+		String searchPattern = TagsUtil.createSearchPattern(tags)
 		List<GlossaryDefinitionEntity> glossaryEntities = glossaryRepository.findByTagsLike(searchPattern)
 
 		Map<String, GlossaryDefinitionEntity> definitionsByTag = glossaryEntities.collectEntries { entry ->
@@ -118,11 +116,15 @@ class StoryWebService {
 		}
 	}
 
+	SPCChart generateSPCChart(LocalDate startDate, LocalDate endDate) {
+		return spcChartGenerator.generateChart(invocationContext.userId, startDate, endDate)
+	}
+
+
 	private static class CommentHolder {
 		String comment;
 
 		CommentHolder() {}
 	}
-
 
 }

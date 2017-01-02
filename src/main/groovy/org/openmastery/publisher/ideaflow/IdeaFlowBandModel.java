@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Duration;
 import org.openmastery.publisher.api.Positionable;
+import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel;
 import org.openmastery.publisher.core.timeline.TimeBandModel;

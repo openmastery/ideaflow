@@ -15,6 +15,8 @@
  */
 package org.openmastery.publisher.core.annotation;
 
+import org.openmastery.publisher.api.annotation.FAQAnnotation;
+import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.storyweb.api.FaqSummary;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -39,17 +41,17 @@ public interface AnnotationRespository extends PagingAndSortingRepository<Annota
 			"and (lower(faq.metadata) similar to (?1) or lower(e.comment) similar to (?1))")
 	List<Object []> findFaqsBySearchCriteria(String pattern);
 
-	//select event.taskId, event.eventId, event.comment, faq.comment from event, annotation faq
-	// where event.id = faq.eventId and faq.type = 'faq'
-	// and event.position between ?startDate and ?endDate
-	// and (faq.comment like '%tag1' or faq.comment like '%tag2')
+	@Query(nativeQuery = true, value = "select a.* from annotation a, event e where a.type = 'faq' " +
+			"and a.event_id=e.id " +
+			"and a.owner_id=(?1) " +
+			"and position between (?2) and (?3) " +
+			"order by position asc")
+	List<FaqAnnotationEntity> findFaqsWithinRange(Long userId, Timestamp startTime, Timestamp endTime);
 
 	@Modifying
 	@Transactional
 	@Query(value="delete from annotation where event_id = ?1 and type = ?2")
 	void deleteByEventAndType(long eventId, String faq);
-
-
 
 
 

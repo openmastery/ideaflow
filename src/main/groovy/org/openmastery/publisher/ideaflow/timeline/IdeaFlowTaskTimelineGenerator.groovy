@@ -127,15 +127,7 @@ class IdeaFlowTaskTimelineGenerator {
 
 	private void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands) {
 		IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
-
-		if (events) {
-			List<IdleTimeBandModel> deactivationIdleEvents = idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(events)
-			idleTimeBands.addAll(deactivationIdleEvents)
-		}
-
-		if (idleTimeBands) {
-			idleTimeProcessor.collapseIdleTime(ideaFlowBands, idleTimeBands)
-		}
+		idleTimeBands = idleTimeProcessor.collapseIdleTime(ideaFlowBands, idleTimeBands, events)
 	}
 
 	private void computeRelativeTime(List<IdeaFlowBandModel> ideaFlowBands) {

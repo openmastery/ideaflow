@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DurationInSeconds {
 
-	Long durationInSeconds;
+	long durationInSeconds;
 
 
 	public boolean greaterThan(DurationInSeconds durationObj) {
@@ -18,5 +18,9 @@ public class DurationInSeconds {
 			isGreaterThan = true;
 		}
 		return isGreaterThan;
+	}
+
+	public void incrementBy(long duration) {
+		durationInSeconds += duration;
 	}
 }

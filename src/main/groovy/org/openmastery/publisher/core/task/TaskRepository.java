@@ -15,10 +15,12 @@
  */
 package org.openmastery.publisher.core.task;
 
+import org.openmastery.publisher.core.activity.ExecutionActivityEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface TaskRepository extends PagingAndSortingRepository<TaskEntity, Long> {
@@ -27,5 +29,10 @@ public interface TaskRepository extends PagingAndSortingRepository<TaskEntity, L
 
 	@Query(nativeQuery = true, value = "select * from task where owner_id=:ownerId order by modify_date desc limit :limit")
 	List<TaskEntity> findRecent(@Param("ownerId") Long userId, @Param("limit") int limit);
+
+
+	@Query(nativeQuery = true, value = "select * from task where owner_id=(?1) " +
+			"and creation_date <= (?3) and modify_date >= (?2) order by modify_date desc")
+	List<TaskEntity> findTasksWithinRange(Long userId, Timestamp startTime, Timestamp endTime);
 
 }

@@ -15,9 +15,11 @@
  */
 package org.openmastery.publisher.core.activity;
 
+import org.openmastery.publisher.core.event.EventEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface ActivityRepository extends PagingAndSortingRepository<ActivityEntity, Long> {
@@ -44,4 +46,13 @@ public interface ActivityRepository extends PagingAndSortingRepository<ActivityE
 
 	@Query(nativeQuery = true, value = "select * from activity where type = 'block' and task_id = ?1")
 	List<BlockActivityEntity> findBlockActivityByTaskId(long taskId);
+
+	@Query(nativeQuery = true, value = "select * from activity where type = 'idle' and owner_id = ?1 " +
+			"and (start_time between (?2) and (?3) or end_time between (?2) and (?3)) order by start_time")
+	List<IdleActivityEntity> findIdlesWithinRange(long userId, Timestamp start, Timestamp end);
+
+	@Query(nativeQuery = true, value = "select * from activity where type = 'execution' and owner_id=(?1) " +
+			"and (start_time between (?2) and (?3) or end_time between (?2) and (?3)) order by start_time")
+	List<ExecutionActivityEntity> findExecutionActivityWithinRange(Long userId, Timestamp startTime, Timestamp endTime);
+
 }

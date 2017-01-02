@@ -36,9 +36,6 @@ public class GlossaryResource {
 	@Autowired
 	private StoryWebService storyWebService;
 
-	@Autowired
-	private GlossaryRepository glossaryRepository;
-
 	/**
 	 * Create or update a single glossary definition
 	 * @param glossaryDefinition provide a definition for the term
@@ -71,7 +68,6 @@ public class GlossaryResource {
 	 */
 	@GET
 	public List<GlossaryDefinition> findGlossaryDefinitionsByTag(@QueryParam("tag") List<String> tags) {
-		log.debug("findGlossaryDefinitionsByTag : " + tags);
 		if (tags == null || tags.isEmpty()) {
 			return storyWebService.findAllGlossaryDefinitions();
 		} else {

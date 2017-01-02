@@ -35,4 +35,16 @@ class TagsUtil {
 		return hashtags;
 	}
 
+	public static String createSearchPattern(List<String> tags) {
+		List<String> prefixedHashtags = tags.collect {
+			if (it.startsWith('#')) {
+				return it
+			} else {
+				return "#" + it
+			}
+		}
+
+		return "%(" + prefixedHashtags.join("|") + ")%";
+	}
+
 }

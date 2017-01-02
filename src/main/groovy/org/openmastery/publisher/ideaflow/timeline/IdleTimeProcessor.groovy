@@ -21,7 +21,9 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.core.timeline.TimeBandIdleCalculator
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
+import org.springframework.stereotype.Component
 
+@Component
 class IdleTimeProcessor {
 
 	private TimeBandIdleCalculator timeBandCalculator = new TimeBandIdleCalculator()
@@ -59,6 +61,20 @@ class IdleTimeProcessor {
 				.comment(deactivationEvent.comment)
 				.auto(true)
 				.build()
+	}
+
+	public List<IdleTimeBandModel> collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands, List<IdleTimeBandModel> idleTimeBandList, List<Event> events) {
+		List<IdleTimeBandModel> idleTimeBands = new ArrayList<>(idleTimeBandList)
+
+		if (events) {
+			List<IdleTimeBandModel> deactivationIdleEvents = generateIdleTimeBandsFromDeativationEvents(events)
+			idleTimeBands.addAll(deactivationIdleEvents)
+		}
+
+		if (idleTimeBands) {
+			collapseIdleTime(ideaFlowBands, idleTimeBands)
+		}
+		idleTimeBands
 	}
 
 	public void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands, List<IdleTimeBandModel> idleTimeBandList) {

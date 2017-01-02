@@ -21,7 +21,9 @@ import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.time.TimeConverter
+import org.springframework.stereotype.Component
 
+@Component
 class RelativeTimeProcessor {
 
 	private static

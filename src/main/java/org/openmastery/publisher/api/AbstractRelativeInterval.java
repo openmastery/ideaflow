@@ -4,16 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class AbstractRelativeInterval implements RelativeInterval, RelativePositionable {
 
 	Long durationInSeconds;
 
 	@JsonIgnore //only used for metrics
-	Long relativeStart;
+			Long relativeStart;
 
 	@JsonIgnore //only used for metrics
 	public Long getRelativeEnd() {
@@ -25,8 +27,12 @@ public class AbstractRelativeInterval implements RelativeInterval, RelativePosit
 	}
 
 	public boolean shouldContain(RelativePositionable positionable) {
-		return (positionable.getRelativePositionInSeconds() >= getRelativeStart()
-				&& positionable.getRelativePositionInSeconds() <= getRelativeEnd());
+
+		boolean isWithinRange = (positionable.getRelativePositionInSeconds() >= getRelativeStart()
+				&& positionable.getRelativePositionInSeconds() < getRelativeEnd());
+
+		log.debug(getClass().getSimpleName() + "[" + getRelativeStart() + ":" + getRelativeEnd() + "] : " + positionable.getRelativePositionInSeconds() + " - include? " + isWithinRange);
+		return isWithinRange;
 	}
 
 }

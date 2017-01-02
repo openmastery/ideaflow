@@ -90,9 +90,22 @@ class TroubleshootingJourneyGenerator {
 
 	}
 
+	List<TroubleshootingJourney> splitIntoJourneys(List<Event> events, List<IdeaFlowBand> bands, List<ExecutionEvent> executionEvents) {
+		List<Event> wtfYayEvents = events.findAll { Event event ->
+			event.type == EventType.WTF || event.type == EventType.AWESOME
+		}
+
+		List<TroubleshootingJourney> journeyList = splitIntoJourneys(wtfYayEvents, bands)
+
+		journeyList.each { TroubleshootingJourney journey ->
+			journey.fillWithActivity(executionEvents)
+		}
+
+		return journeyList
+	}
 
 
-	private List<TroubleshootingJourney> splitIntoJourneys(List<Event> wtfYayEvents, List<IdeaFlowBand> troubleshootingBands) {
+	List<TroubleshootingJourney> splitIntoJourneys(List<Event> wtfYayEvents, List<IdeaFlowBand> troubleshootingBands) {
 		List<TroubleshootingJourney> journeyList = []
 
 		troubleshootingBands.each { IdeaFlowBand troubleshootingBand ->
@@ -111,10 +124,10 @@ class TroubleshootingJourneyGenerator {
 					if (wtfYayEvents.size() > activeIndex + 1) {
 						Event peekAtNextEvent = wtfYayEvents.get(activeIndex + 1)
 						durationInSeconds = peekAtNextEvent.relativePositionInSeconds - wtfYayEvent.relativePositionInSeconds
-						//println "[Calculate] PartialDiscovery duration (peek): " + durationInSeconds
+						//println "[Calculate] DiscoveryCycle duration (peek): " + durationInSeconds
 					} else {
 						durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
-						//println "[Calculate] PartialDiscovery duration (band-end): " + durationInSeconds
+						//println "[Calculate] DiscoveryCycle duration (band-end): " + durationInSeconds
 					}
 					journey.addPartialDiscovery(wtfYayEvent, durationInSeconds);
 				}
@@ -126,5 +139,6 @@ class TroubleshootingJourneyGenerator {
 		return journeyList
 
 	}
+
 
 }

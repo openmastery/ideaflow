@@ -27,4 +27,6 @@ public class ResourcePaths {
 	public static final String FAQ_PATH = "/faq";
 
 
+	public static final String METRICS_PATH = "/metrics";
+
 }

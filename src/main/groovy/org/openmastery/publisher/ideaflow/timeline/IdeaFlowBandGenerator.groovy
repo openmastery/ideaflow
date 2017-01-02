@@ -134,7 +134,7 @@ class IdeaFlowBandGenerator {
 		band.contains(start) && band.contains(end)
 	}
 
-	private List<IdeaFlowBandModel> generateTroubleshootingBands(List<Positionable> sortedPositionableList) {
+	public List<IdeaFlowBandModel> generateTroubleshootingBands(List<Positionable> sortedPositionableList) {
 		List<IdeaFlowBandModel> troubleshootingBandList = []
 		LocalDateTime troubleshootingStart = null
 		LocalDateTime troubleshootingEnd = null

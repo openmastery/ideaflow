@@ -25,9 +25,10 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	@JsonIgnore
 	IdeaFlowBand band;
 
-	Set<String> tags; //derived from WTF/YAY #hashtags
+	Set<String> contextTags;
+	Set<String> painTags; //derived from WTF/YAY #hashtags
 
-	List<PartialDiscovery> partialDiscoveries;
+	List<DiscoveryCycle> discoveryCycles;
 	List<Metric<?>> metrics;
 
 	Long eventId;
@@ -37,25 +38,26 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		setRelativeStart(band.getRelativePositionInSeconds());
 		setDurationInSeconds(band.getDurationInSeconds());
 
-		this.partialDiscoveries = new ArrayList<PartialDiscovery>();
-		this.tags = new HashSet<String>();
+		this.discoveryCycles = new ArrayList<DiscoveryCycle>();
+		this.contextTags = new HashSet<String>();
+		this.painTags = new HashSet<String>();
 	}
 
 	public void addPartialDiscovery(Event wtfYayEvent, Long durationInSeconds) {
-		PartialDiscovery partialDiscovery = new PartialDiscovery(wtfYayEvent, durationInSeconds);
-		tags.addAll(partialDiscovery.tags);
+		DiscoveryCycle partialDiscovery = new DiscoveryCycle(wtfYayEvent, durationInSeconds);
+		painTags.addAll(partialDiscovery.painTags);
 
 		if (eventId == null) {
 			eventId = wtfYayEvent.getId();
 		}
 
-		partialDiscoveries.add(partialDiscovery);
+		discoveryCycles.add(partialDiscovery);
 	}
 
 	public boolean containsEvent(long eventId) {
 		boolean containsEvent = false;
 
-		for (PartialDiscovery partialDiscovery : partialDiscoveries) {
+		for (DiscoveryCycle partialDiscovery : discoveryCycles) {
 			if (partialDiscovery.event.getId() == eventId) {
 				containsEvent = true;
 				break;
@@ -66,16 +68,17 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 
 
 	public void addFAQ(long eventId, String faqComment) {
-		for (PartialDiscovery partialDiscovery : partialDiscoveries) {
+		for (DiscoveryCycle partialDiscovery : discoveryCycles) {
 			if (partialDiscovery.event.getId() == eventId) {
-				partialDiscovery.faqComment = faqComment;
+				partialDiscovery.addFaq(faqComment);
+				contextTags.addAll(partialDiscovery.contextTags);
 				break;
 			}
 		}
 	}
 
 	public void addSnippet(long eventId, String source, String snippet) {
-		for (PartialDiscovery partialDiscovery : partialDiscoveries) {
+		for (DiscoveryCycle partialDiscovery : discoveryCycles) {
 			if (partialDiscovery.event.getId() == eventId) {
 				partialDiscovery.formattableSnippet = new FormattableSnippet(source, snippet);
 				break;
@@ -92,9 +95,9 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	}
 
 	private void addExecutionEvent(ExecutionEvent event) {
-		for (PartialDiscovery partialDiscovery : partialDiscoveries) {
-			if (partialDiscovery.shouldContain(event)) {
-				partialDiscovery.addExecutionEvent(event);
+		for (DiscoveryCycle discoveryCycle : discoveryCycles) {
+			if (discoveryCycle.shouldContain(event)) {
+				discoveryCycle.addExperimentCycle(event);
 			}
 		}
 
