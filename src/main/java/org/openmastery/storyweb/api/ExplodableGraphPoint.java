@@ -16,7 +16,6 @@ import java.util.Set;
 @Data
 @Builder
 @AllArgsConstructor
-@Slf4j
 public class ExplodableGraphPoint {
 
 
@@ -58,7 +57,6 @@ public class ExplodableGraphPoint {
 		totalSecondDegree += journey.getDiscoveryCycles().size();
 
 		for (DiscoveryCycle discovery : journey.getDiscoveryCycles()) {
-			log.debug("Experiments per discovery: "+discovery.getExperimentCycles().size());
 			totalThirdDegree += discovery.getExperimentCycles().size();
 		}
 

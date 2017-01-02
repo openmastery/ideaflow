@@ -1,14 +1,11 @@
 package org.openmastery.storyweb.client;
 
 import com.bancvue.rest.client.crud.CrudClientRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.openmastery.storyweb.api.FaqSummary;
 import org.openmastery.storyweb.api.GlossaryDefinition;
 import org.openmastery.storyweb.api.ResourcePaths;
 
 import java.util.List;
 
-@Slf4j
 public class GlossaryClient extends StorywebClient<GlossaryDefinition, GlossaryClient> {
 
 	public GlossaryClient(String baseUrl) {
@@ -31,7 +28,6 @@ public class GlossaryClient extends StorywebClient<GlossaryDefinition, GlossaryC
 	public List<GlossaryDefinition> findDefinitionsbyTag(List<String> tags) {
 		CrudClientRequest<GlossaryDefinition> findFilteredRequest = crudClientRequest;
 
-		log.debug("Client request: findDefinitionsbyTag "+tags);
 		for (String tag : tags) {
 			findFilteredRequest = findFilteredRequest.queryParam("tag", tag);
 		}

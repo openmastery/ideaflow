@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.tags
+package org.openmastery.storyweb.api;
 
-import java.util.regex.Matcher
-import java.util.regex.Pattern
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
-class TagsUtil {
+public class TagsUtil {
 
 	public static Set<String> extractUniqueHashTags(String commentWithTags) {
 		Set<String> hashtags = new HashSet<String>();
@@ -33,18 +37,6 @@ class TagsUtil {
 		}
 
 		return hashtags;
-	}
-
-	public static String createSearchPattern(List<String> tags) {
-		List<String> prefixedHashtags = tags.collect {
-			if (it.startsWith('#')) {
-				return it
-			} else {
-				return "#" + it
-			}
-		}
-
-		return "%(" + prefixedHashtags.join("|") + ")%";
 	}
 
 }

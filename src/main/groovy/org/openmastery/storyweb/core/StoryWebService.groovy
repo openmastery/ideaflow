@@ -25,7 +25,7 @@ import org.openmastery.storyweb.api.GlossaryDefinition
 import org.openmastery.storyweb.api.SPCChart
 import org.openmastery.storyweb.core.glossary.GlossaryDefinitionEntity
 import org.openmastery.storyweb.core.glossary.GlossaryRepository
-import org.openmastery.tags.TagsUtil
+import org.openmastery.storyweb.api.TagsUtil
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -53,7 +53,7 @@ class StoryWebService {
 
 
 	public List<FaqSummary> findAllFaqMatchingTags(List<String> tags) {
-		String searchPattern = TagsUtil.createSearchPattern(tags)
+		String searchPattern = createSearchPattern(tags)
 
 		List<Object[]> results = annotationRepository.findFaqsBySearchCriteria(searchPattern)
 		List<FaqSummary> faqSummaries = results.collect { Object[] row ->
@@ -71,16 +71,15 @@ class StoryWebService {
 	}
 
 	public List<GlossaryDefinition> findGlossaryDefinitionsByTag(List<String> tags) {
-		String searchPattern = TagsUtil.createSearchPattern(tags)
+		String searchPattern = createSearchPattern(tags)
 		entityMapper.mapList(glossaryRepository.findByTagsLike(searchPattern), GlossaryDefinition.class)
 	}
 
 
-
 	private Set<String> extractUniqueTags(String eventComment, String faqComment) {
 		Set<String> tagSet = []
-		tagSet.addAll (TagsUtil.extractUniqueHashTags(eventComment))
-		tagSet.addAll (TagsUtil.extractUniqueHashTags(faqComment))
+		tagSet.addAll(TagsUtil.extractUniqueHashTags(eventComment))
+		tagSet.addAll(TagsUtil.extractUniqueHashTags(faqComment))
 
 		return tagSet
 	}
@@ -101,7 +100,7 @@ class StoryWebService {
 	}
 
 	void createGlossaryDefinitionsWhenNotExists(List<String> tags) {
-		String searchPattern = TagsUtil.createSearchPattern(tags)
+		String searchPattern = createSearchPattern(tags)
 		List<GlossaryDefinitionEntity> glossaryEntities = glossaryRepository.findByTagsLike(searchPattern)
 
 		Map<String, GlossaryDefinitionEntity> definitionsByTag = glossaryEntities.collectEntries { entry ->
@@ -120,6 +119,17 @@ class StoryWebService {
 		return spcChartGenerator.generateChart(invocationContext.userId, startDate, endDate)
 	}
 
+
+	private static String createSearchPattern(List<String> tags) {
+		List<String> prefixedHashtags = tags.collect {
+			if (it.startsWith('#')) {
+				return it
+			} else {
+				return "#" + it
+			}
+		}
+		return "%(" + prefixedHashtags.join("|") + ")%";
+	}
 
 	private static class CommentHolder {
 		String comment;

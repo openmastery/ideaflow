@@ -42,9 +42,9 @@ public class MetricsResource {
 
 	/**
 	 * Generate a chart with explodable (drill-downable) graphpoints, from task, to journey, to discovery cycle, to execution cycle
-	 * @param startDate
-	 * @param endDate
-	 * @return
+	 * @param startDate inclusive beginning
+	 * @param endDate exclusive end
+	 * @return SPCChart
 	 */
 	@GET
 	public SPCChart generateSPCChart(@QueryParam("startDate") String startDate, @QueryParam("endDate") String endDate) {

@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Slf4j
 public class AbstractRelativeInterval implements RelativeInterval, RelativePositionable {
 
 	Long durationInSeconds;
@@ -31,7 +30,6 @@ public class AbstractRelativeInterval implements RelativeInterval, RelativePosit
 		boolean isWithinRange = (positionable.getRelativePositionInSeconds() >= getRelativeStart()
 				&& positionable.getRelativePositionInSeconds() < getRelativeEnd());
 
-		log.debug(getClass().getSimpleName() + "[" + getRelativeStart() + ":" + getRelativeEnd() + "] : " + positionable.getRelativePositionInSeconds() + " - include? " + isWithinRange);
 		return isWithinRange;
 	}
 

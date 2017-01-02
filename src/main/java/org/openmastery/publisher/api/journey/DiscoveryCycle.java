@@ -4,7 +4,7 @@ import lombok.*;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.ExecutionEvent;
-import org.openmastery.tags.TagsUtil;
+import org.openmastery.storyweb.api.TagsUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
