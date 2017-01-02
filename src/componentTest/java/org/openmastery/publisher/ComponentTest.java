@@ -18,6 +18,7 @@ package org.openmastery.publisher;
 import org.openmastery.IfmPublisherConfig;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -36,6 +37,7 @@ import java.lang.annotation.Target;
 @WebAppConfiguration
 @IntegrationTest({"server.port=10000", "management.port=10001"})
 @Sql(scripts = "classpath:/db/test_cleanup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@ActiveProfiles({"componentTest"})
 public @interface ComponentTest {
 
 }

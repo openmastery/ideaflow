@@ -130,8 +130,24 @@ task startPostgres(type: Exec) {
 	mustRunAfter createPostgres
 }
 
+task waitForPostgresInitialization(dependsOn: startPostgres) << {
+	Thread.sleep(5000)
+}
 
-task refreshPostgres(dependsOn: [removePostgres, createPostgres, startPostgres])
+task createApplicationDatabase(type: Exec, dependsOn: waitForPostgresInitialization) {
+	commandLine 'docker', 'exec', 'postgres', 'createdb', '-U', 'postgres', "ideaflow"
+	// subsequent creates will result in failure
+	ignoreExitValue true
+}
+
+task createTestDatabase(type: Exec, dependsOn: waitForPostgresInitialization) {
+	commandLine 'docker', 'exec', 'postgres', 'createdb', '-U', 'postgres', "ideaflow-test"
+	// subsequent creates will result in failure
+	ignoreExitValue true
+}
+
+
+task refreshPostgres(dependsOn: [removePostgres, createPostgres, startPostgres, createApplicationDatabase, createTestDatabase])
 
 task setSkipTestsTrue << {
 	project.ext.skipTests = true
