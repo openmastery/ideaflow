@@ -30,6 +30,9 @@ import org.openmastery.publisher.ideaflow.IdeaFlowStateRepository;
 import org.openmastery.publisher.core.task.TaskEntity;
 import org.openmastery.publisher.core.task.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
@@ -208,8 +211,8 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 	}
 
 	@Override
-	public List<TaskEntity> findRecentTasks(Long userId, int limit) {
-		return taskRepository.findRecent(userId, limit);
+	public Page<TaskEntity> findRecentTasks(Long userId, int page, int perPage) {
+		return taskRepository.findByOwnerId(userId, new PageRequest(page, perPage, Sort.Direction.DESC, "modifyDate"));
 	}
 
 }

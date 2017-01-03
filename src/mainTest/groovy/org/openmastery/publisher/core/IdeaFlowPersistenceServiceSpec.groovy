@@ -13,6 +13,7 @@ import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.time.MockTimeService
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Page
 import spock.lang.Ignore
 import spock.lang.Specification
 
@@ -56,7 +57,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "findRecentTasks should return empty list if no tasks"() {
 		expect:
-		assert persistenceService.findRecentTasks(-1L, 1).isEmpty()
+		assert persistenceService.findRecentTasks(-1L, 0, 10).content.isEmpty()
 	}
 
 	def "findRecentTasks should return entire list if number of tasks less than limit"() {
@@ -64,10 +65,10 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		TaskEntity task = saveTask(aRandom.taskEntity())
 
 		when:
-		List<TaskEntity> taskList = persistenceService.findRecentTasks(task.ownerId, 5)
+		Page<TaskEntity> taskList = persistenceService.findRecentTasks(task.ownerId, 0, 5)
 
 		then:
-		assert taskList == [task]
+		assert taskList.content == [task]
 	}
 
 	def "findRecentTasks should return the most recently modified tasks"() {
@@ -83,10 +84,28 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 				                                       .modifyDate(mockTimeService.javaInFuture(23)))
 
 		when:
-		List<TaskEntity> taskList = persistenceService.findRecentTasks(mostRecent.ownerId, 2)
+		Page<TaskEntity> taskList = persistenceService.findRecentTasks(mostRecent.ownerId, 0, 2)
 
 		then:
-		assert taskList == [mostRecent, secondMostRecent]
+		assert taskList.content == [mostRecent, secondMostRecent]
+	}
+
+	def "findRecentTasks return page 2 of tasks"() {
+		given:
+		int ownerId = 3
+		List<TaskEntity> tasks = []
+		for (int i = 0; i < 10; i++) {
+			tasks.add(saveTask(aRandom.taskEntity()
+					.ownerId(ownerId)
+					.modifyDate(mockTimeService.javaInFuture(i))))
+		}
+		tasks = tasks.reverse()
+
+		when:
+		Page<TaskEntity> taskList = persistenceService.findRecentTasks(ownerId, 1, 5)
+
+		then:
+		assert taskList.content == tasks.subList(5, 10)
 	}
 
 	def "saveTask should fail if task with existing name and owner_id is created"() {

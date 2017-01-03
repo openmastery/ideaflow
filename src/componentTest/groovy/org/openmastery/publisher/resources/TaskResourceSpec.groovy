@@ -122,13 +122,12 @@ class TaskResourceSpec extends Specification {
 		Task mostRecent = taskClient.createTask("recent2", "description", "project")
 
 		when:
-		List<Task> taskList = taskClient.findRecentTasks(1, 2)
+		List<Task> taskList = taskClient.findRecentTasks(0, 2)
 
 		then:
 		assert taskList == [mostRecent, secondMostRecent]
 	}
 
-	@Ignore //TODO implement paging on server side
 	def "SHOULD return page 2 of tasks"() {
 		given:
 		List<Task> expectedTasks = []
@@ -139,7 +138,7 @@ class TaskResourceSpec extends Specification {
 		}
 		expectedTasks = expectedTasks.reverse()
 		when:
-		List<Task> taskList = taskClient.findRecentTasks(2, 5)
+		List<Task> taskList = taskClient.findRecentTasks(1, 5)
 
 		then:
 		assert expectedTasks.subList(5, 10) == taskList

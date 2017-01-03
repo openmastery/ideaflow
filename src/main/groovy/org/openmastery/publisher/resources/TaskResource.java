@@ -103,7 +103,7 @@ public class TaskResource {
 		Integer activePage = page == null ? 0 : page;
 		Integer activePerPage = perPage == null ? 10 : perPage;
 
-		return taskService.findRecentTasks(activePage, activePerPage);
+		return taskService.findRecentTasks(activePage, activePerPage).getContent();
 	}
 
 
