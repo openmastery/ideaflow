@@ -1,15 +1,10 @@
 package org.openmastery.storyweb.client;
 
-import com.bancvue.rest.client.crud.CrudClientRequest;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.openmastery.storyweb.api.GlossaryDefinition;
 import org.openmastery.storyweb.api.ResourcePaths;
 import org.openmastery.storyweb.api.SPCChart;
-import org.openmastery.time.TimeConverter;
-
-import java.util.List;
 
 public class SPCClient extends StorywebClient<SPCChart, SPCClient> {
 
