@@ -9,7 +9,7 @@ import java.util.List;
 public class GlossaryClient extends StorywebClient<GlossaryDefinition, GlossaryClient> {
 
 	public GlossaryClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.GLOSSARY_PATH, GlossaryDefinition.class);
+		super(baseUrl, ResourcePaths.STORY_WEB_PATH + ResourcePaths.GLOSSARY_PATH, GlossaryDefinition.class);
 	}
 
 	public void defineTag(String name, String description) {
@@ -37,7 +37,7 @@ public class GlossaryClient extends StorywebClient<GlossaryDefinition, GlossaryC
 	}
 
 	public void createBlankGlossaryDefinitionWhenNotExists(List<String> tags) {
-		crudClientRequest.path(ResourcePaths.TAG_PATH).createWithPost(tags);
+		crudClientRequest.path(ResourcePaths.GLOSSARY_TAG_PATH).createWithPost(tags);
 	}
 
 }

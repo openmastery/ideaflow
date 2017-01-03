@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openmastery.storyweb.api.GlossaryDefinition;
 import org.openmastery.storyweb.api.ResourcePaths;
 import org.openmastery.storyweb.core.StoryWebService;
-import org.openmastery.storyweb.core.glossary.GlossaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Component
-@Path(ResourcePaths.GLOSSARY_PATH)
+@Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.GLOSSARY_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class GlossaryResource {
@@ -55,7 +54,7 @@ public class GlossaryResource {
 	 */
 
 	@POST
-	@Path(ResourcePaths.TAG_PATH)
+	@Path(ResourcePaths.GLOSSARY_TAG_PATH)
 	public void createBlankGlossaryDefinitionWhenNotExists(List<String> tags) {
 		storyWebService.createGlossaryDefinitionsWhenNotExists(tags);
 	}

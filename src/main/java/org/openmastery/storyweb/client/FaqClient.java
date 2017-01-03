@@ -9,7 +9,7 @@ import java.util.List;
 public class FaqClient extends StorywebClient<FaqSummary, FaqClient> {
 
 	public FaqClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.FAQ_PATH, FaqSummary.class);
+		super(baseUrl, ResourcePaths.STORY_WEB_PATH + ResourcePaths.FAQ_PATH, FaqSummary.class);
 	}
 
 	public List<FaqSummary> findAllFaqMatchingCriteria(List<String> tags) {

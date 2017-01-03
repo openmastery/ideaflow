@@ -30,7 +30,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Component
-@Path(ResourcePaths.SPC_PATH)
+@Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.SPC_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class SPCResource {
@@ -49,10 +49,17 @@ public class SPCResource {
 	@GET
 	public SPCChart generateSPCChart(@QueryParam("startDate") String startDate, @QueryParam("endDate") String endDate) {
 		System.out.println("generateSPCChart [" + startDate + " : " + endDate +"]");
-		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
-		LocalDate jodaStartDate = formatter.parseLocalDate(startDate);
-		LocalDate jodaEndDate = formatter.parseLocalDate(endDate);
-
+		LocalDate jodaStartDate;
+		LocalDate jodaEndDate;
+		if (startDate != null && endDate != null) {
+			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
+			jodaStartDate = formatter.parseLocalDate(startDate);
+			jodaEndDate = formatter.parseLocalDate(endDate);
+		} else {
+			jodaStartDate = LocalDate.now().minusDays(7);
+			jodaEndDate = LocalDate.now();
+		}
+		
 		return storyWebService.generateSPCChart(jodaStartDate, jodaEndDate);
 	}
 

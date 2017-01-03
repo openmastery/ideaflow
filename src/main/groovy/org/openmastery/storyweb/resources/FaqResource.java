@@ -30,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Component
-@Path(ResourcePaths.FAQ_PATH)
+@Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.FAQ_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class FaqResource {
 

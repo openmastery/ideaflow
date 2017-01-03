@@ -19,8 +19,10 @@ public class ResourcePaths {
 
 	public static final String API_KEY_HEADER = "X-API-KEY";
 
+	public static final String STORY_WEB_PATH = "/storyweb";
+
 	public static final String GLOSSARY_PATH = "/glossary";
-	public static final String TAG_PATH = "/tag";
+	public static final String GLOSSARY_TAG_PATH = "/tag";
 
 
 
