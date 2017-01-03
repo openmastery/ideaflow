@@ -78,7 +78,7 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 		graphPoint.setTypeName(getClass().getSimpleName());
 		graphPoint.setPosition(event.getPosition());
 
-		List<ExplodableGraphPoint> childPoints = new ArrayList<>();
+		List<ExplodableGraphPoint> childPoints = new ArrayList<ExplodableGraphPoint>();
 		for (ExperimentCycle experimentCycle: experimentCycles) {
 			ExplodableGraphPoint childPoint = experimentCycle.toGraphPoint();
 			childPoint.setContextTags(contextTags);
@@ -103,7 +103,7 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 		}
 
 		if (initialCycle.getDurationInSeconds() > 0) {
-			List<ExperimentCycle> newExperimentList = new ArrayList<>();
+			List<ExperimentCycle> newExperimentList = new ArrayList<ExperimentCycle>();
 			newExperimentList.add(initialCycle);
 			newExperimentList.addAll(experimentCycles);
 			experimentCycles = newExperimentList;

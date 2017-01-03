@@ -144,7 +144,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		graphPoint.setTypeName(getClass().getSimpleName());
 		graphPoint.setPosition(getStart());
 
-		List<ExplodableGraphPoint> childPoints = new ArrayList<>();
+		List<ExplodableGraphPoint> childPoints = new ArrayList<ExplodableGraphPoint>();
 		for (DiscoveryCycle discoveryCycle: discoveryCycles) {
 			childPoints.add( discoveryCycle.toGraphPoint());
 		}
