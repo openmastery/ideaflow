@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.journey.DiscoveryCycle;
 import org.openmastery.publisher.api.journey.TroubleshootingJourney;
 import org.openmastery.publisher.api.metrics.DurationInSeconds;
+import org.openmastery.publisher.api.metrics.Metric;
 import org.openmastery.publisher.api.task.Task;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,64 +21,43 @@ import java.util.Set;
 @AllArgsConstructor
 public class ExplodableGraphPoint {
 
-
-	Task task;
+	String relativePath;
 
 	Set<String> painTags;
 	Set<String> contextTags;
 
-	Set<String> allTags; //derived
-
-	List<TroubleshootingJourney> troubleshootingJourneys;
-
+	LocalDateTime position;
 	DurationInSeconds durationInSeconds;
+	Integer frequency;
 
-	int totalFirstDegree;
-	int totalSecondDegree;
-	int totalThirdDegree;
+	String typeName;
+	String description;
+
+	List<Metric<?>> metrics;
+
+	List<ExplodableGraphPoint> explodableGraphPoints;
 
 	public ExplodableGraphPoint() {
-
-	}
-
-	public ExplodableGraphPoint(Task task, List<TroubleshootingJourney> journeys) {
-		allTags = new HashSet<String>();
 		contextTags = new HashSet<String>();
 		painTags = new HashSet<String>();
-
 		durationInSeconds = new DurationInSeconds(0);
-
-		this.task = task;
-		troubleshootingJourneys = journeys;
-
-		for (TroubleshootingJourney journey : journeys) {
-			addContextTags(journey.getContextTags());
-			addPainTags(journey.getPainTags());
-			incrementFrequencyCounters(journey);
-		}
-	}
-
-	private void incrementFrequencyCounters(TroubleshootingJourney journey) {
-		totalFirstDegree++;
-
-		totalSecondDegree += journey.getDiscoveryCycles().size();
-
-		for (DiscoveryCycle discovery : journey.getDiscoveryCycles()) {
-			totalThirdDegree += discovery.getExperimentCycles().size();
-		}
-
-		durationInSeconds.incrementBy(journey.getDurationInSeconds());
+		explodableGraphPoints = new ArrayList<ExplodableGraphPoint>();
 	}
 
 	private void addContextTags(Set<String> contextTags) {
 		this.contextTags.addAll(contextTags);
-		this.allTags.addAll(contextTags);
 	}
 
 	private void addPainTags(Set<String> painTags) {
 		this.painTags.addAll(painTags);
-		this.allTags.addAll(painTags);
 	}
 
 
+	public void forcePushTagsToChildren(Set<String> contextTags, Set<String> painTags) {
+		this.contextTags = contextTags;
+		this.painTags = painTags;
+		for (ExplodableGraphPoint childPoint : explodableGraphPoints) {
+			childPoint.forcePushTagsToChildren(contextTags, painTags);
+		}
+	}
 }

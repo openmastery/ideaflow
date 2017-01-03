@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.ExecutionEvent;
+import org.openmastery.publisher.api.metrics.DurationInSeconds;
+import org.openmastery.storyweb.api.ExplodableGraphPoint;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -43,4 +48,20 @@ public class ExperimentCycle extends AbstractRelativeInterval {
 		return executionEvent.getDurationInSeconds();
 	}
 
+	public String getDescription() {
+		String failString = isFailed()? "Fail" : "Pass";
+		return executionEvent.getExecutionTaskType() + " : " + failString + " : " +executionEvent.getProcessName();
+	}
+
+	public ExplodableGraphPoint toGraphPoint() {
+		ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
+		graphPoint.setRelativePath("/exec/"+executionEvent.getId());
+		graphPoint.setDurationInSeconds(new DurationInSeconds(getDurationInSeconds()));
+		graphPoint.setFrequency(1);
+		graphPoint.setDescription(getDescription());
+		graphPoint.setTypeName(getClass().getSimpleName());
+		graphPoint.setPosition(executionEvent.getPosition());
+
+		return graphPoint;
+	}
 }

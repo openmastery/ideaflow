@@ -10,7 +10,7 @@ import org.openmastery.publisher.api.metrics.Metric;
 @Builder
 public class DangerLink implements RelativePositionable {
 
-	Long eventId;
+	Long journeyId;
 	Long relativePositionInSeconds;
 	Metric<?> metric;
 }

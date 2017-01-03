@@ -21,6 +21,7 @@ import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,6 +37,11 @@ public class ExecutionActivityEntity extends ActivityEntity {
 	private static final String IS_DEBUG = "isDebug";
 
 	private ExecutionActivityEntity() {
+	}
+
+	@Override
+	public Duration getDuration() {
+		return super.getDuration();
 	}
 
 	private ExecutionActivityEntity(long id, long ownerId, long taskId, LocalDateTime start, LocalDateTime end,

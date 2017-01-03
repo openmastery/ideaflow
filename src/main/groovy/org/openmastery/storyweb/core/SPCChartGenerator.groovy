@@ -25,6 +25,7 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.activity.ActivityRepository
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
@@ -195,7 +196,14 @@ class SPCChartGenerator {
 
 	private List<ExecutionEvent> findExecutionEventsWithinRange(Long userId, Timestamp startTimestamp, Timestamp endTimestamp) {
 		List<ExecutionActivityEntity> eventEntities = activityRepository.findExecutionActivityWithinRange(userId, startTimestamp, endTimestamp)
-		return entityMapper.mapList(eventEntities, ExecutionEvent)
+		List<ExecutionEvent> executionEvents = []
+		eventEntities.each { ExecutionActivityEntity entity ->
+			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)
+			execution.failed = entity.exitCode != 0
+			execution.durationInSeconds = TimeConverter.between(entity.start, entity.end).standardSeconds
+			executionEvents.add(execution)
+		}
+		return executionEvents
 	}
 
 	private List<Task> findTasksWithinRange(Long userId, Timestamp startTimestamp, Timestamp endTimestamp) {
@@ -254,6 +262,14 @@ class SPCChartGenerator {
 			return positionables
 		}
 
+		LocalDateTime getPosition() {
+			if (events.size() > 0) {
+				return events.get(0).position
+			} else {
+				return task.creationDate
+			}
+		}
+
 		ExplodableGraphPoint intoGraphPoint() {
 
 			List<IdeaFlowBand> ideaFlowBands = entityMapper.mapList(troubleshootingBands, IdeaFlowBand.class)
@@ -261,7 +277,24 @@ class SPCChartGenerator {
 
 			troubleshootingJourneyGenerator.annotateJourneys(journeys, faqAnnotations, [])
 
-			return new ExplodableGraphPoint(task, journeys)
+			ExplodableGraphPoint graphPoint = new ExplodableGraphPoint()
+
+			List<ExplodableGraphPoint> childPoints = []
+			journeys.each { TroubleshootingJourney journey ->
+				graphPoint.painTags.addAll(journey.painTags)
+				graphPoint.contextTags.addAll(journey.contextTags)
+				graphPoint.durationInSeconds.incrementBy(journey.getDurationInSeconds())
+				childPoints.add( journey.toGraphPoint() )
+			}
+
+			graphPoint.frequency = journeys.size()
+			graphPoint.relativePath = "/task/"+taskId
+			graphPoint.description = task?.description
+			graphPoint.typeName = Task.class.simpleName
+			graphPoint.position = getPosition()
+			graphPoint.explodableGraphPoints = childPoints
+
+			return graphPoint
 		}
 
 

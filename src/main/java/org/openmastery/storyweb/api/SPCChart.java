@@ -22,6 +22,7 @@ public class SPCChart {
 	int totalFirstDegree;
 	int totalSecondDegree;
 	int totalThirdDegree;
+	int totalForthDegree;
 
 	List<ExplodableGraphPoint> graphPoints; //these are all the raw data points that can be sliced and diced on the client side
 	List<MetricThreshold<?>> metricThresholds;
@@ -39,9 +40,18 @@ public class SPCChart {
 		for (ExplodableGraphPoint graphPoint: graphPoints) {
 			contextTags.addAll(graphPoint.contextTags);
 			painTags.addAll(graphPoint.painTags);
-			totalFirstDegree += graphPoint.totalFirstDegree;
-			totalSecondDegree += graphPoint.totalSecondDegree;
-			totalThirdDegree += graphPoint.totalThirdDegree;
+
+			totalFirstDegree++;
+
+			totalSecondDegree += graphPoint.getExplodableGraphPoints().size();
+
+			for (ExplodableGraphPoint innerPoint: graphPoint.getExplodableGraphPoints()) {
+				totalThirdDegree += innerPoint.getExplodableGraphPoints().size();
+
+				for (ExplodableGraphPoint innerInnerPoint: innerPoint.getExplodableGraphPoints()) {
+					totalForthDegree += innerInnerPoint.getExplodableGraphPoints().size();
+				}
+			}
 		}
 	}
 

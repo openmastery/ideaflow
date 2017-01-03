@@ -1,16 +1,11 @@
 package org.openmastery.storyweb.resources
 
-import org.joda.time.Duration
-import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
-import org.openmastery.publisher.security.InvocationContext
-import org.openmastery.storyweb.api.GlossaryDefinition
 import org.openmastery.storyweb.api.SPCChart
 import org.openmastery.storyweb.client.SPCClient
-import org.openmastery.storyweb.core.SPCChartGenerator
 import org.openmastery.storyweb.core.FixturePersistenceHelper
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired

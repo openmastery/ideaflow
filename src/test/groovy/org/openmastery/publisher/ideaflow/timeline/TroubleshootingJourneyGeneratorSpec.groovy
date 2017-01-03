@@ -122,7 +122,7 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 		assert journey.discoveryCycles != null
 		assert journey.discoveryCycles.size() == 2
 		assert journey.discoveryCycles.get(0).experimentCycles.size() == 1
-		assert journey.discoveryCycles.get(1).experimentCycles.size() == 2
+		assert journey.discoveryCycles.get(1).experimentCycles.size() == 3 //execution context split and added to second discovery cycle
 
 	}
 

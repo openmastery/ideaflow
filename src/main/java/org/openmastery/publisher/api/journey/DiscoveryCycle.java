@@ -4,6 +4,9 @@ import lombok.*;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.ExecutionEvent;
+import org.openmastery.publisher.api.metrics.DurationInSeconds;
+import org.openmastery.publisher.api.metrics.Metric;
+import org.openmastery.storyweb.api.ExplodableGraphPoint;
 import org.openmastery.storyweb.api.TagsUtil;
 
 import java.util.ArrayList;
@@ -20,14 +23,16 @@ import java.util.Set;
 public class DiscoveryCycle extends AbstractRelativeInterval {
 
 	Event event;
-	String faqComment;
-
-	FormattableSnippet formattableSnippet;
 
 	Set<String> painTags; //derived from WTF/YAY #hashtags
 	Set<String> contextTags; //derived from FAQs or containing subtasks
 
+	String faqComment;
+	FormattableSnippet formattableSnippet;
+
 	List<ExperimentCycle> experimentCycles;
+
+	List<Metric<?>> metrics;
 
 	public DiscoveryCycle(Event wtfYayEvent, Long durationInSeconds) {
 		this.event = wtfYayEvent;
@@ -40,11 +45,15 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 	}
 
 	public void addExperimentCycle(ExecutionEvent executionEvent) {
-		updateEndTimeOfLastExperimentCycle(executionEvent.getRelativePositionInSeconds());
+		if (shouldContain(executionEvent)) {
+			updateEndTimeOfLastExperimentCycle(executionEvent.getRelativePositionInSeconds());
 
-		Long durationInSeconds = getRelativeEnd() - executionEvent.getRelativePositionInSeconds();
-		ExperimentCycle experimentCycle = new ExperimentCycle(executionEvent, durationInSeconds);
-		experimentCycles.add(experimentCycle);
+			Long durationInSeconds = getRelativeEnd() - executionEvent.getRelativePositionInSeconds();
+			ExperimentCycle experimentCycle = new ExperimentCycle(executionEvent, durationInSeconds);
+			experimentCycles.add(experimentCycle);
+		} else {
+			setExecutionContext(executionEvent);
+		}
 	}
 
 	public void addFaq(String faqComment) {
@@ -60,5 +69,47 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 	}
 
 
+	public ExplodableGraphPoint toGraphPoint() {
+		ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
+		graphPoint.setContextTags(contextTags);
+		graphPoint.setPainTags(painTags);
+		graphPoint.setRelativePath("/event/"+event.getId());
+		graphPoint.setDurationInSeconds(new DurationInSeconds(getDurationInSeconds()));
+		graphPoint.setFrequency(Math.max(1, experimentCycles.size()));
+		graphPoint.setDescription(event.getComment());
+		graphPoint.setTypeName(getClass().getSimpleName());
+		graphPoint.setPosition(event.getPosition());
+		graphPoint.setMetrics(metrics);
 
+		List<ExplodableGraphPoint> childPoints = new ArrayList<>();
+		for (ExperimentCycle experimentCycle: experimentCycles) {
+			ExplodableGraphPoint childPoint = experimentCycle.toGraphPoint();
+			childPoint.setContextTags(contextTags);
+			childPoint.setPainTags(painTags);
+			childPoints.add( childPoint );
+		}
+
+		graphPoint.setExplodableGraphPoints(childPoints);
+
+		return graphPoint;
+	}
+
+	public void setExecutionContext(ExecutionEvent trailingEvent) {
+		ExperimentCycle initialCycle = new ExperimentCycle(trailingEvent);
+		initialCycle.setRelativeStart(getRelativeStart());
+
+		if (experimentCycles.size() > 0) {
+			ExperimentCycle firstExperiment = experimentCycles.get(0);
+			initialCycle.setDurationInSeconds(firstExperiment.getRelativeStart() - getRelativeStart());
+		} else {
+			initialCycle.setDurationInSeconds(getDurationInSeconds());
+		}
+
+		if (initialCycle.getDurationInSeconds() > 0) {
+			List<ExperimentCycle> newExperimentList = new ArrayList<>();
+			newExperimentList.add(initialCycle);
+			newExperimentList.addAll(experimentCycles);
+			experimentCycles = newExperimentList;
+		}
+	}
 }

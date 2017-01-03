@@ -46,7 +46,7 @@ public class ProgressMilestone extends AbstractRelativeInterval {
 		for (Metric<?> metric : journey.getMetrics()) {
 			if (metric.isDanger()) {
 				DangerLink dangerLink = new DangerLink();
-				dangerLink.setEventId(journey.getEventId());
+				dangerLink.setJourneyId(journey.getId());
 				dangerLink.setRelativePositionInSeconds(journey.getRelativeStart());
 				dangerLink.setMetric(metric);
 				dangerLinks.add(dangerLink);

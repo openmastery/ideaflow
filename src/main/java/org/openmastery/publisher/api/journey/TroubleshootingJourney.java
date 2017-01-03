@@ -7,7 +7,9 @@ import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
+import org.openmastery.publisher.api.metrics.DurationInSeconds;
 import org.openmastery.publisher.api.metrics.Metric;
+import org.openmastery.storyweb.api.ExplodableGraphPoint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,13 +27,13 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	@JsonIgnore
 	IdeaFlowBand band;
 
+	long id;
+
 	Set<String> contextTags;
 	Set<String> painTags; //derived from WTF/YAY #hashtags
 
-	List<DiscoveryCycle> discoveryCycles;
 	List<Metric<?>> metrics;
-
-	Long eventId;
+	List<DiscoveryCycle> discoveryCycles;
 
 	public TroubleshootingJourney(IdeaFlowBand band) {
 		this.band = band;
@@ -47,8 +49,8 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		DiscoveryCycle partialDiscovery = new DiscoveryCycle(wtfYayEvent, durationInSeconds);
 		painTags.addAll(partialDiscovery.painTags);
 
-		if (eventId == null) {
-			eventId = wtfYayEvent.getId();
+		if (id == 0) {
+			id = wtfYayEvent.getId();
 		}
 
 		discoveryCycles.add(partialDiscovery);
@@ -88,15 +90,27 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 
 	public void fillWithActivity(List<ExecutionEvent> executionEvents) {
 		for (ExecutionEvent executionEvent : executionEvents) {
-			if (shouldContain(executionEvent)) {
+			if (overlaps(executionEvent)) {
 				addExecutionEvent(executionEvent);
+			}
+		}
+
+		ExperimentCycle trailingCycle = null;
+		for (DiscoveryCycle discoveryCycle : discoveryCycles) {
+
+			if (trailingCycle != null) {
+				discoveryCycle.setExecutionContext(trailingCycle.getExecutionEvent());
+			}
+			int experimentCount = discoveryCycle.getExperimentCycles().size();
+			if ( experimentCount > 0) {
+				trailingCycle = discoveryCycle.getExperimentCycles().get(experimentCount - 1);
 			}
 		}
 	}
 
 	private void addExecutionEvent(ExecutionEvent event) {
 		for (DiscoveryCycle discoveryCycle : discoveryCycles) {
-			if (discoveryCycle.shouldContain(event)) {
+			if (discoveryCycle.overlaps(event)) {
 				discoveryCycle.addExperimentCycle(event);
 			}
 		}
@@ -111,6 +125,34 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		return band.getEnd();
 	}
 
+	private String getFirstWTFComment() {
+		String comment = "";
+		if (discoveryCycles.size() > 0) {
+			comment = discoveryCycles.get(0).event.getComment();
+		}
+		return comment;
+	}
 
+	public ExplodableGraphPoint toGraphPoint() {
+		ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
+		graphPoint.setContextTags(contextTags);
+		graphPoint.setPainTags(painTags);
+		graphPoint.setRelativePath("/journey/"+ id);
+		graphPoint.setDurationInSeconds(new DurationInSeconds(getDurationInSeconds()));
+		graphPoint.setFrequency(discoveryCycles.size());
+		graphPoint.setDescription(getFirstWTFComment());
+		graphPoint.setTypeName(getClass().getSimpleName());
+		graphPoint.setPosition(getStart());
+		graphPoint.setMetrics(metrics);
+
+		List<ExplodableGraphPoint> childPoints = new ArrayList<>();
+		for (DiscoveryCycle discoveryCycle: discoveryCycles) {
+			childPoints.add( discoveryCycle.toGraphPoint());
+		}
+		graphPoint.setExplodableGraphPoints(childPoints);
+		graphPoint.forcePushTagsToChildren(graphPoint.getContextTags(), graphPoint.getPainTags());
+
+		return graphPoint;
+	}
 
 }

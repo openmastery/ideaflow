@@ -90,9 +90,10 @@ class SPCChartGeneratorSpec extends Specification {
 		then:
 		assert chart.graphPoints.size() == 1
 		assert chart.graphPoints.get(0).durationInSeconds == new DurationInSeconds(66 * 60)
-		assert chart.graphPoints.get(0).totalFirstDegree == 1
-		assert chart.graphPoints.get(0).totalSecondDegree == 3
-		assert chart.graphPoints.get(0).totalThirdDegree == 5
+		assert chart.totalFirstDegree == 1
+		assert chart.totalSecondDegree == 1
+		assert chart.totalThirdDegree == 3
+		assert chart.totalForthDegree == 6
 
 	}
 

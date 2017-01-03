@@ -109,6 +109,7 @@ class IdeaFlowTimelineElementBuilder {
 				.build()
 		event.setStart(timeService.now())
 		event.relativePositionInSeconds = computeRelativePositionInSeconds()
+		event.setDurationInSeconds(1)
 
 		executionEventList << event
 		return this

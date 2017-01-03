@@ -59,7 +59,7 @@ public class SPCResource {
 			jodaStartDate = LocalDate.now().minusDays(7);
 			jodaEndDate = LocalDate.now();
 		}
-		
+
 		return storyWebService.generateSPCChart(jodaStartDate, jodaEndDate);
 	}
 

@@ -75,6 +75,7 @@ class IdeaFlowTaskTimelineGenerator {
 		this
 	}
 
+	//TODO where do I put this shared logic?
 	IdeaFlowTaskTimelineGenerator executionActivities(List<ExecutionActivityEntity> executionActivities) {
 		this.executionEvents = executionActivities.collect { ExecutionActivityEntity entity ->
 			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)

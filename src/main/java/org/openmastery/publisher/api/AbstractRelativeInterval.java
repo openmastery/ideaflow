@@ -33,4 +33,8 @@ public class AbstractRelativeInterval implements RelativeInterval, RelativePosit
 		return isWithinRange;
 	}
 
+	public boolean overlaps(RelativeInterval interval) {
+		return interval.getRelativeStart() < getRelativeEnd() && interval.getRelativeEnd() >= getRelativeStart();
+	}
+
 }

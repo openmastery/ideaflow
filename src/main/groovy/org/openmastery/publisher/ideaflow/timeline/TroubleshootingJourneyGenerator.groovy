@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
+import groovy.util.logging.Slf4j
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Component
  * Generates all the troubleshooting journeys from the WTF/YAY events within the timeline
  */
 @Component
+@Slf4j
 class TroubleshootingJourneyGenerator {
 
 	@Autowired
@@ -110,13 +112,11 @@ class TroubleshootingJourneyGenerator {
 
 		troubleshootingBands.each { IdeaFlowBand troubleshootingBand ->
 			TroubleshootingJourney journey = new TroubleshootingJourney(troubleshootingBand)
-			//TODO write refactoring plugin "Inject toString()" from a print statement
-			println "Journey [" + journey.relativeStart + ", " + journey.relativeEnd + "]"
+			log.debug("Generating Journey [" + journey.relativeStart + ", " + journey.relativeEnd + "]")
 
 			for (int activeIndex = 0; activeIndex < wtfYayEvents.size(); activeIndex++) {
 				Event wtfYayEvent = wtfYayEvents.get(activeIndex)
 				Long eventPosition = wtfYayEvent.relativePositionInSeconds
-				//println "Event [" + eventPosition + ", " + wtfYayEvent.type + "]"
 
 				if (eventPosition >= journey.relativeStart && eventPosition <= journey.relativeEnd) {
 
@@ -124,11 +124,10 @@ class TroubleshootingJourneyGenerator {
 					if (wtfYayEvents.size() > activeIndex + 1) {
 						Event peekAtNextEvent = wtfYayEvents.get(activeIndex + 1)
 						durationInSeconds = peekAtNextEvent.relativePositionInSeconds - wtfYayEvent.relativePositionInSeconds
-						//println "[Calculate] DiscoveryCycle duration (peek): " + durationInSeconds
 					} else {
 						durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
-						//println "[Calculate] DiscoveryCycle duration (band-end): " + durationInSeconds
 					}
+					log.debug("Adding event: "+wtfYayEvent.id + "{position: "+wtfYayEvent.relativePositionInSeconds+", duration: "+durationInSeconds+"}")
 					journey.addPartialDiscovery(wtfYayEvent, durationInSeconds);
 				}
 			}
