@@ -64,5 +64,6 @@ class SpcResourceSpec extends Specification {
 		then:
 		assert chart != null
 		assert chart.graphPoints.size() == 1
+		assert chart.metricThresholds.size() == 5
 	}
 }

@@ -21,6 +21,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.storyweb.api.MetricThreshold
 
 class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 
@@ -40,16 +41,15 @@ class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 
 		Metric<Double> metric = createMetric()
 		metric.value = calculateAverageWtfsPerDay(start, end, wtfEvents)
-		metric.danger = metric.value > getDangerThreshold()
+		metric.danger = metric.value > getDangerThreshold().threshold
 		return metric
 	}
 
-
-
 	@Override
-	Double getDangerThreshold() {
-		return 10D
+	MetricThreshold<Double> getDangerThreshold() {
+		return createMetricThreshold(10D)
 	}
+
 
 	private double calculateAverageWtfsPerDay(LocalDate start, LocalDate end, List<Event> wtfEvents) {
 		double avgWtfsPerDay = 0

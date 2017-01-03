@@ -24,6 +24,7 @@ import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.api.metrics.MetricsCalculator
 import org.openmastery.publisher.api.metrics.SubtaskOverview
 import org.openmastery.publisher.metrics.subtask.calculator.*
+import org.openmastery.storyweb.api.MetricThreshold
 import org.springframework.stereotype.Component
 
 @Component
@@ -48,12 +49,7 @@ public class MetricsService {
 
 		overview.capacityDistribution = calculateCapacityDistribution(timelineSegment)
 
-		MetricSetCalculator metricSet = new MetricSetCalculator()
-		addMetric(metricSet, new WtfsPerDayCalculator())
-		addMetric(metricSet, new MaxHaystackSizeCalculator())
-		addMetric(metricSet, new MaxWtfDurationCalculator())
-		addMetric(metricSet, new AvgFeedbackLoopsCalculator())
-		addMetric(metricSet, new AvgFeedbackLoopDurationCalculator())
+		MetricSetCalculator metricSet = generateDefaultMetricSet()
 
 		metricSet.calculate(timelineSegment)
 
@@ -73,26 +69,44 @@ public class MetricsService {
 		return calculator.calculateCapacityWithinWindow(timeline, interval.relativeStart, interval.relativeEnd)
 	}
 
+	MetricSetCalculator generateDefaultMetricSet() {
+		MetricSetCalculator metricSet = new MetricSetCalculator()
+		addMetric(metricSet, new WtfsPerDayCalculator())
+		addMetric(metricSet, new MaxHaystackSizeCalculator())
+		addMetric(metricSet, new MaxWtfDurationCalculator())
+		addMetric(metricSet, new AvgFeedbackLoopsCalculator())
+		addMetric(metricSet, new AvgFeedbackLoopDurationCalculator())
+		return metricSet
+	}
+
+	List<MetricThreshold<?>> getDefaultMetricsThresholds() {
+		MetricSetCalculator metricSet = generateDefaultMetricSet()
+		metricSet.getAllMetricThresholds()
+	}
 
 	private static class MetricSetCalculator {
 
-		Map<MetricType, MetricsCalculator> calculators;
+		Map<MetricType, MetricsCalculator> calculators = [:];
+		List<MetricThreshold<?>> thresholds = [];
 
-		List<Metric<?>> allMetrics = new ArrayList<Metric<?>>();
-		
+		List<Metric<?>> allMetrics = []
+
 		public void addMetric(MetricType type, MetricsCalculator calculator) {
-			if (calculators == null) {
-				calculators = new HashMap<MetricType, MetricsCalculator>();
-			}
+
 			calculators.put(type, calculator);
+			thresholds.add(calculator.getDangerThreshold())
 		}
 
 		public void calculate(IdeaFlowTimeline timeline) {
 
-			for (MetricsCalculator calculator: calculators.values()) {
+			for (MetricsCalculator calculator : calculators.values()) {
 				Metric<?> result = calculator.calculateMetrics(timeline);
 				allMetrics.add(result);
 			}
+		}
+
+		List<MetricThreshold<?>> getAllMetricThresholds() {
+			thresholds
 		}
 	}
 

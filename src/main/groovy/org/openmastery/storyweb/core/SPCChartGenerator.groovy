@@ -42,6 +42,7 @@ import org.openmastery.publisher.ideaflow.timeline.IdeaFlowBandGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdleTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.RelativeTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.TroubleshootingJourneyGenerator
+import org.openmastery.publisher.metrics.subtask.MetricsService
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.ExplodableGraphPoint
 import org.openmastery.storyweb.api.SPCChart
@@ -79,19 +80,21 @@ class SPCChartGenerator {
 	@Autowired
 	TaskRepository taskRepository
 
+	@Autowired
+	MetricsService metricsService
+
 	EntityMapper entityMapper = new EntityMapper()
 
 	SPCChart generateChart(Long userId, LocalDate startDate, LocalDate endDate) {
 
 		List<TaskData> taskDataList = generateTaskData(userId, startDate, endDate)
-		println taskDataList
 		List<ExplodableGraphPoint> graphPoints = taskDataList.collect { TaskData taskData ->
 			taskData.intoGraphPoint()
 		}
 
-		println graphPoints
 		SPCChart chart = new SPCChart()
 		chart.addGraphPoints( graphPoints )
+		chart.metricThresholds = metricsService.getDefaultMetricsThresholds()
 
 		return chart;
 	}

@@ -15,9 +15,11 @@
  */
 package org.openmastery.publisher.metrics.subtask.calculator
 
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.api.metrics.MetricsCalculator
+import org.openmastery.storyweb.api.MetricThreshold
 
 abstract class AbstractMetricsCalculator<T> implements MetricsCalculator<T> {
 
@@ -37,6 +39,13 @@ abstract class AbstractMetricsCalculator<T> implements MetricsCalculator<T> {
 		metric.type = getMetricType()
 		metric.danger = false
 		return metric;
+	}
+
+	protected MetricThreshold<T> createMetricThreshold(T value) {
+		MetricThreshold<T> threshold = new MetricThreshold<>()
+		threshold.metricType = getMetricType()
+		threshold.threshold = value
+		return threshold
 	}
 
 }

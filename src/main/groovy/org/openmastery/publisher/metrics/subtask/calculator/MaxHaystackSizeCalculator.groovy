@@ -23,6 +23,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.storyweb.api.MetricThreshold
 
 /**
  * This metric is attempting to measure the maximum amount of time spent changing
@@ -71,16 +72,16 @@ class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<DurationInSeco
 		Metric<DurationInSeconds> metric = createMetric()
 		metric.type = getMetricType()
 		metric.value = new DurationInSeconds(maxDuration)
-		metric.danger = metric.value.greaterThan(getDangerThreshold())
+		metric.danger = metric.value.greaterThan(getDangerThreshold().threshold)
 
 		return metric
 	}
 
-	@Override
-	DurationInSeconds getDangerThreshold() {
-		return new DurationInSeconds(60 * 60)
-	}
 
+	@Override
+	MetricThreshold<DurationInSeconds> getDangerThreshold() {
+		return createMetricThreshold(new DurationInSeconds(60 * 60))
+	}
 
 
 	List<IdeaFlowBand> collapseConsecutiveBandPeriods(List<IdeaFlowBand> bands) {

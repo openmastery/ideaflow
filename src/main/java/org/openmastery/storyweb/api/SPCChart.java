@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openmastery.publisher.api.metrics.Metric;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,10 +16,6 @@ import java.util.Set;
 @AllArgsConstructor
 public class SPCChart {
 
-
-	//The chart doesn't need to respect time, available data points are evenly spaced along available chart width
-	//with SPC, everything is a statistical sample, regardless of how far the points are apart
-
 	Set<String> painTags;
 	Set<String> contextTags;
 
@@ -27,6 +24,7 @@ public class SPCChart {
 	int totalThirdDegree;
 
 	List<ExplodableGraphPoint> graphPoints; //these are all the raw data points that can be sliced and diced on the client side
+	List<MetricThreshold<?>> metricThresholds;
 
 	public SPCChart() {
 		painTags = new HashSet<String>();

@@ -19,8 +19,10 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.storyweb.api.MetricThreshold
 
 class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 
@@ -59,7 +61,7 @@ class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 		Metric<Double> metric = createMetric()
 		metric.type = getMetricType()
 		metric.value = avgEventCount
-		metric.danger = metric.value > getDangerThreshold()
+		metric.danger = metric.value > getDangerThreshold().threshold
 		return metric
 	}
 
@@ -72,8 +74,8 @@ class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 	}
 
 	@Override
-	Double getDangerThreshold() {
-		return 15D
+	MetricThreshold<Double> getDangerThreshold() {
+		return createMetricThreshold(15D)
 	}
 
 

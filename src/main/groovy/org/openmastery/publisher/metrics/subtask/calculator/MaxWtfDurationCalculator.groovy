@@ -22,6 +22,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.storyweb.api.MetricThreshold
 
 class MaxWtfDurationCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
@@ -47,13 +48,15 @@ class MaxWtfDurationCalculator extends AbstractMetricsCalculator<DurationInSecon
 		Metric<DurationInSeconds> metric = createMetric()
 		metric.type = getMetricType()
 		metric.value = new DurationInSeconds(maxDuration)
-		metric.danger = metric.value.greaterThan(getDangerThreshold())
+		metric.danger = metric.value.greaterThan(getDangerThreshold().threshold)
 
 		return metric
 	}
 
+
 	@Override
-	DurationInSeconds getDangerThreshold() {
-		return new DurationInSeconds(30 * 60)
+	MetricThreshold<DurationInSeconds> getDangerThreshold() {
+		return createMetricThreshold(new DurationInSeconds(30 * 60))
 	}
+
 }

@@ -23,6 +23,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.storyweb.api.MetricThreshold
 
 class AvgFeedbackLoopDurationCalculator  extends AbstractMetricsCalculator<DurationInSeconds> {
 
@@ -59,13 +60,13 @@ class AvgFeedbackLoopDurationCalculator  extends AbstractMetricsCalculator<Durat
 
 		Metric<DurationInSeconds> metric = createMetric()
 		metric.value = new DurationInSeconds((long)avgDuration);
-		metric.danger = metric.value.greaterThan(getDangerThreshold())
+		metric.danger = metric.value.greaterThan(getDangerThreshold().threshold)
 		return metric
 	}
 
 	@Override
-	DurationInSeconds getDangerThreshold() {
-		return new DurationInSeconds(10 * 60)
+	MetricThreshold<DurationInSeconds> getDangerThreshold() {
+		return createMetricThreshold(new DurationInSeconds(10 * 60))
 	}
 
 	int countExecutionEventsInRange(List<ExecutionEvent> executionEvents, Long relativeStart, Long relativeEnd ) {
