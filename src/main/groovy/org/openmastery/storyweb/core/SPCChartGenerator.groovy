@@ -84,10 +84,12 @@ class SPCChartGenerator {
 	SPCChart generateChart(Long userId, LocalDate startDate, LocalDate endDate) {
 
 		List<TaskData> taskDataList = generateTaskData(userId, startDate, endDate)
+		println taskDataList
 		List<ExplodableGraphPoint> graphPoints = taskDataList.collect { TaskData taskData ->
 			taskData.intoGraphPoint()
 		}
 
+		println graphPoints
 		SPCChart chart = new SPCChart()
 		chart.addGraphPoints( graphPoints )
 
@@ -98,6 +100,8 @@ class SPCChartGenerator {
 
 		Timestamp startTimestamp = toBeginningOfDayTimestamp(startDate)
 		Timestamp endTimestamp = toEndOfDayTimestamp(endDate)
+
+		println "generateTaskData from " +startTimestamp + ":" + endTimestamp
 
 		List<Event> eventsWithinRange = findEventsWithinRange(userId, startTimestamp, endTimestamp)
 		List<IdleTimeBandModel> idleBands = findIdleBandsWithinRange(userId, startTimestamp, endTimestamp)

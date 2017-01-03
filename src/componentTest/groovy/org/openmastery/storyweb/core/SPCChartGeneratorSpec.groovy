@@ -3,14 +3,8 @@ package org.openmastery.storyweb.core
 import org.joda.time.Duration
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.ComponentTest
-import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.core.activity.ExecutionActivityEntity
-import org.openmastery.publisher.core.activity.IdleActivityEntity
-import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.storyweb.api.SPCChart
 import org.openmastery.time.MockTimeService
@@ -21,10 +15,13 @@ import spock.lang.Specification
 import static org.openmastery.publisher.ARandom.aRandom
 
 @ComponentTest
-class SPCSeriesGeneratorSpec extends Specification {
+class SPCChartGeneratorSpec extends Specification {
 
 	@Autowired
-	SPCChartGenerator spcSeriesGenerator
+	SPCChartGenerator spcChartGenerator
+
+	@Autowired
+	FixturePersistenceHelper fixturePersistenceHelper
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
@@ -54,11 +51,11 @@ class SPCSeriesGeneratorSpec extends Specification {
 				.advanceMinutes(5)
 				.deactivate()
 
-		saveIdeaFlow()
+		fixturePersistenceHelper.saveIdeaFlow(-1, taskId, builder)
 
 		when:
 		List<SPCChartGenerator.TaskData> taskDataList =
-				spcSeriesGenerator.generateTaskData(-1, builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
+				spcChartGenerator.generateTaskData(-1, builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
 
 		then:
 		assert taskDataList.size() == 1
@@ -85,10 +82,10 @@ class SPCSeriesGeneratorSpec extends Specification {
 				.advanceMinutes(5)
 				.deactivate()
 
-		saveIdeaFlow()
+		fixturePersistenceHelper.saveIdeaFlow(-1, taskId, builder)
 
 		when:
-		SPCChart chart = spcSeriesGenerator.generateChart(-1, builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
+		SPCChart chart = spcChartGenerator.generateChart(-1, builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
 
 		then:
 		assert chart.graphPoints.size() == 1
@@ -99,26 +96,5 @@ class SPCSeriesGeneratorSpec extends Specification {
 
 	}
 
-	void saveIdeaFlow() {
-		builder.eventList.each { Event event ->
-			EventEntity entity = entityMapper.mapIfNotNull(event, EventEntity)
-			entity.taskId = taskId
-			entity.ownerId = -1
-			persistenceService.saveEvent(entity)
-		}
 
-		builder.idleTimeBands.each { IdleTimeBandModel idle ->
-			IdleActivityEntity entity = entityMapper.mapIfNotNull(idle, IdleActivityEntity)
-			entity.taskId = taskId
-			entity.ownerId = -1
-			persistenceService.saveActivity(entity)
-		}
-
-		builder.executionEventList.each { ExecutionEvent executionEvent ->
-			ExecutionActivityEntity entity = entityMapper.mapIfNotNull(executionEvent, ExecutionActivityEntity)
-			entity.taskId = taskId
-			entity.ownerId = -1
-			persistenceService.saveActivity(entity)
-		}
-	}
 }

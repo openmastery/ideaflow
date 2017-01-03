@@ -34,6 +34,10 @@ public class ExplodableGraphPoint {
 	int totalSecondDegree;
 	int totalThirdDegree;
 
+	public ExplodableGraphPoint() {
+
+	}
+
 	public ExplodableGraphPoint(Task task, List<TroubleshootingJourney> journeys) {
 		allTags = new HashSet<String>();
 		contextTags = new HashSet<String>();
