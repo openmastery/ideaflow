@@ -34,6 +34,8 @@ class MetricServiceSpec extends Specification {
 				.type(IdeaFlowStateType.TROUBLESHOOTING)
 				.relativePositionInSeconds(0)
 				.durationInSeconds(12 * 60)
+				.start(mockTimeService.now())
+				.end(mockTimeService.hoursInFuture(1))
 				.build()
 
 		builder.activate()
@@ -53,14 +55,13 @@ class MetricServiceSpec extends Specification {
 
 		then:
 		assert metrics != null
-		assert metrics.size() == 2
+		assert metrics.size() == 4
 
-		Metric avgCyclesMetric = metrics.find() { Metric metric -> metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT }
-		assert avgCyclesMetric.value == 3
+		Metric maxCyclesMetric = metrics.find() { Metric metric -> metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT }
+		assert maxCyclesMetric.value == 3
 
-		Metric avgCycleDurationMetric = metrics.find() { Metric metric -> metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO }
-		assert avgCycleDurationMetric.value == new DurationInSeconds((long)12/3 * 60)
-
+		Metric maxHumanRatio = metrics.find() { Metric metric -> metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO }
+		assert maxHumanRatio.value == new DurationInSeconds((long)12/3 * 60)
 
 	}
 

@@ -33,8 +33,6 @@ public class ExplodableGraphPoint {
 	String typeName;
 	String description;
 
-	List<Metric<?>> metrics;
-
 	List<ExplodableGraphPoint> explodableGraphPoints;
 
 	public ExplodableGraphPoint() {

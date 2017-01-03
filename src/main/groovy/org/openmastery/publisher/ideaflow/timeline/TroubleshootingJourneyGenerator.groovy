@@ -22,6 +22,7 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
+import org.openmastery.publisher.api.journey.DiscoveryCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
@@ -127,7 +128,7 @@ class TroubleshootingJourneyGenerator {
 					} else {
 						durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
 					}
-					log.debug("Adding event: "+wtfYayEvent.id + "{position: "+wtfYayEvent.relativePositionInSeconds+", duration: "+durationInSeconds+"}")
+					log.debug("Adding event: " + wtfYayEvent.id + "{position: " + wtfYayEvent.relativePositionInSeconds + ", duration: " + durationInSeconds + "}")
 					journey.addPartialDiscovery(wtfYayEvent, durationInSeconds);
 				}
 			}

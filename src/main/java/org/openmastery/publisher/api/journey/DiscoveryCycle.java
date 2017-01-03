@@ -32,8 +32,6 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 
 	List<ExperimentCycle> experimentCycles;
 
-	List<Metric<?>> metrics;
-
 	public DiscoveryCycle(Event wtfYayEvent, Long durationInSeconds) {
 		this.event = wtfYayEvent;
 		this.experimentCycles = new ArrayList<ExperimentCycle>();
@@ -79,7 +77,6 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 		graphPoint.setDescription(event.getComment());
 		graphPoint.setTypeName(getClass().getSimpleName());
 		graphPoint.setPosition(event.getPosition());
-		graphPoint.setMetrics(metrics);
 
 		List<ExplodableGraphPoint> childPoints = new ArrayList<>();
 		for (ExperimentCycle experimentCycle: experimentCycles) {

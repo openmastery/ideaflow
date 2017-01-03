@@ -15,6 +15,7 @@
  */
 package org.openmastery.storyweb.core
 
+import groovy.util.logging.Slf4j
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import org.joda.time.LocalTime
@@ -24,8 +25,10 @@ import org.openmastery.publisher.api.annotation.FAQAnnotation
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
+import org.openmastery.publisher.api.journey.DiscoveryCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
+import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.activity.ActivityRepository
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
@@ -39,8 +42,11 @@ import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.core.task.TaskRepository
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
+import org.openmastery.publisher.ideaflow.timeline.DiscoveryCycleTimeline
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowBandGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdleTimeProcessor
+import org.openmastery.publisher.ideaflow.timeline.JourneySetTimeline
+import org.openmastery.publisher.ideaflow.timeline.JourneyTimeline
 import org.openmastery.publisher.ideaflow.timeline.RelativeTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.TroubleshootingJourneyGenerator
 import org.openmastery.publisher.metrics.subtask.MetricsService
@@ -53,6 +59,7 @@ import org.springframework.stereotype.Component
 
 import java.sql.Timestamp
 
+@Slf4j
 @Component
 class SPCChartGenerator {
 
@@ -105,7 +112,7 @@ class SPCChartGenerator {
 		Timestamp startTimestamp = toBeginningOfDayTimestamp(startDate)
 		Timestamp endTimestamp = toEndOfDayTimestamp(endDate)
 
-		println "generateTaskData from " +startTimestamp + ":" + endTimestamp
+		log.debug("generateTaskData from " +startTimestamp + ":" + endTimestamp)
 
 		List<Event> eventsWithinRange = findEventsWithinRange(userId, startTimestamp, endTimestamp)
 		List<IdleTimeBandModel> idleBands = findIdleBandsWithinRange(userId, startTimestamp, endTimestamp)
@@ -296,7 +303,6 @@ class SPCChartGenerator {
 
 			return graphPoint
 		}
-
 
 	}
 

@@ -35,7 +35,19 @@ public class MetricsService {
 		MetricSetCalculator metricSet = new MetricSetCalculator()
 		addMetric(metricSet, new MaxExperimentCycleCountCalculator())
 		addMetric(metricSet, new MaxHumanCycleRatioCalculator())
+		addMetric(metricSet, new MaxWtfsPerDayCalculator())
+		addMetric(metricSet, new MaxResolutionTimeCalculator())
+		metricSet.calculate(timelineSegment)
 
+		return metricSet.allMetrics
+	}
+
+	public List<Metric> generateJourneySetMetrics(IdeaFlowTimeline timelineSegment) {
+		MetricSetCalculator metricSet = new MetricSetCalculator()
+		addMetric(metricSet, new MaxExperimentCycleCountCalculator())
+		addMetric(metricSet, new MaxHumanCycleRatioCalculator())
+		addMetric(metricSet, new MaxWtfsPerDayCalculator())
+		addMetric(metricSet, new MaxResolutionTimeCalculator())
 		metricSet.calculate(timelineSegment)
 
 		return metricSet.allMetrics
