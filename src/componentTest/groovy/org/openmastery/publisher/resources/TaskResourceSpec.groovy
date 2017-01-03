@@ -4,6 +4,7 @@ import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.ComponentTest
+import org.openmastery.publisher.api.ResourcePage
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
@@ -110,6 +111,7 @@ class TaskResourceSpec extends Specification {
 		taskComparator.assertEquals(ex.entity, expectedConflict)
 	}
 
+	//@Ignore
 	def "SHOULD return most recent tasks"() {
 		given:
 		for (int i = 0; i < 10; i++) {
@@ -122,13 +124,13 @@ class TaskResourceSpec extends Specification {
 		Task mostRecent = taskClient.createTask("recent2", "description", "project")
 
 		when:
-		List<Task> taskList = taskClient.findRecentTasks(1, 2)
+		ResourcePage<Task> taskList = taskClient.findRecentTasks(0, 2)
 
 		then:
-		assert taskList == [mostRecent, secondMostRecent]
+		assert taskList.content == [mostRecent, secondMostRecent]
 	}
 
-	@Ignore //TODO implement paging on server side
+	//@Ignore
 	def "SHOULD return page 2 of tasks"() {
 		given:
 		List<Task> expectedTasks = []
@@ -138,11 +140,12 @@ class TaskResourceSpec extends Specification {
 			timeService.plusMinutes(10)
 		}
 		expectedTasks = expectedTasks.reverse()
+
 		when:
-		List<Task> taskList = taskClient.findRecentTasks(2, 5)
+		ResourcePage<Task> taskList = taskClient.findRecentTasks(1, 5)
 
 		then:
-		assert expectedTasks.subList(5, 10) == taskList
+		assert taskList.content == expectedTasks.subList(5, 10)
 	}
 
 

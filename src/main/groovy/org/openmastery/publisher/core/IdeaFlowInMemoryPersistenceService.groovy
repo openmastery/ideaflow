@@ -31,6 +31,8 @@ import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.time.TimeConverter
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 import java.sql.Timestamp
 import java.time.LocalDateTime
@@ -229,14 +231,14 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	}
 
 	@Override
-	List<TaskEntity> findRecentTasks(Long userId, int limit) {
-		if (limit < 1) {
+	Page<TaskEntity> findRecentTasks(Long userId, int page, int perPage) {
+		if (perPage < 1) {
 			return []
-		} else if (limit >= taskList.size()) {
+		} else if (perPage >= taskList.size()) {
 			return taskList.asImmutable()
 		} else {
 			List<TaskEntity> sortedList = taskList.toSorted { a, b -> b.modifyDate <=> a.modifyDate }
-			return sortedList.subList(0, limit)
+			return sortedList.subList(0, perPage)
 		}
 	}
 
