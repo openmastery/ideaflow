@@ -1,6 +1,5 @@
 package org.openmastery.publisher.metrics.subtask.calculator
 
-import org.joda.time.Duration
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
@@ -13,12 +12,12 @@ import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
 
-class MaxWtfDurationCalculatorSpec extends Specification {
+class MaxResolutionTimeCalculatorSpec extends Specification {
 
 	private MockTimeService mockTimeService = new MockTimeService()
 	private IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
 
-	private MaxWtfDurationCalculator calculator = new MaxWtfDurationCalculator()
+	private MaxResolutionTimeCalculator calculator = new MaxResolutionTimeCalculator()
 
 
 	LocalDateTime start
@@ -46,7 +45,7 @@ class MaxWtfDurationCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.MAX_WTF_DURATION
+		assert metric.type == MetricType.MAX_RESOLUTION_TIME
 		assert metric.value == new DurationInSeconds(60)
 	}
 }

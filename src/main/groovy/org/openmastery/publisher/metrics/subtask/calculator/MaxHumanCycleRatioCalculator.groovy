@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.metrics.subtask.calculator
 
-import org.joda.time.Duration
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
@@ -25,15 +24,16 @@ import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.MetricThreshold
 
-class AvgFeedbackLoopDurationCalculator  extends AbstractMetricsCalculator<DurationInSeconds> {
+class MaxHumanCycleRatioCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
-	AvgFeedbackLoopDurationCalculator() {
-		super(MetricType.AVG_FEEDBACK_LOOP_DURATION)
+	MaxHumanCycleRatioCalculator() {
+		super(MetricType.MAX_HUMAN_CYCLE_RATIO)
 	}
 
 	/**
 	 *
 	 * What's the ratio of troubleshooting time to execution events within a troubleshooting band?
+	 * What's the maximum ratio across all troubleshooting bands?
 	 *
 	 * @param timeline for a subtask
 	 * @return Metric<Double> the resulting metric value
@@ -45,21 +45,21 @@ class AvgFeedbackLoopDurationCalculator  extends AbstractMetricsCalculator<Durat
 			band.type == IdeaFlowStateType.TROUBLESHOOTING
 		}
 
-		Double avgDuration = 0;
-		Long sampleCount = 0;
+		Double maxRatio = 0;
 
 		troubleshootingBands.each { IdeaFlowBand band ->
 			int eventCount = countExecutionEventsInRange(timeline.executionEvents, band.relativeStart, band.relativeEnd)
 
 			if (eventCount > 0) {
 				Double durationRatio = ((double) band.durationInSeconds) / eventCount
-				sampleCount++
-				avgDuration = (avgDuration *(sampleCount - 1) + durationRatio)/sampleCount
+				if (durationRatio > maxRatio) {
+					maxRatio = durationRatio
+				}
 			}
 		}
 
 		Metric<DurationInSeconds> metric = createMetric()
-		metric.value = new DurationInSeconds((long)avgDuration);
+		metric.value = new DurationInSeconds((long)maxRatio);
 		metric.danger = metric.value.greaterThan(getDangerThreshold().threshold)
 		return metric
 	}

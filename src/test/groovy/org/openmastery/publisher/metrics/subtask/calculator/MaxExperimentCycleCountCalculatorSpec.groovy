@@ -10,12 +10,12 @@ import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilde
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
-class AvgFeedbackLoopsCalculatorSpec extends Specification {
+class MaxExperimentCycleCountCalculatorSpec extends Specification {
 
 	private MockTimeService mockTimeService = new MockTimeService()
 	private IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
 
-	private AvgFeedbackLoopsCalculator calculator = new AvgFeedbackLoopsCalculator()
+	private MaxExperimentCycleCountCalculator calculator = new MaxExperimentCycleCountCalculator()
 
 
 	LocalDateTime start
@@ -45,11 +45,11 @@ class AvgFeedbackLoopsCalculatorSpec extends Specification {
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.AVG_FEEDBACK_LOOPS
+		assert metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT
 		assert metric.value == 3D
 	}
 
-	def "calculateMetrics SHOULD return the average of execution events WHEN there's multiple bands"() {
+	def "calculateMetrics SHOULD return the max of execution events WHEN there's multiple bands"() {
 		given:
 		IdeaFlowBand troubleshootingBand = IdeaFlowBand.builder()
 				.type(IdeaFlowStateType.TROUBLESHOOTING)
@@ -76,7 +76,7 @@ class AvgFeedbackLoopsCalculatorSpec extends Specification {
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.AVG_FEEDBACK_LOOPS
-		assert metric.value == 1.5D
+		assert metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT
+		assert metric.value == 2.0D
 	}
 }

@@ -55,10 +55,10 @@ class MetricServiceSpec extends Specification {
 		assert metrics != null
 		assert metrics.size() == 2
 
-		Metric avgCyclesMetric = metrics.find() { Metric metric -> metric.type == MetricType.AVG_FEEDBACK_LOOPS }
+		Metric avgCyclesMetric = metrics.find() { Metric metric -> metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT }
 		assert avgCyclesMetric.value == 3
 
-		Metric avgCycleDurationMetric = metrics.find() { Metric metric -> metric.type == MetricType.AVG_FEEDBACK_LOOP_DURATION }
+		Metric avgCycleDurationMetric = metrics.find() { Metric metric -> metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO }
 		assert avgCycleDurationMetric.value == new DurationInSeconds((long)12/3 * 60)
 
 

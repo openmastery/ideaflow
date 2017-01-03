@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.metrics.subtask.calculator
 
-import org.joda.time.Duration
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
@@ -24,10 +23,10 @@ import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.MetricThreshold
 
-class MaxWtfDurationCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
+class MaxResolutionTimeCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
-	MaxWtfDurationCalculator() {
-		super(MetricType.MAX_WTF_DURATION)
+	MaxResolutionTimeCalculator() {
+		super(MetricType.MAX_RESOLUTION_TIME)
 	}
 
 

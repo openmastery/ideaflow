@@ -23,10 +23,10 @@ import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.MetricThreshold
 
-class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
+class MaxWtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 
-	WtfsPerDayCalculator() {
-		super(MetricType.WTFS_PER_DAY)
+	MaxWtfsPerDayCalculator() {
+		super(MetricType.MAX_WTFS_PER_DAY)
 	}
 
 	@Override
@@ -40,7 +40,7 @@ class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 		LocalDate end = timeline.end.toLocalDate()
 
 		Metric<Double> metric = createMetric()
-		metric.value = calculateAverageWtfsPerDay(start, end, wtfEvents)
+		metric.value = calculateMaxWtfsPerDay(start, end, wtfEvents)
 		metric.danger = metric.value > getDangerThreshold().threshold
 		return metric
 	}
@@ -51,20 +51,19 @@ class WtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 	}
 
 
-	private double calculateAverageWtfsPerDay(LocalDate start, LocalDate end, List<Event> wtfEvents) {
-		double avgWtfsPerDay = 0
-		double numberSamples = 0
+	private double calculateMaxWtfsPerDay(LocalDate start, LocalDate end, List<Event> wtfEvents) {
+		Double maxCount = 0;
 
 		for (LocalDate currentdate = start; currentdate.isBefore(end) || currentdate.isEqual(end);
 			 currentdate = currentdate.plusDays(1)) {
 
 			int dailyWtfCount = countWtfsForTheDay(wtfEvents, currentdate)
-			numberSamples++
-
-			avgWtfsPerDay = ((avgWtfsPerDay * (numberSamples - 1)) + dailyWtfCount) / numberSamples
+			if (dailyWtfCount > maxCount) {
+				maxCount = dailyWtfCount
+			}
 		}
 
-		return avgWtfsPerDay
+		return maxCount
 	}
 
 	int countWtfsForTheDay(List<Event> wtfEvents, LocalDate currentDate) {

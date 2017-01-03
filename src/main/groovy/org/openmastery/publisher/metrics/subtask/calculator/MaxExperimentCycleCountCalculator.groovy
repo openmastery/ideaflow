@@ -19,20 +19,20 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.MetricThreshold
 
-class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
+class MaxExperimentCycleCountCalculator extends AbstractMetricsCalculator<Double> {
 
-	AvgFeedbackLoopsCalculator() {
-		super(MetricType.AVG_FEEDBACK_LOOPS)
+	MaxExperimentCycleCountCalculator() {
+		super(MetricType.MAX_EXPERIMENT_CYCLE_COUNT)
 	}
 
 	/**
 	 *
-	 * What's the average number of execution events within a troubleshooting band?
+	 * How many execution events are within a troubleshooting band?
+	 * What's the max number across all troubleshooting bands?
 	 *
 	 * @param timeline for a subtask
 	 * @return Metric<Double> the resulting metric value
@@ -44,8 +44,7 @@ class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 			band.type == IdeaFlowStateType.TROUBLESHOOTING
 		}
 
-		Double avgEventCount = 0;
-		Long sampleCount = 0;
+		Double maxEventCount = 0;
 
 		troubleshootingBands.each { IdeaFlowBand troubleshootingBand ->
 			Long relativeStart = troubleshootingBand.relativePositionInSeconds
@@ -53,14 +52,14 @@ class AvgFeedbackLoopsCalculator  extends AbstractMetricsCalculator<Double> {
 
 			int eventCount = countExecutionEventsInRange(timeline.executionEvents, relativeStart, relativeEnd)
 
-			sampleCount++
-
-			avgEventCount = (avgEventCount *(sampleCount - 1) + eventCount)/sampleCount
+			if (eventCount > maxEventCount) {
+				maxEventCount = eventCount
+			}
 		}
 
 		Metric<Double> metric = createMetric()
 		metric.type = getMetricType()
-		metric.value = avgEventCount
+		metric.value = maxEventCount
 		metric.danger = metric.value > getDangerThreshold().threshold
 		return metric
 	}

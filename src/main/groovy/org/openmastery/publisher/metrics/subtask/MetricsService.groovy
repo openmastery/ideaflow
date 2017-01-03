@@ -33,8 +33,8 @@ public class MetricsService {
 
 	public List<Metric> generateJourneyMetrics(IdeaFlowTimeline timelineSegment) {
 		MetricSetCalculator metricSet = new MetricSetCalculator()
-		addMetric(metricSet, new AvgFeedbackLoopsCalculator())
-		addMetric(metricSet, new AvgFeedbackLoopDurationCalculator())
+		addMetric(metricSet, new MaxExperimentCycleCountCalculator())
+		addMetric(metricSet, new MaxHumanCycleRatioCalculator())
 
 		metricSet.calculate(timelineSegment)
 
@@ -50,7 +50,6 @@ public class MetricsService {
 		overview.capacityDistribution = calculateCapacityDistribution(timelineSegment)
 
 		MetricSetCalculator metricSet = generateDefaultMetricSet()
-
 		metricSet.calculate(timelineSegment)
 
 		overview.metrics = metricSet.allMetrics
@@ -71,11 +70,11 @@ public class MetricsService {
 
 	MetricSetCalculator generateDefaultMetricSet() {
 		MetricSetCalculator metricSet = new MetricSetCalculator()
-		addMetric(metricSet, new WtfsPerDayCalculator())
+		addMetric(metricSet, new MaxWtfsPerDayCalculator())
 		addMetric(metricSet, new MaxHaystackSizeCalculator())
-		addMetric(metricSet, new MaxWtfDurationCalculator())
-		addMetric(metricSet, new AvgFeedbackLoopsCalculator())
-		addMetric(metricSet, new AvgFeedbackLoopDurationCalculator())
+		addMetric(metricSet, new MaxResolutionTimeCalculator())
+		addMetric(metricSet, new MaxExperimentCycleCountCalculator())
+		addMetric(metricSet, new MaxHumanCycleRatioCalculator())
 		return metricSet
 	}
 

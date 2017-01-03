@@ -1,6 +1,5 @@
 package org.openmastery.publisher.metrics.subtask.calculator
 
-import org.joda.time.Duration
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
@@ -13,12 +12,12 @@ import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
 
-class AvgFeedbackLoopDurationCalculatorSpec extends Specification {
+class MaxHumanCycleRatioCalculatorSpec extends Specification {
 
 	private MockTimeService mockTimeService = new MockTimeService()
 	private IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
 
-	private AvgFeedbackLoopDurationCalculator calculator = new AvgFeedbackLoopDurationCalculator()
+	private MaxHumanCycleRatioCalculator calculator = new MaxHumanCycleRatioCalculator()
 
 
 	LocalDateTime start
@@ -48,11 +47,11 @@ class AvgFeedbackLoopDurationCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.AVG_FEEDBACK_LOOP_DURATION
+		assert metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO
 		assert metric.value == new DurationInSeconds( (Long)(15 * 60)/ 3)
 	}
 
-	def "calculateMetrics SHOULD return the average of ratios WHEN there's multiple bands"() {
+	def "calculateMetrics SHOULD return the max of ratios WHEN there's multiple bands"() {
 		given:
 		IdeaFlowBand troubleshootingBand = IdeaFlowBand.builder()
 				.type(IdeaFlowStateType.TROUBLESHOOTING)
@@ -81,7 +80,7 @@ class AvgFeedbackLoopDurationCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.AVG_FEEDBACK_LOOP_DURATION
-		assert metric.value == new DurationInSeconds( (Long) ((15 * 60)/1 + (20 * 60)/3)/2 )
+		assert metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO
+		assert metric.value == new DurationInSeconds( (Long) 15 * 60 )
 	}
 }

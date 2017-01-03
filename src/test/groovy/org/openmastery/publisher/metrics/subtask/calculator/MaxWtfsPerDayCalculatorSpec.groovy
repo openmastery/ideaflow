@@ -8,13 +8,13 @@ import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilde
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
-class WtfsPerDayCalculatorSpec extends Specification {
+class MaxWtfsPerDayCalculatorSpec extends Specification {
 
 
 	private MockTimeService mockTimeService = new MockTimeService()
 	private IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
 
-	private WtfsPerDayCalculator calculator = new WtfsPerDayCalculator()
+	private MaxWtfsPerDayCalculator calculator = new MaxWtfsPerDayCalculator()
 
 	LocalDateTime start
 
@@ -40,13 +40,13 @@ class WtfsPerDayCalculatorSpec extends Specification {
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.WTFS_PER_DAY
+		assert metric.type == MetricType.MAX_WTFS_PER_DAY
 		assert metric.value == 2.0D
 		assert metric.valueType == "Double"
 
 	}
 
-	def "calculateMetrics SHOULD average the number of WTFs across multiple days"() {
+	def "calculateMetrics SHOULD get the max number of WTFs across multiple days"() {
 		given:
 		builder.activate()
 		.wtf()
@@ -60,7 +60,7 @@ class WtfsPerDayCalculatorSpec extends Specification {
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.WTFS_PER_DAY
-		assert metric.value == 1.5D
+		assert metric.type == MetricType.MAX_WTFS_PER_DAY
+		assert metric.value == 2.0D
 	}
 }
