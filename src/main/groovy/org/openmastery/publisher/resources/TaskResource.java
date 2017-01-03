@@ -20,6 +20,7 @@ import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.publisher.core.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -97,13 +98,9 @@ public class TaskResource {
 	 */
 
 	@GET
-	public List<Task> findRecentTasks(@QueryParam("page") Integer page,
-									  @QueryParam("per_page") Integer perPage) {
-
-		Integer activePage = page == null ? 0 : page;
-		Integer activePerPage = perPage == null ? 10 : perPage;
-
-		return taskService.findRecentTasks(activePage, activePerPage);
+	public Page<Task> findRecentTasks(@DefaultValue("0") @QueryParam("page") Integer page,
+									  @DefaultValue("10") @QueryParam("per_page") Integer perPage) {
+		return taskService.findRecentTasks(page, perPage);
 	}
 
 

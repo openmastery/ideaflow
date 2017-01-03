@@ -18,13 +18,16 @@ package org.openmastery.publisher.core
 import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.mapper.EntityMapper
+import org.openmastery.publisher.api.ResourcePage
 import org.openmastery.publisher.api.task.NewTask
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.convert.converter.Converter
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
 
 @Component
@@ -39,6 +42,7 @@ class TaskService {
 
 	private EntityMapper entityMapper = new EntityMapper();
 
+    private TaskEntityConverter taskEntityConverter = new TaskEntityConverter();
 
 	public Task create(NewTask newTask) {
 		long userId = invocationContext.getUserId()
@@ -81,11 +85,10 @@ class TaskService {
 		return toApiTask(taskEntity);
 	}
 
-	//TODO implement paging
-	public List<Task> findRecentTasks(Integer page, Integer perPage) {
-		List<TaskEntity> taskList = persistenceService.findRecentTasks(invocationContext.getUserId(), perPage);
-		return entityMapper.mapList(taskList, Task.class);
-	}
+    public Page<Task> findRecentTasks(int page, int perPage) {
+        Page<TaskEntity> taskEntityList = persistenceService.findRecentTasks(invocationContext.getUserId(), page, perPage);
+        return taskEntityList.map(taskEntityConverter);
+    }
 
 	private Task toApiTask(TaskEntity taskEntity) {
 		return entityMapper.mapIfNotNull(taskEntity, Task.class);
@@ -106,5 +109,11 @@ class TaskService {
 			super("Task with name '" + existingTask.getName() + "' already exists", existingTask);
 		}
 	}
+
+    class TaskEntityConverter implements Converter<TaskEntity, Task> {
+        Task convert(TaskEntity sourceTask) {
+            return entityMapper.mapIfNotNull(sourceTask, Task.class);
+        }
+    }
 
 }
