@@ -3,9 +3,7 @@ package org.openmastery.publisher.api.journey;
 import lombok.*;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
-import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.metrics.DurationInSeconds;
-import org.openmastery.publisher.api.metrics.Metric;
 import org.openmastery.storyweb.api.ExplodableGraphPoint;
 import org.openmastery.storyweb.api.TagsUtil;
 
@@ -42,16 +40,8 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 		setDurationInSeconds(durationInSeconds);
 	}
 
-	public void addExperimentCycle(ExecutionEvent executionEvent) {
-		if (shouldContain(executionEvent)) {
-			updateEndTimeOfLastExperimentCycle(executionEvent.getRelativePositionInSeconds());
-
-			Long durationInSeconds = getRelativeEnd() - executionEvent.getRelativePositionInSeconds();
-			ExperimentCycle experimentCycle = new ExperimentCycle(executionEvent, durationInSeconds);
-			experimentCycles.add(experimentCycle);
-		} else {
-			setExecutionContext(executionEvent);
-		}
+	public void addExperimentCycle(ExperimentCycle experimentCycle) {
+		experimentCycles.add(experimentCycle);
 	}
 
 	public void addFaq(String faqComment) {
@@ -66,6 +56,9 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 		}
 	}
 
+	public String getDescription() {
+		return event.getType().name() + ": " + event.getComment();
+	}
 
 	public ExplodableGraphPoint toGraphPoint() {
 		ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
@@ -74,7 +67,7 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 		graphPoint.setRelativePath("/event/"+event.getId());
 		graphPoint.setDurationInSeconds(new DurationInSeconds(getDurationInSeconds()));
 		graphPoint.setFrequency(Math.max(1, experimentCycles.size()));
-		graphPoint.setDescription(event.getComment());
+		graphPoint.setDescription(getDescription());
 		graphPoint.setTypeName(getClass().getSimpleName());
 		graphPoint.setPosition(event.getPosition());
 
@@ -91,22 +84,5 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 		return graphPoint;
 	}
 
-	public void setExecutionContext(ExecutionEvent trailingEvent) {
-		ExperimentCycle initialCycle = new ExperimentCycle(trailingEvent);
-		initialCycle.setRelativeStart(getRelativeStart());
 
-		if (experimentCycles.size() > 0) {
-			ExperimentCycle firstExperiment = experimentCycles.get(0);
-			initialCycle.setDurationInSeconds(firstExperiment.getRelativeStart() - getRelativeStart());
-		} else {
-			initialCycle.setDurationInSeconds(getDurationInSeconds());
-		}
-
-		if (initialCycle.getDurationInSeconds() > 0) {
-			List<ExperimentCycle> newExperimentList = new ArrayList<ExperimentCycle>();
-			newExperimentList.add(initialCycle);
-			newExperimentList.addAll(experimentCycles);
-			experimentCycles = newExperimentList;
-		}
-	}
 }

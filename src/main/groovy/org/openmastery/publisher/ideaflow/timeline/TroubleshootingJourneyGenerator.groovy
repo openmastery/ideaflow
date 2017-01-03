@@ -23,6 +23,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.journey.DiscoveryCycle
+import org.openmastery.publisher.api.journey.ExperimentCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
@@ -50,7 +51,7 @@ class TroubleshootingJourneyGenerator {
 		List<TroubleshootingJourney> journeys = splitIntoJourneys(wtfYayEvents, [band])
 
 		TroubleshootingJourney journey = journeys.first()
-		journey.fillWithActivity(executionEvents)
+		fillWithActivity(journey, executionEvents)
 
 		return journey
 	}
@@ -66,13 +67,45 @@ class TroubleshootingJourneyGenerator {
 
 		List<TroubleshootingJourney> journeys = splitIntoJourneys(wtfYayEvents, troubleshootingBands)
 		journeys.each { TroubleshootingJourney journey ->
-			journey.fillWithActivity(timeline.executionEvents)
+			fillWithActivity(journey, timeline.executionEvents)
 
 			journey.metrics = metricsService.generateJourneyMetrics(new JourneyTimeline(journey))
 
 		}
 
 		return journeys
+	}
+
+	void fillWithActivity(TroubleshootingJourney journey, List<ExecutionEvent> executionEvents) {
+		journey.getDiscoveryCycles().each { DiscoveryCycle discoveryCycle ->
+			log.debug("Populating Discovery Cycle ["+discoveryCycle.relativeStart + " : " + discoveryCycle.relativeEnd +"]")
+			for (ExecutionEvent executionEvent : executionEvents) {
+				if (discoveryCycle.shouldContain(executionEvent)) {
+					log.debug("Adding Exec: "+executionEvent.relativeStart)
+					addExecutionEvent(discoveryCycle, executionEvent)
+				}
+			}
+		}
+	}
+
+	private void addExecutionEvent(DiscoveryCycle discoveryCycle, ExecutionEvent event) {
+		ExperimentCycle experimentCycle
+		if (event.relativeStart < discoveryCycle.relativeStart) {
+			//execution context from prior run
+			experimentCycle = new ExperimentCycle(event, discoveryCycle.getDurationInSeconds())
+			experimentCycle.setRelativeStart(discoveryCycle.relativeStart)
+		} else {
+			//execution starts somewhere in the middle, could extend beyond end
+			if (discoveryCycle.experimentCycles.size() > 0) {
+				ExperimentCycle last = discoveryCycle.experimentCycles.last()
+				last.durationInSeconds = event.relativeStart - last.relativeStart
+			}
+			long duration = discoveryCycle.relativeEnd - event.relativeStart
+			experimentCycle = new ExperimentCycle(event, duration)
+		}
+
+		discoveryCycle.addExperimentCycle(experimentCycle)
+
 	}
 
 	void annotateJourneys(List<TroubleshootingJourney> journeys, List<FaqAnnotationEntity> faqs, List<SnippetAnnotationEntity> snippets) {
@@ -101,7 +134,7 @@ class TroubleshootingJourneyGenerator {
 		List<TroubleshootingJourney> journeyList = splitIntoJourneys(wtfYayEvents, bands)
 
 		journeyList.each { TroubleshootingJourney journey ->
-			journey.fillWithActivity(executionEvents)
+			fillWithActivity(journey, executionEvents)
 		}
 
 		return journeyList
@@ -111,15 +144,18 @@ class TroubleshootingJourneyGenerator {
 	List<TroubleshootingJourney> splitIntoJourneys(List<Event> wtfYayEvents, List<IdeaFlowBand> troubleshootingBands) {
 		List<TroubleshootingJourney> journeyList = []
 
+
 		troubleshootingBands.each { IdeaFlowBand troubleshootingBand ->
 			TroubleshootingJourney journey = new TroubleshootingJourney(troubleshootingBand)
 			log.debug("Generating Journey [" + journey.relativeStart + ", " + journey.relativeEnd + "]")
+
 
 			for (int activeIndex = 0; activeIndex < wtfYayEvents.size(); activeIndex++) {
 				Event wtfYayEvent = wtfYayEvents.get(activeIndex)
 				Long eventPosition = wtfYayEvent.relativePositionInSeconds
 
-				if (eventPosition >= journey.relativeStart && eventPosition <= journey.relativeEnd) {
+				if ((wtfYayEvent.type == EventType.WTF && eventPosition >= journey.relativeStart && eventPosition < journey.relativeEnd) ||
+						(wtfYayEvent.type == EventType.AWESOME && eventPosition > journey.relativeStart && eventPosition <= journey.relativeEnd)) {
 
 					Long durationInSeconds = 0;
 					if (wtfYayEvents.size() > activeIndex + 1) {
@@ -128,8 +164,9 @@ class TroubleshootingJourneyGenerator {
 					} else {
 						durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
 					}
-					log.debug("Adding event: " + wtfYayEvent.id + "{position: " + wtfYayEvent.relativePositionInSeconds + ", duration: " + durationInSeconds + "}")
+					log.debug("Adding event: " + wtfYayEvent.type + ":" + wtfYayEvent.id + " {position: " + wtfYayEvent.relativePositionInSeconds + ", duration: " + durationInSeconds + "}")
 					journey.addPartialDiscovery(wtfYayEvent, durationInSeconds);
+
 				}
 			}
 

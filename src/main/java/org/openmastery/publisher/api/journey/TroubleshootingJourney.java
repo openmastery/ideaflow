@@ -5,6 +5,7 @@ import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
 import org.openmastery.publisher.api.metrics.DurationInSeconds;
@@ -68,6 +69,14 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		return containsEvent;
 	}
 
+	public boolean hasAwesome() {
+		for (DiscoveryCycle discovery: discoveryCycles) {
+			if (discovery.event.getType() == EventType.AWESOME) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public void addFAQ(long eventId, String faqComment) {
 		for (DiscoveryCycle partialDiscovery : discoveryCycles) {
@@ -86,35 +95,6 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 				break;
 			}
 		}
-	}
-
-	public void fillWithActivity(List<ExecutionEvent> executionEvents) {
-		for (ExecutionEvent executionEvent : executionEvents) {
-			if (overlaps(executionEvent)) {
-				addExecutionEvent(executionEvent);
-			}
-		}
-
-		ExperimentCycle trailingCycle = null;
-		for (DiscoveryCycle discoveryCycle : discoveryCycles) {
-
-			if (trailingCycle != null) {
-				discoveryCycle.setExecutionContext(trailingCycle.getExecutionEvent());
-			}
-			int experimentCount = discoveryCycle.getExperimentCycles().size();
-			if ( experimentCount > 0) {
-				trailingCycle = discoveryCycle.getExperimentCycles().get(experimentCount - 1);
-			}
-		}
-	}
-
-	private void addExecutionEvent(ExecutionEvent event) {
-		for (DiscoveryCycle discoveryCycle : discoveryCycles) {
-			if (discoveryCycle.overlaps(event)) {
-				discoveryCycle.addExperimentCycle(event);
-			}
-		}
-
 	}
 
 	public LocalDateTime getStart() {
