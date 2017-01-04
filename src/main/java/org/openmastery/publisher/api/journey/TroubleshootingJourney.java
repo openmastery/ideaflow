@@ -5,12 +5,8 @@ import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
-import org.openmastery.publisher.api.event.EventType;
-import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
-import org.openmastery.publisher.api.metrics.DurationInSeconds;
 import org.openmastery.publisher.api.metrics.Metric;
-import org.openmastery.storyweb.api.ExplodableGraphPoint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -96,33 +92,16 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		return band.getEnd();
 	}
 
-	private String getFirstWTFComment() {
-		String comment = "";
+	public String getDescription() {
+		String description = "";
 		if (discoveryCycles.size() > 0) {
-			comment = discoveryCycles.get(0).event.getComment();
+			description = discoveryCycles.get(0).event.getComment();
 		}
-		return comment;
+		return description;
 	}
 
-	public ExplodableGraphPoint toGraphPoint() {
-		ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
-		graphPoint.setContextTags(contextTags);
-		graphPoint.setPainTags(painTags);
-		graphPoint.setRelativePath("/journey/"+ id);
-		graphPoint.setDurationInSeconds(new DurationInSeconds(getDurationInSeconds()));
-		graphPoint.setFrequency(discoveryCycles.size());
-		graphPoint.setDescription(getFirstWTFComment());
-		graphPoint.setTypeName(getClass().getSimpleName());
-		graphPoint.setPosition(getStart());
 
-		List<ExplodableGraphPoint> childPoints = new ArrayList<ExplodableGraphPoint>();
-		for (DiscoveryCycle discoveryCycle: discoveryCycles) {
-			childPoints.add( discoveryCycle.toGraphPoint());
-		}
-		graphPoint.setExplodableGraphPoints(childPoints);
-		graphPoint.forcePushTagsToChildren(graphPoint.getContextTags(), graphPoint.getPainTags());
-
-		return graphPoint;
+	public int getFrequency() {
+		return getDiscoveryCycles().size();
 	}
-
 }

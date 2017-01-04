@@ -1,15 +1,10 @@
 package org.openmastery.publisher.api.journey;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
-import org.openmastery.publisher.api.metrics.DurationInSeconds;
-import org.openmastery.storyweb.api.ExplodableGraphPoint;
 import org.openmastery.storyweb.api.TagsUtil;
 
 import java.util.ArrayList;
@@ -25,6 +20,7 @@ import java.util.Set;
 @Builder
 public class DiscoveryCycle extends AbstractRelativeInterval {
 
+	@JsonIgnore
 	Event event;
 
 	Set<String> painTags; //derived from WTF/YAY #hashtags
@@ -65,29 +61,8 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 		return event.getType().name() + ": " + event.getComment();
 	}
 
-	public ExplodableGraphPoint toGraphPoint() {
-		ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
-		graphPoint.setContextTags(contextTags);
-		graphPoint.setPainTags(painTags);
-		graphPoint.setRelativePath("/event/"+event.getId());
-		graphPoint.setDurationInSeconds(new DurationInSeconds(getDurationInSeconds()));
-		graphPoint.setFrequency(Math.max(1, experimentCycles.size()));
-		graphPoint.setDescription(getDescription());
-		graphPoint.setTypeName(getClass().getSimpleName());
-		graphPoint.setPosition(event.getPosition());
+	public LocalDateTime getPosition() { return event.getPosition(); }
 
-		List<ExplodableGraphPoint> childPoints = new ArrayList<ExplodableGraphPoint>();
-		for (ExperimentCycle experimentCycle: experimentCycles) {
-			ExplodableGraphPoint childPoint = experimentCycle.toGraphPoint();
-			childPoint.setContextTags(contextTags);
-			childPoint.setPainTags(painTags);
-			childPoints.add( childPoint );
-		}
-
-		graphPoint.setExplodableGraphPoints(childPoints);
-
-		return graphPoint;
-	}
 
 
 }

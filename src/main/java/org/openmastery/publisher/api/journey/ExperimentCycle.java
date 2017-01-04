@@ -2,13 +2,9 @@ package org.openmastery.publisher.api.journey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.ExecutionEvent;
-import org.openmastery.publisher.api.metrics.DurationInSeconds;
-import org.openmastery.storyweb.api.ExplodableGraphPoint;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +23,10 @@ public class ExperimentCycle extends AbstractRelativeInterval {
 		setRelativeStart(executionEvent.getRelativePositionInSeconds());
 		setDurationInSeconds(durationInSeconds);
 	}
+
+	public Long getId() { return executionEvent.getId(); }
+
+	public LocalDateTime getPosition() { return executionEvent.getPosition(); }
 
 	public String getProcessName() {
 		return executionEvent.getProcessName();
@@ -53,15 +53,4 @@ public class ExperimentCycle extends AbstractRelativeInterval {
 		return executionEvent.getExecutionTaskType() + " : " + failString + " : " +executionEvent.getProcessName();
 	}
 
-	public ExplodableGraphPoint toGraphPoint() {
-		ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
-		graphPoint.setRelativePath("/exec/"+executionEvent.getId());
-		graphPoint.setDurationInSeconds(new DurationInSeconds(getDurationInSeconds()));
-		graphPoint.setFrequency(1);
-		graphPoint.setDescription(getDescription());
-		graphPoint.setTypeName(getClass().getSimpleName());
-		graphPoint.setPosition(executionEvent.getPosition());
-
-		return graphPoint;
-	}
 }

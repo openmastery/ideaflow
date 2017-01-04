@@ -3,8 +3,6 @@ package org.openmastery.storyweb.api;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.openmastery.publisher.api.metrics.Metric;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,13 +41,13 @@ public class SPCChart {
 
 			totalFirstDegree++;
 
-			totalSecondDegree += graphPoint.getExplodableGraphPoints().size();
+			totalSecondDegree += graphPoint.getChildPoints().size();
 
-			for (ExplodableGraphPoint innerPoint: graphPoint.getExplodableGraphPoints()) {
-				totalThirdDegree += innerPoint.getExplodableGraphPoints().size();
+			for (ExplodableGraphPoint innerPoint: graphPoint.getChildPoints()) {
+				totalThirdDegree += innerPoint.getChildPoints().size();
 
-				for (ExplodableGraphPoint innerInnerPoint: innerPoint.getExplodableGraphPoints()) {
-					totalForthDegree += innerInnerPoint.getExplodableGraphPoints().size();
+				for (ExplodableGraphPoint innerInnerPoint: innerPoint.getChildPoints()) {
+					totalForthDegree += innerInnerPoint.getChildPoints().size();
 				}
 			}
 		}

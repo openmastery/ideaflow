@@ -21,36 +21,30 @@ import org.joda.time.LocalDateTime
 import org.joda.time.LocalTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.Positionable
-import org.openmastery.publisher.api.annotation.FAQAnnotation
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.journey.DiscoveryCycle
+import org.openmastery.publisher.api.journey.ExperimentCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
-import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.activity.ActivityRepository
 import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
-import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.event.EventRepository
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.core.task.TaskRepository
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
-import org.openmastery.publisher.ideaflow.timeline.DiscoveryCycleTimeline
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowBandGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdleTimeProcessor
-import org.openmastery.publisher.ideaflow.timeline.JourneySetTimeline
-import org.openmastery.publisher.ideaflow.timeline.JourneyTimeline
 import org.openmastery.publisher.ideaflow.timeline.RelativeTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.TroubleshootingJourneyGenerator
 import org.openmastery.publisher.metrics.subtask.MetricsService
-import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.ExplodableGraphPoint
 import org.openmastery.storyweb.api.SPCChart
 import org.openmastery.time.TimeConverter
@@ -101,7 +95,7 @@ class SPCChartGenerator {
 		}
 
 		SPCChart chart = new SPCChart()
-		chart.addGraphPoints( graphPoints )
+		chart.addGraphPoints(graphPoints)
 		chart.metricThresholds = metricsService.getDefaultMetricsThresholds()
 
 		return chart;
@@ -112,7 +106,7 @@ class SPCChartGenerator {
 		Timestamp startTimestamp = toBeginningOfDayTimestamp(startDate)
 		Timestamp endTimestamp = toEndOfDayTimestamp(endDate)
 
-		log.debug("generateTaskData from " +startTimestamp + ":" + endTimestamp)
+		log.debug("generateTaskData from " + startTimestamp + ":" + endTimestamp)
 
 		List<Event> eventsWithinRange = findEventsWithinRange(userId, startTimestamp, endTimestamp)
 		List<IdleTimeBandModel> idleBands = findIdleBandsWithinRange(userId, startTimestamp, endTimestamp)
@@ -133,7 +127,6 @@ class SPCChartGenerator {
 		}
 		return taskDataList
 	}
-
 
 
 	private List<TaskData> splitIntoTasks(List<Task> tasks, List<Event> events, List<IdleTimeBandModel> idleBands,
@@ -285,24 +278,80 @@ class SPCChartGenerator {
 			troubleshootingJourneyGenerator.annotateJourneys(journeys, faqAnnotations, [])
 
 			ExplodableGraphPoint graphPoint = new ExplodableGraphPoint()
-
-			List<ExplodableGraphPoint> childPoints = []
-			journeys.each { TroubleshootingJourney journey ->
-				graphPoint.painTags.addAll(journey.painTags)
-				graphPoint.contextTags.addAll(journey.contextTags)
-				graphPoint.durationInSeconds.incrementBy(journey.getDurationInSeconds())
-				childPoints.add( journey.toGraphPoint() )
-			}
-
 			graphPoint.frequency = journeys.size()
-			graphPoint.relativePath = "/task/"+taskId
+			graphPoint.relativePath = "/task/" + taskId
 			graphPoint.description = task?.description
 			graphPoint.typeName = Task.class.simpleName
 			graphPoint.position = getPosition()
-			graphPoint.explodableGraphPoints = childPoints
+			graphPoint.childPoints = transformJourneysToGraphPoints(journeys)
+
+			journeys.each { TroubleshootingJourney journey ->
+				graphPoint.durationInSeconds.incrementBy(journey.getDurationInSeconds())
+			}
 
 			return graphPoint
 		}
+
+
+		List<ExplodableGraphPoint> transformJourneysToGraphPoints(List<TroubleshootingJourney> journeys) {
+			journeys.collect() { TroubleshootingJourney journey ->
+				ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
+				graphPoint.setContextTags(journey.contextTags);
+				graphPoint.setPainTags(journey.painTags);
+				graphPoint.setRelativePath("/journey/" + journey.id);
+				graphPoint.setDurationInSeconds(new DurationInSeconds(journey.getDurationInSeconds()));
+				graphPoint.setFrequency(journey.getFrequency());
+				graphPoint.setDescription(journey.getDescription());
+				graphPoint.setTypeName(journey.getClass().getSimpleName());
+				graphPoint.setPosition(journey.getStart());
+
+				List<ExplodableGraphPoint> childPoints = transformDiscoveryCyclesToGraphPoints(journey.discoveryCycles)
+				graphPoint.childPoints.addAll(childPoints);
+
+				graphPoint.forcePushTagsToChildren();
+
+				return graphPoint
+			}
+
+
+		}
+
+		List<ExplodableGraphPoint> transformDiscoveryCyclesToGraphPoints(List<DiscoveryCycle> discoveryCycles) {
+			discoveryCycles.collect() { DiscoveryCycle discoveryCycle ->
+				ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
+				graphPoint.setContextTags(discoveryCycle.contextTags);
+				graphPoint.setPainTags(discoveryCycle.painTags);
+				graphPoint.setRelativePath("/event/" + discoveryCycle.event.getId());
+				graphPoint.setDurationInSeconds(new DurationInSeconds(discoveryCycle.getDurationInSeconds()));
+				graphPoint.setFrequency(Math.max(1, discoveryCycle.experimentCycles.size()));
+				graphPoint.setDescription(discoveryCycle.getDescription());
+				graphPoint.setTypeName(getClass().getSimpleName());
+				graphPoint.setPosition(discoveryCycle.getPosition());
+
+				List<ExplodableGraphPoint> childPoints = transformExperimentCyclesToGraphPoints(discoveryCycle.experimentCycles)
+				graphPoint.childPoints.addAll(childPoints);
+
+				graphPoint.forcePushTagsToChildren();
+
+				return graphPoint;
+			}
+
+		}
+
+		List<ExplodableGraphPoint> transformExperimentCyclesToGraphPoints(List<ExperimentCycle> experimentCycles) {
+			experimentCycles.collect() { ExperimentCycle experimentCycle ->
+				ExplodableGraphPoint graphPoint = new ExplodableGraphPoint();
+				graphPoint.setRelativePath("/exec/"+experimentCycle.getId());
+				graphPoint.setDurationInSeconds(new DurationInSeconds(experimentCycle.getDurationInSeconds()));
+				graphPoint.setFrequency(1);
+				graphPoint.setDescription(experimentCycle.getDescription());
+				graphPoint.setTypeName(experimentCycle.getClass().getSimpleName());
+				graphPoint.setPosition(experimentCycle.getPosition());
+
+				return graphPoint
+			}
+		}
+
 
 	}
 

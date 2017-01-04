@@ -3,13 +3,8 @@ package org.openmastery.storyweb.api;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
-import org.openmastery.publisher.api.journey.DiscoveryCycle;
-import org.openmastery.publisher.api.journey.TroubleshootingJourney;
 import org.openmastery.publisher.api.metrics.DurationInSeconds;
-import org.openmastery.publisher.api.metrics.Metric;
-import org.openmastery.publisher.api.task.Task;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,13 +28,13 @@ public class ExplodableGraphPoint {
 	String typeName;
 	String description;
 
-	List<ExplodableGraphPoint> explodableGraphPoints;
+	List<ExplodableGraphPoint> childPoints;
 
 	public ExplodableGraphPoint() {
 		contextTags = new HashSet<String>();
 		painTags = new HashSet<String>();
 		durationInSeconds = new DurationInSeconds(0);
-		explodableGraphPoints = new ArrayList<ExplodableGraphPoint>();
+		childPoints = new ArrayList<ExplodableGraphPoint>();
 	}
 
 	private void addContextTags(Set<String> contextTags) {
@@ -50,12 +45,17 @@ public class ExplodableGraphPoint {
 		this.painTags.addAll(painTags);
 	}
 
+	public void forcePushTagsToChildren() {
+		for (ExplodableGraphPoint childPoint : childPoints) {
+			childPoint.forcePushTagsToThisAndChildren(contextTags, painTags);
+		}
+	}
 
-	public void forcePushTagsToChildren(Set<String> contextTags, Set<String> painTags) {
+	public void forcePushTagsToThisAndChildren(Set<String> contextTags, Set<String> painTags) {
 		this.contextTags = contextTags;
 		this.painTags = painTags;
-		for (ExplodableGraphPoint childPoint : explodableGraphPoints) {
-			childPoint.forcePushTagsToChildren(contextTags, painTags);
+		for (ExplodableGraphPoint childPoint : childPoints) {
+			childPoint.forcePushTagsToThisAndChildren(contextTags, painTags);
 		}
 	}
 }
