@@ -15,12 +15,11 @@
  */
 package org.openmastery.publisher.core
 
-import com.bancvue.rest.exception.ConflictingEntityException
+import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.task.NewTask
 import org.openmastery.publisher.api.task.Task
-import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeService
@@ -55,7 +54,7 @@ class TaskService {
 
 		TaskEntity existingTask = persistenceService.findTaskWithName(userId, task.getName());
 		if (existingTask != null) {
-			throw new ConflictingTaskException(toApiTask(existingTask));
+			throw new ConflictException(toApiTask(existingTask));
 		}
 
 		try {
@@ -102,7 +101,7 @@ class TaskService {
 	}
 
 
-	static class ConflictingTaskException extends ConflictingEntityException {
+	static class ConflictingTaskException extends ConflictException {
 		ConflictingTaskException(Task existingTask) {
 			super("Task with name '" + existingTask.getName() + "' already exists", existingTask);
 		}

@@ -1,6 +1,6 @@
 package org.openmastery.publisher.resources
 
-import com.bancvue.rest.exception.ConflictingEntityException
+import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.ComponentTest
@@ -106,7 +106,7 @@ class TaskResourceSpec extends Specification {
 		taskClient.createTask("task", "other description", "project")
 
 		then:
-		ConflictingEntityException ex = thrown()
+		ConflictException ex = thrown()
 		taskComparator.assertEquals(ex.entity, expectedConflict)
 	}
 
