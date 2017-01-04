@@ -69,15 +69,6 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		return containsEvent;
 	}
 
-	public boolean hasAwesome() {
-		for (DiscoveryCycle discovery: discoveryCycles) {
-			if (discovery.event.getType() == EventType.AWESOME) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public void addFAQ(long eventId, String faqComment) {
 		for (DiscoveryCycle partialDiscovery : discoveryCycles) {
 			if (partialDiscovery.event.getId() == eventId) {

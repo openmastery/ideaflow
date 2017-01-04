@@ -93,7 +93,7 @@ class SPCChartGeneratorSpec extends Specification {
 		assert chart.totalFirstDegree == 1
 		assert chart.totalSecondDegree == 1
 		assert chart.totalThirdDegree == 3
-		assert chart.totalForthDegree == 5
+		assert chart.totalForthDegree == 6
 
 	}
 

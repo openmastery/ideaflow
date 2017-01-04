@@ -122,7 +122,9 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 		assert journey.discoveryCycles != null
 		assert journey.discoveryCycles.size() == 2
 		assert journey.discoveryCycles.get(0).experimentCycles.size() == 1
-		assert journey.discoveryCycles.get(1).experimentCycles.size() == 2
+		assert journey.discoveryCycles.get(1).experimentCycles.size() == 3
+
+		assert journey.discoveryCycles.get(1).experimentCycles.get(0).durationInSeconds == 60L //execution context from previous
 	}
 
 	def "createJourney SHOULD divide up band duration by experiment cycles"() {

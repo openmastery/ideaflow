@@ -78,34 +78,42 @@ class TroubleshootingJourneyGenerator {
 
 	void fillWithActivity(TroubleshootingJourney journey, List<ExecutionEvent> executionEvents) {
 		journey.getDiscoveryCycles().each { DiscoveryCycle discoveryCycle ->
-			log.debug("Populating Discovery Cycle ["+discoveryCycle.relativeStart + " : " + discoveryCycle.relativeEnd +"]")
+			log.debug("Populating Discovery Cycle [" + discoveryCycle.relativeStart + " : " + discoveryCycle.relativeEnd + "]")
+
+			ExecutionEvent lastExecutionEvent = null
 			for (ExecutionEvent executionEvent : executionEvents) {
 				if (discoveryCycle.shouldContain(executionEvent)) {
-					log.debug("Adding Exec: "+executionEvent.relativeStart)
+					log.debug("Adding Exec: " + executionEvent.relativePositionInSeconds)
+
+					if (lastExecutionEvent != null && discoveryCycle.experimentCycles.size() == 0) {
+						addShortenedExecutionContext(discoveryCycle, lastExecutionEvent, executionEvent)
+					}
+
 					addExecutionEvent(discoveryCycle, executionEvent)
 				}
+				lastExecutionEvent = executionEvent
 			}
 		}
 	}
 
-	private void addExecutionEvent(DiscoveryCycle discoveryCycle, ExecutionEvent event) {
-		ExperimentCycle experimentCycle
-		if (event.relativeStart < discoveryCycle.relativeStart) {
-			//execution context from prior run
-			experimentCycle = new ExperimentCycle(event, discoveryCycle.getDurationInSeconds())
-			experimentCycle.setRelativeStart(discoveryCycle.relativeStart)
-		} else {
-			//execution starts somewhere in the middle, could extend beyond end
-			if (discoveryCycle.experimentCycles.size() > 0) {
-				ExperimentCycle last = discoveryCycle.experimentCycles.last()
-				last.durationInSeconds = event.relativeStart - last.relativeStart
-			}
-			long duration = discoveryCycle.relativeEnd - event.relativeStart
-			experimentCycle = new ExperimentCycle(event, duration)
-		}
+	private void addShortenedExecutionContext(DiscoveryCycle discoveryCycle, ExecutionEvent contextEvent, ExecutionEvent firstEvent) {
+		long initialDuration = firstEvent.relativePositionInSeconds - discoveryCycle.relativeStart
+		ExperimentCycle experimentCycle = new ExperimentCycle(contextEvent, initialDuration)
+		experimentCycle.relativeStart = discoveryCycle.relativeStart
 
 		discoveryCycle.addExperimentCycle(experimentCycle)
+	}
 
+	private void addExecutionEvent(DiscoveryCycle discoveryCycle, ExecutionEvent event) {
+		//execution starts somewhere in the middle, could extend beyond end (truncate)
+		if (discoveryCycle.experimentCycles.size() > 0) {
+			ExperimentCycle last = discoveryCycle.experimentCycles.last()
+			last.durationInSeconds = event.relativePositionInSeconds - last.relativeStart
+		}
+		long duration = discoveryCycle.relativeEnd - event.relativePositionInSeconds
+		ExperimentCycle experimentCycle = new ExperimentCycle(event, duration)
+
+		discoveryCycle.addExperimentCycle(experimentCycle)
 	}
 
 	void annotateJourneys(List<TroubleshootingJourney> journeys, List<FaqAnnotationEntity> faqs, List<SnippetAnnotationEntity> snippets) {

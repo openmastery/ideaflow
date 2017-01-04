@@ -18,7 +18,7 @@ import java.time.Duration;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class ExecutionEvent extends AbstractPositionable implements RelativeInterval {
+public class ExecutionEvent extends AbstractPositionable {
 
 	private Long id;
 	private String processName;
@@ -29,14 +29,4 @@ public class ExecutionEvent extends AbstractPositionable implements RelativeInte
 
 	private Long durationInSeconds;
 
-	@Override
-	public Long getRelativeStart() {
-		return getRelativePositionInSeconds();
-	}
-
-	@JsonIgnore
-	@Override
-	public Long getRelativeEnd() {
-		return getRelativeStart() + getDurationInSeconds();
-	}
 }
