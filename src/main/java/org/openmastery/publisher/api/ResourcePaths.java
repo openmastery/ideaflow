@@ -70,6 +70,6 @@ public class ResourcePaths {
 	public static final String APIKEY_PATH = "/apikey";
 
 	//batch paths
-	public static final String COLLECT_PATH = "/collect";
+	public static final String PUBLISHER_PATH = "/publisher";
 	public static final String BATCH_PATH = "/batch";
 }

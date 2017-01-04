@@ -5,9 +5,9 @@ import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.client.EventClient
-import org.openmastery.publisher.client.IdeaFlowClient
-import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.client.TimelineClient
+import org.openmastery.publisher.client.TaskClient
+
 import org.openmastery.publisher.core.timeline.TimelineValidator
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,7 +31,7 @@ class PrimaryScenarioSpec extends Specification {
 	@Autowired
 	private TaskClient taskClient
 	@Autowired
-	private IdeaFlowClient ideaFlowClient
+	private TimelineClient ideaFlowClient
 	@Autowired
 	private EventClient eventClient
 	@Autowired

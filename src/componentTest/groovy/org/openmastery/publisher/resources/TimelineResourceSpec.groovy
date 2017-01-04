@@ -25,7 +25,7 @@ import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
 import org.openmastery.publisher.api.metrics.SubtaskOverview
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.BatchClient
-import org.openmastery.publisher.client.IdeaFlowClient
+import org.openmastery.publisher.client.TimelineClient
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.user.UserEntity
@@ -36,10 +36,10 @@ import spock.lang.Specification
 import static org.openmastery.publisher.ARandom.aRandom
 
 @ComponentTest
-class IdeaFlowResourceSpec extends Specification {
+class TimelineResourceSpec extends Specification {
 
 	@Autowired
-	private IdeaFlowClient ideaFlowClient
+	private TimelineClient ideaFlowClient
 
 	@Autowired
 	private TaskClient taskClient

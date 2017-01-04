@@ -26,7 +26,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	@Autowired
 	private TaskClient taskClient
 	@Autowired
-	private IdeaFlowClient ideaFlowClient
+	private TimelineClient ideaFlowClient
 	@Autowired
 	private EventClient eventClient
 	@Autowired

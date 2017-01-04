@@ -26,9 +26,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Component
-@Path(ResourcePaths.IDEAFLOW_PATH)
+@Path(ResourcePaths.IDEAFLOW_PATH + ResourcePaths.IDEAFLOW_TIMELINE)
 @Produces(MediaType.APPLICATION_JSON)
-public class IdeaFlowResource {
+public class TimelineResource {
 
 	@Autowired
 	private IdeaFlowService ideaFlowService;
@@ -43,7 +43,7 @@ public class IdeaFlowResource {
 	 */
 
 	@GET
-	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
+	@Path(ResourcePaths.IDEAFLOW_TASK + "/{taskId}")
 	public TaskTimelineOverview getTimelineOverviewForTask(@PathParam("taskId") Long taskId) {
 
 		return ideaFlowService.generateTimelineOverviewForTask(taskId);
@@ -58,7 +58,7 @@ public class IdeaFlowResource {
 	 * @return SubtaskTimelineOverview
 	 */
 	@GET
-	@Path(ResourcePaths.IDEAFLOW_TIMELINE + ResourcePaths.IDEAFLOW_TASK + "/{taskId}" + ResourcePaths.IDEAFLOW_SUBTASK + "/{subtaskId}")
+	@Path(ResourcePaths.IDEAFLOW_TASK + "/{taskId}" + ResourcePaths.IDEAFLOW_SUBTASK + "/{subtaskId}")
 	public SubtaskTimelineOverview getTimelineOverviewForSubtask(@PathParam("taskId") Long taskId, @PathParam("subtaskId") Long subtaskId) {
 
 		return ideaFlowService.generateTimelineOverviewForSubtask(taskId, subtaskId);

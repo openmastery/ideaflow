@@ -17,14 +17,14 @@ public class EventClient extends OpenMasteryClient<Event, EventClient> {
 	}
 
 	public List<Event> getRecentEvents(LocalDateTime afterDate, Integer limit) {
-		return (List<Event>) getUntypedCrudClientRequest()
+		return crudClientRequest
 				.queryParam("afterDate", afterDate.toString("yyyyMMdd_HHmmss"))
 				.queryParam("limit", limit)
 				.findMany();
 	}
 
 	public Event updateEvent(Event event) {
-		return (Event) getUntypedCrudClientRequest()
+		return crudClientRequest
 				.path(event.getId())
 				.updateWithPut(event);
 	}
