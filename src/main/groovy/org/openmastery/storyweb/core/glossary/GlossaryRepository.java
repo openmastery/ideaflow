@@ -23,9 +23,13 @@ import java.util.List;
 
 public interface GlossaryRepository extends PagingAndSortingRepository<GlossaryDefinitionEntity, String> {
 
-	@Query(nativeQuery = true, value = "select * from glossary order by name")
+	@Query(nativeQuery = true, value = "select * from glossary order by lower(name)")
 	List<GlossaryDefinitionEntity> findAll();
 
-	@Query(nativeQuery = true, value = "select * from glossary where lower(name) similar to ?1 order by name")
+	@Query(nativeQuery = true, value = "select * from glossary where lower(name) = (?1) order by lower(name)")
+	GlossaryDefinitionEntity findByName(String lowerTagName);
+
+
+	@Query(nativeQuery = true, value = "select * from glossary where lower(name) similar to ?1 order by lower(name)")
 	List<GlossaryDefinitionEntity> findByTagsLike(String searchStr);
 }

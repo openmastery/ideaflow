@@ -18,7 +18,7 @@ package org.openmastery.storyweb.resources;
 import lombok.extern.slf4j.Slf4j;
 import org.openmastery.storyweb.api.GlossaryDefinition;
 import org.openmastery.storyweb.api.ResourcePaths;
-import org.openmastery.storyweb.core.StoryWebService;
+import org.openmastery.storyweb.core.glossary.GlossaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,18 +33,29 @@ import java.util.List;
 public class GlossaryResource {
 
 	@Autowired
-	private StoryWebService storyWebService;
+	private GlossaryService glossaryService;
 
 	/**
-	 * Create or update a single glossary definition
-	 * @param glossaryDefinition provide a definition for the term
+	 * Update an existing glossary definition
+	 * @param glossaryDefinition update the definition for the term
 	 * @return GlossaryDefinition
 	 */
 	@PUT
-	public GlossaryDefinition createOrUpdateSingle(GlossaryDefinition glossaryDefinition) {
-		return storyWebService.createOrUpdateGlossaryDefinition(glossaryDefinition);
-
+	@Path("/{tagId}")
+	public GlossaryDefinition updateExistingTerm(@PathParam("tagId") Long tagId, GlossaryDefinition glossaryDefinition) {
+		return glossaryService.updateExistingTerm(tagId, glossaryDefinition);
 	}
+
+	/**
+	 * Create a new glossary definition
+	 * @param glossaryDefinition provide a definition for the term
+	 * @return GlossaryDefinition
+	 */
+	@POST
+	public GlossaryDefinition createNewTerm(GlossaryDefinition glossaryDefinition) {
+		return glossaryService.createNewTerm(glossaryDefinition);
+	}
+
 
 	/**
 	 * Make sure all the provided tags are available in the glossary,
@@ -56,7 +67,7 @@ public class GlossaryResource {
 	@POST
 	@Path(ResourcePaths.GLOSSARY_TAG_PATH)
 	public void createBlankGlossaryDefinitionWhenNotExists(List<String> tags) {
-		storyWebService.createGlossaryDefinitionsWhenNotExists(tags);
+		glossaryService.createGlossaryDefinitionsWhenNotExists(tags);
 	}
 
 
@@ -68,9 +79,9 @@ public class GlossaryResource {
 	@GET
 	public List<GlossaryDefinition> findGlossaryDefinitionsByTag(@QueryParam("tag") List<String> tags) {
 		if (tags == null || tags.isEmpty()) {
-			return storyWebService.findAllGlossaryDefinitions();
+			return glossaryService.findAllGlossaryDefinitions();
 		} else {
-			return storyWebService.findGlossaryDefinitionsByTag(tags);
+			return glossaryService.findGlossaryDefinitionsByTag(tags);
 		}
 	}
 

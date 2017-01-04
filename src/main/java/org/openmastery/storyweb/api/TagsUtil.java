@@ -39,4 +39,12 @@ public class TagsUtil {
 		return hashtags;
 	}
 
+	public static String prefixHashtag(String hashtag) {
+		if (hashtag.startsWith("#")) {
+			return hashtag;
+		} else {
+			return "#" + hashtag;
+		}
+	}
+
 }

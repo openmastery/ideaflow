@@ -38,8 +38,6 @@ class StoryWebService {
 	@Autowired
 	AnnotationRespository annotationRepository
 
-	@Autowired
-	GlossaryRepository glossaryRepository
 
 	@Autowired
 	SPCChartGenerator spcChartGenerator
@@ -53,7 +51,7 @@ class StoryWebService {
 
 
 	public List<FaqSummary> findAllFaqMatchingTags(List<String> tags) {
-		String searchPattern = createSearchPattern(tags)
+		String searchPattern = SearchUtils.createSearchPattern(tags)
 
 		List<Object[]> results = annotationRepository.findFaqsBySearchCriteria(searchPattern)
 		List<FaqSummary> faqSummaries = results.collect { Object[] row ->
@@ -70,10 +68,6 @@ class StoryWebService {
 		return faqSummaries;
 	}
 
-	public List<GlossaryDefinition> findGlossaryDefinitionsByTag(List<String> tags) {
-		String searchPattern = createSearchPattern(tags)
-		entityMapper.mapList(glossaryRepository.findByTagsLike(searchPattern), GlossaryDefinition.class)
-	}
 
 
 	private Set<String> extractUniqueTags(String eventComment, String faqComment) {
@@ -89,47 +83,11 @@ class StoryWebService {
 		return commentHolder.comment
 	}
 
-	List<GlossaryDefinition> findAllGlossaryDefinitions() {
-		return entityMapper.mapList(glossaryRepository.findAll(), GlossaryDefinition.class);
-	}
-
-	GlossaryDefinition createOrUpdateGlossaryDefinition(GlossaryDefinition entry) {
-		GlossaryDefinitionEntity entryEntity = entityMapper.mapIfNotNull(entry, GlossaryDefinitionEntity.class);
-		glossaryRepository.save(entryEntity);
-		return entry;
-	}
-
-	void createGlossaryDefinitionsWhenNotExists(List<String> tags) {
-		String searchPattern = createSearchPattern(tags)
-		List<GlossaryDefinitionEntity> glossaryEntities = glossaryRepository.findByTagsLike(searchPattern)
-
-		Map<String, GlossaryDefinitionEntity> definitionsByTag = glossaryEntities.collectEntries { entry ->
-			[entry.name, entry]
-		}
-
-		tags.each { String tag ->
-			if (definitionsByTag.get(tag) == null) {
-				GlossaryDefinitionEntity newEntry = new GlossaryDefinitionEntity(tag, null)
-				glossaryRepository.save(newEntry)
-			}
-		}
-	}
 
 	SPCChart generateSPCChart(LocalDate startDate, LocalDate endDate) {
 		return spcChartGenerator.generateChart(invocationContext.userId, startDate, endDate)
 	}
 
-
-	private static String createSearchPattern(List<String> tags) {
-		List<String> prefixedHashtags = tags.collect {
-			if (it.startsWith('#')) {
-				return it
-			} else {
-				return "#" + it
-			}
-		}
-		return "%(" + prefixedHashtags.join("|") + ")%";
-	}
 
 	private static class CommentHolder {
 		String comment;

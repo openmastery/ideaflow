@@ -12,14 +12,24 @@ public class GlossaryClient extends StorywebClient<GlossaryDefinition, GlossaryC
 		super(baseUrl, ResourcePaths.STORY_WEB_PATH + ResourcePaths.GLOSSARY_PATH, GlossaryDefinition.class);
 	}
 
-	public void defineTag(String name, String description) {
+	public GlossaryDefinition createNewTerm(String name, String description) {
 		GlossaryDefinition entry = GlossaryDefinition.builder()
 				.name(name)
 				.description(description)
 				.build();
 
-		crudClientRequest.updateWithPut(entry);
+		return crudClientRequest.createWithPost(entry);
 	}
+
+	public GlossaryDefinition updateTerm(Long id, String name, String description) {
+		GlossaryDefinition entry = GlossaryDefinition.builder()
+				.name(name)
+				.description(description)
+				.build();
+
+		return crudClientRequest.path(id).updateWithPut(entry);
+	}
+
 
 	public List<GlossaryDefinition> findAllDefinitions() {
 		return crudClientRequest.findMany();

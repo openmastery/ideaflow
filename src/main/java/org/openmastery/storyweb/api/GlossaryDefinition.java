@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GlossaryDefinition {
 
+	private Long id;
+
 	private String name;
 	private String description;
 
