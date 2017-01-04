@@ -10,6 +10,7 @@ import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.publisher.ideaflow.timeline.JourneyTimeline
 import org.openmastery.publisher.ideaflow.timeline.TroubleshootingJourneyGenerator
+import org.openmastery.publisher.metrics.MetricService
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
@@ -19,7 +20,7 @@ class MetricServiceSpec extends Specification {
 	private IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
 
 	private TroubleshootingJourneyGenerator journeyGenerator = new TroubleshootingJourneyGenerator()
-	private MetricsService metricsService = new MetricsService()
+	private MetricService metricsService = new MetricService()
 
 	LocalDateTime start
 

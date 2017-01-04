@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.subtask.calculator
+package org.openmastery.publisher.metrics.calculator
 
-import org.joda.time.Duration
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
@@ -37,7 +36,7 @@ import org.openmastery.storyweb.api.MetricThreshold
 class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
 	MaxHaystackSizeCalculator() {
-		super(MetricType.MAX_HAYSTACK_SIZE)
+		super(MetricType.HAYSTACK_SIZE)
 	}
 
 

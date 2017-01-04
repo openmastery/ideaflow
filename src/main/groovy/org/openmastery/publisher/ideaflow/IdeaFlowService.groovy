@@ -37,7 +37,7 @@ import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTaskTimelineGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
 import org.openmastery.publisher.ideaflow.timeline.TroubleshootingJourneyGenerator
-import org.openmastery.publisher.metrics.subtask.MetricsService
+import org.openmastery.publisher.metrics.MetricService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -68,7 +68,7 @@ class IdeaFlowService {
 	@Autowired
 	private TaskService taskService
 	@Autowired
-	private MetricsService metricsService
+	private MetricService metricsService
 
 
 	TaskTimelineOverview generateTimelineOverviewForTask(Long taskId) {

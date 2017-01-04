@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.subtask.calculator
+package org.openmastery.publisher.metrics.calculator
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
@@ -26,7 +26,7 @@ import org.openmastery.storyweb.api.MetricThreshold
 class MaxResolutionTimeCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
 	MaxResolutionTimeCalculator() {
-		super(MetricType.MAX_RESOLUTION_TIME)
+		super(MetricType.RESOLUTION_TIME)
 	}
 
 

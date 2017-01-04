@@ -13,70 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.subtask.calculator
+package org.openmastery.publisher.metrics.calculator
 
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.MetricThreshold
 
-class MaxHumanCycleRatioCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
+class MaxExperimentCycleCountCalculator extends AbstractMetricsCalculator<Double> {
 
-	MaxHumanCycleRatioCalculator() {
-		super(MetricType.MAX_HUMAN_CYCLE_RATIO)
+	MaxExperimentCycleCountCalculator() {
+		super(MetricType.MAX_EXPERIMENT_CYCLE_COUNT)
 	}
 
 	/**
 	 *
-	 * What's the ratio of troubleshooting time to execution events within a troubleshooting band?
-	 * What's the maximum ratio across all troubleshooting bands?
+	 * How many execution events are within a troubleshooting band?
+	 * What's the max number across all troubleshooting bands?
 	 *
 	 * @param timeline for a subtask
 	 * @return Metric<Double> the resulting metric value
 	 */
 	@Override
-	Metric<DurationInSeconds> calculateMetrics(IdeaFlowTimeline timeline) {
+	Metric<Double> calculateMetrics(IdeaFlowTimeline timeline) {
 
 		List<IdeaFlowBand> troubleshootingBands = timeline.ideaFlowBands.findAll() { IdeaFlowBand band ->
 			band.type == IdeaFlowStateType.TROUBLESHOOTING
 		}
 
-		Double maxRatio = 0;
+		Double maxEventCount = 0;
 
-		troubleshootingBands.each { IdeaFlowBand band ->
-			int eventCount = countExecutionEventsInRange(timeline.executionEvents, band.relativeStart, band.relativeEnd)
+		troubleshootingBands.each { IdeaFlowBand troubleshootingBand ->
+			Long relativeStart = troubleshootingBand.relativePositionInSeconds
+			Long relativeEnd = troubleshootingBand.relativePositionInSeconds + troubleshootingBand.durationInSeconds
 
-			if (eventCount > 0) {
-				Double durationRatio = ((double) band.durationInSeconds) / eventCount
-				if (durationRatio > maxRatio) {
-					maxRatio = durationRatio
-				}
+			int eventCount = countExecutionEventsInRange(timeline.executionEvents, relativeStart, relativeEnd)
+
+			if (eventCount > maxEventCount) {
+				maxEventCount = eventCount
 			}
 		}
 
-		Metric<DurationInSeconds> metric = createMetric()
-		metric.value = new DurationInSeconds((long)maxRatio);
-		metric.danger = metric.value.greaterThan(getDangerThreshold().threshold)
+		Metric<Double> metric = createMetric()
+		metric.type = getMetricType()
+		metric.value = maxEventCount
+		metric.danger = metric.value > getDangerThreshold().threshold
 		return metric
 	}
 
-	@Override
-	MetricThreshold<DurationInSeconds> getDangerThreshold() {
-		return createMetricThreshold(new DurationInSeconds(10 * 60))
-	}
-
 	int countExecutionEventsInRange(List<ExecutionEvent> executionEvents, Long relativeStart, Long relativeEnd ) {
-		//println relativeStart + " : " + relativeEnd + " = " + (relativeEnd - relativeStart)
 		List<ExecutionEvent> eventsWithinRange = executionEvents.findAll() { ExecutionEvent event ->
 			event.relativePositionInSeconds > relativeStart &&
 					event.relativePositionInSeconds < relativeEnd
 		}
-		//println "Result : "+eventsWithinRange.collect { it.relativePositionInSeconds }
 		return eventsWithinRange.size()
+	}
+
+	@Override
+	MetricThreshold<Double> getDangerThreshold() {
+		return createMetricThreshold(15D)
 	}
 
 

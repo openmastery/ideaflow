@@ -27,7 +27,7 @@ import org.openmastery.publisher.api.journey.ExperimentCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
-import org.openmastery.publisher.metrics.subtask.MetricsService
+import org.openmastery.publisher.metrics.MetricService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component
 class TroubleshootingJourneyGenerator {
 
 	@Autowired
-	MetricsService metricsService
+	MetricService metricsService
 
 	TroubleshootingJourney createJourney(List<Event> events, IdeaFlowBand band) {
 		List<Event> wtfYayEvents = events.findAll { it.type == EventType.WTF }

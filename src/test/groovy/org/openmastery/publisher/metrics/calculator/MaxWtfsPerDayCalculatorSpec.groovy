@@ -1,4 +1,4 @@
-package org.openmastery.publisher.metrics.subtask.calculator
+package org.openmastery.publisher.metrics.calculator
 
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline

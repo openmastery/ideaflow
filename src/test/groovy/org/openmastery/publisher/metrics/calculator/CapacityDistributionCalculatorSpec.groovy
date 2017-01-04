@@ -1,12 +1,10 @@
-package org.openmastery.publisher.metrics.subtask.calculator
+package org.openmastery.publisher.metrics.calculator
 
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.metrics.CapacityDistribution
-import org.openmastery.publisher.api.metrics.Metric
-import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification

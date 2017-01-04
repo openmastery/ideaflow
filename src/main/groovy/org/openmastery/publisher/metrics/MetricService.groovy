@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.subtask
+package org.openmastery.publisher.metrics
 
 import org.openmastery.publisher.api.RelativeInterval
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.metrics.CapacityDistribution
-import org.openmastery.publisher.api.metrics.Metric
-import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.publisher.api.metrics.MetricsCalculator
-import org.openmastery.publisher.api.metrics.SubtaskOverview
-import org.openmastery.publisher.metrics.subtask.calculator.*
+import org.openmastery.publisher.api.metrics.*
+import org.openmastery.publisher.metrics.calculator.*
 import org.openmastery.storyweb.api.MetricThreshold
 import org.springframework.stereotype.Component
 
 @Component
-public class MetricsService {
-
+public class MetricService {
 
 	public List<Metric> generateJourneyMetrics(IdeaFlowTimeline timelineSegment) {
 		MetricSetCalculator metricSet = new MetricSetCalculator()

@@ -1,23 +1,21 @@
-package org.openmastery.publisher.metrics.subtask.calculator
+package org.openmastery.publisher.metrics.calculator
 
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
-import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
-
-class MaxHumanCycleRatioCalculatorSpec extends Specification {
+class MaxExperimentCycleCountCalculatorSpec extends Specification {
 
 	private MockTimeService mockTimeService = new MockTimeService()
 	private IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
 
-	private MaxHumanCycleRatioCalculator calculator = new MaxHumanCycleRatioCalculator()
+	private MaxExperimentCycleCountCalculator calculator = new MaxExperimentCycleCountCalculator()
 
 
 	LocalDateTime start
@@ -26,7 +24,7 @@ class MaxHumanCycleRatioCalculatorSpec extends Specification {
 		start = mockTimeService.now()
 	}
 
-	def "calculateMetrics SHOULD return the ratio of (total time / numberEvents) "() {
+	def "calculateMetrics SHOULD return the number of execution events WHEN there's only one band"() {
 		given:
 		IdeaFlowBand troubleshootingBand = IdeaFlowBand.builder()
 				.type(IdeaFlowStateType.TROUBLESHOOTING)
@@ -44,14 +42,14 @@ class MaxHumanCycleRatioCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshootingBand], executionEvents: builder.executionEventList)
-		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
+		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO
-		assert metric.value == new DurationInSeconds( (Long)(15 * 60)/ 3)
+		assert metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT
+		assert metric.value == 3D
 	}
 
-	def "calculateMetrics SHOULD return the max of ratios WHEN there's multiple bands"() {
+	def "calculateMetrics SHOULD return the max of execution events WHEN there's multiple bands"() {
 		given:
 		IdeaFlowBand troubleshootingBand = IdeaFlowBand.builder()
 				.type(IdeaFlowStateType.TROUBLESHOOTING)
@@ -62,7 +60,7 @@ class MaxHumanCycleRatioCalculatorSpec extends Specification {
 		IdeaFlowBand troubleshootingBand2 = IdeaFlowBand.builder()
 				.type(IdeaFlowStateType.TROUBLESHOOTING)
 				.relativePositionInSeconds(15 * 60)
-				.durationInSeconds(20 * 60)
+				.durationInSeconds(15 * 60)
 				.build()
 
 		builder.activate()
@@ -72,15 +70,13 @@ class MaxHumanCycleRatioCalculatorSpec extends Specification {
 		builder.executeCode()
 		builder.advanceMinutes(1)
 		builder.executeCode()
-		builder.advanceMinutes(1)
-		builder.executeCode()
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshootingBand, troubleshootingBand2], executionEvents: builder.executionEventList)
-		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
+		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO
-		assert metric.value == new DurationInSeconds( (Long) 15 * 60 )
+		assert metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT
+		assert metric.value == 2.0D
 	}
 }

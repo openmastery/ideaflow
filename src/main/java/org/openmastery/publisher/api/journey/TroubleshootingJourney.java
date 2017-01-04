@@ -19,12 +19,13 @@ import java.util.Set;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class TroubleshootingJourney extends AbstractRelativeInterval {
+public class TroubleshootingJourney extends AbstractRelativeInterval implements Measurable {
 
 	@JsonIgnore
 	IdeaFlowBand band;
 
-	long id;
+	Long id;
+	String relativePath;
 
 	Set<String> contextTags;
 	Set<String> painTags; //derived from WTF/YAY #hashtags
@@ -46,8 +47,9 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		DiscoveryCycle partialDiscovery = new DiscoveryCycle(wtfYayEvent, durationInSeconds);
 		painTags.addAll(partialDiscovery.painTags);
 
-		if (id == 0) {
+		if (id == null) {
 			id = wtfYayEvent.getId();
+			relativePath = "/journey/"+id;
 		}
 
 		discoveryCycles.add(partialDiscovery);
@@ -84,10 +86,11 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 		}
 	}
 
-	public LocalDateTime getStart() {
-		return band.getStart();
+	public LocalDateTime getPosition() {
+		return band.getPosition();
 	}
 
+	@JsonIgnore
 	public LocalDateTime getEnd() {
 		return band.getEnd();
 	}
@@ -104,4 +107,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval {
 	public int getFrequency() {
 		return getDiscoveryCycles().size();
 	}
+
+	public Long getRelativePositionInSeconds() { return band.getRelativeStart(); }
+
 }

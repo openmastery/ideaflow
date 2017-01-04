@@ -44,7 +44,7 @@ import org.openmastery.publisher.ideaflow.timeline.IdeaFlowBandGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdleTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.RelativeTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.TroubleshootingJourneyGenerator
-import org.openmastery.publisher.metrics.subtask.MetricsService
+import org.openmastery.publisher.metrics.MetricService
 import org.openmastery.storyweb.api.ExplodableGraphPoint
 import org.openmastery.storyweb.api.SPCChart
 import org.openmastery.time.TimeConverter
@@ -83,7 +83,7 @@ class SPCChartGenerator {
 	TaskRepository taskRepository
 
 	@Autowired
-	MetricsService metricsService
+	MetricService metricsService
 
 	EntityMapper entityMapper = new EntityMapper()
 
@@ -301,7 +301,7 @@ class SPCChartGenerator {
 				graphPoint.setFrequency(journey.getFrequency());
 				graphPoint.setDescription(journey.getDescription());
 				graphPoint.setTypeName(journey.getClass().getSimpleName());
-				graphPoint.setPosition(journey.getStart());
+				graphPoint.setPosition(journey.getPosition());
 
 				List<ExplodableGraphPoint> childPoints = transformDiscoveryCyclesToGraphPoints(journey.discoveryCycles)
 				graphPoint.childPoints.addAll(childPoints);

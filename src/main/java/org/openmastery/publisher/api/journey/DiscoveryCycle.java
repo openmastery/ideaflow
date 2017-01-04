@@ -18,7 +18,7 @@ import java.util.Set;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class DiscoveryCycle extends AbstractRelativeInterval {
+public class DiscoveryCycle extends AbstractRelativeInterval implements Measurable {
 
 	@JsonIgnore
 	Event event;
@@ -63,6 +63,8 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 
 	public LocalDateTime getPosition() { return event.getPosition(); }
 
+	public Long getId() { return event.getId(); }
 
+	public int getFrequency() { return getExperimentCycles().size(); }
 
 }
