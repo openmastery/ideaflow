@@ -83,7 +83,7 @@ class TroubleshootingJourneyGenerator {
 			ExecutionEvent lastExecutionEvent = null
 			for (ExecutionEvent executionEvent : executionEvents) {
 				if (discoveryCycle.shouldContain(executionEvent)) {
-					log.debug("Adding Exec: " + executionEvent.relativePositionInSeconds)
+
 
 					if (lastExecutionEvent != null && discoveryCycle.experimentCycles.size() == 0) {
 						addShortenedExecutionContext(discoveryCycle, lastExecutionEvent, executionEvent)
@@ -98,10 +98,15 @@ class TroubleshootingJourneyGenerator {
 
 	private void addShortenedExecutionContext(DiscoveryCycle discoveryCycle, ExecutionEvent contextEvent, ExecutionEvent firstEvent) {
 		long initialDuration = firstEvent.relativePositionInSeconds - discoveryCycle.relativeStart
-		ExperimentCycle experimentCycle = new ExperimentCycle(contextEvent, initialDuration)
-		experimentCycle.relativeStart = discoveryCycle.relativeStart
 
-		discoveryCycle.addExperimentCycle(experimentCycle)
+		if (initialDuration > 0) {
+			ExperimentCycle experimentCycle = new ExperimentCycle(contextEvent, initialDuration)
+			experimentCycle.relativeStart = discoveryCycle.relativeStart
+
+			log.debug("Context Exec [${contextEvent.id}, ${experimentCycle.relativeStart} ] : "+initialDuration)
+
+			discoveryCycle.addExperimentCycle(experimentCycle)
+		}
 	}
 
 	private void addExecutionEvent(DiscoveryCycle discoveryCycle, ExecutionEvent event) {
@@ -113,6 +118,7 @@ class TroubleshootingJourneyGenerator {
 		long duration = discoveryCycle.relativeEnd - event.relativePositionInSeconds
 		ExperimentCycle experimentCycle = new ExperimentCycle(event, duration)
 
+		log.debug("Adding Exec [${event.id}, ${event.relativePositionInSeconds} ] : "+duration)
 		discoveryCycle.addExperimentCycle(experimentCycle)
 	}
 

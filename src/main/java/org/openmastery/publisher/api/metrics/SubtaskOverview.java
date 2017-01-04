@@ -21,13 +21,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class SubtaskOverview {
 
-	Event subtaskEvent;
-	Long durationInSeconds;
-
-	List<Metric<?>> metrics;
-
-	CapacityDistribution capacityDistribution;
-
 	public Long getSubtaskId() {
 		return subtaskEvent.getId();
 	}
@@ -37,5 +30,13 @@ public class SubtaskOverview {
 	}
 
 	public LocalDateTime getStart() { return subtaskEvent.getPosition(); }
+
+	Long durationInSeconds;
+
+	Event subtaskEvent;
+
+	CapacityDistribution capacityDistribution;
+
+	List<Metric<?>> metrics;
 
 }
