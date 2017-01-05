@@ -24,23 +24,23 @@ class PositionableAndIntervalListBuilder {
 
 	PositionableAndIntervalListBuilder position(int position) {
 		positionables << PositionableImpl.builder()
-				.position(timeService.inFuture(position))
+				.position(timeService.hoursInFuture(position))
 				.build()
 		this
 	}
 
 	PositionableAndIntervalListBuilder interval(int startHour, int endHour) {
 		positionables << IntervalImpl.builder()
-				.start(timeService.inFuture(startHour))
-				.end(timeService.inFuture(endHour))
+				.start(timeService.hoursInFuture(startHour))
+				.end(timeService.hoursInFuture(endHour))
 				.build()
 		this
 	}
 
 	PositionableAndIntervalListBuilder idle(int startHour, int endHour) {
 		positionables << IdleTimeBandModel.builder()
-				.start(timeService.inFuture(startHour))
-				.end(timeService.inFuture(endHour))
+				.start(timeService.hoursInFuture(startHour))
+				.end(timeService.hoursInFuture(endHour))
 				.build()
 		this
 	}

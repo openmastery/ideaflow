@@ -31,34 +31,6 @@ public class CalendarEventGeneratorTest extends Specification {
 		return event
 	}
 
-	def "should create calendar event at first positionable of new day after gap"() {
-		given:
-		builder.interval(8, 16)
-				.advanceDays(1)
-				.interval(8, 16)
-
-		when:
-		List<Event> events = generateCalendarEvents()
-
-		then:
-		assert events[0] == createCalendarEventFromStart(1, 8)
-		assert events.size() == 1
-	}
-
-	def "should create calendar event at first positionable of first day after gap if gap spans multiple days"() {
-		given:
-		builder.interval(8, 16)
-				.advanceDays(2)
-				.interval(8, 16)
-
-		when:
-		List<Event> events = generateCalendarEvents()
-
-		then:
-		assert events[0] == createCalendarEventFromStart(2, 8)
-		assert events.size() == 1
-	}
-
 	def "should create calendar event at first positionable of new day after idle"() {
 		given:
 		builder.interval(8, 16)

@@ -118,12 +118,10 @@ class SPCChartGenerator {
 
 		taskDataList.each { TaskData taskData ->
 			taskData.troubleshootingBands = ideaFlowBandGenerator.generateTroubleshootingBands(taskData.events)
+			taskData.idleBands += idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(taskData.events)
 
-			idleTimeProcessor.collapseIdleTime(taskData.troubleshootingBands, taskData.idleBands, taskData.events)
-
+			idleTimeProcessor.collapseIdleTime(taskData.troubleshootingBands, taskData.idleBands)
 			relativeTimeProcessor.computeRelativeTime(taskData.getAllPositionables())
-
-
 		}
 		return taskDataList
 	}

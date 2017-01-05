@@ -63,20 +63,6 @@ class IdleTimeProcessor {
 				.build()
 	}
 
-	public List<IdleTimeBandModel> collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands, List<IdleTimeBandModel> idleTimeBandList, List<Event> events) {
-		List<IdleTimeBandModel> idleTimeBands = new ArrayList<>(idleTimeBandList)
-
-		if (events) {
-			List<IdleTimeBandModel> deactivationIdleEvents = generateIdleTimeBandsFromDeativationEvents(events)
-			idleTimeBands.addAll(deactivationIdleEvents)
-		}
-
-		if (idleTimeBands) {
-			collapseIdleTime(ideaFlowBands, idleTimeBands)
-		}
-		idleTimeBands
-	}
-
 	public void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands, List<IdleTimeBandModel> idleTimeBandList) {
 		for (IdleTimeBandModel idleTimeBandModel : idleTimeBandList) {
 			addIdleDuration(ideaFlowBands, idleTimeBandModel)
