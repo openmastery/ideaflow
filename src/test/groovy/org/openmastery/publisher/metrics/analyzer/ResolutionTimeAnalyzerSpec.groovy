@@ -67,19 +67,20 @@ class ResolutionTimeAnalyzerSpec extends Specification {
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshootingBand, troubleshootingBand2], executionEvents: builder.executionEventList)
 
 		when:
-		List<GraphPoint<DurationInSeconds>> graphPoints = calculator.analyzeTimelineAndJourneys(timeline, [journey, journey2])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [journey, journey2])
 
 		then:
-		assert graphPoints.size() == 3
 
-		assert graphPoints.get(0).relativePath == "/journey/1"
-		assert graphPoints.get(0).value == new DurationInSeconds((Long)(30 * 60))
+		assert timelinePoint.relativePath == "/timeline"
+		assert timelinePoint.value == new DurationInSeconds((Long)(60 * 60))  //use max for aggregation
 
-		assert graphPoints.get(1).relativePath == "/journey/3"
-		assert graphPoints.get(1).value == new DurationInSeconds((Long)(60 * 60))
+		assert timelinePoint.childPoints.get(0).relativePath == "/journey/1"
+		assert timelinePoint.childPoints.get(0).value == new DurationInSeconds((Long)(30 * 60))
 
-		assert graphPoints.get(2).relativePath == "/timeline"
-		assert graphPoints.get(2).value == new DurationInSeconds((Long)(60 * 60))  //use max for aggregation
+		assert timelinePoint.childPoints.get(1).relativePath == "/journey/3"
+		assert timelinePoint.childPoints.get(1).value == new DurationInSeconds((Long)(60 * 60))
+
+
 
 	}
 }

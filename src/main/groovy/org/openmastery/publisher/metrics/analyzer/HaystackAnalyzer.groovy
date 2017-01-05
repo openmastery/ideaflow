@@ -34,7 +34,7 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 	}
 
 	@Override
-	List<GraphPoint<DurationInSeconds>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
+	GraphPoint<DurationInSeconds> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
 		//exclude learning time, generally trailing troubleshooting time, but could be a whole string of haystacks...
 		//maybe we get the haystack size
@@ -68,24 +68,32 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 
 	}
 
-	List<GraphPoint<DurationInSeconds>> translateToGraphPoints(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys, Map<String, Long> maxHaystacksFound) {
+	GraphPoint<DurationInSeconds> translateToGraphPoints(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys, Map<String, Long> maxHaystacksFound) {
 
-		maxHaystacksFound.collect { String relativePath, Long haystackSizeInSeconds ->
+		List<GraphPoint<DurationInSeconds>> allPoints = []
 
+		maxHaystacksFound.each { String relativePath, Long haystackSizeInSeconds ->
 			TroubleshootingJourney journey = findJourney(journeys, relativePath)
-			GraphPoint<DurationInSeconds> graphPoint
+
 			if (journey) {
-				graphPoint = createPointFromMeasurableContext("/journey", journey)
-			} else {
-				graphPoint = createTimelinePoint(timeline, journeys)
+				GraphPoint<DurationInSeconds> graphPoint = createPointFromMeasurableContext("/journey", journey)
+				graphPoint.value = new DurationInSeconds(haystackSizeInSeconds)
+				graphPoint.danger = isOverThreshold(graphPoint.value)
+				allPoints.add(graphPoint)
 			}
-			graphPoint.value = new DurationInSeconds(haystackSizeInSeconds)
-			graphPoint.danger = isOverThreshold(graphPoint.value)
-			return graphPoint
-		}.sort { GraphPoint<DurationInSeconds> graphPoint ->
-			graphPoint.relativePositionInSeconds
 		}
 
+		allPoints = allPoints.sort { GraphPoint<DurationInSeconds> point ->
+			point.relativePositionInSeconds
+		}
+
+		GraphPoint<DurationInSeconds> timelinePoint = createTimelinePoint(timeline, journeys)
+		timelinePoint.value = new DurationInSeconds(maxHaystacksFound.get("/timeline"))
+		timelinePoint.danger = isOverThreshold(timelinePoint.value)
+		timelinePoint.frequency = allPoints.size()
+		timelinePoint.childPoints = allPoints
+
+		return timelinePoint
 	}
 
 	TroubleshootingJourney findJourney(List<TroubleshootingJourney> journeys, String relativePath) {

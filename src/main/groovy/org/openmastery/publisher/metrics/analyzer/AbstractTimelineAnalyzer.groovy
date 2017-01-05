@@ -32,7 +32,7 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 	}
 
 
-	abstract List<GraphPoint<T>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys);
+	abstract GraphPoint<T> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys);
 
 	abstract MetricThreshold<T> getDangerThreshold();
 

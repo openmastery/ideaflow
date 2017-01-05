@@ -33,7 +33,7 @@ class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 	}
 
 	@Override
-	List<GraphPoint<Double>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
+	GraphPoint<Double> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 		//journeys can fall in a day, but it seems like these data points would be daily or timeline focused and ignore journeys
 		//we can generate daily points, then a maximum of all the days.
 
@@ -50,10 +50,8 @@ class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 		timelinePoint.frequency = allPoints.size()
 		timelinePoint.value = getMaximumValue(allPoints)
 		timelinePoint.danger = isOverThreshold(timelinePoint.value)
-
-		allPoints.add(timelinePoint)
-
-		return allPoints
+		timelinePoint.childPoints = allPoints
+		return timelinePoint
 	}
 
 	private List<GraphPoint<Double>> calculateWtfsPerDay(LocalDate start, LocalDate end, List<Event> wtfEvents) {
@@ -74,6 +72,7 @@ class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 				allPoints.add(dailyWtfsPoint)
 			}
 		}
+
 
 		return allPoints
 	}

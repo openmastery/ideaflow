@@ -32,7 +32,7 @@ class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 	}
 
 	@Override
-	List<GraphPoint<DurationInSeconds>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
+	GraphPoint<DurationInSeconds> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
 		List<GraphPoint<DurationInSeconds>> allPoints = journeys.collect { TroubleshootingJourney journey ->
 			GraphPoint<DurationInSeconds> bandPoint = createPointFromMeasurableContext("/journey", journey)
@@ -42,10 +42,9 @@ class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 
 		GraphPoint<DurationInSeconds> timelinePoint = createTimelinePoint(timeline, journeys)
 		timelinePoint.value = getMaximumValue(allPoints)
-		timelinePoint.danger =  isOverThreshold(timelinePoint.value)
-
-		allPoints.add(timelinePoint)
-		return allPoints
+		timelinePoint.danger = isOverThreshold(timelinePoint.value)
+		timelinePoint.childPoints = allPoints
+		return timelinePoint
 	}
 
 	List<GraphPoint<DurationInSeconds>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {

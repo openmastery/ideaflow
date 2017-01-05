@@ -31,7 +31,7 @@ class ExperimentFrequencyAnalyzer extends AbstractTimelineAnalyzer<Double> {
 		super(MetricType.MAX_EXPERIMENT_CYCLES)
 	}
 	@Override
-	List<GraphPoint<Double>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
+	GraphPoint<Double> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
 		List<GraphPoint<Double>> allPoints = journeys.collect { TroubleshootingJourney journey ->
 			GraphPoint<Double> journeyPoint = createPointFromMeasurableContext("/journey", journey)
@@ -46,8 +46,8 @@ class ExperimentFrequencyAnalyzer extends AbstractTimelineAnalyzer<Double> {
 		GraphPoint<Double> timelinePoint = createTimelinePoint(timeline, journeys)
 		timelinePoint.value = getMaximumValue(allPoints)
 		timelinePoint.danger = isOverThreshold(timelinePoint.value)
-		allPoints.add(timelinePoint)
-		return allPoints
+		timelinePoint.childPoints = allPoints
+		return timelinePoint
 	}
 
 	List<GraphPoint<Double>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {

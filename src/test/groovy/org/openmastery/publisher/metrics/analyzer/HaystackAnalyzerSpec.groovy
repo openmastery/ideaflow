@@ -38,12 +38,11 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand], executionEvents: [event])
-		List<GraphPoint<DurationInSeconds>> graphPoints = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
 
 		then:
-		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
-		assert graphPoints.get(0).value == new DurationInSeconds(28)
+		assert timelinePoint.metricType == MetricType.MAX_HAYSTACK_SIZE
+		assert timelinePoint.value == new DurationInSeconds(28)
 	}
 
 	def "analyzeTimeline SHOULD return entire interval when no execution events"() {
@@ -56,12 +55,11 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand], executionEvents: [])
-		List<GraphPoint<DurationInSeconds>> graphPoints = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
 
 		then:
-		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
-		assert graphPoints.get(0).value ==  new DurationInSeconds(30)
+		assert timelinePoint.metricType == MetricType.MAX_HAYSTACK_SIZE
+		assert timelinePoint.value == new DurationInSeconds(30)
 
 	}
 
@@ -84,12 +82,11 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand, consecutiveBand], executionEvents: [event])
-		List<GraphPoint<DurationInSeconds>> graphPoints = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
 
 		then:
-		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
-		assert graphPoints.get(0).value ==  new DurationInSeconds(88)
+		assert timelinePoint.metricType == MetricType.MAX_HAYSTACK_SIZE
+		assert timelinePoint.value == new DurationInSeconds(88)
 
 	}
 
@@ -111,12 +108,11 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand1, progressBand2], executionEvents: [event])
-		List<GraphPoint<DurationInSeconds>> graphPoints = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
 
 		then:
-		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
-		assert graphPoints.get(0).value ==  new DurationInSeconds(28)
+		assert timelinePoint.metricType == MetricType.MAX_HAYSTACK_SIZE
+		assert timelinePoint.value == new DurationInSeconds(28)
 
 	}
 
@@ -140,12 +136,12 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [learningBand, progressBand], executionEvents: [eventInLearning, eventInProgress])
-		List<GraphPoint<DurationInSeconds>> graphPoints = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
 
 		then:
-		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
-		assert graphPoints.get(0).value ==  new DurationInSeconds(55)
+
+		assert timelinePoint.metricType == MetricType.MAX_HAYSTACK_SIZE
+		assert timelinePoint.value == new DurationInSeconds(55)
 	}
 
 
@@ -183,24 +179,21 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand, troubleshootingBand1, progressBand2, troubleshootingBand2], executionEvents: [event])
-		List<GraphPoint<DurationInSeconds>> graphPoints = calculator.analyzeTimelineAndJourneys(timeline, [journey1, journey2])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [journey1, journey2])
 
 		then:
-		assert graphPoints.size() == 3
 
-		assert graphPoints.get(0).relativePath == "/timeline"
-		assert graphPoints.get(0).value == new DurationInSeconds(108)
+		assert timelinePoint.relativePath == "/timeline"
+		assert timelinePoint.value == new DurationInSeconds(108)
 
-		assert graphPoints.get(1).relativePath == "/journey/1"
-		assert graphPoints.get(1).value == new DurationInSeconds(43)
+		assert timelinePoint.childPoints.get(0).relativePath == "/journey/1"
+		assert timelinePoint.childPoints.get(0).value == new DurationInSeconds(43)
 
-		assert graphPoints.get(2).relativePath == "/journey/2"
-		assert graphPoints.get(2).value == new DurationInSeconds(108)
-
+		assert timelinePoint.childPoints.get(1).relativePath == "/journey/2"
+		assert timelinePoint.childPoints.get(1).value == new DurationInSeconds(108)
 
 
 	}
-
 
 
 }
