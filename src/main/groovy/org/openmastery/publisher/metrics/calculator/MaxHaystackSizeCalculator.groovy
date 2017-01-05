@@ -36,7 +36,7 @@ import org.openmastery.storyweb.api.MetricThreshold
 class MaxHaystackSizeCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
 	MaxHaystackSizeCalculator() {
-		super(MetricType.HAYSTACK_SIZE)
+		super(MetricType.MAX_HAYSTACK_SIZE)
 	}
 
 

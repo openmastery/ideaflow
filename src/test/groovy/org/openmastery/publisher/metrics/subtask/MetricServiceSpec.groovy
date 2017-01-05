@@ -58,10 +58,10 @@ class MetricServiceSpec extends Specification {
 		assert metrics != null
 		assert metrics.size() == 4
 
-		Metric maxCyclesMetric = metrics.find() { Metric metric -> metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT }
+		Metric maxCyclesMetric = metrics.find() { Metric metric -> metric.type == MetricType.MAX_EXPERIMENT_CYCLES }
 		assert maxCyclesMetric.value == 3
 
-		Metric maxHumanRatio = metrics.find() { Metric metric -> metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO }
+		Metric maxHumanRatio = metrics.find() { Metric metric -> metric.type == MetricType.AVG_HUMAN_CYCLE_RATIOS }
 		assert maxHumanRatio.value == new DurationInSeconds((long)12/3 * 60)
 
 	}

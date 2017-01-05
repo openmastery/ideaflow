@@ -23,7 +23,6 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.GraphPoint
-import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.MetricThreshold
 
@@ -31,7 +30,7 @@ import org.openmastery.storyweb.api.MetricThreshold
 class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 
 	HaystackAnalyzer() {
-		super(MetricType.HAYSTACK_SIZE)
+		super(MetricType.MAX_HAYSTACK_SIZE)
 	}
 
 	@Override
@@ -78,15 +77,10 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 			if (journey) {
 				graphPoint = createPoint("/journey", journey)
 			} else {
-				graphPoint = new GraphPoint<>()
-				graphPoint.relativePath = relativePath
-				graphPoint.frequency = journeys.size()
-				graphPoint.metricType = getMetricType()
-				graphPoint.position = timeline.start
-				graphPoint.relativePositionInSeconds = timeline.relativePositionInSeconds
+				graphPoint = createTimelinePoint(timeline, journeys)
 			}
 			graphPoint.value = new DurationInSeconds(haystackSizeInSeconds)
-			graphPoint.danger = graphPoint.value.greaterThan(getDangerThreshold().threshold)
+			graphPoint.danger = isOverThreshold(graphPoint.value)
 			return graphPoint
 		}.sort { GraphPoint<DurationInSeconds> graphPoint ->
 			graphPoint.relativePositionInSeconds
@@ -138,42 +132,7 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 	}
 
 
-	Metric<DurationInSeconds> calculateMetrics(IdeaFlowTimeline timeline) {
-
-
-		List<IdeaFlowBand> consecutiveBandPeriods = collapseConsecutiveBandPeriods(timeline.ideaFlowBands)
-		Long maxDuration = 0
-
-		consecutiveBandPeriods.each { IdeaFlowBand band ->
-			Long relativeStart = band.relativePositionInSeconds
-			Long relativeEnd = relativeStart + band.durationInSeconds
-
-			List<Long> relativeEventTimes = findRelativePositionsWithinRange(timeline.executionEvents, relativeStart, relativeEnd)
-
-			Long previousTime = null
-
-			relativeEventTimes.each { Long currentTime ->
-				if (previousTime == null) {
-					previousTime = currentTime
-				}
-
-				Long duration = currentTime - previousTime
-				if (duration > maxDuration) {
-					maxDuration = duration
-				}
-				previousTime = currentTime
-			}
-		}
-
-		Metric<DurationInSeconds> metric = createMetric()
-		metric.type = getMetricType()
-		metric.value = new DurationInSeconds(maxDuration)
-		metric.danger = metric.value.greaterThan(getDangerThreshold().threshold)
-
-		return metric
-	}
-
-	List<IdeaFlowBand> collapseConsecutiveBandPeriods(List<IdeaFlowBand> bands) {
+	private List<IdeaFlowBand> collapseConsecutiveBandPeriods(List<IdeaFlowBand> bands) {
 		List<IdeaFlowBand> filteredBands = bands.findAll() { IdeaFlowBand band ->
 			(band.type == IdeaFlowStateType.PROGRESS || band.type == IdeaFlowStateType.TROUBLESHOOTING)
 		}
@@ -205,13 +164,13 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 		return consecutiveBandPeriods
 	}
 
-	boolean bandsAreAdjacent(IdeaFlowBand prevBand, IdeaFlowBand nextBand) {
+	private boolean bandsAreAdjacent(IdeaFlowBand prevBand, IdeaFlowBand nextBand) {
 		Long prevBandEnd = prevBand.relativePositionInSeconds + prevBand.durationInSeconds
 		return (prevBandEnd == nextBand.relativePositionInSeconds)
 	}
 
 
-	List<Long> findRelativePositionsWithinRange(List<ExecutionEvent> allEvents, Long relativeStart, Long relativeEnd) {
+	private List<Long> findRelativePositionsWithinRange(List<ExecutionEvent> allEvents, Long relativeStart, Long relativeEnd) {
 		List<ExecutionEvent> eventsWithinBand = findEventsWithinRange(allEvents, relativeStart, relativeEnd)
 		List<Long> relativeTimes = createRelativePositionsList(eventsWithinBand)
 		relativeTimes.add(relativeStart)
@@ -221,7 +180,7 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 		return relativeTimes
 	}
 
-	List<Long> createRelativePositionsList(List<ExecutionEvent> events) {
+	private List<Long> createRelativePositionsList(List<ExecutionEvent> events) {
 		List<Long> relativeTimes = events.collect { ExecutionEvent event ->
 			event.relativePositionInSeconds
 		}
@@ -230,7 +189,7 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 	}
 
 
-	List<ExecutionEvent> findEventsWithinRange(List<ExecutionEvent> events, Long relativeStart, Long relativeEnd) {
+	private List<ExecutionEvent> findEventsWithinRange(List<ExecutionEvent> events, Long relativeStart, Long relativeEnd) {
 		return events.findAll() { ExecutionEvent event ->
 			event.relativePositionInSeconds > relativeStart && event.relativePositionInSeconds < relativeEnd
 		}

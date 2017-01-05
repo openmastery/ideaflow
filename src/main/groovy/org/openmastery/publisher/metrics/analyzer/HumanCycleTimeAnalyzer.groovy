@@ -17,56 +17,63 @@ package org.openmastery.publisher.metrics.analyzer
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.DiscoveryCycle
-import org.openmastery.publisher.api.journey.Measurable
+import org.openmastery.publisher.api.journey.ExperimentCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.MetricThreshold
 
+class HumanCycleTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 
-class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
-
-	ResolutionTimeAnalyzer() {
-		super(MetricType.MAX_RESOLUTION_TIME)
+	HumanCycleTimeAnalyzer() {
+		super(MetricType.AVG_HUMAN_CYCLE_RATIOS)
 	}
 
 	@Override
 	List<GraphPoint<DurationInSeconds>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
 		List<GraphPoint<DurationInSeconds>> allPoints = journeys.collect { TroubleshootingJourney journey ->
-			GraphPoint<DurationInSeconds> bandPoint = createPoint("/journey", journey)
-			bandPoint.childPoints = generatePointsForDiscoveryCycles(journey.discoveryCycles)
-			return bandPoint
+			GraphPoint<DurationInSeconds> journeyPoint = createPoint("/journey", journey)
+			journeyPoint.childPoints = generatePointsForDiscoveryCycles(journey.discoveryCycles)
+			journeyPoint.frequency = getSumOfFrequency(journeyPoint.childPoints)
+			journeyPoint.value = getWeightedAverage(journeyPoint.childPoints)
+			journeyPoint.danger = isOverThreshold(journeyPoint.value)
+			return journeyPoint
 		}
 
 		GraphPoint<DurationInSeconds> timelinePoint = createTimelinePoint(timeline, journeys)
-		timelinePoint.value = getMaximumValue(allPoints)
-		timelinePoint.danger =  isOverThreshold(timelinePoint.value)
+		timelinePoint.value = getWeightedAverage(allPoints)
+		timelinePoint.danger = isOverThreshold(timelinePoint.value)
 
 		allPoints.add(timelinePoint)
 		return allPoints
 	}
 
 	List<GraphPoint<DurationInSeconds>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
-
-		return discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
-			return createPoint("/discovery", discoveryCycle)
+		discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
+			GraphPoint<DurationInSeconds> discoveryPoint = createPoint("/discovery", discoveryCycle)
+			discoveryPoint.value = calculateWeightedAverage(discoveryCycle)
+			discoveryPoint.danger = isOverThreshold(discoveryPoint.value)
+			return discoveryPoint
 		}
 	}
 
-	GraphPoint<DurationInSeconds> createPoint(String relativePath, Measurable measurable) {
-		GraphPoint<DurationInSeconds> point = super.createPoint(relativePath, measurable)
-		point.value = new DurationInSeconds(measurable.getDurationInSeconds())
-		point.danger = isOverThreshold(point.value)
-
-		return point
+	DurationInSeconds calculateWeightedAverage(DiscoveryCycle discoveryCycle) {
+		Long sum = 0
+		int frequency = 0
+		discoveryCycle.experimentCycles.each { ExperimentCycle experimentCycle ->
+			println "Experiment Cycle ["+experimentCycle.relativePositionInSeconds + "] : "+experimentCycle.durationInSeconds
+			sum += experimentCycle.durationInSeconds
+			frequency++
+		}
+		println "Calculated average for discovery cycle = "+ sum + "/" +frequency
+		return new DurationInSeconds((long)sum / frequency)
 	}
 
 	@Override
 	MetricThreshold<DurationInSeconds> getDangerThreshold() {
-		return createMetricThreshold(new DurationInSeconds(30 * 60))
+		return createMetricThreshold(new DurationInSeconds(10 * 60))
 	}
 
 }
-

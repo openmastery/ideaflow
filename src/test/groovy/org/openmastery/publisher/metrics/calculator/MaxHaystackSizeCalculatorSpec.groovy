@@ -40,7 +40,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.HAYSTACK_SIZE
+		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
 		assert metric.value == new DurationInSeconds(28)
 	}
 
@@ -57,7 +57,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.HAYSTACK_SIZE
+		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
 		assert metric.value == new DurationInSeconds(30)
 	}
 
@@ -83,7 +83,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.HAYSTACK_SIZE
+		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
 		assert metric.value == new DurationInSeconds(88)
 	}
 
@@ -108,7 +108,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.HAYSTACK_SIZE
+		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
 		assert metric.value == new DurationInSeconds(28)
 	}
 
@@ -135,7 +135,7 @@ class MaxHaystackSizeCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.HAYSTACK_SIZE
+		assert metric.type == MetricType.MAX_HAYSTACK_SIZE
 		assert metric.value == new DurationInSeconds(55)
 	}
 

@@ -45,7 +45,7 @@ class MaxExperimentCycleCountCalculatorSpec extends Specification {
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT
+		assert metric.type == MetricType.MAX_EXPERIMENT_CYCLES
 		assert metric.value == 3D
 	}
 
@@ -76,7 +76,7 @@ class MaxExperimentCycleCountCalculatorSpec extends Specification {
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.MAX_EXPERIMENT_CYCLE_COUNT
+		assert metric.type == MetricType.MAX_EXPERIMENT_CYCLES
 		assert metric.value == 2.0D
 	}
 }

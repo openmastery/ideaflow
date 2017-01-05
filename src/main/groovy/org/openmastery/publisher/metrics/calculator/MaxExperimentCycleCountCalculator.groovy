@@ -26,7 +26,7 @@ import org.openmastery.storyweb.api.MetricThreshold
 class MaxExperimentCycleCountCalculator extends AbstractMetricsCalculator<Double> {
 
 	MaxExperimentCycleCountCalculator() {
-		super(MetricType.MAX_EXPERIMENT_CYCLE_COUNT)
+		super(MetricType.MAX_EXPERIMENT_CYCLES)
 	}
 
 	/**

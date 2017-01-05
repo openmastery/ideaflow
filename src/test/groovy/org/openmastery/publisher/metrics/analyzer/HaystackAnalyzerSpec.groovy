@@ -42,7 +42,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		then:
 		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.HAYSTACK_SIZE
+		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
 		assert graphPoints.get(0).value == new DurationInSeconds(28)
 	}
 
@@ -60,7 +60,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		then:
 		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.HAYSTACK_SIZE
+		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
 		assert graphPoints.get(0).value ==  new DurationInSeconds(30)
 
 	}
@@ -88,7 +88,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		then:
 		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.HAYSTACK_SIZE
+		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
 		assert graphPoints.get(0).value ==  new DurationInSeconds(88)
 
 	}
@@ -115,7 +115,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		then:
 		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.HAYSTACK_SIZE
+		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
 		assert graphPoints.get(0).value ==  new DurationInSeconds(28)
 
 	}
@@ -144,7 +144,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		then:
 		assert graphPoints.size() == 1
-		assert  graphPoints.get(0).metricType == MetricType.HAYSTACK_SIZE
+		assert  graphPoints.get(0).metricType == MetricType.MAX_HAYSTACK_SIZE
 		assert graphPoints.get(0).value ==  new DurationInSeconds(55)
 	}
 

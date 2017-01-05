@@ -24,7 +24,7 @@ import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.MetricThreshold
 
-abstract class AbstractTimelineAnalyzer<T> {
+abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 
 	private MetricType metricType;
 
@@ -63,5 +63,70 @@ abstract class AbstractTimelineAnalyzer<T> {
 		point.relativePositionInSeconds = measurable.relativePositionInSeconds
 		point.metricType = getMetricType()
 		return point
+	}
+
+	GraphPoint<T> createTimelinePoint(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
+		GraphPoint<T> graphPoint = new GraphPoint<>()
+		graphPoint.relativePath = "/timeline"
+		graphPoint.frequency = journeys.size()
+		graphPoint.metricType = getMetricType()
+		graphPoint.position = timeline.start
+		graphPoint.relativePositionInSeconds = timeline.relativePositionInSeconds
+		return graphPoint
+	}
+
+	T getMaximumValue(List<GraphPoint<T>> graphPoints) {
+		T maxValue = null;
+		graphPoints.each { GraphPoint<T> point ->
+			if (maxValue == null || point.value > maxValue)  {
+				maxValue = point.value
+			}
+		}
+		return maxValue
+	}
+
+	T getSumOfValues(List<GraphPoint<T>> graphPoints) {
+		T sum = null;
+		graphPoints.each { GraphPoint<T> point ->
+			if (sum == null) {
+				sum = point.value
+			} else {
+				sum = sum + point.value
+			}
+		}
+		return sum
+	}
+
+	T getWeightedAverage(List<GraphPoint<T>> graphPoints) {
+		T sum = null
+		int totalSamples = 0;
+
+		graphPoints.each { GraphPoint<T> point ->
+			if (sum == null) {
+				sum = point.value * point.frequency
+			} else {
+				sum += point.value * point.frequency
+			}
+			totalSamples += point.frequency
+		}
+
+		T average = sum
+		if (totalSamples > 0) {
+			average = sum / totalSamples
+		}
+		return average
+	}
+
+	int getSumOfFrequency(List<GraphPoint<T>> graphPoints) {
+		int frequency = 0;
+		graphPoints.each { GraphPoint<T> point ->
+			frequency += point.frequency
+		}
+		return frequency
+	}
+
+	boolean isOverThreshold(T value) {
+		MetricThreshold<T> threshold = getDangerThreshold()
+		return value > threshold.threshold
 	}
 }

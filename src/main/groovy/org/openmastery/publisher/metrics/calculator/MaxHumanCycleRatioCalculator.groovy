@@ -27,7 +27,7 @@ import org.openmastery.storyweb.api.MetricThreshold
 class MaxHumanCycleRatioCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
 	MaxHumanCycleRatioCalculator() {
-		super(MetricType.MAX_HUMAN_CYCLE_RATIO)
+		super(MetricType.AVG_HUMAN_CYCLE_RATIOS)
 	}
 
 	/**

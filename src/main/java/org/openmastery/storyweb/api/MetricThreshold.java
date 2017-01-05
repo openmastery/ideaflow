@@ -22,4 +22,5 @@ public class MetricThreshold<V> {
 		}
 		this.threshold = threshold;
 	}
+
 }

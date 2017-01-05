@@ -47,7 +47,7 @@ class MaxHumanCycleRatioCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO
+		assert metric.type == MetricType.AVG_HUMAN_CYCLE_RATIOS
 		assert metric.value == new DurationInSeconds( (Long)(15 * 60)/ 3)
 	}
 
@@ -80,7 +80,7 @@ class MaxHumanCycleRatioCalculatorSpec extends Specification {
 		Metric<DurationInSeconds> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.MAX_HUMAN_CYCLE_RATIO
+		assert metric.type == MetricType.AVG_HUMAN_CYCLE_RATIOS
 		assert metric.value == new DurationInSeconds( (Long) 15 * 60 )
 	}
 }

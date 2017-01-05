@@ -26,7 +26,7 @@ import org.openmastery.storyweb.api.MetricThreshold
 class MaxResolutionTimeCalculator extends AbstractMetricsCalculator<DurationInSeconds> {
 
 	MaxResolutionTimeCalculator() {
-		super(MetricType.RESOLUTION_TIME)
+		super(MetricType.MAX_RESOLUTION_TIME)
 	}
 
 

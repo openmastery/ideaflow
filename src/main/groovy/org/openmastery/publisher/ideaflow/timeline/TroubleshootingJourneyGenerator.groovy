@@ -172,8 +172,9 @@ class TroubleshootingJourneyGenerator {
 						(wtfYayEvent.type == EventType.AWESOME && eventPosition > journey.relativeStart && eventPosition <= journey.relativeEnd)) {
 
 					Long durationInSeconds = 0;
-					if (wtfYayEvents.size() > activeIndex + 1) {
+					if (wtfYayEvents.size() > activeIndex + 1 && wtfYayEvents.get(activeIndex + 1).relativePositionInSeconds < troubleshootingBand.relativeEnd) {
 						Event peekAtNextEvent = wtfYayEvents.get(activeIndex + 1)
+
 						durationInSeconds = peekAtNextEvent.relativePositionInSeconds - wtfYayEvent.relativePositionInSeconds
 					} else {
 						durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
