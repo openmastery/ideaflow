@@ -23,10 +23,11 @@ public class EventClient extends OpenMasteryClient<Event, EventClient> {
 				.findMany();
 	}
 
-	public Event updateEvent(Event event) {
+	public Event updateEvent(String eventType, Long eventId, String comment) {
 		return crudClientRequest
-				.path(event.getId())
-				.updateWithPut(event);
+				.path(eventType)
+				.path(eventId)
+				.updateWithPut(comment);
 	}
 
 	public FAQAnnotation annotateWithFAQ(Long eventId, String annotation) {

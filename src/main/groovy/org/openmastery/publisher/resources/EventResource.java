@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.resources;
 
+import org.hibernate.cfg.NotYetImplementedException;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -61,19 +62,56 @@ public class EventResource {
 	}
 
 
-	/**
-	 * Update the comment or position of a NOTE, SUBTASK, DISRUPTION, PAIN, AWESOME or any other event type
-	 * @param eventId the event to update
-	 * @param eventToUpdate the full event object
-	 * @return Event
-	 */
-
 	@PUT
-	@Path("/{eventId}")
-	public Event update(@PathParam("eventId") Long eventId, Event eventToUpdate) {
+	@Path(ResourcePaths.EVENT_SUBTASK+ "/{subtaskId}")
+	public Event updateSubtask(@PathParam("subtaskId") Long eventId, String comment) {
 		Long userId = invocationContext.getUserId();
 
-		return eventService.updateEvent(userId, eventToUpdate);
+		return eventService.updateEvent(userId, eventId, comment);
+	}
+
+	@PUT
+	@Path(ResourcePaths.EVENT_MILESTONE+ "/{milestoneId}")
+	public Event updateProgressMilestone(@PathParam("milestoneId") Long eventId, String comment) {
+		Long userId = invocationContext.getUserId();
+
+		return eventService.updateEvent(userId, eventId, comment);
+	}
+
+	@PUT
+	@Path(ResourcePaths.EVENT_JOURNEY+ "/{journeyId}")
+	public Event updateJourney(@PathParam("journeyId") Long journeyId, String comment) {
+
+		//TODO create an annotation for the first event, which is modeled as a journey comment.
+		//not currently editable on the UI, so skip this for the moment...
+
+		throw new NotYetImplementedException("Journeys are not yet editable");
+	}
+
+	@PUT
+	@Path(ResourcePaths.EVENT_WTF+ "/{wtfId}")
+	public Event updateWTF(@PathParam("wtfId") Long eventId, String comment) {
+		Long userId = invocationContext.getUserId();
+
+		return eventService.updateEvent(userId, eventId, comment);
+	}
+
+	@PUT
+	@Path(ResourcePaths.EVENT_DISCOVERY+ "/{discoveryId}")
+	public Event updateDiscoveryCycle(@PathParam("discoveryId") Long eventId, String comment) {
+		Long userId = invocationContext.getUserId();
+
+		return eventService.updateEvent(userId, eventId, comment);
+	}
+
+	@PUT
+	@Path(ResourcePaths.EVENT_EXPERIMENT+ "/{experimentId}")
+	public Event updateExperiment(@PathParam("experimentId") Long eventId, String comment) {
+
+		//TODO this is an execution event
+		//NO-OP this for now, comments on process execution?  I don't see why not...
+
+		throw new NotYetImplementedException("Experiments are not yet editable");
 	}
 
 

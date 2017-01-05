@@ -16,6 +16,7 @@
 package org.openmastery.publisher.core
 
 import com.bancvue.rest.exception.NotFoundException
+import org.hibernate.cfg.NotYetImplementedException
 import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.annotation.FAQAnnotation
@@ -44,6 +45,24 @@ class EventService {
 			mapper.mapIfNotNull(entity, Event.class)
 		}
 		return eventList
+	}
+
+	Event updateJourney(Long userId, Long journeyId, String comment) {
+		throw new NotYetImplementedException("Need to implement this still!")
+	}
+
+	Event updateBookmark(Long userId, Long bookmarkId, String comment) {
+		throw new NotYetImplementedException("Need to implement this still!")
+	}
+
+	Event updateEvent(Long userId, Long eventId, String comment) {
+		//TODO this query should take userId too
+		EventEntity entity = persistenceService.findEventById(eventId)
+		entity.comment = comment
+		entity.ownerId = userId
+
+		EventEntity savedEntity = persistenceService.saveEvent(entity);
+		return toApi(savedEntity)
 	}
 
 	Event updateEvent(Long userId, Event eventToUpdate) {
@@ -82,4 +101,6 @@ class EventService {
 
 		return new FAQAnnotation(eventId: faqAnnotationEntity.eventId, faq: faqAnnotationEntity.comment);
 	}
+
+
 }

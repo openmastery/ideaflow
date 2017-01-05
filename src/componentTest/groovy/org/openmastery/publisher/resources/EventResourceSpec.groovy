@@ -64,12 +64,13 @@ class EventResourceSpec extends Specification {
 	def "Should update event with PUT"() {
 		given:
 		EventEntity eventEntity = createRandomEvent()
-		persistenceService.saveEvent(eventEntity)
+		eventEntity.type = EventType.SUBTASK
+		eventEntity = persistenceService.saveEvent(eventEntity)
 		EntityMapper mapper = new EntityMapper()
 		Event event = mapper.mapIfNotNull(eventEntity, Event.class)
 
 		when:
-		Event savedEvent = eventClient.updateEvent(event)
+		Event savedEvent = eventClient.updateEvent("subtask",eventEntity.id, event.comment )
 
 		then:
 		assert savedEvent != null

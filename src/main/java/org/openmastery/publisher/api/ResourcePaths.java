@@ -45,10 +45,13 @@ public class ResourcePaths {
 
 	// event paths
 	public static final String EVENT_PATH = "/event";
-	public static final String EVENT_NOTE_PATH = "/note";
-	public static final String EVENT_SUBTASK_PATH = "/subtask";
-	public static final String EVENT_WTF_PATH = "/wtf";
-	public static final String EVENT_AWESOME_PATH = "/awesome";
+	public static final String EVENT_SUBTASK = "/subtask";
+	public static final String EVENT_MILESTONE = "/milestone";
+	public static final String EVENT_JOURNEY = "/journey";
+	public static final String EVENT_WTF = "/wtf";
+	public static final String EVENT_DISCOVERY = "/discovery";
+	public static final String EVENT_EXPERIMENT = "/experiment";
+
 	public static final String EVENT_ANNOTATION_PATH = "/annotation";
 	public static final String EVENT_FAQ_PATH = "/faq";
 
