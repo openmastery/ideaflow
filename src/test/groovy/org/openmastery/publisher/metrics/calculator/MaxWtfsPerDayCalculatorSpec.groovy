@@ -40,7 +40,7 @@ class MaxWtfsPerDayCalculatorSpec extends Specification {
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.MAX_WTFS_PER_DAY
+		assert metric.type == MetricType.WTFS_PER_DAY
 		assert metric.value == 2.0D
 		assert metric.valueType == "Double"
 
@@ -60,7 +60,7 @@ class MaxWtfsPerDayCalculatorSpec extends Specification {
 		Metric<Double> metric = calculator.calculateMetrics(timeline)
 
 		then:
-		assert metric.type == MetricType.MAX_WTFS_PER_DAY
+		assert metric.type == MetricType.WTFS_PER_DAY
 		assert metric.value == 2.0D
 	}
 }

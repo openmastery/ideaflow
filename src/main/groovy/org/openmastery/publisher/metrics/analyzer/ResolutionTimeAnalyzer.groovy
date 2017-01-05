@@ -17,7 +17,7 @@ package org.openmastery.publisher.metrics.analyzer
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.DiscoveryCycle
-import org.openmastery.publisher.api.journey.Measurable
+import org.openmastery.publisher.api.journey.MeasurableContext
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.GraphPoint
@@ -35,7 +35,7 @@ class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 	List<GraphPoint<DurationInSeconds>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
 		List<GraphPoint<DurationInSeconds>> allPoints = journeys.collect { TroubleshootingJourney journey ->
-			GraphPoint<DurationInSeconds> bandPoint = createPoint("/journey", journey)
+			GraphPoint<DurationInSeconds> bandPoint = createPointFromMeasurableContext("/journey", journey)
 			bandPoint.childPoints = generatePointsForDiscoveryCycles(journey.discoveryCycles)
 			return bandPoint
 		}
@@ -51,12 +51,12 @@ class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 	List<GraphPoint<DurationInSeconds>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
 
 		return discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
-			return createPoint("/discovery", discoveryCycle)
+			return createPointFromMeasurableContext("/discovery", discoveryCycle)
 		}
 	}
 
-	GraphPoint<DurationInSeconds> createPoint(String relativePath, Measurable measurable) {
-		GraphPoint<DurationInSeconds> point = super.createPoint(relativePath, measurable)
+	GraphPoint<DurationInSeconds> createPointFromMeasurableContext(String relativePath, MeasurableContext measurable) {
+		GraphPoint<DurationInSeconds> point = super.createPointFromMeasurableContext(relativePath, measurable)
 		point.value = new DurationInSeconds(measurable.getDurationInSeconds())
 		point.danger = isOverThreshold(point.value)
 

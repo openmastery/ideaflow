@@ -26,7 +26,7 @@ import org.openmastery.storyweb.api.MetricThreshold
 class MaxWtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 
 	MaxWtfsPerDayCalculator() {
-		super(MetricType.MAX_WTFS_PER_DAY)
+		super(MetricType.WTFS_PER_DAY)
 	}
 
 	@Override

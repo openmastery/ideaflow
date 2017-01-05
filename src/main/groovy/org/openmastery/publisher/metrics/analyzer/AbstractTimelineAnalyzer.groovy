@@ -16,9 +16,8 @@
 package org.openmastery.publisher.metrics.analyzer
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.Measurable
+import org.openmastery.publisher.api.journey.MeasurableContext
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
-import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
@@ -31,6 +30,7 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 	AbstractTimelineAnalyzer(MetricType metricType) {
 		this.metricType = metricType
 	}
+
 
 	abstract List<GraphPoint<T>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys);
 
@@ -54,7 +54,7 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		return threshold
 	}
 
-	GraphPoint<T> createPoint(String relativePath, Measurable measurable) {
+	GraphPoint<T> createPointFromMeasurableContext(String relativePath, MeasurableContext measurable) {
 		GraphPoint<T> point = new GraphPoint<>()
 		point.relativePath = relativePath + "/"+ measurable.id
 		point.painTags = measurable.painTags
@@ -64,6 +64,15 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		point.metricType = getMetricType()
 		return point
 	}
+
+	GraphPoint<T> createEmptyPoint(String relativePath) {
+		GraphPoint<T> point = new GraphPoint<T>()
+		point.relativePath = relativePath
+		point.metricType = getMetricType()
+		point.frequency = 1
+		return point
+	}
+
 
 	GraphPoint<T> createTimelinePoint(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 		GraphPoint<T> graphPoint = new GraphPoint<>()
@@ -75,7 +84,7 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		return graphPoint
 	}
 
-	T getMaximumValue(List<GraphPoint<T>> graphPoints) {
+	T getMaximumValue(Collection<GraphPoint<T>> graphPoints) {
 		T maxValue = null;
 		graphPoints.each { GraphPoint<T> point ->
 			if (maxValue == null || point.value > maxValue)  {
@@ -85,7 +94,7 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		return maxValue
 	}
 
-	T getSumOfValues(List<GraphPoint<T>> graphPoints) {
+	T getSumOfValues(Collection<GraphPoint<T>> graphPoints) {
 		T sum = null;
 		graphPoints.each { GraphPoint<T> point ->
 			if (sum == null) {
@@ -97,7 +106,7 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		return sum
 	}
 
-	T getWeightedAverage(List<GraphPoint<T>> graphPoints) {
+	T getWeightedAverage(Collection<GraphPoint<T>> graphPoints) {
 		T sum = null
 		int totalSamples = 0;
 
@@ -117,7 +126,7 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		return average
 	}
 
-	int getSumOfFrequency(List<GraphPoint<T>> graphPoints) {
+	int getSumOfFrequency(Collection<GraphPoint<T>> graphPoints) {
 		int frequency = 0;
 		graphPoints.each { GraphPoint<T> point ->
 			frequency += point.frequency

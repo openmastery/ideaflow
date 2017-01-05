@@ -9,7 +9,7 @@ import org.openmastery.publisher.api.metrics.GraphPoint;
 import java.util.List;
 import java.util.Set;
 
-public interface Measurable {
+public interface MeasurableContext {
 
 	Long getId();
 	Set<String> getPainTags();

@@ -18,7 +18,7 @@ import java.util.Set;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class DiscoveryCycle extends AbstractRelativeInterval implements Measurable {
+public class DiscoveryCycle extends AbstractRelativeInterval implements MeasurableContext {
 
 	@JsonIgnore
 	Event event;

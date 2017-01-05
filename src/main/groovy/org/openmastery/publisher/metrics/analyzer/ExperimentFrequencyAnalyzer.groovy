@@ -34,7 +34,7 @@ class ExperimentFrequencyAnalyzer extends AbstractTimelineAnalyzer<Double> {
 	List<GraphPoint<Double>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
 		List<GraphPoint<Double>> allPoints = journeys.collect { TroubleshootingJourney journey ->
-			GraphPoint<Double> journeyPoint = createPoint("/journey", journey)
+			GraphPoint<Double> journeyPoint = createPointFromMeasurableContext("/journey", journey)
 
 			journeyPoint.childPoints = generatePointsForDiscoveryCycles(journey.discoveryCycles)
 			journeyPoint.frequency = getSumOfFrequency(journeyPoint.childPoints)
@@ -46,14 +46,13 @@ class ExperimentFrequencyAnalyzer extends AbstractTimelineAnalyzer<Double> {
 		GraphPoint<Double> timelinePoint = createTimelinePoint(timeline, journeys)
 		timelinePoint.value = getMaximumValue(allPoints)
 		timelinePoint.danger = isOverThreshold(timelinePoint.value)
-
 		allPoints.add(timelinePoint)
 		return allPoints
 	}
 
 	List<GraphPoint<Double>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
 		discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
-			GraphPoint<Double> discoveryPoint = createPoint("/discovery", discoveryCycle)
+			GraphPoint<Double> discoveryPoint = createPointFromMeasurableContext("/discovery", discoveryCycle)
 			discoveryPoint.value = Double.valueOf(discoveryCycle.getFrequency())
 			discoveryPoint.danger = isOverThreshold(discoveryPoint.value)
 			return discoveryPoint

@@ -17,6 +17,9 @@ package org.openmastery.time
 
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
+import org.joda.time.LocalDate
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 import java.sql.Timestamp
 import java.time.LocalDateTime
@@ -85,4 +88,9 @@ class TimeConverter {
 		return between(toJodaLocalDateTime(start), toJodaLocalDateTime(end));
 	}
 
+	static String formatDate(LocalDate localDate) {
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
+
+		return formatter.print(localDate)
+	}
 }

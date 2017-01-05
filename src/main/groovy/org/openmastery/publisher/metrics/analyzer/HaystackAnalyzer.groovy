@@ -75,7 +75,7 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 			TroubleshootingJourney journey = findJourney(journeys, relativePath)
 			GraphPoint<DurationInSeconds> graphPoint
 			if (journey) {
-				graphPoint = createPoint("/journey", journey)
+				graphPoint = createPointFromMeasurableContext("/journey", journey)
 			} else {
 				graphPoint = createTimelinePoint(timeline, journeys)
 			}

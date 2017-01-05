@@ -19,7 +19,7 @@ import java.util.Set;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class TroubleshootingJourney extends AbstractRelativeInterval implements Measurable {
+public class TroubleshootingJourney extends AbstractRelativeInterval implements MeasurableContext {
 
 	@JsonIgnore
 	IdeaFlowBand band;

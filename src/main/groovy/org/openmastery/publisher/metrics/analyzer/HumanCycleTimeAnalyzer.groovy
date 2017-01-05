@@ -34,7 +34,7 @@ class HumanCycleTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 	List<GraphPoint<DurationInSeconds>> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
 		List<GraphPoint<DurationInSeconds>> allPoints = journeys.collect { TroubleshootingJourney journey ->
-			GraphPoint<DurationInSeconds> journeyPoint = createPoint("/journey", journey)
+			GraphPoint<DurationInSeconds> journeyPoint = createPointFromMeasurableContext("/journey", journey)
 			journeyPoint.childPoints = generatePointsForDiscoveryCycles(journey.discoveryCycles)
 			journeyPoint.frequency = getSumOfFrequency(journeyPoint.childPoints)
 			journeyPoint.value = getWeightedAverage(journeyPoint.childPoints)
@@ -52,7 +52,7 @@ class HumanCycleTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 
 	List<GraphPoint<DurationInSeconds>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
 		discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
-			GraphPoint<DurationInSeconds> discoveryPoint = createPoint("/discovery", discoveryCycle)
+			GraphPoint<DurationInSeconds> discoveryPoint = createPointFromMeasurableContext("/discovery", discoveryCycle)
 			discoveryPoint.value = calculateWeightedAverage(discoveryCycle)
 			discoveryPoint.danger = isOverThreshold(discoveryPoint.value)
 			return discoveryPoint

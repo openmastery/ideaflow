@@ -3,11 +3,8 @@ package org.openmastery.publisher.api.metrics;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.Positionable;
-import org.openmastery.publisher.api.journey.Measurable;
-import org.openmastery.storyweb.api.MetricThreshold;
 
 import java.util.ArrayList;
 import java.util.HashSet;
