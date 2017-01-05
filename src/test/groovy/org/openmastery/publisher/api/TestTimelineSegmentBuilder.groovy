@@ -46,8 +46,8 @@ class TestTimelineSegmentBuilder {
 	private IdeaFlowBandModel createIdeaFlowBand(IdeaFlowStateType type, int startHour, int endHour) {
 		IdeaFlowBandModel.builder()
 				.type(type)
-				.start(timeService.inFuture(startHour))
-				.end(timeService.inFuture(endHour))
+				.start(timeService.hoursInFuture(startHour))
+				.end(timeService.hoursInFuture(endHour))
 				.idleBands([])
 				.nestedBands([])
 				.build()
@@ -81,8 +81,8 @@ class TestTimelineSegmentBuilder {
 
 	TestTimelineSegmentBuilder idle(int startHour, int endHour) {
 		idleActivities << IdleActivityEntity.builder()
-				.start(timeService.javaInFuture(startHour))
-				.end(timeService.javaInFuture(endHour))
+				.start(timeService.javaHoursInFuture(startHour))
+				.end(timeService.javaHoursInFuture(endHour))
 				.build()
 		this
 	}

@@ -15,11 +15,6 @@ class MockTimeService implements TimeService {
 		TimeConverter.toJavaLocalDateTime(now)
 	}
 
-	@Deprecated
-	java.time.LocalDateTime javaInFuture(int hours) {
-		javaHoursInFuture(hours)
-	}
-
 	java.time.LocalDateTime javaDaysInFuture(int days) {
 		TimeConverter.toJavaLocalDateTime(daysInFuture(days))
 	}
@@ -39,11 +34,6 @@ class MockTimeService implements TimeService {
 	@Override
 	LocalDateTime now() {
 		now
-	}
-
-	@Deprecated
-	LocalDateTime inFuture(int hours) {
-		hoursInFuture(hours)
 	}
 
 	LocalDateTime daysInFuture(int days) {
