@@ -5,7 +5,7 @@ import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.storyweb.api.SPCChart
-import org.openmastery.storyweb.client.SPCClient
+import org.openmastery.storyweb.client.MetricsClient
 import org.openmastery.storyweb.core.FixturePersistenceHelper
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,13 +14,13 @@ import spock.lang.Specification
 import static org.openmastery.publisher.ARandom.aRandom
 
 @ComponentTest
-class SpcResourceSpec extends Specification {
+class MetricsResourceSpec extends Specification {
 
 	@Autowired
 	private UserEntity testUser;
 
 	@Autowired
-	private SPCClient spcClient
+	private MetricsClient metricsClient
 
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
@@ -54,7 +54,7 @@ class SpcResourceSpec extends Specification {
 		fixturePersistenceHelper.saveIdeaFlow(userId, taskId, builder)
 
 		when:
-		SPCChart chart = spcClient.generateChart(builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
+		SPCChart chart = metricsClient.generateChart(builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
 
 		then:
 		assert chart != null

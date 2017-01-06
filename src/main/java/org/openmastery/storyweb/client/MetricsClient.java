@@ -6,10 +6,10 @@ import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.storyweb.api.ResourcePaths;
 import org.openmastery.storyweb.api.SPCChart;
 
-public class SPCClient extends StorywebClient<SPCChart, SPCClient> {
+public class MetricsClient extends StorywebClient<SPCChart, MetricsClient> {
 
-	public SPCClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.STORY_WEB_PATH + ResourcePaths.SPC_PATH, SPCChart.class);
+	public MetricsClient(String baseUrl) {
+		super(baseUrl, ResourcePaths.STORY_WEB_PATH + ResourcePaths.METRICS_PATH, SPCChart.class);
 	}
 
 	public SPCChart generateChart(LocalDate startDate, LocalDate endDate) {
@@ -17,8 +17,10 @@ public class SPCClient extends StorywebClient<SPCChart, SPCClient> {
 		String startDateStr = formatter.print(startDate);
 		String endDateStr = formatter.print(endDate);
 
-		return crudClientRequest.queryParam("startDate", startDateStr)
+		return crudClientRequest.path(ResourcePaths.METRICS_SPC_PATH)
+				.queryParam("startDate", startDateStr)
 				.queryParam("endDate", endDateStr).find();
 	}
+
 
 }

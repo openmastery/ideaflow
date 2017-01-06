@@ -46,7 +46,9 @@ public class ResourcePaths {
 
 	public static final String FAQ_PATH = "/faq";
 
+	public static final String METRICS_PATH = "/metrics";
+	public static final String METRICS_TASK_PATH = "/task";
 
-	public static final String SPC_PATH = "/spc";
+	public static final String METRICS_SPC_PATH = "/spc";
 
 }

@@ -30,10 +30,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Component
-@Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.SPC_PATH)
+@Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.METRICS_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
-public class SPCResource {
+public class MetricsResource {
 
 
 	@Autowired
@@ -47,6 +47,7 @@ public class SPCResource {
 	 * @return SPCChart
 	 */
 	@GET
+	@Path(ResourcePaths.METRICS_SPC_PATH)
 	public SPCChart generateSPCChart(@QueryParam("startDate") String startDate, @QueryParam("endDate") String endDate) {
 		System.out.println("generateSPCChart [" + startDate + " : " + endDate +"]");
 		LocalDate jodaStartDate;

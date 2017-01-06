@@ -24,7 +24,7 @@ import org.openmastery.publisher.core.user.UserEntity;
 import org.openmastery.publisher.security.UserIdResolver;
 import org.openmastery.storyweb.client.FaqClient;
 import org.openmastery.storyweb.client.GlossaryClient;
-import org.openmastery.storyweb.client.SPCClient;
+import org.openmastery.storyweb.client.MetricsClient;
 import org.openmastery.time.MockTimeService;
 import org.openmastery.time.TimeService;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,8 +83,8 @@ public class IfmPublisherTestConfig {
 	}
 
 	@Bean
-	public SPCClient spcClient() {
-		return new SPCClient(hostUri)
+	public MetricsClient spcClient() {
+		return new MetricsClient(hostUri)
 				.apiKey(testUser().getApiKey());
 	}
 
