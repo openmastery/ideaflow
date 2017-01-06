@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.storyweb.core
+package org.openmastery.publisher.core
 
 import com.bancvue.rest.exception.NotFoundException
 import org.apache.commons.lang3.NotImplementedException
@@ -55,10 +55,6 @@ class EventService {
 	}
 
 	Event updateJourney(Long userId, Long journeyId, String comment) {
-		throw new NotYetImplementedException("Need to implement this still!")
-	}
-
-	Event updateBookmark(Long userId, Long bookmarkId, String comment) {
 		throw new NotYetImplementedException("Need to implement this still!")
 	}
 

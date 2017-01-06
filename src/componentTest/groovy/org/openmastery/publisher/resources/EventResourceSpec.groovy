@@ -1,4 +1,4 @@
-package org.openmastery.storyweb.resources
+package org.openmastery.publisher.resources
 
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.annotation.FAQAnnotation
@@ -8,7 +8,7 @@ import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.event.EventType
-import org.openmastery.storyweb.client.EventClient
+import org.openmastery.publisher.client.EventClient
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.time.TimeService

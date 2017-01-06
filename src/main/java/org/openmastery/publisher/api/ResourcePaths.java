@@ -35,6 +35,20 @@ public class ResourcePaths {
 	public static final String IDEAFLOW_TASK = "/task";
 	public static final String IDEAFLOW_SUBTASK = "/subtask";
 
+	// event paths
+	public static final String EVENT_PATH = "/event";
+	public static final String EVENT_TASK_ACTIVATE = "/activate";
+	public static final String EVENT_TASK_DEACTIVATE = "/deactivate";
+	public static final String EVENT_SUBTASK = "/subtask";
+	public static final String EVENT_MILESTONE = "/milestone";
+	public static final String EVENT_JOURNEY = "/journey";
+	public static final String EVENT_WTF = "/wtf";
+	public static final String EVENT_DISCOVERY = "/discovery";
+	public static final String EVENT_EXPERIMENT = "/experiment";
+
+	public static final String EVENT_ANNOTATION_PATH = "/annotation";
+	public static final String EVENT_FAQ_PATH = "/faq";
+
 
 
 	// activity paths

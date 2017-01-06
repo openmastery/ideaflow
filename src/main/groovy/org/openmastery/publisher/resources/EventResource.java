@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.storyweb.resources;
+package org.openmastery.publisher.resources;
 
 import org.hibernate.cfg.NotYetImplementedException;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.annotation.FAQAnnotation;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.EventType;
-import org.openmastery.storyweb.core.EventService;
+import org.openmastery.publisher.core.EventService;
 import org.openmastery.publisher.security.InvocationContext;
-import org.openmastery.storyweb.api.ResourcePaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +33,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Component
-@Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.EVENT_PATH)
+@Path(ResourcePaths.IDEAFLOW_PATH + ResourcePaths.EVENT_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class EventResource {
 
@@ -59,9 +59,16 @@ public class EventResource {
 		return eventService.getLatestEvents(userId, jodaAfterDate, limit);
 	}
 
+	/**
+	 * Retrieve all the recent events for a specified event type
+	 * @param eventType Any of the event subtypes in this resource (journey and experiment not yet supported)
+	 * @param afterDate Get events after the specified date
+	 * @param limit the maximum number of events to retrieve
+	 * @return List<Event>
+	 */
 	@GET
 	@Path("{eventType}")
-	public List<Event> getLatestEvents(@PathParam("eventType") String eventType, @QueryParam("afterDate") String afterDate, @QueryParam("limit") Integer limit) {
+	public List<Event> getLatestEventsByType(@PathParam("eventType") String eventType, @QueryParam("afterDate") String afterDate, @QueryParam("limit") Integer limit) {
 		Long userId = invocationContext.getUserId();
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd_HHmmss");
 		LocalDateTime jodaAfterDate = formatter.parseLocalDateTime(afterDate);
@@ -104,8 +111,8 @@ public class EventResource {
 	 * @return Event
 	 */
 	@PUT
-	@Path(ResourcePaths.EVENT_SUBTASK+ "/{subtaskId}")
-	public Event updateSubtask(@PathParam("subtaskId") Long eventId, String comment) {
+	@Path(ResourcePaths.EVENT_SUBTASK+ "/{eventId}")
+	public Event updateSubtask(@PathParam("eventId") Long eventId, String comment) {
 		Long userId = invocationContext.getUserId();
 
 		return eventService.updateEvent(userId, eventId, comment);
@@ -119,8 +126,8 @@ public class EventResource {
 	 */
 
 	@PUT
-	@Path(ResourcePaths.EVENT_MILESTONE+ "/{milestoneId}")
-	public Event updateProgressMilestone(@PathParam("milestoneId") Long eventId, String comment) {
+	@Path(ResourcePaths.EVENT_MILESTONE+ "/{eventId}")
+	public Event updateProgressMilestone(@PathParam("eventId") Long eventId, String comment) {
 		Long userId = invocationContext.getUserId();
 
 		return eventService.updateEvent(userId, eventId, comment);
@@ -134,8 +141,8 @@ public class EventResource {
 	 */
 
 	@PUT
-	@Path(ResourcePaths.EVENT_JOURNEY+ "/{journeyId}")
-	public Event updateJourney(@PathParam("journeyId") Long eventId, String comment) {
+	@Path(ResourcePaths.EVENT_JOURNEY+ "/{eventId}")
+	public Event updateJourney(@PathParam("eventId") Long eventId, String comment) {
 
 		//TODO create an annotation for the first event, which is modeled as a journey comment.
 		//not currently editable on the UI, so skip this for the moment...
@@ -151,8 +158,8 @@ public class EventResource {
 	 */
 
 	@PUT
-	@Path(ResourcePaths.EVENT_WTF+ "/{wtfId}")
-	public Event updateWTF(@PathParam("wtfId") Long eventId, String comment) {
+	@Path(ResourcePaths.EVENT_WTF+ "/{eventId}")
+	public Event updateWTF(@PathParam("eventId") Long eventId, String comment) {
 		Long userId = invocationContext.getUserId();
 
 		return eventService.updateEvent(userId, eventId, comment);
@@ -166,8 +173,8 @@ public class EventResource {
 	 */
 
 	@PUT
-	@Path(ResourcePaths.EVENT_DISCOVERY+ "/{discoveryId}")
-	public Event updateDiscoveryCycle(@PathParam("discoveryId") Long eventId, String comment) {
+	@Path(ResourcePaths.EVENT_DISCOVERY+ "/{eventId}")
+	public Event updateDiscoveryCycle(@PathParam("eventId") Long eventId, String comment) {
 		Long userId = invocationContext.getUserId();
 
 		return eventService.updateEvent(userId, eventId, comment);
@@ -181,8 +188,8 @@ public class EventResource {
 	 */
 
 	@PUT
-	@Path(ResourcePaths.EVENT_EXPERIMENT+ "/{experimentId}")
-	public Event updateExperiment(@PathParam("experimentId") Long eventId, String comment) {
+	@Path(ResourcePaths.EVENT_EXPERIMENT+ "/{eventId}")
+	public Event updateExperiment(@PathParam("eventId") Long eventId, String comment) {
 
 		//TODO this is an execution event
 		//NO-OP this for now, comments on process execution?  I don't see why not...

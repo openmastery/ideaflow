@@ -4,7 +4,7 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.client.BatchClient
-import org.openmastery.storyweb.client.EventClient
+import org.openmastery.publisher.client.EventClient
 import org.openmastery.publisher.client.TimelineClient
 import org.openmastery.publisher.client.TaskClient
 
