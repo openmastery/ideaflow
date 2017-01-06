@@ -6,7 +6,6 @@ import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
-import org.openmastery.publisher.api.metrics.Metric;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,7 +29,6 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	Set<String> contextTags;
 	Set<String> painTags; //derived from WTF/YAY #hashtags
 
-	List<Metric<?>> metrics;
 	List<DiscoveryCycle> discoveryCycles;
 
 	public TroubleshootingJourney(IdeaFlowBand band) {
@@ -103,7 +101,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 		return description;
 	}
 
-
+	@JsonIgnore
 	public int getFrequency() {
 		return getDiscoveryCycles().size();
 	}

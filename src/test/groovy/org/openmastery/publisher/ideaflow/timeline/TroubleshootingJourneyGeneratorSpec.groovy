@@ -212,7 +212,7 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 
 		assert journey.discoveryCycles != null
 		assert journey.discoveryCycles.size() == 1
-		assert journey.discoveryCycles.get(0).faqComment == "My FAQ"
+		assert journey.discoveryCycles.get(0).faqAnnotation == "My FAQ"
 		assert journey.discoveryCycles.get(0).formattableSnippet.contents == "code"
 
 	}
@@ -241,7 +241,7 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 
 		assert journey.discoveryCycles != null
 		assert journey.discoveryCycles.size() == 1
-		assert journey.discoveryCycles.get(0).faqComment == null
+		assert journey.discoveryCycles.get(0).faqAnnotation == null
 		assert journey.discoveryCycles.get(0).formattableSnippet == null
 
 	}

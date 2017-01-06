@@ -19,6 +19,7 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
 import org.openmastery.publisher.api.journey.ProgressMilestone
@@ -214,7 +215,18 @@ class IdeaFlowService {
 		List<IdeaFlowSubtaskTimeline> subtaskTimelineList = splitTimelineBySubtaskEvents(timeline)
 
 		subtaskTimelineList.collect { IdeaFlowSubtaskTimeline subtaskTimeline ->
-			metricsService.generateSubtaskOverview(subtaskTimeline.subtask, subtaskTimeline)
+			generateSubtaskOverview(subtaskTimeline.subtask, subtaskTimeline)
 		}
+	}
+
+	private SubtaskOverview generateSubtaskOverview(Event subtask, IdeaFlowTimeline timelineSegment) {
+
+		SubtaskOverview overview = new SubtaskOverview()
+		overview.subtaskEvent = subtask
+		overview.durationInSeconds = timelineSegment.durationInSeconds
+
+		overview.capacityDistribution = metricsService.calculateCapacityDistribution(timelineSegment)
+
+		return overview
 	}
 }

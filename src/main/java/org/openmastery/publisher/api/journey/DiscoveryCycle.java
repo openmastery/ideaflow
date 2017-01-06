@@ -23,10 +23,27 @@ public class DiscoveryCycle extends AbstractRelativeInterval implements Measurab
 	@JsonIgnore
 	Event event;
 
+	public Long getId() { return event.getId(); }
+
+
+	public String getRelativePath() {
+		return "/discovery/"+event.getId();
+	}
+
+	public LocalDateTime getPosition() { return event.getPosition(); }
+
+	public Long getRelativePositionInSeconds() {
+		return event.getRelativePositionInSeconds();
+	}
+
+	public String getDescription() {
+		return event.getComment();
+	}
+
 	Set<String> painTags; //derived from WTF/YAY #hashtags
 	Set<String> contextTags; //derived from FAQs or containing subtasks
 
-	String faqComment;
+	String faqAnnotation;
 	FormattableSnippet formattableSnippet;
 
 	List<ExperimentCycle> experimentCycles;
@@ -46,7 +63,7 @@ public class DiscoveryCycle extends AbstractRelativeInterval implements Measurab
 	}
 
 	public void addFaq(String faqComment) {
-		this.faqComment = faqComment;
+		this.faqAnnotation = faqComment;
 		contextTags = TagsUtil.extractUniqueHashTags(faqComment);
 	}
 
@@ -57,14 +74,9 @@ public class DiscoveryCycle extends AbstractRelativeInterval implements Measurab
 		}
 	}
 
-	public String getDescription() {
-		return event.getType().name() + ": " + event.getComment();
-	}
 
-	public LocalDateTime getPosition() { return event.getPosition(); }
-
-	public Long getId() { return event.getId(); }
-
+	@JsonIgnore
 	public int getFrequency() { return getExperimentCycles().size(); }
+
 
 }

@@ -17,16 +17,25 @@ public class ExperimentCycle extends AbstractRelativeInterval {
 	@JsonIgnore
 	private ExecutionEvent executionEvent;
 
+	public Long getId() { return executionEvent.getId(); }
+
+
+	public String getRelativePath() {
+		return "/experiment/"+executionEvent.getId();
+	}
+
+	public LocalDateTime getPosition() { return executionEvent.getPosition(); }
+
+	public Long getRelativePositionInSeconds() {
+		return executionEvent.getRelativePositionInSeconds();
+	}
+
 	public ExperimentCycle(ExecutionEvent executionEvent, Long durationInSeconds) {
 		this.executionEvent = executionEvent;
 
 		setRelativeStart(executionEvent.getRelativePositionInSeconds());
 		setDurationInSeconds(durationInSeconds);
 	}
-
-	public Long getId() { return executionEvent.getId(); }
-
-	public LocalDateTime getPosition() { return executionEvent.getPosition(); }
 
 	public String getProcessName() {
 		return executionEvent.getProcessName();
@@ -48,6 +57,7 @@ public class ExperimentCycle extends AbstractRelativeInterval {
 		return executionEvent.getDurationInSeconds();
 	}
 
+	@JsonIgnore
 	public String getDescription() {
 		String failString = isFailed()? "Fail" : "Pass";
 		return executionEvent.getExecutionTaskType() + " : " + failString + " : " +executionEvent.getProcessName();

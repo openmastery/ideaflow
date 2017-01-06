@@ -17,8 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SubtaskTimelineOverview {
 
-	private Event subtask;
-	private IdeaFlowSubtaskTimeline timeline;
 	private SubtaskOverview overview;
-	private List<ProgressMilestone> progressMilestones;
+	private IdeaFlowSubtaskTimeline timeline;
+	private List<ProgressMilestone> milestones;
 }

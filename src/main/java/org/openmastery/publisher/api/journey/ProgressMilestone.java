@@ -1,5 +1,6 @@
 package org.openmastery.publisher.api.journey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
@@ -16,12 +17,27 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ProgressMilestone extends AbstractRelativeInterval {
 
+	@JsonIgnore
 	Event event;
+
+	public Long getId() {
+		return event.getId();
+	}
+
+	String getRelativePath() {
+		return "/milestone/"+event.getId();
+	}
+
+	LocalDateTime getPosition() {
+		return event.getPosition();
+	}
+
+	String getDescription() {
+		return event.getComment();
+	}
 
 	CapacityDistribution capacityDistribution;
 	List<TroubleshootingJourney> troubleshootingJourneys = new ArrayList<TroubleshootingJourney>();
-	List<DangerLink> dangerLinks = new ArrayList<DangerLink>();
-
 
 	public ProgressMilestone(Event progressEvent) {
 		this.event = progressEvent;
@@ -29,30 +45,14 @@ public class ProgressMilestone extends AbstractRelativeInterval {
 	}
 
 	public void addJourney(TroubleshootingJourney journey) {
-		addDangerLinks(journey);
 		troubleshootingJourneys.add(journey);
 	}
 
+	@JsonIgnore
 	public LocalDateTime getStart() {
 		return event.getPosition();
 	}
 
-	public String getDescription() {
-		return event.getComment();
-	}
-
-	private void addDangerLinks(TroubleshootingJourney journey) {
-
-		for (Metric<?> metric : journey.getMetrics()) {
-			if (metric.isDanger()) {
-				DangerLink dangerLink = new DangerLink();
-				dangerLink.setJourneyId(journey.getId());
-				dangerLink.setRelativePositionInSeconds(journey.getRelativeStart());
-				dangerLink.setMetric(metric);
-				dangerLinks.add(dangerLink);
-			}
-		}
-	}
 
 
 

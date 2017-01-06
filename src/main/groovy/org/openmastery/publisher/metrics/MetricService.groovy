@@ -48,21 +48,7 @@ public class MetricService {
 		return metricSet.allMetrics
 	}
 
-	public SubtaskOverview generateSubtaskOverview(Event subtask, IdeaFlowTimeline timelineSegment) {
 
-		SubtaskOverview overview = new SubtaskOverview()
-		overview.subtaskEvent = subtask
-		overview.durationInSeconds = timelineSegment.durationInSeconds
-
-		overview.capacityDistribution = calculateCapacityDistribution(timelineSegment)
-
-		MetricSetCalculator metricSet = generateDefaultMetricSet()
-		metricSet.calculate(timelineSegment)
-
-		overview.metrics = metricSet.allMetrics
-
-		return overview
-	}
 
 	public CapacityDistribution calculateCapacityDistribution(IdeaFlowTimeline timeline) {
 		CapacityDistributionCalculator calculator = new CapacityDistributionCalculator();
