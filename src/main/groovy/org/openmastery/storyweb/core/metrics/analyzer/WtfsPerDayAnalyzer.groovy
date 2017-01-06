@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.analyzer
+package org.openmastery.storyweb.core.metrics.analyzer
 
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
@@ -23,7 +23,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.storyweb.api.MetricThreshold
+import org.openmastery.storyweb.api.metrics.MetricThreshold
 import org.openmastery.time.TimeConverter
 
 class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {

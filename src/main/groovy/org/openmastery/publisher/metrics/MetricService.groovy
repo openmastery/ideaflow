@@ -20,7 +20,7 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.*
 import org.openmastery.publisher.metrics.calculator.*
-import org.openmastery.storyweb.api.MetricThreshold
+import org.openmastery.storyweb.api.metrics.MetricThreshold
 import org.springframework.stereotype.Component
 
 @Component

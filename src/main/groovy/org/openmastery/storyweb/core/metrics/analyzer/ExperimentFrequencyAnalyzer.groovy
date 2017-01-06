@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.analyzer
+package org.openmastery.storyweb.core.metrics.analyzer
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.DiscoveryCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.storyweb.api.MetricThreshold
+import org.openmastery.storyweb.api.metrics.MetricThreshold
 
 /**
  * Look for spikes in experiments/journey as a clue that there might be problems with experiment output

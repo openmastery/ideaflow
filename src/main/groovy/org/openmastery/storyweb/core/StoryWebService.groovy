@@ -21,8 +21,9 @@ import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.FaqSummary
-import org.openmastery.storyweb.api.SPCChart
+import org.openmastery.storyweb.api.metrics.SPCChart
 import org.openmastery.storyweb.api.TagsUtil
+import org.openmastery.storyweb.core.metrics.spc.SPCChartGenerator
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -35,9 +36,6 @@ class StoryWebService {
 	@Autowired
 	AnnotationRespository annotationRepository
 
-
-	@Autowired
-	SPCChartGenerator spcChartGenerator
 
 	@Autowired
 	InvocationContext invocationContext
@@ -78,11 +76,6 @@ class StoryWebService {
 	private String extractCommentFromJSON(String jsonMetadata) {
 		CommentHolder commentHolder = jsonMapper.readValue(jsonMetadata, CommentHolder.class)
 		return commentHolder.comment
-	}
-
-
-	SPCChart generateSPCChart(LocalDate startDate, LocalDate endDate) {
-		return spcChartGenerator.generateChart(invocationContext.userId, startDate, endDate)
 	}
 
 

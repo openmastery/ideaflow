@@ -4,7 +4,7 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
-import org.openmastery.storyweb.api.SPCChart
+import org.openmastery.storyweb.api.metrics.SPCChart
 import org.openmastery.storyweb.client.MetricsClient
 import org.openmastery.storyweb.core.FixturePersistenceHelper
 import org.openmastery.time.MockTimeService

@@ -1,4 +1,4 @@
-package org.openmastery.publisher.metrics.analyzer
+package org.openmastery.storyweb.core.metrics.analyzer
 
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand

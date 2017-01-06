@@ -15,11 +15,10 @@
  */
 package org.openmastery.publisher.metrics.calculator
 
-import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.api.metrics.MetricsCalculator
-import org.openmastery.storyweb.api.MetricThreshold
+import org.openmastery.storyweb.api.metrics.MetricThreshold
 
 abstract class AbstractMetricsCalculator<T> implements MetricsCalculator<T> {
 

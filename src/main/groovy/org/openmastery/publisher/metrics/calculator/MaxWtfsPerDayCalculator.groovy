@@ -21,7 +21,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.storyweb.api.MetricThreshold
+import org.openmastery.storyweb.api.metrics.MetricThreshold
 
 class MaxWtfsPerDayCalculator extends AbstractMetricsCalculator<Double> {
 

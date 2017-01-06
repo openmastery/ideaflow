@@ -1,4 +1,4 @@
-package org.openmastery.publisher.metrics.analyzer
+package org.openmastery.storyweb.core.metrics.analyzer
 
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
@@ -7,11 +7,8 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.GraphPoint
-import org.openmastery.publisher.api.metrics.Metric
-import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.publisher.ideaflow.timeline.TroubleshootingJourneyGenerator
-import org.openmastery.publisher.metrics.calculator.MaxResolutionTimeCalculator
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 

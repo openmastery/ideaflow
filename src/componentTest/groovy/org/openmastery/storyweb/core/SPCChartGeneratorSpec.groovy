@@ -6,7 +6,8 @@ import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
-import org.openmastery.storyweb.api.SPCChart
+import org.openmastery.storyweb.api.metrics.SPCChart
+import org.openmastery.storyweb.core.metrics.spc.SPCChartGenerator
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification

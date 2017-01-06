@@ -4,7 +4,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.storyweb.api.ResourcePaths;
-import org.openmastery.storyweb.api.SPCChart;
+import org.openmastery.storyweb.api.metrics.SPCChart;
 
 public class MetricsClient extends StorywebClient<SPCChart, MetricsClient> {
 

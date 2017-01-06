@@ -21,7 +21,8 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.storyweb.api.ResourcePaths;
-import org.openmastery.storyweb.api.SPCChart;
+import org.openmastery.storyweb.api.metrics.SPCChart;
+import org.openmastery.storyweb.core.MetricsService;
 import org.openmastery.storyweb.core.StoryWebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,10 +36,8 @@ import javax.ws.rs.core.MediaType;
 @Slf4j
 public class MetricsResource {
 
-
 	@Autowired
-	private StoryWebService storyWebService;
-
+	private MetricsService metricsService;
 
 	/**
 	 * Generate a chart with explodable (drill-downable) graphpoints, from task, to journey, to discovery cycle, to execution cycle
@@ -61,7 +60,9 @@ public class MetricsResource {
 			jodaEndDate = LocalDate.now();
 		}
 
-		return storyWebService.generateSPCChart(jodaStartDate, jodaEndDate);
+		return metricsService.generateSPCChart(jodaStartDate, jodaEndDate);
 	}
+
+
 
 }

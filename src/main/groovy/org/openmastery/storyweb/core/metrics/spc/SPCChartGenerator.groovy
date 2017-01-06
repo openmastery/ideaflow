@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.storyweb.core
+package org.openmastery.storyweb.core.metrics.spc
 
 import groovy.util.logging.Slf4j
 import org.joda.time.LocalDate
@@ -45,8 +45,8 @@ import org.openmastery.publisher.ideaflow.timeline.IdleTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.RelativeTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.TroubleshootingJourneyGenerator
 import org.openmastery.publisher.metrics.MetricService
-import org.openmastery.storyweb.api.ExplodableGraphPoint
-import org.openmastery.storyweb.api.SPCChart
+import org.openmastery.storyweb.api.metrics.ExplodableGraphPoint
+import org.openmastery.storyweb.api.metrics.SPCChart
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

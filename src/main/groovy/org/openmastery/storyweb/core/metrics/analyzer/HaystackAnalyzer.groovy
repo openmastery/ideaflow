@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics.analyzer
+package org.openmastery.storyweb.core.metrics.analyzer
 
 import groovy.util.logging.Slf4j
 import org.openmastery.publisher.api.event.ExecutionEvent
@@ -24,7 +24,7 @@ import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.storyweb.api.MetricThreshold
+import org.openmastery.storyweb.api.metrics.MetricThreshold
 
 @Slf4j
 class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
