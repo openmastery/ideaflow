@@ -92,7 +92,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "findRecentTasks return page 2 of tasks"() {
 		given:
-		int ownerId = 3
+		Long ownerId = 3
 		List<TaskEntity> tasks = []
 		for (int i = 0; i < 10; i++) {
 			tasks.add(saveTask(aRandom.taskEntity()

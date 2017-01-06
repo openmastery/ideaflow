@@ -3,13 +3,12 @@ package org.openmastery.publisher.client;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
+import org.openmastery.publisher.api.ResourcePage;
 
-import java.util.List;
-
-public class TaskClient extends OpenMasteryClient<Task, TaskClient> {
+public class TaskClient extends OpenMasteryClient<Object, TaskClient> {
 
 	public TaskClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH, Task.class);
+		super(baseUrl, ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH, Object.class);
 	}
 
 	public Task createTask(String taskName, String description, String project) {
@@ -18,24 +17,25 @@ public class TaskClient extends OpenMasteryClient<Task, TaskClient> {
 				.description(description)
 				.project(project)
 				.build();
-		return crudClientRequest.createWithPost(task);
+		return (Task)crudClientRequest.entity(Task.class).createWithPost(task);
 	}
 
 	public Task findTaskWithName(String taskName) {
-		return crudClientRequest.path(ResourcePaths.TASK_NAME_PATH)
-				.path(taskName).find();
+		return (Task)crudClientRequest.path(ResourcePaths.TASK_NAME_PATH)
+				.path(taskName).entity(Task.class).find();
 	}
 
-	public List<Task> findRecentTasks(Integer page, Integer perPage) {
-		return crudClientRequest
-				.queryParam("page", page)
-				.queryParam("per_page", perPage).findMany();
+	public ResourcePage<Task> findRecentTasks(Integer page, Integer perPage) {
+        return (ResourcePage<Task>) getUntypedCrudClientRequest()
+                .queryParam("page", page)
+                .queryParam("per_page", perPage)
+                .entity(ResourcePage.class).find();
 	}
 
 	public Task activate(Long taskId) {
-		return crudClientRequest
+		return (Task)crudClientRequest
 				.path(ResourcePaths.ACTIVATE_PATH)
-				.path(taskId)
+				.path(taskId).entity(Task.class)
 				.updateWithPut("");
 	}
 

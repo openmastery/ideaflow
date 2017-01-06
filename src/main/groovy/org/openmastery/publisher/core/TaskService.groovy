@@ -18,6 +18,7 @@ package org.openmastery.publisher.core
 import com.bancvue.rest.exception.ConflictingEntityException
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.mapper.EntityMapper
+import org.openmastery.publisher.api.ResourcePage
 import org.openmastery.publisher.api.task.NewTask
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
@@ -85,9 +86,10 @@ class TaskService {
 		return toApiTask(taskEntity);
 	}
 
-    public Page<Task> findRecentTasks(int page, int perPage) {
-        Page<TaskEntity> taskList = persistenceService.findRecentTasks(invocationContext.getUserId(), page, perPage);
-        return taskList.map(taskEntityConverter);
+    public ResourcePage<Task> findRecentTasks(int page, int perPage) {
+        Page<TaskEntity> taskEntityList = persistenceService.findRecentTasks(invocationContext.getUserId(), page, perPage);
+        Page<Task> taskList = taskEntityList.map(taskEntityConverter);
+        return new ResourcePage<Task>(taskList.getContent(), null, taskList.totalPages);
     }
 
 	private Task toApiTask(TaskEntity taskEntity) {

@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.resources;
 
+import org.openmastery.publisher.api.ResourcePage;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
@@ -97,13 +98,9 @@ public class TaskResource {
 	 */
 
 	@GET
-	public List<Task> findRecentTasks(@QueryParam("page") Integer page,
-									  @QueryParam("per_page") Integer perPage) {
-
-		Integer activePage = page == null ? 0 : page;
-		Integer activePerPage = perPage == null ? 10 : perPage;
-
-		return taskService.findRecentTasks(activePage, activePerPage).getContent();
+	public ResourcePage<Task> findRecentTasks(@DefaultValue("0") @QueryParam("page") Integer page,
+											  @DefaultValue("10") @QueryParam("per_page") Integer perPage) {
+		return taskService.findRecentTasks(page, perPage);
 	}
 
 
