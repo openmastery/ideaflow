@@ -16,7 +16,8 @@
 package org.openmastery.storyweb.resources;
 
 import lombok.extern.slf4j.Slf4j;
-import org.openmastery.storyweb.api.GlossaryDefinition;
+import org.openmastery.storyweb.api.glossary.Glossary;
+import org.openmastery.storyweb.api.glossary.GlossaryDefinition;
 import org.openmastery.storyweb.api.ResourcePaths;
 import org.openmastery.storyweb.core.glossary.GlossaryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class GlossaryResource {
 	 * @return GlossaryDefinition
 	 */
 	@PUT
-	@Path("/{tagId}")
+	@Path(ResourcePaths.GLOSSARY_TERM_PATH + ResourcePaths.ID_PATH + "/{tagId}")
 	public GlossaryDefinition updateExistingTerm(@PathParam("tagId") Long tagId, GlossaryDefinition glossaryDefinition) {
 		return glossaryService.updateExistingTerm(tagId, glossaryDefinition);
 	}
@@ -52,6 +53,7 @@ public class GlossaryResource {
 	 * @return GlossaryDefinition
 	 */
 	@POST
+	@Path(ResourcePaths.GLOSSARY_TERM_PATH)
 	public GlossaryDefinition createNewTerm(GlossaryDefinition glossaryDefinition) {
 		return glossaryService.createNewTerm(glossaryDefinition);
 	}
@@ -65,9 +67,12 @@ public class GlossaryResource {
 	 */
 
 	@POST
-	@Path(ResourcePaths.GLOSSARY_TAG_PATH)
-	public void createBlankGlossaryDefinitionWhenNotExists(List<String> tags) {
-		glossaryService.createGlossaryDefinitionsWhenNotExists(tags);
+	@Path(ResourcePaths.GLOSSARY_BLANK_PATH)
+	public Glossary createEmptyGlossaryDefinitionsWhenNotExists(List<String> tags) {
+
+		Glossary glossary = glossaryService.createGlossaryDefinitionsWhenNotExists(tags);
+		System.out.println(glossary);
+		return glossary;
 	}
 
 
@@ -77,7 +82,7 @@ public class GlossaryResource {
 	 * @return List<GlossaryDefinition>
 	 */
 	@GET
-	public List<GlossaryDefinition> findGlossaryDefinitionsByTag(@QueryParam("tag") List<String> tags) {
+	public Glossary findGlossaryDefinitionsByTag(@QueryParam("tag") List<String> tags) {
 		if (tags == null || tags.isEmpty()) {
 			return glossaryService.findAllGlossaryDefinitions();
 		} else {

@@ -3,7 +3,8 @@ package org.openmastery.storyweb.resources
 import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.publisher.ComponentTest
-import org.openmastery.storyweb.api.GlossaryDefinition
+import org.openmastery.storyweb.api.glossary.Glossary
+import org.openmastery.storyweb.api.glossary.GlossaryDefinition
 import org.openmastery.storyweb.client.GlossaryClient
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
@@ -19,12 +20,12 @@ class GlossaryResourceSpec extends Specification {
 		glossaryClient.createNewTerm("#tag", "tag description")
 
 		when:
-		List<GlossaryDefinition> entries = glossaryClient.findAllDefinitions()
+		Glossary glossary = glossaryClient.findAllDefinitions()
 
 		then:
-		assert entries.size() == 1
-		assert entries.get(0).name == '#tag'
-		assert entries.get(0).description == "tag description"
+		assert glossary.definitions.size() == 1
+		assert glossary.definitions.get(0).name == '#tag'
+		assert glossary.definitions.get(0).description == "tag description"
 
 	}
 
@@ -52,12 +53,12 @@ class GlossaryResourceSpec extends Specification {
 
 		when:
 		glossaryClient.updateTerm(definition.id, "#TAG", "updated")
-		List<GlossaryDefinition> entries = glossaryClient.findAllDefinitions()
+		Glossary glossary = glossaryClient.findAllDefinitions()
 
 		then:
-		assert entries.size() == 1
-		assert entries.get(0).name == '#TAG'
-		assert entries.get(0).description == "updated"
+		assert glossary.definitions.size() == 1
+		assert glossary.definitions.get(0).name == '#TAG'
+		assert glossary.definitions.get(0).description == "updated"
 	}
 
 	def "updateTerm SHOULD explode nicely when term not found"() {
@@ -76,12 +77,12 @@ class GlossaryResourceSpec extends Specification {
 
 
 		when:
-		List<GlossaryDefinition> entries = glossaryClient.findDefinitionsbyTag(["#tag2"])
+		Glossary glossary = glossaryClient.findDefinitionsbyTag(["#tag2"])
 
 		then:
-		assert entries.size() == 1
-		assert entries.get(0).name == '#tag2'
-		assert entries.get(0).description == "entry description2"
+		assert glossary.definitions.size() == 1
+		assert glossary.definitions.get(0).name == '#tag2'
+		assert glossary.definitions.get(0).description == "entry description2"
 
 	}
 
@@ -93,16 +94,16 @@ class GlossaryResourceSpec extends Specification {
 
 		when:
 		glossaryClient.createBlankGlossaryDefinitionWhenNotExists(["#tag2", "#tag3"])
-		List<GlossaryDefinition> entries = glossaryClient.findAllDefinitions()
+		Glossary glossary = glossaryClient.findAllDefinitions()
 
 		then:
-		assert entries.size() == 3
-		assert entries.get(0).name == "#tag1"
-		assert entries.get(0).description == "entry description"
-		assert entries.get(1).name == "#tag2"
-		assert entries.get(1).description == "entry description"
-		assert entries.get(2).name == "#tag3"
-		assert entries.get(2).description == null
+		assert glossary.definitions.size() == 3
+		assert glossary.definitions.get(0).name == "#tag1"
+		assert glossary.definitions.get(0).description == "entry description"
+		assert glossary.definitions.get(1).name == "#tag2"
+		assert glossary.definitions.get(1).description == "entry description"
+		assert glossary.definitions.get(2).name == "#tag3"
+		assert glossary.definitions.get(2).description == null
 	}
 
 

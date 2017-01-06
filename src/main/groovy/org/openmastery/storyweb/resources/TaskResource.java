@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.resources;
+package org.openmastery.storyweb.resources;
 
-import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.publisher.core.TaskService;
+import org.openmastery.storyweb.api.ResourcePaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Component
-@Path(ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH)
+@Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.TASK_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class TaskResource {
 

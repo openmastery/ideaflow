@@ -1,4 +1,4 @@
-package org.openmastery.storyweb.api;
+package org.openmastery.storyweb.api.glossary;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

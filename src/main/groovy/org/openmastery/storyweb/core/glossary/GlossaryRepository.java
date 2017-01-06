@@ -15,7 +15,6 @@
  */
 package org.openmastery.storyweb.core.glossary;
 
-import org.openmastery.storyweb.api.GlossaryDefinition;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

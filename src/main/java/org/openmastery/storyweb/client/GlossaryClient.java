@@ -1,7 +1,8 @@
 package org.openmastery.storyweb.client;
 
 import com.bancvue.rest.client.crud.CrudClientRequest;
-import org.openmastery.storyweb.api.GlossaryDefinition;
+import org.openmastery.storyweb.api.glossary.Glossary;
+import org.openmastery.storyweb.api.glossary.GlossaryDefinition;
 import org.openmastery.storyweb.api.ResourcePaths;
 
 import java.util.List;
@@ -18,7 +19,10 @@ public class GlossaryClient extends StorywebClient<GlossaryDefinition, GlossaryC
 				.description(description)
 				.build();
 
-		return crudClientRequest.createWithPost(entry);
+		return crudClientRequest
+				.path(ResourcePaths.GLOSSARY_TERM_PATH)
+				.createWithPost(entry);
+
 	}
 
 	public GlossaryDefinition updateTerm(Long id, String name, String description) {
@@ -27,27 +31,35 @@ public class GlossaryClient extends StorywebClient<GlossaryDefinition, GlossaryC
 				.description(description)
 				.build();
 
-		return crudClientRequest.path(id).updateWithPut(entry);
+		return crudClientRequest
+				.path(ResourcePaths.GLOSSARY_TERM_PATH)
+				.path(ResourcePaths.ID_PATH).path(id)
+				.updateWithPut(entry);
 	}
 
-
-	public List<GlossaryDefinition> findAllDefinitions() {
-		return crudClientRequest.findMany();
+	public Glossary findAllDefinitions() {
+		return (Glossary) getUntypedCrudClientRequest()
+				.entity(Glossary.class)
+				.find();
 	}
 
-	public List<GlossaryDefinition> findDefinitionsbyTag(List<String> tags) {
-		CrudClientRequest<GlossaryDefinition> findFilteredRequest = crudClientRequest;
+	public Glossary findDefinitionsbyTag(List<String> tags) {
+		CrudClientRequest<Glossary> findFilteredRequest = getUntypedCrudClientRequest();
 
 		for (String tag : tags) {
 			findFilteredRequest = findFilteredRequest.queryParam("tag", tag);
 		}
 
-		return findFilteredRequest.findMany();
+		return findFilteredRequest.entity(Glossary.class)
+				.find();
 
 	}
 
-	public void createBlankGlossaryDefinitionWhenNotExists(List<String> tags) {
-		crudClientRequest.path(ResourcePaths.GLOSSARY_TAG_PATH).createWithPost(tags);
+	public Glossary createBlankGlossaryDefinitionWhenNotExists(List<String> tags) {
+		return (Glossary) getUntypedCrudClientRequest()
+				.path(ResourcePaths.GLOSSARY_BLANK_PATH)
+				.entity(Glossary.class)
+				.createWithPost(tags);
 	}
 
 }

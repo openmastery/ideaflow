@@ -18,7 +18,8 @@ package org.openmastery.storyweb.core.glossary
 import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.mapper.EntityMapper
-import org.openmastery.storyweb.api.GlossaryDefinition
+import org.openmastery.storyweb.api.glossary.Glossary
+import org.openmastery.storyweb.api.glossary.GlossaryDefinition
 import org.openmastery.storyweb.api.TagsUtil
 import org.openmastery.storyweb.core.SearchUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,14 +33,18 @@ class GlossaryService {
 
 	private EntityMapper entityMapper = new EntityMapper();
 
-	public List<GlossaryDefinition> findGlossaryDefinitionsByTag(List<String> tags) {
+	public Glossary findGlossaryDefinitionsByTag(List<String> tags) {
 		String searchPattern = SearchUtils.createSearchPattern(tags)
-		entityMapper.mapList(glossaryRepository.findByTagsLike(searchPattern), GlossaryDefinition.class)
+		Glossary glossary = new Glossary()
+		glossary.definitions = entityMapper.mapList(glossaryRepository.findByTagsLike(searchPattern), GlossaryDefinition.class)
+		return glossary
 	}
 
 
-	List<GlossaryDefinition> findAllGlossaryDefinitions() {
-		return entityMapper.mapList(glossaryRepository.findAll(), GlossaryDefinition.class);
+	Glossary findAllGlossaryDefinitions() {
+		Glossary glossary = new Glossary()
+		glossary.definitions = entityMapper.mapList(glossaryRepository.findAll(), GlossaryDefinition.class);
+		return glossary
 	}
 
 	GlossaryDefinition updateExistingTerm(Long id, GlossaryDefinition entry) {
@@ -79,7 +84,7 @@ class GlossaryService {
 		return entityMapper.mapIfNotNull(definition, GlossaryDefinitionEntity.class);
 	}
 
-	void createGlossaryDefinitionsWhenNotExists(List<String> tags) {
+	Glossary createGlossaryDefinitionsWhenNotExists(List<String> tags) {
 		String searchPattern = SearchUtils.createSearchPattern(tags)
 		List<GlossaryDefinitionEntity> glossaryEntities = glossaryRepository.findByTagsLike(searchPattern)
 
@@ -93,6 +98,11 @@ class GlossaryService {
 				glossaryRepository.save(newEntry)
 			}
 		}
+
+		Glossary glossary = new Glossary()
+		glossary.definitions = entityMapper.mapList(definitionsByTag.values(), GlossaryDefinition.class)
+				.sort { GlossaryDefinition definition -> definition.name};
+		return glossary
 	}
 
 

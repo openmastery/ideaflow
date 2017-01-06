@@ -19,7 +19,7 @@ import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview;
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview;
 
-public class TimelineClient extends OpenMasteryClient<Object, TimelineClient> {
+public class TimelineClient extends IdeaFlowClient<Object, TimelineClient> {
 
 	public TimelineClient(String hostUri) {
 		super(hostUri, ResourcePaths.IDEAFLOW_PATH, Object.class);

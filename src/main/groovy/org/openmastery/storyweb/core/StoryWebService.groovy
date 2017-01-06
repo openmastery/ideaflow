@@ -21,10 +21,7 @@ import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.FaqSummary
-import org.openmastery.storyweb.api.GlossaryDefinition
 import org.openmastery.storyweb.api.SPCChart
-import org.openmastery.storyweb.core.glossary.GlossaryDefinitionEntity
-import org.openmastery.storyweb.core.glossary.GlossaryRepository
 import org.openmastery.storyweb.api.TagsUtil
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired

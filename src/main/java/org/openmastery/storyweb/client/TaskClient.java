@@ -1,15 +1,15 @@
-package org.openmastery.publisher.client;
+package org.openmastery.storyweb.client;
 
-import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
+import org.openmastery.storyweb.api.ResourcePaths;
 
 import java.util.List;
 
-public class TaskClient extends IdeaFlowClient<Task, TaskClient> {
+public class TaskClient extends StorywebClient<Task, TaskClient> {
 
 	public TaskClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH, Task.class);
+		super(baseUrl, ResourcePaths.STORY_WEB_PATH + ResourcePaths.TASK_PATH, Task.class);
 	}
 
 	public Task createTask(String taskName, String description, String project) {
