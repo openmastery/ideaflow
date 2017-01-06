@@ -16,14 +16,11 @@
 package org.openmastery.storyweb.core
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.joda.time.LocalDate
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.FaqSummary
-import org.openmastery.storyweb.api.metrics.SPCChart
-import org.openmastery.storyweb.api.TagsUtil
-import org.openmastery.storyweb.core.metrics.spc.SPCChartGenerator
+import org.openmastery.publisher.api.journey.TagsUtil
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

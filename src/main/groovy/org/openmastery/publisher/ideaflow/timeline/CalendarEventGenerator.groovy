@@ -22,6 +22,7 @@ import org.openmastery.publisher.api.IntervalComparator
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
+import org.openmastery.time.TimeConverter
 
 class CalendarEventGenerator {
 

@@ -29,6 +29,7 @@ import org.openmastery.publisher.client.TimelineClient
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.user.UserEntity
+import org.openmastery.storyweb.api.metrics.Metric
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Ignore
@@ -82,7 +83,7 @@ class TimelineResourceSpec extends Specification {
 		then:
 		assert overview.task.id == task.id
 		assert overview.timeline == null
-		assert overview.subtaskOverviews == []
+		assert overview.ideaFlowStory == null
 	}
 
 	def "getTimelineForTask SHOULD generate IdeaFlow timeline with all data types"() {
@@ -110,7 +111,6 @@ class TimelineResourceSpec extends Specification {
 		validator.assertValidationComplete()
 	}
 
-	@Ignore //Repair after we've got the new metrics APIs setup
 	def "generateRiskSummariesBySubtask SHOULD generate metrics for each subtask"() {
 		given:
 		Task task = taskClient.createTask("basic", "create basic timeline with a couple subtasks", "project")
@@ -118,18 +118,20 @@ class TimelineResourceSpec extends Specification {
 		NewIFMBatch batch = aRandom.batch().timeSent(timeService.now())
 				.newEvent(task.id, timeService.now(), EventType.ACTIVATE, "unpause")
 
-				.newEvent(task.id, timeService.now(), EventType.SUBTASK, "Subtask 1")
-				.newExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
-				.newModificationActivity(task.id, timeService.hoursInFuture(1), 30, 80)
-				.newExecutionActivity(task.id, timeService.now(), 15, "TestMe", "JUnit", 0, false)
-				.newModificationActivity(task.id, timeService.hoursInFuture(1), 30, 80)
+				.newEvent(task.id, timeService.minutesInFuture(1), EventType.WTF, "WTF is this?!")
+				.newExecutionActivity(task.id, timeService.minutesInFuture(5), 15, "TestMe", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.minutesInFuture(10), 30, 80)
+				.newExecutionActivity(task.id, timeService.minutesInFuture(15), 15, "TestMe", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.minutesInFuture(17), 30, 80)
+				.newEvent(task.id, timeService.minutesInFuture(18), EventType.AWESOME, "Yay!")
 
-				.newEvent(task.id, timeService.now(), EventType.SUBTASK, "Subtask 2")
-				.newExecutionActivity(task.id, timeService.now(), 15, "TestYou", "JUnit", 0, false)
-				.newModificationActivity(task.id, timeService.hoursInFuture(1), 30, 80)
-				.newExecutionActivity(task.id, timeService.now(), 15, "TestYou", "JUnit", 0, false)
-				.newModificationActivity(task.id, timeService.hoursInFuture(1), 30, 80)
-
+				.newEvent(task.id, timeService.minutesInFuture(19), EventType.SUBTASK, "Subtask 2")
+				.newEvent(task.id, timeService.minutesInFuture(20), EventType.WTF, "WTF is this?!")
+				.newExecutionActivity(task.id, timeService.minutesInFuture(22), 15, "TestYou", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.minutesInFuture(24), 30, 80)
+				.newExecutionActivity(task.id, timeService.minutesInFuture(27), 15, "TestYou", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.minutesInFuture(30), 30, 80)
+				.newEvent(task.id, timeService.minutesInFuture(33), EventType.AWESOME, "Yay!")
 				.newEvent(task.id, timeService.hoursInFuture(3), EventType.DEACTIVATE, "pause")
 				.build()
 
@@ -137,25 +139,20 @@ class TimelineResourceSpec extends Specification {
 
 		when:
 		TaskTimelineOverview overview = ideaFlowClient.getTimelineOverviewForTask(task.id)
-		List<SubtaskOverview> metrics = overview.subtaskOverviews
+		List<Metric<?>> metrics = overview.ideaFlowStory.metrics
+
 
 		then:
 		assert metrics != null
-		assert metrics.get(0).description == "Initial Strategy"
-		assert metrics.get(0).metrics.size() == 5
-		assert metrics.get(1).description == "Subtask 1"
-		assert metrics.get(1).metrics.size() == 5
-		assert metrics.get(2).description == "Subtask 2"
-		assert metrics.get(2).metrics.size() == 5
-		assert metrics.size() == 3
+		assert metrics.size() == 5
 
 		when:
 		SubtaskTimelineOverview subtaskTimelineOverview = ideaFlowClient.getTimelineOverviewForSubtask(task.id, -1)
+		List<Metric<?>> subtaskMetrics = subtaskTimelineOverview.ideaFlowStory.metrics
 
 		then:
-		assert subtaskTimelineOverview != null
-		assert subtaskTimelineOverview.overview.description == "Initial Strategy"
-		assert subtaskTimelineOverview.overview.getMetrics().size() == 5
+		assert subtaskMetrics != null
+		assert subtaskMetrics.size() == 5
 	}
 
 }

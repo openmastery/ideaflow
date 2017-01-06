@@ -9,6 +9,7 @@ import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
+import org.openmastery.publisher.api.task.Task
 import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeConverter
 
@@ -222,6 +223,7 @@ class IdeaFlowTimelineBuilder {
 		}
 
 		IdeaFlowTaskTimeline.builder()
+				.task(new Task(id: -1))
 				.start(start)
 				.end(end)
 				.relativePositionInSeconds(0)

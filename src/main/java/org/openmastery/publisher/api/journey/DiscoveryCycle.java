@@ -5,7 +5,7 @@ import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
-import org.openmastery.storyweb.api.TagsUtil;
+import org.openmastery.storyweb.api.metrics.Metric;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,16 +18,54 @@ import java.util.Set;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class DiscoveryCycle extends AbstractRelativeInterval implements MeasurableContext {
+public class DiscoveryCycle extends AbstractRelativeInterval implements StoryElement {
 
+
+	@JsonIgnore
+	String parentPath;
 	@JsonIgnore
 	Event event;
 
-	public Long getId() { return event.getId(); }
+	Set<String> painTags;
+	Set<String> contextTags;
 
+	String faqAnnotation;
+	FormattableSnippet formattableSnippet;
+
+	List<ExperimentCycle> experimentCycles;
+
+	List<Metric<?>> metrics;
+
+	public DiscoveryCycle(String parentPath, Event wtfYayEvent, Long durationInSeconds) {
+		this.parentPath = parentPath;
+		this.event = wtfYayEvent;
+		this.experimentCycles = new ArrayList<ExperimentCycle>();
+		this.contextTags = new HashSet<String>();
+		this.painTags = TagsUtil.extractUniqueHashTags(wtfYayEvent.getComment());
+
+		setRelativeStart(wtfYayEvent.getRelativePositionInSeconds());
+		setDurationInSeconds(durationInSeconds);
+
+		event.setFullPath(getFullPath());
+	}
+
+	@JsonIgnore
+	public Long getId() { return event.getId(); }
 
 	public String getRelativePath() {
 		return "/discovery/"+event.getId();
+	}
+
+	@JsonIgnore
+	public String getFullPath() { return parentPath + getRelativePath(); }
+
+	public void setParentPath(String parentPath) {
+		this.parentPath = parentPath;
+		event.setFullPath(getFullPath());
+
+		for (ExperimentCycle experimentCycle : experimentCycles) {
+			experimentCycle.setParentPath(getFullPath());
+		}
 	}
 
 	public LocalDateTime getPosition() { return event.getPosition(); }
@@ -38,24 +76,6 @@ public class DiscoveryCycle extends AbstractRelativeInterval implements Measurab
 
 	public String getDescription() {
 		return event.getComment();
-	}
-
-	Set<String> painTags; //derived from WTF/YAY #hashtags
-	Set<String> contextTags; //derived from FAQs or containing subtasks
-
-	String faqAnnotation;
-	FormattableSnippet formattableSnippet;
-
-	List<ExperimentCycle> experimentCycles;
-
-	public DiscoveryCycle(Event wtfYayEvent, Long durationInSeconds) {
-		this.event = wtfYayEvent;
-		this.experimentCycles = new ArrayList<ExperimentCycle>();
-		this.contextTags = new HashSet<String>();
-		this.painTags = TagsUtil.extractUniqueHashTags(wtfYayEvent.getComment());
-
-		setRelativeStart(wtfYayEvent.getRelativePositionInSeconds());
-		setDurationInSeconds(durationInSeconds);
 	}
 
 	public void addExperimentCycle(ExperimentCycle experimentCycle) {
@@ -74,9 +94,14 @@ public class DiscoveryCycle extends AbstractRelativeInterval implements Measurab
 		}
 	}
 
-
 	@JsonIgnore
 	public int getFrequency() { return getExperimentCycles().size(); }
+
+	@JsonIgnore
+	@Override
+	public List<? extends StoryElement> getChildStoryElements() {
+		return experimentCycles;
+	}
 
 
 }

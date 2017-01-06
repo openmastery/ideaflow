@@ -14,6 +14,7 @@ import java.util.Set;
 @Data
 @Builder
 @AllArgsConstructor
+@Deprecated
 public class ExplodableGraphPoint {
 
 	String relativePath;
@@ -36,6 +37,7 @@ public class ExplodableGraphPoint {
 		durationInSeconds = new DurationInSeconds(0);
 		childPoints = new ArrayList<ExplodableGraphPoint>();
 	}
+
 
 	private void addContextTags(Set<String> contextTags) {
 		this.contextTags.addAll(contextTags);

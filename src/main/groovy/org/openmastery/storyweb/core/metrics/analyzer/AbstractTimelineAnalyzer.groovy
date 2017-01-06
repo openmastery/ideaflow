@@ -16,23 +16,77 @@
 package org.openmastery.storyweb.core.metrics.analyzer
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.MeasurableContext
+import org.openmastery.publisher.api.journey.IdeaFlowStory
+import org.openmastery.publisher.api.journey.ProgressMilestone
+import org.openmastery.publisher.api.journey.StoryElement
+import org.openmastery.publisher.api.journey.SubtaskStory
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
-import org.openmastery.publisher.api.metrics.GraphPoint
-import org.openmastery.publisher.api.metrics.Metric
+import org.openmastery.storyweb.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.storyweb.api.metrics.MetricThreshold
 
 abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 
-	private MetricType metricType;
+	private MetricType metricType
+	boolean useParentTimelineOnly
 
-	AbstractTimelineAnalyzer(MetricType metricType) {
+	AbstractTimelineAnalyzer(MetricType metricType, boolean useParentTimelineOnly) {
 		this.metricType = metricType
+		this.useParentTimelineOnly = useParentTimelineOnly
 	}
 
 
-	abstract GraphPoint<T> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys);
+	GraphPoint<T> analyzeIdeaFlowStory(IdeaFlowStory story) {
+
+		List<GraphPoint<T>> subtaskPoints = [];
+
+		GraphPoint<T> summaryPoint
+
+		if (useParentTimelineOnly) {
+			summaryPoint = analyzeIdeaFlowStory(story.timeline, collectAllJourneys(story))
+			summaryPoint = assignBlameToSubtasks(story, summaryPoint)
+		} else {
+			story.subtasks.each { SubtaskStory subtaskStory ->
+
+				List<TroubleshootingJourney> journeys = subtaskStory.troubleshootingJourneys
+				GraphPoint<T> graphPoint = analyzeIdeaFlowStory(subtaskStory.timeline, journeys);
+				if (graphPoint != null) {
+					graphPoint.relativePath = subtaskStory.relativePath
+					graphPoint.contextTags = subtaskStory.contextTags
+					subtaskPoints.add(graphPoint)
+				}
+			}
+			summaryPoint = createAggregatePoint(story.timeline, subtaskPoints)
+		}
+
+		if (summaryPoint != null) {
+			summaryPoint.relativePath = story.relativePath
+			summaryPoint.contextTags = story.contextTags
+		}
+
+		return summaryPoint
+	}
+
+
+	GraphPoint<T> assignBlameToSubtasks(IdeaFlowStory ideaFlowStory, GraphPoint<T> summaryPoint) {
+		return summaryPoint
+	}
+
+
+	private List<TroubleshootingJourney> collectAllJourneys(IdeaFlowStory story) {
+		List<TroubleshootingJourney> journeys = []
+		story.subtasks.each { SubtaskStory subtaskStory ->
+			journeys.addAll(subtaskStory.troubleshootingJourneys)
+		}
+		return journeys
+	}
+
+
+	abstract GraphPoint<T> analyzeIdeaFlowStory(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys);
+
+	abstract GraphPoint<T> createAggregatePoint(IdeaFlowTimeline timeline, List<GraphPoint<T>> graphPoints);
+
 
 	abstract MetricThreshold<T> getDangerThreshold();
 
@@ -54,13 +108,14 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		return threshold
 	}
 
-	GraphPoint<T> createPointFromMeasurableContext(String relativePath, MeasurableContext measurable) {
+	GraphPoint<T> createPointFromStoryElement(StoryElement storyElement) {
 		GraphPoint<T> point = new GraphPoint<>()
-		point.relativePath = relativePath + "/"+ measurable.id
-		point.painTags = measurable.painTags
-		point.position = measurable.position
-		point.frequency = measurable.frequency
-		point.relativePositionInSeconds = measurable.relativePositionInSeconds
+		point.relativePath = storyElement.relativePath
+		point.painTags = storyElement.painTags
+		point.position = storyElement.position
+		point.distance = storyElement.durationInSeconds
+		point.frequency = Math.max(storyElement.frequency, 1)
+		point.relativePositionInSeconds = storyElement.relativePositionInSeconds
 		point.metricType = getMetricType()
 		return point
 	}
@@ -74,17 +129,19 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 	}
 
 
-	GraphPoint<T> createTimelinePoint(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
+	GraphPoint<T> createTimelinePoint(IdeaFlowTimeline timeline, List<GraphPoint<T>> allPoints) {
 		GraphPoint<T> graphPoint = new GraphPoint<>()
 		graphPoint.relativePath = "/timeline"
-		graphPoint.frequency = journeys.size()
-		graphPoint.metricType = getMetricType()
 		graphPoint.position = timeline.start
+		graphPoint.distance = timeline.durationInSeconds
 		graphPoint.relativePositionInSeconds = timeline.relativePositionInSeconds
+		graphPoint.metricType = getMetricType()
+		graphPoint.frequency = Math.max(allPoints.size(), 1)
+		graphPoint.childPoints = allPoints
 		return graphPoint
 	}
 
-	T getMaximumValue(Collection<GraphPoint<T>> graphPoints) {
+	T getMaximumValue(Collection<GraphPoint<T>> graphPoints) { //get max of empty = null
 		T maxValue = null;
 		graphPoints.each { GraphPoint<T> point ->
 			if (maxValue == null || point.value > maxValue)  {
@@ -131,6 +188,7 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		graphPoints.each { GraphPoint<T> point ->
 			frequency += point.frequency
 		}
+		frequency = Math.max(1, frequency)
 		return frequency
 	}
 

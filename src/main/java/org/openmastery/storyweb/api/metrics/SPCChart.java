@@ -3,6 +3,7 @@ package org.openmastery.storyweb.api.metrics;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.openmastery.storyweb.core.metrics.spc.MetricSet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,42 +18,56 @@ public class SPCChart {
 	Set<String> painTags;
 	Set<String> contextTags;
 
-	int totalFirstDegree;
-	int totalSecondDegree;
-	int totalThirdDegree;
-	int totalForthDegree;
+	MetaMetrics meta;
 
-	List<ExplodableGraphPoint> graphPoints; //these are all the raw data points that can be sliced and diced on the client side
-	List<MetricThreshold<?>> metricThresholds;
+	List<GraphPoint<?>> graphPoints; //these are all the raw data points that can be sliced and diced on the client side
+
+	Set<MetricThreshold<?>> painThresholds;
+	List<String> includeByTag;
+	List<String> excludeByTag;
+	List<AggregateBy> aggregateBy;
 
 	public SPCChart() {
 		painTags = new HashSet<String>();
 		contextTags = new HashSet<String>();
-		graphPoints = new ArrayList<ExplodableGraphPoint>();
+		meta = new MetaMetrics();
+
+		graphPoints = new ArrayList<GraphPoint<?>>();
+		painThresholds = new HashSet<MetricThreshold<?>>();
+
+		includeByTag = new ArrayList<String>();
+		excludeByTag = new ArrayList<String>();
+		aggregateBy = new ArrayList<AggregateBy>();
 	}
 
-	public void addGraphPoints(List<ExplodableGraphPoint> graphPoints) {
+	public void addMetricSet(MetricSet metricSet) {
+		graphPoints.addAll(metricSet.getExplodableTrees());
+		painThresholds.addAll( metricSet.getPainThresholds());
+		calculateStats(metricSet.getExplodableTrees());
+	}
 
-		this.graphPoints.addAll(graphPoints);
 
-		for (ExplodableGraphPoint graphPoint: graphPoints) {
+
+	private void calculateStats(List<GraphPoint<?>> graphPoints) {
+
+		for (GraphPoint<?> graphPoint: graphPoints) {
+
 			contextTags.addAll(graphPoint.contextTags);
 			painTags.addAll(graphPoint.painTags);
 
-			totalFirstDegree++;
+			meta.totalFirstDegree++;
 
-			totalSecondDegree += graphPoint.getChildPoints().size();
+			meta.totalSecondDegree += graphPoint.getChildPoints().size();
 
-			for (ExplodableGraphPoint innerPoint: graphPoint.getChildPoints()) {
-				totalThirdDegree += innerPoint.getChildPoints().size();
+			for (GraphPoint<?> innerPoint: graphPoint.getChildPoints()) {
+				meta.totalThirdDegree += innerPoint.getChildPoints().size();
 
-				for (ExplodableGraphPoint innerInnerPoint: innerPoint.getChildPoints()) {
-					totalForthDegree += innerInnerPoint.getChildPoints().size();
+				for (GraphPoint<?> innerInnerPoint: innerPoint.getChildPoints()) {
+					meta.totalFourthDegree += innerInnerPoint.getChildPoints().size();
 				}
 			}
 		}
 	}
-
 
 
 }

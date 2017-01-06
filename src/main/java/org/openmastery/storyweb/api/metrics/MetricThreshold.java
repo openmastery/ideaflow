@@ -1,16 +1,15 @@
 package org.openmastery.storyweb.api.metrics;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.openmastery.publisher.api.metrics.MetricType;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "metricType")
 public class MetricThreshold<V> {
+
 	MetricType metricType;
 	V threshold;
 

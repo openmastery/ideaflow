@@ -17,13 +17,14 @@ package org.openmastery.storyweb.resources;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.storyweb.api.ResourcePaths;
 import org.openmastery.storyweb.api.metrics.SPCChart;
+import org.openmastery.storyweb.api.metrics.InterestingChart;
 import org.openmastery.storyweb.core.MetricsService;
-import org.openmastery.storyweb.core.StoryWebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -63,6 +64,18 @@ public class MetricsResource {
 		return metricsService.generateSPCChart(jodaStartDate, jodaEndDate);
 	}
 
+	/**
+	 * Send a configuration of filters, aggregators, and the metrics you're interested in,
+	 * and we'll give you back some interesting data.
+	 * @param makeThisChart InterestingChart -- why look at it if it's not interesting?
+	 * @return SPCChart
+	 */
+	@GET
+	@Path(ResourcePaths.METRICS_SPC_PATH + ResourcePaths.METRICS_SEARCH)
+	SPCChart searchForMetrics(InterestingChart makeThisChart) {
+
+		throw new NotImplementedException("Come back later!  We're working on it!");
+	}
 
 
 }

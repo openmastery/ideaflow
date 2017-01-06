@@ -20,7 +20,7 @@ import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.storyweb.api.glossary.Glossary
 import org.openmastery.storyweb.api.glossary.GlossaryDefinition
-import org.openmastery.storyweb.api.TagsUtil
+import org.openmastery.publisher.api.journey.TagsUtil
 import org.openmastery.storyweb.core.SearchUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

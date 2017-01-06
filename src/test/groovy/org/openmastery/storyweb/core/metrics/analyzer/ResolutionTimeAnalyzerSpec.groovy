@@ -6,9 +6,9 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
-import org.openmastery.publisher.api.metrics.GraphPoint
+import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
-import org.openmastery.publisher.ideaflow.timeline.TroubleshootingJourneyGenerator
+import org.openmastery.publisher.ideaflow.story.TroubleshootingJourneyGenerator
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
@@ -64,7 +64,7 @@ class ResolutionTimeAnalyzerSpec extends Specification {
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshootingBand, troubleshootingBand2], executionEvents: builder.executionEventList)
 
 		when:
-		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [journey, journey2])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeIdeaFlowStory(timeline, [journey, journey2])
 
 		then:
 

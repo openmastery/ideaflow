@@ -8,7 +8,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.time.MockTimeService;
 import spock.lang.Specification;
 
-public class CalendarEventGeneratorTest extends Specification {
+public class CalendarEventGeneratorSpec extends Specification {
 
 	MockTimeService mockTimeService = new MockTimeService()
 	LocalDateTime startTime = mockTimeService.now()

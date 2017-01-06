@@ -7,7 +7,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
-import org.openmastery.publisher.api.metrics.GraphPoint
+import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.time.MockTimeService
@@ -38,7 +38,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand], executionEvents: [event])
-		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeIdeaFlowStory(timeline, [])
 
 		then:
 		assert timelinePoint.metricType == MetricType.MAX_HAYSTACK_SIZE
@@ -55,7 +55,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand], executionEvents: [])
-		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeIdeaFlowStory(timeline, [])
 
 		then:
 		assert timelinePoint.metricType == MetricType.MAX_HAYSTACK_SIZE
@@ -82,7 +82,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand, consecutiveBand], executionEvents: [event])
-		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeIdeaFlowStory(timeline, [])
 
 		then:
 		assert timelinePoint.metricType == MetricType.MAX_HAYSTACK_SIZE
@@ -108,7 +108,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand1, progressBand2], executionEvents: [event])
-		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeIdeaFlowStory(timeline, [])
 
 		then:
 		assert timelinePoint.metricType == MetricType.MAX_HAYSTACK_SIZE
@@ -136,7 +136,7 @@ class HaystackAnalyzerSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [learningBand, progressBand], executionEvents: [eventInLearning, eventInProgress])
-		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeIdeaFlowStory(timeline, [])
 
 		then:
 
@@ -169,17 +169,17 @@ class HaystackAnalyzerSpec extends Specification {
 				.build()
 		ExecutionEvent event = new ExecutionEvent(relativePositionInSeconds: 2)
 
-		TroubleshootingJourney journey1 = new TroubleshootingJourney(troubleshootingBand1)
+		TroubleshootingJourney journey1 = new TroubleshootingJourney("", troubleshootingBand1)
 		journey1.relativePath = "/journey/1"
 		journey1.id = 1
 
-		TroubleshootingJourney journey2 = new TroubleshootingJourney(troubleshootingBand2)
+		TroubleshootingJourney journey2 = new TroubleshootingJourney("", troubleshootingBand2)
 		journey2.relativePath = "/journey/2"
 		journey2.id = 2
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [progressBand, troubleshootingBand1, progressBand2, troubleshootingBand2], executionEvents: [event])
-		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeTimelineAndJourneys(timeline, [journey1, journey2])
+		GraphPoint<DurationInSeconds> timelinePoint = calculator.analyzeIdeaFlowStory(timeline, [journey1, journey2])
 
 		then:
 

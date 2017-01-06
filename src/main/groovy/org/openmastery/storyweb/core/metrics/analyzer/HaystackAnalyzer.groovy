@@ -20,9 +20,11 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.journey.IdeaFlowStory
+import org.openmastery.publisher.api.journey.SubtaskStory
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
-import org.openmastery.publisher.api.metrics.GraphPoint
+import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.metrics.MetricThreshold
 
@@ -30,11 +32,11 @@ import org.openmastery.storyweb.api.metrics.MetricThreshold
 class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 
 	HaystackAnalyzer() {
-		super(MetricType.MAX_HAYSTACK_SIZE)
+		super(MetricType.MAX_HAYSTACK_SIZE, true)
 	}
 
 	@Override
-	GraphPoint<DurationInSeconds> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
+	GraphPoint<DurationInSeconds> analyzeIdeaFlowStory(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
 		//exclude learning time, generally trailing troubleshooting time, but could be a whole string of haystacks...
 		//maybe we get the haystack size
@@ -68,6 +70,34 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 
 	}
 
+	@Override
+	GraphPoint<DurationInSeconds> assignBlameToSubtasks(IdeaFlowStory ideaFlowStory, GraphPoint<DurationInSeconds> summaryPoint) {
+		List<GraphPoint<DurationInSeconds>> subtaskPoints = []
+
+		ideaFlowStory.subtasks.each { SubtaskStory subtaskStory ->
+			List<String> journeyPaths = subtaskStory.collect { it.relativePath }
+			List<GraphPoint<DurationInSeconds>> journeyPoints = []
+			summaryPoint.childPoints.each { GraphPoint<DurationInSeconds> point ->
+				if (journeyPaths.contains(point.relativePath)) {
+					journeyPoints.add(point)
+				}
+			}
+
+			GraphPoint graphPoint = createAggregatePoint(subtaskStory.timeline, journeyPoints)
+			if (graphPoint) {
+				graphPoint.relativePath = subtaskStory.relativePath
+				graphPoint.contextTags = subtaskStory.contextTags
+				subtaskPoints.add(graphPoint)
+			}
+		}
+
+		summaryPoint.childPoints = subtaskPoints
+
+		return summaryPoint
+	}
+
+
+
 	GraphPoint<DurationInSeconds> translateToGraphPoints(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys, Map<String, Long> maxHaystacksFound) {
 
 		List<GraphPoint<DurationInSeconds>> allPoints = []
@@ -76,7 +106,7 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 			TroubleshootingJourney journey = findJourney(journeys, relativePath)
 
 			if (journey) {
-				GraphPoint<DurationInSeconds> graphPoint = createPointFromMeasurableContext("/journey", journey)
+				GraphPoint<DurationInSeconds> graphPoint = createPointFromStoryElement(journey)
 				graphPoint.value = new DurationInSeconds(haystackSizeInSeconds)
 				graphPoint.danger = isOverThreshold(graphPoint.value)
 				allPoints.add(graphPoint)
@@ -87,12 +117,27 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 			point.relativePositionInSeconds
 		}
 
-		GraphPoint<DurationInSeconds> timelinePoint = createTimelinePoint(timeline, journeys)
-		timelinePoint.value = new DurationInSeconds(maxHaystacksFound.get("/timeline"))
+		GraphPoint<DurationInSeconds> timelinePoint = createTimelinePoint(timeline, allPoints)
+		Long biggestHaystack = maxHaystacksFound.get("/timeline")
+		if (biggestHaystack) {
+			timelinePoint.value = new DurationInSeconds(biggestHaystack)
+		} else {
+			timelinePoint.value = new DurationInSeconds(0)
+		}
 		timelinePoint.danger = isOverThreshold(timelinePoint.value)
-		timelinePoint.frequency = allPoints.size()
 		timelinePoint.childPoints = allPoints
 
+		return timelinePoint
+	}
+
+	@Override
+	GraphPoint<DurationInSeconds> createAggregatePoint(IdeaFlowTimeline timeline, List<GraphPoint<DurationInSeconds>> allPoints) {
+		GraphPoint timelinePoint = null
+		if (allPoints.size() > 0) {
+			timelinePoint = createTimelinePoint(timeline, allPoints)
+			timelinePoint.value = getMaximumValue(allPoints)
+			timelinePoint.danger = isOverThreshold(timelinePoint.value)
+		}
 		return timelinePoint
 	}
 
@@ -121,6 +166,7 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 		}
 		Long oldHaystack = maxHaystacksFound.get("/timeline")
 		if (oldHaystack == null || haystackSizeInSeconds > oldHaystack) {
+			log.debug("Recording new maximum haystack size: "+haystackSizeInSeconds)
 			maxHaystacksFound.put("/timeline", haystackSizeInSeconds)
 		}
 
@@ -141,6 +187,7 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 
 
 	private List<IdeaFlowBand> collapseConsecutiveBandPeriods(List<IdeaFlowBand> bands) {
+		log.debug("Before collapsed bands : "+bands)
 		List<IdeaFlowBand> filteredBands = bands.findAll() { IdeaFlowBand band ->
 			(band.type == IdeaFlowStateType.PROGRESS || band.type == IdeaFlowStateType.TROUBLESHOOTING)
 		}
@@ -149,25 +196,32 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 			band.relativePositionInSeconds
 		}
 
+		log.debug("after filtered bands : "+filteredBands)
+
 		List<IdeaFlowBand> consecutiveBandPeriods = []
 		IdeaFlowBand lastBand = null
 		filteredBands.each { IdeaFlowBand band ->
 			if (lastBand == null) {
+				log.debug("lastBand is null")
 				lastBand = band
 			} else {
 				if (bandsAreAdjacent(lastBand, band)) {
+					log.debug("Bands are adjacent: "+lastBand.relativeEnd + ", "+band.relativeStart)
 					IdeaFlowBand newBand = IdeaFlowBand.builder()
 							.relativePositionInSeconds(lastBand.relativePositionInSeconds)
 							.durationInSeconds(lastBand.durationInSeconds + band.durationInSeconds)
 							.build()
 					lastBand = newBand
 				} else {
+					log.debug("Bands have a gap: "+lastBand.relativeEnd + ", "+band.relativeStart)
 					consecutiveBandPeriods.add(lastBand)
 					lastBand = band
 				}
 			}
 		}
-		if (lastBand) consecutiveBandPeriods.add(lastBand)
+		if (lastBand) {
+			consecutiveBandPeriods.add(lastBand)
+		}
 
 		return consecutiveBandPeriods
 	}

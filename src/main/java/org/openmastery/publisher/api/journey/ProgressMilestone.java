@@ -5,47 +5,64 @@ import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.metrics.CapacityDistribution;
-import org.openmastery.publisher.api.metrics.Metric;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class ProgressMilestone extends AbstractRelativeInterval {
+public class ProgressMilestone extends AbstractRelativeInterval implements StoryContextElement {
 
 	@JsonIgnore
 	Event event;
 
+	@JsonIgnore
+	String parentPath;
+
+	CapacityDistribution capacityDistribution;
+
+	Set<String> painTags;
+	Set<String> contextTags;
+
+
+	public ProgressMilestone(String parentPath, Event progressEvent) {
+		this.event = progressEvent;
+		this.parentPath = parentPath;
+		setRelativeStart(progressEvent.getRelativePositionInSeconds());
+
+		contextTags = TagsUtil.extractUniqueHashTags(progressEvent.getComment());
+		painTags = new HashSet<String>();
+
+		//TODO fix this hack properly in IdeaFlowStoryGenerator... overwriting subtask for default milestone
+		if (event.getType() == EventType.NOTE) {
+			event.setFullPath(getFullPath());
+		}
+	}
+
+	@JsonIgnore
 	public Long getId() {
 		return event.getId();
 	}
 
-	String getRelativePath() {
-		return "/milestone/"+event.getId();
+	public String getRelativePath() {
+		return "/milestone/" + event.getId();
 	}
 
-	LocalDateTime getPosition() {
+	@JsonIgnore
+	public String getFullPath() {
+		return parentPath + getRelativePath();
+	}
+
+	public LocalDateTime getPosition() {
 		return event.getPosition();
 	}
 
-	String getDescription() {
+	public String getDescription() {
 		return event.getComment();
-	}
-
-	CapacityDistribution capacityDistribution;
-	List<TroubleshootingJourney> troubleshootingJourneys = new ArrayList<TroubleshootingJourney>();
-
-	public ProgressMilestone(Event progressEvent) {
-		this.event = progressEvent;
-		setRelativeStart(progressEvent.getRelativePositionInSeconds());
-	}
-
-	public void addJourney(TroubleshootingJourney journey) {
-		troubleshootingJourneys.add(journey);
 	}
 
 	@JsonIgnore
@@ -55,6 +72,16 @@ public class ProgressMilestone extends AbstractRelativeInterval {
 
 
 
+	@Override
+	public int getFrequency() {
+		return 1;
+	}
+
+	@JsonIgnore
+	@Override
+	public List<? extends StoryElement> getChildStoryElements() {
+		return Collections.emptyList();
+	}
 
 
 }

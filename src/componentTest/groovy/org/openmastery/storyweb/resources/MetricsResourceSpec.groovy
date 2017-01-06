@@ -1,6 +1,7 @@
 package org.openmastery.storyweb.resources
 
 import org.openmastery.publisher.ComponentTest
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
@@ -35,8 +36,9 @@ class MetricsResourceSpec extends Specification {
 	Long userId
 
 	def setup() {
-		taskId = persistenceService.saveTask(aRandom.taskEntity().build()).id
 		userId = testUser.id
+		taskId = persistenceService.saveTask(aRandom.taskEntity().ownerId(userId).build()).id
+
 	}
 	def "generateSPCChart SHOULD populate a chart with graph points"() {
 		given:
@@ -58,7 +60,40 @@ class MetricsResourceSpec extends Specification {
 
 		then:
 		assert chart != null
-		assert chart.graphPoints.size() == 1
-		assert chart.metricThresholds.size() == 5
+		assert chart.graphPoints.size()
+		assert chart.painThresholds.size() == 5
+	}
+
+	def "generateSPCChart SHOULD generate graph points for each task"() {
+		given:
+		builder.activate()
+				.wtf()
+				.advanceMinutes(30)
+				.executeCode()
+				.executeCode()
+				.executeCode()
+				.advanceMinutes(1)
+				.wtf()
+				.advanceMinutes(30)
+				.executeCode()
+				.executeCode()
+				.idleDays(1)
+				.advanceMinutes(5)
+				.awesome()
+				.advanceMinutes(5)
+				.deactivate()
+
+		fixturePersistenceHelper.saveIdeaFlow(userId, taskId, builder)
+
+		when:
+		SPCChart chart = metricsClient.generateChart(builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
+
+		then:
+		assert chart.graphPoints.size() == 5
+		assert chart.meta.totalFirstDegree == 5
+		assert chart.meta.totalSecondDegree == 5
+		assert chart.meta.totalThirdDegree == 4
+		assert chart.meta.totalFourthDegree == 8
+
 	}
 }

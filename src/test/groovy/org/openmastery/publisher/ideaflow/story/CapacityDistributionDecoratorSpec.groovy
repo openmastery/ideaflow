@@ -1,4 +1,4 @@
-package org.openmastery.publisher.metrics.calculator
+package org.openmastery.publisher.ideaflow.story
 
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
@@ -6,17 +6,17 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.metrics.CapacityDistribution
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
-import org.openmastery.publisher.metrics.CapacityDistributionCalculator
+import org.openmastery.publisher.ideaflow.story.CapacityDistributionDecorator
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
-class CapacityDistributionCalculatorSpec extends Specification {
+class CapacityDistributionDecoratorSpec extends Specification {
 
 
 	private MockTimeService mockTimeService = new MockTimeService()
 	private IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
 
-	private CapacityDistributionCalculator calculator = new CapacityDistributionCalculator()
+	private CapacityDistributionDecorator decorator = new CapacityDistributionDecorator()
 
 
 	LocalDateTime start
@@ -42,7 +42,7 @@ class CapacityDistributionCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [troubleshootingBand1, troubleshootingBand2])
-		CapacityDistribution value = calculator.calculateCapacityDistribution(timeline)
+		CapacityDistribution value = decorator.calculateCapacity(timeline)
 
 		then:
 		assert value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING, 45)
@@ -70,7 +70,7 @@ class CapacityDistributionCalculatorSpec extends Specification {
 
 		when:
 		IdeaFlowTaskTimeline timeline = new IdeaFlowTaskTimeline(ideaFlowBands: [learningBand, progressBand, troubleshootingBand])
-		CapacityDistribution value = calculator.calculateCapacityDistribution(timeline)
+		CapacityDistribution value = decorator.calculateCapacity(timeline)
 
 		then:
 		assert value.capacityDistributionByType.get(IdeaFlowStateType.LEARNING, 30)

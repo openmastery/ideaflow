@@ -8,6 +8,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
+import org.openmastery.publisher.ideaflow.story.TroubleshootingJourneyGenerator
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 

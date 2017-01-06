@@ -19,7 +19,7 @@ import org.joda.time.LocalDate
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.metrics.Metric
+import org.openmastery.storyweb.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.metrics.MetricThreshold
 

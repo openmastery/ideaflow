@@ -21,6 +21,8 @@ public class IdeaFlowBand implements Positionable {
 	@JsonIgnore //will these ever be persistent?
 	private long id;
 
+	private String fullPath;
+
 	@JsonIgnore //should we be populating taskId on everything or does this even matter?
 	private Long taskId;
 

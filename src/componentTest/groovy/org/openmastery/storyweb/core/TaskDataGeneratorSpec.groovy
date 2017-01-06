@@ -7,7 +7,8 @@ import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.storyweb.api.metrics.SPCChart
-import org.openmastery.storyweb.core.metrics.spc.SPCChartGenerator
+import org.openmastery.storyweb.core.metrics.spc.TaskData
+import org.openmastery.storyweb.core.metrics.spc.TaskDataGenerator
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
@@ -16,10 +17,10 @@ import spock.lang.Specification
 import static org.openmastery.publisher.ARandom.aRandom
 
 @ComponentTest
-class SPCChartGeneratorSpec extends Specification {
+class TaskDataGeneratorSpec extends Specification {
 
 	@Autowired
-	SPCChartGenerator spcChartGenerator
+	TaskDataGenerator taskDataGenerator
 
 	@Autowired
 	FixturePersistenceHelper fixturePersistenceHelper
@@ -27,15 +28,13 @@ class SPCChartGeneratorSpec extends Specification {
 	@Autowired
 	private IdeaFlowPersistenceService persistenceService
 
-	EntityMapper entityMapper = new EntityMapper()
-
 	MockTimeService mockTimeService = new MockTimeService()
 	IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
 
 	Long taskId
 
 	def setup() {
-		taskId = persistenceService.saveTask(aRandom.taskEntity().build()).id
+		taskId = persistenceService.saveTask(aRandom.taskEntity().ownerId(-1).build()).id
 
 	}
 
@@ -55,48 +54,14 @@ class SPCChartGeneratorSpec extends Specification {
 		fixturePersistenceHelper.saveIdeaFlow(-1, taskId, builder)
 
 		when:
-		List<SPCChartGenerator.TaskData> taskDataList =
-				spcChartGenerator.generateTaskData(-1, builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
+		List<TaskData> taskDataList =
+				taskDataGenerator.generate(-1, builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
 
 		then:
 		assert taskDataList.size() == 1
 		assert taskDataList.get(0).troubleshootingBands.size() == 1
 		assert taskDataList.get(0).troubleshootingBands.get(0).duration == Duration.standardMinutes(65)
+		assert taskDataList.get(0).task != null
 	}
-
-	def "generateSPCChart SHOULD generate graph points for each task"() {
-		given:
-		builder.activate()
-				.wtf()
-				.advanceMinutes(30)
-				.executeCode()
-				.executeCode()
-				.executeCode()
-				.advanceMinutes(1)
-				.wtf()
-				.advanceMinutes(30)
-				.executeCode()
-				.executeCode()
-				.idleDays(1)
-				.advanceMinutes(5)
-				.awesome()
-				.advanceMinutes(5)
-				.deactivate()
-
-		fixturePersistenceHelper.saveIdeaFlow(-1, taskId, builder)
-
-		when:
-		SPCChart chart = spcChartGenerator.generateChart(-1, builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
-
-		then:
-		assert chart.graphPoints.size() == 1
-		assert chart.graphPoints.get(0).durationInSeconds == new DurationInSeconds(66 * 60)
-		assert chart.totalFirstDegree == 1
-		assert chart.totalSecondDegree == 1
-		assert chart.totalThirdDegree == 3
-		assert chart.totalForthDegree == 6
-
-	}
-
 
 }

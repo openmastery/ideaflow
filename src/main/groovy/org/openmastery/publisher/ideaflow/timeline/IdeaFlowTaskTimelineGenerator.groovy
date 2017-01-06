@@ -23,7 +23,6 @@ import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.api.activity.BlockActivity
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
@@ -51,6 +50,8 @@ class IdeaFlowTaskTimelineGenerator {
 	private List<BlockActivity> blockActivities = []
 
 	private EntityMapper entityMapper = new EntityMapper()
+	private InitialSubtaskGenerator initialSubtaskGenerator = new InitialSubtaskGenerator()
+
 	private IdleTimeProcessor idleTimeProcessor
 	private RelativeTimeProcessor relativeTimeProcessor
 	private IdeaFlowBandGenerator bandGenerator
@@ -197,22 +198,10 @@ class IdeaFlowTaskTimelineGenerator {
 	}
 
 	private void addInitialStrategySubtaskEventAndSortEventsList(Long taskId, LocalDateTime timelineStart) {
-		Collections.sort(events, PositionableComparator.INSTANCE);
-		Event firstSubtaskEvent = events.find { it.type == EventType.SUBTASK }
-		if ((firstSubtaskEvent != null) && firstSubtaskEvent.position.isEqual(timelineStart)) {
-			return
+		Event initialStrategySubtaskEvent = initialSubtaskGenerator.generateInitialStrategySubtaskEvent(events, taskId, timelineStart)
+		if (initialStrategySubtaskEvent != null) {
+			events.add(initialStrategySubtaskEvent)
 		}
-
-		Event initialStrategySubtaskEvent = Event.builder()
-				.id(-1)
-				.type(EventType.SUBTASK)
-				.comment("Initial Strategy")
-				.build()
-		initialStrategySubtaskEvent.taskId = taskId
-		initialStrategySubtaskEvent.position = timelineStart
-		initialStrategySubtaskEvent.relativePositionInSeconds = 0
-
-		events.add(initialStrategySubtaskEvent)
 		Collections.sort(events, PositionableComparator.INSTANCE);
 	}
 

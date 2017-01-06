@@ -13,33 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.ideaflow.timeline
+package org.openmastery.publisher.ideaflow.story
 
 import groovy.util.logging.Slf4j
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.DiscoveryCycle
 import org.openmastery.publisher.api.journey.ExperimentCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
-import org.openmastery.publisher.metrics.MetricService
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
 /**
  * Generates all the troubleshooting journeys from the WTF/YAY events within the timeline
  */
-@Component
+
 @Slf4j
 class TroubleshootingJourneyGenerator {
-
-	@Autowired
-	MetricService metricsService
 
 	TroubleshootingJourney createJourney(List<Event> events, IdeaFlowBand band) {
 		List<Event> wtfYayEvents = events.findAll { it.type == EventType.WTF }
@@ -68,8 +62,6 @@ class TroubleshootingJourneyGenerator {
 		List<TroubleshootingJourney> journeys = splitIntoJourneys(wtfYayEvents, troubleshootingBands)
 		journeys.each { TroubleshootingJourney journey ->
 			fillWithActivity(journey, timeline.executionEvents)
-
-			journey.metrics = metricsService.generateJourneyMetrics(new JourneyTimeline(journey))
 
 		}
 
@@ -100,7 +92,7 @@ class TroubleshootingJourneyGenerator {
 		long initialDuration = firstEvent.relativePositionInSeconds - discoveryCycle.relativeStart
 
 		if (initialDuration > 0) {
-			ExperimentCycle experimentCycle = new ExperimentCycle(contextEvent, initialDuration)
+			ExperimentCycle experimentCycle = new ExperimentCycle(discoveryCycle.fullPath, contextEvent, initialDuration)
 			experimentCycle.relativeStart = discoveryCycle.relativeStart
 
 			log.debug("Context Exec [${contextEvent.id}, ${experimentCycle.relativeStart} ] : "+initialDuration)
@@ -116,14 +108,13 @@ class TroubleshootingJourneyGenerator {
 			last.durationInSeconds = event.relativePositionInSeconds - last.relativeStart
 		}
 		long duration = discoveryCycle.relativeEnd - event.relativePositionInSeconds
-		ExperimentCycle experimentCycle = new ExperimentCycle(event, duration)
+		ExperimentCycle experimentCycle = new ExperimentCycle(discoveryCycle.fullPath, event, duration)
 
 		log.debug("Adding Exec [${event.id}, ${event.relativePositionInSeconds} ] : "+duration)
 		discoveryCycle.addExperimentCycle(experimentCycle)
 	}
 
 	void annotateJourneys(List<TroubleshootingJourney> journeys, List<FaqAnnotationEntity> faqs, List<SnippetAnnotationEntity> snippets) {
-
 		journeys.each { TroubleshootingJourney journey ->
 			faqs.each { FaqAnnotationEntity faqEntity ->
 				if (journey.containsEvent(faqEntity.eventId)) {
@@ -160,7 +151,7 @@ class TroubleshootingJourneyGenerator {
 
 
 		troubleshootingBands.each { IdeaFlowBand troubleshootingBand ->
-			TroubleshootingJourney journey = new TroubleshootingJourney(troubleshootingBand)
+			TroubleshootingJourney journey = new TroubleshootingJourney("", troubleshootingBand)
 			log.debug("Generating Journey [" + journey.relativeStart + ", " + journey.relativeEnd + "]")
 
 

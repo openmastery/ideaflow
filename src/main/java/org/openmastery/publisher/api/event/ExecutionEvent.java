@@ -20,7 +20,11 @@ import java.time.Duration;
 @Builder
 public class ExecutionEvent extends AbstractPositionable {
 
+	private String fullPath;
+
+	@JsonIgnore
 	private Long id;
+
 	private String processName;
 	private String executionTaskType;
 

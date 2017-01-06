@@ -13,18 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.metrics
+package org.openmastery.publisher.ideaflow.story
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
+import org.openmastery.publisher.api.journey.IdeaFlowStory
+import org.openmastery.publisher.api.journey.ProgressMilestone
+import org.openmastery.publisher.api.journey.StoryContextElement
+import org.openmastery.publisher.api.journey.StoryElement
+import org.openmastery.publisher.api.journey.SubtaskStory
 import org.openmastery.publisher.api.metrics.CapacityDistribution
 
-class CapacityDistributionCalculator {
+public class CapacityDistributionDecorator {
 
 
-	CapacityDistribution calculateCapacityDistribution(IdeaFlowTimeline timeline) {
+	void decorateStoryWithCapacityDistributions(IdeaFlowStory story) {
 
+		story.capacityDistribution = calculateCapacity(story.timeline)
+
+		List<SubtaskStory> subtaskStories = story.getSubtasks()
+		subtaskStories.each { SubtaskStory subtaskStory ->
+			subtaskStory.capacityDistribution = calculateCapacity(subtaskStory.timeline)
+			decorateCapacityForMilestones(subtaskStory.timeline, subtaskStory.milestones)
+		}
+
+	}
+
+	private void decorateCapacityForMilestones(IdeaFlowTimeline timeline, List<ProgressMilestone> milestones) {
+		milestones.each { ProgressMilestone milestone ->
+			Long relativeStart = milestone.relativePositionInSeconds
+			Long relativeEnd = milestone.relativePositionInSeconds + milestone.getDurationInSeconds()
+			milestone.capacityDistribution = calculateCapacityWithinWindow(timeline, relativeStart, relativeEnd)
+
+		}
+	}
+
+	private CapacityDistribution calculateCapacity(IdeaFlowTimeline timeline) {
 		CapacityDistribution capacity = new CapacityDistribution()
 
 		saveTotalDurationForBandType(capacity, timeline, IdeaFlowStateType.LEARNING)
@@ -34,7 +59,7 @@ class CapacityDistributionCalculator {
 		return capacity
 	}
 
-	CapacityDistribution calculateCapacityWithinWindow(IdeaFlowTimeline timeline, Long windowStart, Long windowEnd) {
+	private CapacityDistribution calculateCapacityWithinWindow(IdeaFlowTimeline timeline, Long windowStart, Long windowEnd) {
 
 		CapacityDistribution distribution = new CapacityDistribution()
 		distribution.addDurationForType(IdeaFlowStateType.LEARNING, 0)
@@ -58,7 +83,7 @@ class CapacityDistributionCalculator {
 	}
 
 
-	void saveTotalDurationForBandType(CapacityDistribution capacity, IdeaFlowTimeline timeline, IdeaFlowStateType ideaFlowStateType) {
+	private void saveTotalDurationForBandType(CapacityDistribution capacity, IdeaFlowTimeline timeline, IdeaFlowStateType ideaFlowStateType) {
 
 		List<IdeaFlowBand> bands = timeline.ideaFlowBands.findAll() { IdeaFlowBand band ->
 			band.type == ideaFlowStateType

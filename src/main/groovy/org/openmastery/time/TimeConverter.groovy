@@ -93,4 +93,10 @@ class TimeConverter {
 
 		return formatter.print(localDate)
 	}
+
+	static String formatDate(org.joda.time.LocalDateTime localDateTime) {
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
+
+		return formatter.print(localDateTime)
+	}
 }

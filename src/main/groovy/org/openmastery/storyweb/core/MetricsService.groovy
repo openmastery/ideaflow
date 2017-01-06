@@ -16,9 +16,20 @@
 package org.openmastery.storyweb.core
 
 import org.joda.time.LocalDate
+import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
+import org.openmastery.publisher.api.journey.IdeaFlowStory
+import org.openmastery.publisher.ideaflow.story.IdeaFlowStoryGenerator
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.metrics.SPCChart
-import org.openmastery.storyweb.core.metrics.spc.SPCChartGenerator
+
+import org.openmastery.storyweb.core.metrics.analyzer.ExperimentFrequencyAnalyzer
+import org.openmastery.storyweb.core.metrics.analyzer.HaystackAnalyzer
+import org.openmastery.storyweb.core.metrics.analyzer.HumanCycleTimeAnalyzer
+import org.openmastery.storyweb.core.metrics.analyzer.ResolutionTimeAnalyzer
+import org.openmastery.storyweb.core.metrics.analyzer.WtfsPerDayAnalyzer
+import org.openmastery.storyweb.core.metrics.spc.MetricSet
+import org.openmastery.storyweb.core.metrics.spc.TaskData
+import org.openmastery.storyweb.core.metrics.spc.TaskDataGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -26,13 +37,41 @@ import org.springframework.stereotype.Component
 class MetricsService {
 
 	@Autowired
-	SPCChartGenerator spcChartGenerator
+	TaskDataGenerator taskDataGenerator
 
 	@Autowired
 	InvocationContext invocationContext
 
+	IdeaFlowStoryGenerator storyGenerator = new IdeaFlowStoryGenerator()
 
 	SPCChart generateSPCChart(LocalDate startDate, LocalDate endDate) {
-		return spcChartGenerator.generateChart(invocationContext.userId, startDate, endDate)
+		Long userId = invocationContext.userId
+
+		SPCChart chart = new SPCChart()
+
+		List<TaskData> taskDataList = taskDataGenerator.generate(userId, startDate, endDate)
+		taskDataList.each { TaskData taskData ->
+			IdeaFlowTaskTimeline taskTimeline = taskData.toIdeaFlowTaskTimeline()
+			IdeaFlowStory story = storyGenerator.generateIdeaFlowStory(taskTimeline)
+
+			MetricSet metrics = generateMetricsForTask(story)
+			chart.addMetricSet(metrics)
+		}
+
+		return chart;
 	}
+
+
+	MetricSet generateMetricsForTask(IdeaFlowStory story) {
+		MetricSet metricSet = new MetricSet()
+		metricSet.addMetric(new HaystackAnalyzer())
+		metricSet.addMetric(new ResolutionTimeAnalyzer())
+		metricSet.addMetric(new HumanCycleTimeAnalyzer())
+		metricSet.addMetric(new ExperimentFrequencyAnalyzer())
+		metricSet.addMetric(new WtfsPerDayAnalyzer())
+
+		return metricSet.calculate(story)
+	}
+
+
 }

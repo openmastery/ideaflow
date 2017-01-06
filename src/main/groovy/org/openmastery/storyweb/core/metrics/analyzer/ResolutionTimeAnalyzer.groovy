@@ -17,46 +17,54 @@ package org.openmastery.storyweb.core.metrics.analyzer
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.DiscoveryCycle
-import org.openmastery.publisher.api.journey.MeasurableContext
+import org.openmastery.publisher.api.journey.StoryElement
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
-import org.openmastery.publisher.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.storyweb.api.metrics.MetricThreshold
-
 
 class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 
 	ResolutionTimeAnalyzer() {
-		super(MetricType.MAX_RESOLUTION_TIME)
+		super(MetricType.MAX_RESOLUTION_TIME, false)
 	}
 
 	@Override
-	GraphPoint<DurationInSeconds> analyzeTimelineAndJourneys(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
+	GraphPoint<DurationInSeconds> analyzeIdeaFlowStory(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
 		List<GraphPoint<DurationInSeconds>> allPoints = journeys.collect { TroubleshootingJourney journey ->
-			GraphPoint<DurationInSeconds> bandPoint = createPointFromMeasurableContext("/journey", journey)
+			GraphPoint<DurationInSeconds> bandPoint = createPointFromStoryElement(journey)
 			bandPoint.childPoints = generatePointsForDiscoveryCycles(journey.discoveryCycles)
 			return bandPoint
 		}
 
-		GraphPoint<DurationInSeconds> timelinePoint = createTimelinePoint(timeline, journeys)
-		timelinePoint.value = getMaximumValue(allPoints)
-		timelinePoint.danger = isOverThreshold(timelinePoint.value)
-		timelinePoint.childPoints = allPoints
+
+		return createAggregatePoint(timeline, allPoints)
+	}
+
+	@Override
+	GraphPoint<DurationInSeconds> createAggregatePoint(IdeaFlowTimeline timeline, List<GraphPoint<DurationInSeconds>> allPoints) {
+		GraphPoint timelinePoint = null
+		if (allPoints.size() > 0) {
+			timelinePoint = createTimelinePoint(timeline, allPoints)
+			timelinePoint.value = getMaximumValue(allPoints)
+			timelinePoint.danger = isOverThreshold(timelinePoint.value)
+		}
+
 		return timelinePoint
 	}
 
 	List<GraphPoint<DurationInSeconds>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
 
 		return discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
-			return createPointFromMeasurableContext("/discovery", discoveryCycle)
+			return createPointFromStoryElement(discoveryCycle)
 		}
 	}
 
-	GraphPoint<DurationInSeconds> createPointFromMeasurableContext(String relativePath, MeasurableContext measurable) {
-		GraphPoint<DurationInSeconds> point = super.createPointFromMeasurableContext(relativePath, measurable)
-		point.value = new DurationInSeconds(measurable.getDurationInSeconds())
+	GraphPoint<DurationInSeconds> createPointFromStoryElement(StoryElement storyElement) {
+		GraphPoint<DurationInSeconds> point = super.createPointFromStoryElement(storyElement)
+		point.value = new DurationInSeconds(storyElement.getDurationInSeconds())
 		point.danger = isOverThreshold(point.value)
 
 		return point

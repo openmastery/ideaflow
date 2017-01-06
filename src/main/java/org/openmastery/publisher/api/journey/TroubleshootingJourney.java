@@ -6,6 +6,7 @@ import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
+import org.openmastery.storyweb.api.metrics.Metric;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,39 +19,77 @@ import java.util.Set;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class TroubleshootingJourney extends AbstractRelativeInterval implements MeasurableContext {
+public class TroubleshootingJourney extends AbstractRelativeInterval implements StoryElement {
 
 	@JsonIgnore
+	String parentPath;
+	@JsonIgnore
 	IdeaFlowBand band;
-
+	@JsonIgnore
 	Long id;
-	String relativePath;
+	@JsonIgnore
+	Event event;
 
+	String relativePath;
 	Set<String> contextTags;
 	Set<String> painTags; //derived from WTF/YAY #hashtags
 
 	List<DiscoveryCycle> discoveryCycles;
 
-	public TroubleshootingJourney(IdeaFlowBand band) {
+	List<Metric<?>> metrics;
+
+	public TroubleshootingJourney(String parentPath, IdeaFlowBand band) {
 		this.band = band;
+		this.parentPath = parentPath;
 		setRelativeStart(band.getRelativePositionInSeconds());
 		setDurationInSeconds(band.getDurationInSeconds());
 
 		this.discoveryCycles = new ArrayList<DiscoveryCycle>();
 		this.contextTags = new HashSet<String>();
 		this.painTags = new HashSet<String>();
+
+
+	}
+
+	public Long getRelativePositionInSeconds() { return band.getRelativeStart(); }
+
+	public LocalDateTime getPosition() {
+		return band.getPosition();
+	}
+
+	public String getDescription() {
+		String description = "";
+		if (discoveryCycles.size() > 0) {
+			description = discoveryCycles.get(0).event.getComment();
+		}
+		return description;
+	}
+
+	@JsonIgnore
+	public String getFullPath() { return parentPath + getRelativePath(); }
+
+	public void setParentPath(String parentPath) {
+		this.parentPath = parentPath;
+		band.setFullPath(getFullPath());
+		event.setFullPath(getFullPath());
+
+		for (DiscoveryCycle discoveryCycle : discoveryCycles) {
+			discoveryCycle.setParentPath(getFullPath());
+		}
 	}
 
 	public void addPartialDiscovery(Event wtfYayEvent, Long durationInSeconds) {
-		DiscoveryCycle partialDiscovery = new DiscoveryCycle(wtfYayEvent, durationInSeconds);
-		painTags.addAll(partialDiscovery.painTags);
-
 		if (id == null) {
 			id = wtfYayEvent.getId();
 			relativePath = "/journey/"+id;
+			this.event = wtfYayEvent;
+			band.setFullPath(getFullPath());
+			event.setFullPath(getFullPath());
 		}
 
-		discoveryCycles.add(partialDiscovery);
+		DiscoveryCycle discoveryCycle = new DiscoveryCycle(getFullPath(), wtfYayEvent, durationInSeconds);
+		painTags.addAll(discoveryCycle.painTags);
+		discoveryCycles.add(discoveryCycle);
 	}
 
 	public boolean containsEvent(long eventId) {
@@ -66,10 +105,10 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	}
 
 	public void addFAQ(long eventId, String faqComment) {
-		for (DiscoveryCycle partialDiscovery : discoveryCycles) {
-			if (partialDiscovery.event.getId() == eventId) {
-				partialDiscovery.addFaq(faqComment);
-				contextTags.addAll(partialDiscovery.contextTags);
+		for (DiscoveryCycle discoveryCycle : discoveryCycles) {
+			if (discoveryCycle.event.getId() == eventId) {
+				discoveryCycle.addFaq(faqComment);
+				contextTags.addAll(discoveryCycle.contextTags);
 				break;
 			}
 		}
@@ -84,21 +123,10 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 		}
 	}
 
-	public LocalDateTime getPosition() {
-		return band.getPosition();
-	}
 
 	@JsonIgnore
 	public LocalDateTime getEnd() {
 		return band.getEnd();
-	}
-
-	public String getDescription() {
-		String description = "";
-		if (discoveryCycles.size() > 0) {
-			description = discoveryCycles.get(0).event.getComment();
-		}
-		return description;
 	}
 
 	@JsonIgnore
@@ -106,6 +134,11 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 		return getDiscoveryCycles().size();
 	}
 
-	public Long getRelativePositionInSeconds() { return band.getRelativeStart(); }
+	@JsonIgnore
+	@Override
+	public List<? extends StoryElement> getChildStoryElements() {
+		return discoveryCycles;
+	}
+
 
 }

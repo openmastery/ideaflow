@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.storyweb.api;
+package org.openmastery.publisher.api.journey;
 
 import java.util.Collections;
 import java.util.HashSet;

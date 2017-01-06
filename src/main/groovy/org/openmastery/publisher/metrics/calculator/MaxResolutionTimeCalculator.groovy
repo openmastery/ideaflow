@@ -19,7 +19,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.metrics.DurationInSeconds
-import org.openmastery.publisher.api.metrics.Metric
+import org.openmastery.storyweb.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.metrics.MetricThreshold
 
