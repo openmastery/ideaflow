@@ -5,7 +5,7 @@ import com.bancvue.rest.exception.NotFoundException
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.task.Task
-import org.openmastery.storyweb.client.TaskClient
+import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.time.MockTimeService

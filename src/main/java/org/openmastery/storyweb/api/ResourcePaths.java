@@ -29,6 +29,19 @@ public class ResourcePaths {
 	public static final String GLOSSARY_BLANK_PATH = "/blank";
 	public static final String GLOSSARY_TERM_PATH = "/term";
 
+	// event paths
+	public static final String EVENT_PATH = "/event";
+	public static final String EVENT_TASK_ACTIVATE = "/activate";
+	public static final String EVENT_TASK_DEACTIVATE = "/deactivate";
+	public static final String EVENT_SUBTASK = "/subtask";
+	public static final String EVENT_MILESTONE = "/milestone";
+	public static final String EVENT_JOURNEY = "/journey";
+	public static final String EVENT_WTF = "/wtf";
+	public static final String EVENT_DISCOVERY = "/discovery";
+	public static final String EVENT_EXPERIMENT = "/experiment";
+
+	public static final String EVENT_ANNOTATION_PATH = "/annotation";
+	public static final String EVENT_FAQ_PATH = "/faq";
 
 
 	public static final String FAQ_PATH = "/faq";

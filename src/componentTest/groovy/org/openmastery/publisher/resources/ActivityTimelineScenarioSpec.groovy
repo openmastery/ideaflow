@@ -6,7 +6,8 @@ import org.openmastery.publisher.api.timeline.ActivityTimeline
 import org.openmastery.publisher.client.*
 import org.openmastery.publisher.core.timeline.ActivityTimelineValidator
 import org.openmastery.publisher.core.timeline.TimelinePrettyPrinter
-import org.openmastery.storyweb.client.TaskClient
+import org.openmastery.publisher.client.TaskClient
+import org.openmastery.storyweb.client.EventClient
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Ignore

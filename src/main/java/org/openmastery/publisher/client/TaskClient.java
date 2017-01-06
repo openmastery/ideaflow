@@ -4,6 +4,7 @@ import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
 
+
 import java.util.List;
 
 public class TaskClient extends IdeaFlowClient<Task, TaskClient> {

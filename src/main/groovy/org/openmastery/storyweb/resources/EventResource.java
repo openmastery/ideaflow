@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.publisher.resources;
+package org.openmastery.storyweb.resources;
 
 import org.hibernate.cfg.NotYetImplementedException;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.openmastery.mapper.EntityMapper;
-import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.annotation.FAQAnnotation;
-import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.api.event.Event;
-import org.openmastery.publisher.core.EventService;
-import org.openmastery.publisher.core.event.EventEntity;
+import org.openmastery.publisher.api.event.EventType;
+import org.openmastery.storyweb.core.EventService;
 import org.openmastery.publisher.security.InvocationContext;
+import org.openmastery.storyweb.api.ResourcePaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +33,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Component
-@Path(ResourcePaths.IDEAFLOW_PATH + ResourcePaths.EVENT_PATH)
+@Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.EVENT_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class EventResource {
 
@@ -61,7 +59,50 @@ public class EventResource {
 		return eventService.getLatestEvents(userId, jodaAfterDate, limit);
 	}
 
+	@GET
+	@Path("{eventType}")
+	public List<Event> getLatestEvents(@PathParam("eventType") String eventType, @QueryParam("afterDate") String afterDate, @QueryParam("limit") Integer limit) {
+		Long userId = invocationContext.getUserId();
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd_HHmmss");
+		LocalDateTime jodaAfterDate = formatter.parseLocalDateTime(afterDate);
 
+		return eventService.getLatestEventsByType(userId, EventType.WTF, jodaAfterDate, limit);
+	}
+
+	/**
+	 * Update the comment for the event
+	 * @param eventId the eventId from the relative path
+	 * @param comment the comment to save
+	 * @return Event
+	 */
+	@PUT
+	@Path(ResourcePaths.TASK_PATH + ResourcePaths.EVENT_TASK_ACTIVATE + "/{eventId}")
+	public Event updateActivate(@PathParam("eventId") Long eventId, String comment) {
+		Long userId = invocationContext.getUserId();
+
+		return eventService.updateEvent(userId, eventId, comment);
+	}
+
+	/**
+	 * Update the comment for the event
+	 * @param eventId the eventId from the relative path
+	 * @param comment the comment to save
+	 * @return Event
+	 */
+	@PUT
+	@Path(ResourcePaths.TASK_PATH + ResourcePaths.EVENT_TASK_DEACTIVATE + "/{eventId}")
+	public Event updateDeactivate(@PathParam("eventId") Long eventId, String comment) {
+		Long userId = invocationContext.getUserId();
+
+		return eventService.updateEvent(userId, eventId, comment);
+	}
+
+	/**
+	 * Update the comment for the event
+	 * @param eventId the eventId from the relative path
+	 * @param comment the comment to save
+	 * @return Event
+	 */
 	@PUT
 	@Path(ResourcePaths.EVENT_SUBTASK+ "/{subtaskId}")
 	public Event updateSubtask(@PathParam("subtaskId") Long eventId, String comment) {
@@ -69,6 +110,13 @@ public class EventResource {
 
 		return eventService.updateEvent(userId, eventId, comment);
 	}
+
+	/**
+	 * Update the comment for the event
+	 * @param eventId the eventId from the relative path
+	 * @param comment the comment to save
+	 * @return Event
+	 */
 
 	@PUT
 	@Path(ResourcePaths.EVENT_MILESTONE+ "/{milestoneId}")
@@ -78,15 +126,29 @@ public class EventResource {
 		return eventService.updateEvent(userId, eventId, comment);
 	}
 
+	/**
+	 * Update the comment for the event
+	 * @param eventId the eventId from the relative path
+	 * @param comment the comment to save
+	 * @return Event
+	 */
+
 	@PUT
 	@Path(ResourcePaths.EVENT_JOURNEY+ "/{journeyId}")
-	public Event updateJourney(@PathParam("journeyId") Long journeyId, String comment) {
+	public Event updateJourney(@PathParam("journeyId") Long eventId, String comment) {
 
 		//TODO create an annotation for the first event, which is modeled as a journey comment.
 		//not currently editable on the UI, so skip this for the moment...
 
 		throw new NotYetImplementedException("Journeys are not yet editable");
 	}
+
+	/**
+	 * Update the comment for the event
+	 * @param eventId the eventId from the relative path
+	 * @param comment the comment to save
+	 * @return Event
+	 */
 
 	@PUT
 	@Path(ResourcePaths.EVENT_WTF+ "/{wtfId}")
@@ -96,6 +158,13 @@ public class EventResource {
 		return eventService.updateEvent(userId, eventId, comment);
 	}
 
+	/**
+	 * Update the comment for the event
+	 * @param eventId the eventId from the relative path
+	 * @param comment the comment to save
+	 * @return Event
+	 */
+
 	@PUT
 	@Path(ResourcePaths.EVENT_DISCOVERY+ "/{discoveryId}")
 	public Event updateDiscoveryCycle(@PathParam("discoveryId") Long eventId, String comment) {
@@ -103,6 +172,13 @@ public class EventResource {
 
 		return eventService.updateEvent(userId, eventId, comment);
 	}
+
+	/**
+	 * Update the comment for the event
+	 * @param eventId the eventId from the relative path
+	 * @param comment the comment to save
+	 * @return Event
+	 */
 
 	@PUT
 	@Path(ResourcePaths.EVENT_EXPERIMENT+ "/{experimentId}")

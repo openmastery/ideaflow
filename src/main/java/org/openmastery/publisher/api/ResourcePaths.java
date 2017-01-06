@@ -43,19 +43,6 @@ public class ResourcePaths {
 	public static final String IDLE_PATH = "/idle";
 	public static final String EXTERNAL_PATH = "/external";
 
-	// event paths
-	public static final String EVENT_PATH = "/event";
-	public static final String EVENT_SUBTASK = "/subtask";
-	public static final String EVENT_MILESTONE = "/milestone";
-	public static final String EVENT_JOURNEY = "/journey";
-	public static final String EVENT_WTF = "/wtf";
-	public static final String EVENT_DISCOVERY = "/discovery";
-	public static final String EVENT_EXPERIMENT = "/experiment";
-
-	public static final String EVENT_ANNOTATION_PATH = "/annotation";
-	public static final String EVENT_FAQ_PATH = "/faq";
-
-
 	// timeline paths
 	public static final String TIMELINE_PATH = "/timeline";
 	public static final String TIMELINE_TREE_PATH = "/tree";
