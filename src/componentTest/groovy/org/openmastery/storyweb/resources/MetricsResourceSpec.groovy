@@ -93,7 +93,7 @@ class MetricsResourceSpec extends Specification {
 		assert chart.meta.totalFirstDegree == 5
 		assert chart.meta.totalSecondDegree == 5
 		assert chart.meta.totalThirdDegree == 4
-		assert chart.meta.totalFourthDegree == 8
+		assert chart.meta.totalFourthDegree == 6
 
 	}
 }

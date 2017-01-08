@@ -56,10 +56,15 @@ class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 	}
 
 	List<GraphPoint<DurationInSeconds>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
+		List<GraphPoint<DurationInSeconds>> discoveryPoints =
+				discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
+					 createPointFromStoryElement(discoveryCycle)
+				}
 
-		return discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
-			return createPointFromStoryElement(discoveryCycle)
+		discoveryPoints.removeAll { GraphPoint<DurationInSeconds> discoveryPoint ->
+			discoveryPoint.distance == 0L
 		}
+		return discoveryPoints
 	}
 
 	GraphPoint<DurationInSeconds> createPointFromStoryElement(StoryElement storyElement) {

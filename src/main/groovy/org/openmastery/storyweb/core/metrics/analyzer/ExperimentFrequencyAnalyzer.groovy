@@ -18,9 +18,12 @@ package org.openmastery.storyweb.core.metrics.analyzer
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.DiscoveryCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.metrics.MetricThreshold
+
+import java.util.function.DoubleBinaryOperator
 
 /**
  * Look for spikes in experiments/journey as a clue that there might be problems with experiment output
@@ -61,12 +64,16 @@ class ExperimentFrequencyAnalyzer extends AbstractTimelineAnalyzer<Double> {
 
 
 	List<GraphPoint<Double>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
-		discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
+		List<GraphPoint<Double>> discoveryPoints = discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
 			GraphPoint<Double> discoveryPoint = createPointFromStoryElement(discoveryCycle)
 			discoveryPoint.value = Double.valueOf(discoveryCycle.getFrequency())
 			discoveryPoint.danger = isOverThreshold(discoveryPoint.value)
 			return discoveryPoint
 		}
+		discoveryPoints.removeAll { GraphPoint<Double> discoveryPoint ->
+			discoveryPoint.distance == 0L
+		}
+		return discoveryPoints
 	}
 
 
