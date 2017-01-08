@@ -66,7 +66,7 @@ class EventResourceSpec extends Specification {
 		Event event = mapper.mapIfNotNull(eventEntity, Event.class)
 
 		when:
-		Event savedEvent = eventClient.updateEvent("subtask",eventEntity.id, event.comment )
+		Event savedEvent = eventClient.updateEvent(eventEntity.id, event.comment )
 
 		then:
 		assert savedEvent != null

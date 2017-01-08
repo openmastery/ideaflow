@@ -32,9 +32,8 @@ public class EventClient extends IdeaFlowClient<Event, EventClient> {
 				.findMany();
 	}
 
-	public Event updateEvent(String eventType, Long eventId, String comment) {
+	public Event updateEvent(Long eventId, String comment) {
 		return crudClientRequest
-				.path(eventType)
 				.path(eventId)
 				.updateWithPut(comment);
 	}
