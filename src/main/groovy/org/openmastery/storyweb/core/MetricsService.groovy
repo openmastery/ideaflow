@@ -55,7 +55,8 @@ class MetricsService {
 			IdeaFlowStory story = storyGenerator.generateIdeaFlowStory(taskTimeline)
 
 			MetricSet metrics = generateMetricsForTask(story)
-			chart.addMetricSet(metrics)
+			chart.addGraphPoints(metrics.explodableTrees)
+			chart.addPainThresholds(metrics.painThresholds)
 		}
 
 		return chart;

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.apache.commons.lang3.NotImplementedException;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.Positionable;
 import org.openmastery.publisher.api.metrics.MetricType;
@@ -77,10 +76,6 @@ public class GraphPoint<V> implements Positionable, Explodable<GraphPoint<V>>, C
 
 	public List<GraphPoint<V>> explode() throws CloneNotSupportedException {
 		return prefixWithRelativePath(relativePath, childPoints);
-	}
-
-	public List<GraphPoint<V>> collapse(List<GraphPoint<V>> explodedPoints) {
-		throw new NotImplementedException("Implement me! - should compare exploded points to tree and return everything 1 level up");
 	}
 
 	private List<GraphPoint<V>> prefixWithRelativePath(String relativePathPrefix, List<GraphPoint<V>> graphPoints) throws CloneNotSupportedException {

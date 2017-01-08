@@ -3,12 +3,8 @@ package org.openmastery.storyweb.api.metrics;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.openmastery.storyweb.core.metrics.spc.MetricSet;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Builder
@@ -40,13 +36,14 @@ public class SPCChart {
 		aggregateBy = new ArrayList<AggregateBy>();
 	}
 
-	public void addMetricSet(MetricSet metricSet) {
-		graphPoints.addAll(metricSet.getExplodableTrees());
-		painThresholds.addAll( metricSet.getPainThresholds());
-		calculateStats(metricSet.getExplodableTrees());
+	public void addGraphPoints(List<GraphPoint<?>> graphPoints) {
+		this.graphPoints.addAll(graphPoints);
+		calculateStats(graphPoints);
 	}
 
-
+	public void addPainThresholds(Collection<MetricThreshold<?>> painThresholds) {
+		this.painThresholds.addAll(painThresholds);
+	}
 
 	private void calculateStats(List<GraphPoint<?>> graphPoints) {
 
