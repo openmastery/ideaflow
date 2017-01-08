@@ -57,6 +57,7 @@ class MetricsService {
 			MetricSet metrics = generateMetricsForTask(story)
 			chart.addGraphPoints(metrics.explodableTrees)
 			chart.addPainThresholds(metrics.painThresholds)
+			chart.addTask(taskData.task)
 		}
 
 		return chart;
