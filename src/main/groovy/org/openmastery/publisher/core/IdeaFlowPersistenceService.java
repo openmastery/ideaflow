@@ -23,6 +23,8 @@ import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity;
 import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity;
 import org.openmastery.publisher.core.task.TaskEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -77,7 +79,7 @@ public interface IdeaFlowPersistenceService {
 
 	List<EventEntity> findRecentEvents(Long userId, Timestamp afterDate, Integer limit);
 
-	List<TaskEntity> findRecentTasks(Long userId, int limit);
+	Page<TaskEntity> findRecentTasks(Long userId, int page, int perPage);
 
 	List<FaqAnnotationEntity> getFaqAnnotationList(long taskId);
 
