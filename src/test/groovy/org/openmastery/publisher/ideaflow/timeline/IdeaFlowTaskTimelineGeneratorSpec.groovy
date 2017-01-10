@@ -22,7 +22,7 @@ public class IdeaFlowTaskTimelineGeneratorSpec extends Specification {
 		bandGenerator.strategyModificationActivityThresholdInMinutes = 5
 		bandGenerator.strategyModificationCountThreshold = 150
 		bandGenerator.strategyBandMinimumDurationInMinutes = 20
-		timelineGenerator = new IdeaFlowTaskTimelineGenerator(bandGenerator)
+		timelineGenerator = new IdeaFlowTaskTimelineGenerator(bandGenerator, new IdleTimeProcessor(), new RelativeTimeProcessor())
 		timelineGenerator.events = builder.eventList
 		timelineGenerator.idleTimeBands = builder.idleTimeBands
 		timelineGenerator.modificationActivities = builder.modificationActivityList

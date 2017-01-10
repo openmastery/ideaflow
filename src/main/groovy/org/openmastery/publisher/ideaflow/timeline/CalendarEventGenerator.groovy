@@ -22,13 +22,12 @@ import org.openmastery.publisher.api.IntervalComparator
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
+import org.openmastery.time.TimeConverter
 
 class CalendarEventGenerator {
 
-	private IntervalGapGenerator intervalGapGenerator = new IntervalGapGenerator()
-
 	List<Event> generateCalendarEvents(List<Interval> intervalList) {
-		intervalList = sortIntervalsAndInsertIdleBandsBetweenIntervalGaps(intervalList)
+		intervalList = intervalList.sort(false, IntervalComparator.INSTANCE)
 
 		boolean addNextNonIdleInterval = false;
 		Set<LocalDateTime> calendarEventPositions = []
@@ -55,15 +54,6 @@ class CalendarEventGenerator {
 			event.setType(EventType.CALENDAR)
 			event
 		}
-	}
-
-	private List<Interval> sortIntervalsAndInsertIdleBandsBetweenIntervalGaps(List<Interval> intervalList) {
-		List<Interval> gapBands = intervalGapGenerator.generateIntervalGapsAsIdleTimeBands(intervalList)
-
-		List intervalsWithGaps = new ArrayList(intervalList)
-		intervalsWithGaps.addAll(gapBands)
-		intervalsWithGaps.sort(IntervalComparator.INSTANCE)
-		intervalsWithGaps
 	}
 
 	private boolean spansDay(Interval interval) {

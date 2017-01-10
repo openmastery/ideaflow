@@ -8,6 +8,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
+import org.openmastery.publisher.ideaflow.story.TroubleshootingJourneyGenerator
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
@@ -122,8 +123,9 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 		assert journey.discoveryCycles != null
 		assert journey.discoveryCycles.size() == 2
 		assert journey.discoveryCycles.get(0).experimentCycles.size() == 1
-		assert journey.discoveryCycles.get(1).experimentCycles.size() == 2
+		assert journey.discoveryCycles.get(1).experimentCycles.size() == 3
 
+		assert journey.discoveryCycles.get(1).experimentCycles.get(0).durationInSeconds == 60L //execution context from previous
 	}
 
 	def "createJourney SHOULD divide up band duration by experiment cycles"() {
@@ -211,7 +213,7 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 
 		assert journey.discoveryCycles != null
 		assert journey.discoveryCycles.size() == 1
-		assert journey.discoveryCycles.get(0).faqComment == "My FAQ"
+		assert journey.discoveryCycles.get(0).faqAnnotation == "My FAQ"
 		assert journey.discoveryCycles.get(0).formattableSnippet.contents == "code"
 
 	}
@@ -240,7 +242,7 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 
 		assert journey.discoveryCycles != null
 		assert journey.discoveryCycles.size() == 1
-		assert journey.discoveryCycles.get(0).faqComment == null
+		assert journey.discoveryCycles.get(0).faqAnnotation == null
 		assert journey.discoveryCycles.get(0).formattableSnippet == null
 
 	}

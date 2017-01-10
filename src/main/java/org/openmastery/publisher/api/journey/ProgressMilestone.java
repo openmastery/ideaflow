@@ -1,39 +1,63 @@
 package org.openmastery.publisher.api.journey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.metrics.CapacityDistribution;
-import org.openmastery.publisher.api.metrics.Metric;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class ProgressMilestone extends AbstractRelativeInterval {
+public class ProgressMilestone extends AbstractRelativeInterval implements StoryContextElement {
 
+	@JsonIgnore
 	Event event;
 
+	@JsonIgnore
+	String parentPath;
+
 	CapacityDistribution capacityDistribution;
-	List<TroubleshootingJourney> troubleshootingJourneys = new ArrayList<TroubleshootingJourney>();
-	List<DangerLink> dangerLinks = new ArrayList<DangerLink>();
+
+	Set<String> painTags;
+	Set<String> contextTags;
 
 
-	public ProgressMilestone(Event progressEvent) {
+	public ProgressMilestone(String parentPath, Event progressEvent) {
 		this.event = progressEvent;
+		this.parentPath = parentPath;
 		setRelativeStart(progressEvent.getRelativePositionInSeconds());
+
+		contextTags = TagsUtil.extractUniqueHashTags(progressEvent.getComment());
+		painTags = new HashSet<String>();
+
+		//TODO fix this hack properly in IdeaFlowStoryGenerator... overwriting subtask for default milestone
+		if (event.getType() == EventType.NOTE) {
+			event.setFullPath(getFullPath());
+		}
 	}
 
-	public void addJourney(TroubleshootingJourney journey) {
-		addDangerLinks(journey);
-		troubleshootingJourneys.add(journey);
+	@JsonIgnore
+	public Long getId() {
+		return event.getId();
 	}
 
-	public LocalDateTime getStart() {
+	public String getRelativePath() {
+		return "/milestone/" + event.getId();
+	}
+
+	@JsonIgnore
+	public String getFullPath() {
+		return parentPath + getRelativePath();
+	}
+
+	public LocalDateTime getPosition() {
 		return event.getPosition();
 	}
 
@@ -41,20 +65,23 @@ public class ProgressMilestone extends AbstractRelativeInterval {
 		return event.getComment();
 	}
 
-	private void addDangerLinks(TroubleshootingJourney journey) {
-
-		for (Metric<?> metric : journey.getMetrics()) {
-			if (metric.isDanger()) {
-				DangerLink dangerLink = new DangerLink();
-				dangerLink.setEventId(journey.getEventId());
-				dangerLink.setRelativePositionInSeconds(journey.getRelativeStart());
-				dangerLink.setMetric(metric);
-				dangerLinks.add(dangerLink);
-			}
-		}
+	@JsonIgnore
+	public LocalDateTime getStart() {
+		return event.getPosition();
 	}
 
 
+
+	@Override
+	public int getFrequency() {
+		return 1;
+	}
+
+	@JsonIgnore
+	@Override
+	public List<? extends StoryElement> getChildStoryElements() {
+		return Collections.emptyList();
+	}
 
 
 }

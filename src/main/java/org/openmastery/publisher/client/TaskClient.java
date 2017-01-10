@@ -5,7 +5,7 @@ import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.publisher.api.ResourcePage;
 
-public class TaskClient extends OpenMasteryClient<Object, TaskClient> {
+public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
 
 	public TaskClient(String baseUrl) {
 		super(baseUrl, ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH, Object.class);

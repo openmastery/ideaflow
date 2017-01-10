@@ -29,8 +29,8 @@ public class IdeaFlowTaskTimeline implements Positionable, IdeaFlowTimeline {
 	private Long relativePositionInSeconds;
 
 	private List<IdeaFlowBand> ideaFlowBands;
-	private List<ExecutionEvent> executionEvents;
 	private List<Event> events;
+	private List<ExecutionEvent> executionEvents;
 
 	@Override
 	public LocalDateTime getPosition() {

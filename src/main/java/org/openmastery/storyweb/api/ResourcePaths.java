@@ -19,14 +19,22 @@ public class ResourcePaths {
 
 	public static final String API_KEY_HEADER = "X-API-KEY";
 
+	public static final String STORY_WEB_PATH = "/storyweb";
+
+	public static final String TASK_PATH = "/task";
+	public static final String ID_PATH = "/id";
+	public static final String TASK_NAME_PATH = "/name";
+
 	public static final String GLOSSARY_PATH = "/glossary";
-	public static final String TAG_PATH = "/tag";
+	public static final String GLOSSARY_BLANK_PATH = "/blank";
+	public static final String GLOSSARY_TERM_PATH = "/term";
 
 
 
 	public static final String FAQ_PATH = "/faq";
 
-
-	public static final String SPC_PATH = "/spc";
+	public static final String METRICS_PATH = "/metrics";
+	public static final String METRICS_SPC_PATH = "/spc";
+	public static final String METRICS_SEARCH = "/search";
 
 }

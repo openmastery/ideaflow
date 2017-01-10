@@ -1,12 +1,8 @@
 package org.openmastery.publisher.api.event;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.openmastery.publisher.api.AbstractPositionable;
 
 @Data
@@ -17,9 +13,12 @@ import org.openmastery.publisher.api.AbstractPositionable;
 @Builder
 public class Event extends AbstractPositionable {
 
-	private Long id;
-
+	private String fullPath;
 	private String comment;
 	private EventType type;
+
+	@JsonIgnore
+	private Long id;
+
 
 }

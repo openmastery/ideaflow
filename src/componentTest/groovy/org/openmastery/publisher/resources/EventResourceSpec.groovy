@@ -2,12 +2,10 @@ package org.openmastery.publisher.resources
 
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.annotation.FAQAnnotation
-import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.core.task.TaskEntity
-import org.openmastery.testsupport.BeanCompare
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.client.EventClient
@@ -16,8 +14,6 @@ import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
-
-import java.beans.PersistenceDelegate
 
 import static org.openmastery.publisher.ARandom.aRandom
 
@@ -64,12 +60,13 @@ class EventResourceSpec extends Specification {
 	def "Should update event with PUT"() {
 		given:
 		EventEntity eventEntity = createRandomEvent()
-		persistenceService.saveEvent(eventEntity)
+		eventEntity.type = EventType.SUBTASK
+		eventEntity = persistenceService.saveEvent(eventEntity)
 		EntityMapper mapper = new EntityMapper()
 		Event event = mapper.mapIfNotNull(eventEntity, Event.class)
 
 		when:
-		Event savedEvent = eventClient.updateEvent(event)
+		Event savedEvent = eventClient.updateEvent(eventEntity.id, event.comment )
 
 		then:
 		assert savedEvent != null

@@ -1,10 +1,11 @@
 package org.openmastery.publisher.api.journey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
-import org.openmastery.publisher.api.event.ExecutionEvent;
-import org.openmastery.storyweb.api.TagsUtil;
+import org.openmastery.storyweb.api.metrics.Metric;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,19 +18,26 @@ import java.util.Set;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class DiscoveryCycle extends AbstractRelativeInterval {
+public class DiscoveryCycle extends AbstractRelativeInterval implements StoryElement {
 
+
+	@JsonIgnore
+	String parentPath;
+	@JsonIgnore
 	Event event;
-	String faqComment;
 
+	Set<String> painTags;
+	Set<String> contextTags;
+
+	String faqAnnotation;
 	FormattableSnippet formattableSnippet;
-
-	Set<String> painTags; //derived from WTF/YAY #hashtags
-	Set<String> contextTags; //derived from FAQs or containing subtasks
 
 	List<ExperimentCycle> experimentCycles;
 
-	public DiscoveryCycle(Event wtfYayEvent, Long durationInSeconds) {
+	List<Metric<?>> metrics;
+
+	public DiscoveryCycle(String parentPath, Event wtfYayEvent, Long durationInSeconds) {
+		this.parentPath = parentPath;
 		this.event = wtfYayEvent;
 		this.experimentCycles = new ArrayList<ExperimentCycle>();
 		this.contextTags = new HashSet<String>();
@@ -37,18 +45,45 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 
 		setRelativeStart(wtfYayEvent.getRelativePositionInSeconds());
 		setDurationInSeconds(durationInSeconds);
+
+		event.setFullPath(getFullPath());
 	}
 
-	public void addExperimentCycle(ExecutionEvent executionEvent) {
-		updateEndTimeOfLastExperimentCycle(executionEvent.getRelativePositionInSeconds());
+	@JsonIgnore
+	public Long getId() { return event.getId(); }
 
-		Long durationInSeconds = getRelativeEnd() - executionEvent.getRelativePositionInSeconds();
-		ExperimentCycle experimentCycle = new ExperimentCycle(executionEvent, durationInSeconds);
+	public String getRelativePath() {
+		return "/discovery/"+event.getId();
+	}
+
+	@JsonIgnore
+	public String getFullPath() { return parentPath + getRelativePath(); }
+
+	public void setParentPath(String parentPath) {
+		this.parentPath = parentPath;
+		event.setFullPath(getFullPath());
+
+		for (ExperimentCycle experimentCycle : experimentCycles) {
+			experimentCycle.setParentPath(getFullPath());
+		}
+	}
+
+	public LocalDateTime getPosition() { return event.getPosition(); }
+
+	public Long getRelativePositionInSeconds() {
+		return event.getRelativePositionInSeconds();
+	}
+
+	public String getDescription() {
+		return event.getComment();
+	}
+
+	public void addExperimentCycle(ExperimentCycle experimentCycle) {
 		experimentCycles.add(experimentCycle);
 	}
 
 	public void addFaq(String faqComment) {
-		this.faqComment = faqComment;
+		this.faqAnnotation = faqComment;
 		contextTags = TagsUtil.extractUniqueHashTags(faqComment);
 	}
 
@@ -59,6 +94,14 @@ public class DiscoveryCycle extends AbstractRelativeInterval {
 		}
 	}
 
+	@JsonIgnore
+	public int getFrequency() { return getExperimentCycles().size(); }
+
+	@JsonIgnore
+	@Override
+	public List<? extends StoryElement> getChildStoryElements() {
+		return experimentCycles;
+	}
 
 
 }

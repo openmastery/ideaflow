@@ -1,48 +1,35 @@
-/**
- * Copyright 2015 New Iron Group, Inc.
- * <p>
- * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.gnu.org/licenses/gpl-3.0.en.html
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.openmastery.publisher.client;
 
+import com.bancvue.rest.client.ClientRequestFactory;
+import com.bancvue.rest.client.crud.CrudClient;
+import com.bancvue.rest.client.crud.CrudClientRequest;
+import org.glassfish.jersey.client.ClientProperties;
 import org.openmastery.publisher.api.ResourcePaths;
-import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview;
-import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview;
 
-public class IdeaFlowClient extends OpenMasteryClient<Object, IdeaFlowClient> {
+public abstract class IdeaFlowClient<API_TYPE, CLIENT_TYPE extends CrudClient> extends CrudClient<API_TYPE, CLIENT_TYPE> {
 
-	public IdeaFlowClient(String hostUri) {
-		super(hostUri, ResourcePaths.IDEAFLOW_PATH, Object.class);
+	public IdeaFlowClient(String baseUrl, String path, Class<API_TYPE> type) {
+		super(baseUrl, path, type);
 	}
 
-	public TaskTimelineOverview getTimelineOverviewForTask(long taskId) {
-		return (TaskTimelineOverview) getUntypedCrudClientRequest()
-				.path(ResourcePaths.IDEAFLOW_TIMELINE)
-				.path(ResourcePaths.IDEAFLOW_TASK)
-				.path(taskId)
-				.entity(TaskTimelineOverview.class)
-				.find();
+	public IdeaFlowClient(ClientRequestFactory clientRequestFactory, String baseUrl, String path, Class<API_TYPE> type) {
+		super(clientRequestFactory, baseUrl, path, type);
 	}
 
-	public SubtaskTimelineOverview getTimelineOverviewForSubtask(long taskId, long subtaskId) {
-		return (SubtaskTimelineOverview) getUntypedCrudClientRequest()
-				.path(ResourcePaths.IDEAFLOW_TIMELINE)
-				.path(ResourcePaths.IDEAFLOW_TASK)
-				.path(taskId)
-				.path(ResourcePaths.IDEAFLOW_SUBTASK)
-				.path(subtaskId)
-				.entity(SubtaskTimelineOverview.class)
-				.find();
+	public IdeaFlowClient(CrudClientRequest<API_TYPE> crudClientRequest) {
+		super(crudClientRequest);
+	}
+
+	public CLIENT_TYPE apiKey(String apiKey) {
+		return header(ResourcePaths.API_KEY_HEADER, apiKey);
+	}
+
+	public CLIENT_TYPE readTimeout(int readTimeoutMillis) {
+		return property(ClientProperties.READ_TIMEOUT, Integer.toString(readTimeoutMillis));
+	}
+
+	public CLIENT_TYPE connectTimeout(int connectTimeoutMillis) {
+		return property(ClientProperties.CONNECT_TIMEOUT, Integer.toString(connectTimeoutMillis));
 	}
 
 }

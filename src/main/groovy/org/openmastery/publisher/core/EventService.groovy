@@ -16,11 +16,14 @@
 package org.openmastery.publisher.core
 
 import com.bancvue.rest.exception.NotFoundException
+import org.apache.commons.lang3.NotImplementedException
+import org.hibernate.cfg.NotYetImplementedException
 import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.annotation.FAQAnnotation
 import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
@@ -36,6 +39,11 @@ class EventService {
 	private IdeaFlowPersistenceService persistenceService
 
 
+	public List<Event> getLatestEventsByType(Long userId, EventType eventType, LocalDateTime afterDate, Integer limit) {
+		throw new NotImplementedException("getLatestEventsByType is not yet supported")
+	}
+
+
 	public List<Event> getLatestEvents(Long userId, LocalDateTime afterDate, Integer limit) {
 		List<EventEntity> eventEntityList = persistenceService.findRecentEvents(userId, TimeConverter.toSqlTimestamp(afterDate), limit)
 
@@ -44,6 +52,20 @@ class EventService {
 			mapper.mapIfNotNull(entity, Event.class)
 		}
 		return eventList
+	}
+
+	Event updateJourney(Long userId, Long journeyId, String comment) {
+		throw new NotYetImplementedException("Need to implement this still!")
+	}
+
+	Event updateEvent(Long userId, Long eventId, String comment) {
+		//TODO this query should take userId too
+		EventEntity entity = persistenceService.findEventById(eventId)
+		entity.comment = comment
+		entity.ownerId = userId
+
+		EventEntity savedEntity = persistenceService.saveEvent(entity);
+		return toApi(savedEntity)
 	}
 
 	Event updateEvent(Long userId, Event eventToUpdate) {
@@ -82,4 +104,6 @@ class EventService {
 
 		return new FAQAnnotation(eventId: faqAnnotationEntity.eventId, faq: faqAnnotationEntity.comment);
 	}
+
+
 }

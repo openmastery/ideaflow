@@ -16,16 +16,11 @@
 package org.openmastery.storyweb.core
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.joda.time.LocalDate
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.FaqSummary
-import org.openmastery.storyweb.api.GlossaryDefinition
-import org.openmastery.storyweb.api.SPCChart
-import org.openmastery.storyweb.core.glossary.GlossaryDefinitionEntity
-import org.openmastery.storyweb.core.glossary.GlossaryRepository
-import org.openmastery.storyweb.api.TagsUtil
+import org.openmastery.publisher.api.journey.TagsUtil
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -38,11 +33,6 @@ class StoryWebService {
 	@Autowired
 	AnnotationRespository annotationRepository
 
-	@Autowired
-	GlossaryRepository glossaryRepository
-
-	@Autowired
-	SPCChartGenerator spcChartGenerator
 
 	@Autowired
 	InvocationContext invocationContext
@@ -53,7 +43,7 @@ class StoryWebService {
 
 
 	public List<FaqSummary> findAllFaqMatchingTags(List<String> tags) {
-		String searchPattern = createSearchPattern(tags)
+		String searchPattern = SearchUtils.createSearchPattern(tags)
 
 		List<Object[]> results = annotationRepository.findFaqsBySearchCriteria(searchPattern)
 		List<FaqSummary> faqSummaries = results.collect { Object[] row ->
@@ -70,10 +60,6 @@ class StoryWebService {
 		return faqSummaries;
 	}
 
-	public List<GlossaryDefinition> findGlossaryDefinitionsByTag(List<String> tags) {
-		String searchPattern = createSearchPattern(tags)
-		entityMapper.mapList(glossaryRepository.findByTagsLike(searchPattern), GlossaryDefinition.class)
-	}
 
 
 	private Set<String> extractUniqueTags(String eventComment, String faqComment) {
@@ -89,47 +75,6 @@ class StoryWebService {
 		return commentHolder.comment
 	}
 
-	List<GlossaryDefinition> findAllGlossaryDefinitions() {
-		return entityMapper.mapList(glossaryRepository.findAll(), GlossaryDefinition.class);
-	}
-
-	GlossaryDefinition createOrUpdateGlossaryDefinition(GlossaryDefinition entry) {
-		GlossaryDefinitionEntity entryEntity = entityMapper.mapIfNotNull(entry, GlossaryDefinitionEntity.class);
-		glossaryRepository.save(entryEntity);
-		return entry;
-	}
-
-	void createGlossaryDefinitionsWhenNotExists(List<String> tags) {
-		String searchPattern = createSearchPattern(tags)
-		List<GlossaryDefinitionEntity> glossaryEntities = glossaryRepository.findByTagsLike(searchPattern)
-
-		Map<String, GlossaryDefinitionEntity> definitionsByTag = glossaryEntities.collectEntries { entry ->
-			[entry.name, entry]
-		}
-
-		tags.each { String tag ->
-			if (definitionsByTag.get(tag) == null) {
-				GlossaryDefinitionEntity newEntry = new GlossaryDefinitionEntity(tag, null)
-				glossaryRepository.save(newEntry)
-			}
-		}
-	}
-
-	SPCChart generateSPCChart(LocalDate startDate, LocalDate endDate) {
-		return spcChartGenerator.generateChart(invocationContext.userId, startDate, endDate)
-	}
-
-
-	private static String createSearchPattern(List<String> tags) {
-		List<String> prefixedHashtags = tags.collect {
-			if (it.startsWith('#')) {
-				return it
-			} else {
-				return "#" + it
-			}
-		}
-		return "%(" + prefixedHashtags.join("|") + ")%";
-	}
 
 	private static class CommentHolder {
 		String comment;

@@ -26,11 +26,11 @@ public class AbstractRelativeInterval implements RelativeInterval, RelativePosit
 	}
 
 	public boolean shouldContain(RelativePositionable positionable) {
-
 		boolean isWithinRange = (positionable.getRelativePositionInSeconds() >= getRelativeStart()
 				&& positionable.getRelativePositionInSeconds() < getRelativeEnd());
 
 		return isWithinRange;
 	}
+
 
 }

@@ -18,13 +18,10 @@ package org.openmastery.publisher.resources;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.openmastery.mapper.EntityMapper;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.annotation.FAQAnnotation;
-import org.openmastery.publisher.api.batch.NewBatchEvent;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.core.EventService;
-import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.security.InvocationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,22 +57,19 @@ public class EventResource {
 		return eventService.getLatestEvents(userId, jodaAfterDate, limit);
 	}
 
-
 	/**
-	 * Update the comment or position of a NOTE, SUBTASK, DISRUPTION, PAIN, AWESOME or any other event type
-	 * @param eventId the event to update
-	 * @param eventToUpdate the full event object
+	 * Update the comment for the event
+	 * @param eventId the eventId from the relative path
+	 * @param comment the comment to save
 	 * @return Event
 	 */
-
 	@PUT
 	@Path("/{eventId}")
-	public Event update(@PathParam("eventId") Long eventId, Event eventToUpdate) {
+	public Event updateEvent(@PathParam("eventId") Long eventId, String comment) {
 		Long userId = invocationContext.getUserId();
 
-		return eventService.updateEvent(userId, eventToUpdate);
+		return eventService.updateEvent(userId, eventId, comment);
 	}
-
 
 	/**
 	 * Annotate an existing event with an FAQ comment.  Old FAQs will be overwritten by new FAQs

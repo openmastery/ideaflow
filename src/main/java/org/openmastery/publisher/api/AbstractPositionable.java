@@ -11,7 +11,9 @@ import org.joda.time.LocalDateTime;
 @AllArgsConstructor
 public abstract class AbstractPositionable implements Positionable, RelativePositionable {
 
+	@JsonIgnore
 	private Long taskId;
+
 	private LocalDateTime position;
 	private Long relativePositionInSeconds;
 

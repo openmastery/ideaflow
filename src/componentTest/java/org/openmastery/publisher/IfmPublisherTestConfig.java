@@ -18,14 +18,13 @@ package org.openmastery.publisher;
 import groovyx.net.http.RESTClient;
 import org.openmastery.publisher.client.BatchClient;
 import org.openmastery.publisher.client.EventClient;
-import org.openmastery.publisher.client.IdeaFlowClient;
-import org.openmastery.publisher.client.TaskClient;
 import org.openmastery.publisher.client.TimelineClient;
+import org.openmastery.publisher.client.TaskClient;
 import org.openmastery.publisher.core.user.UserEntity;
 import org.openmastery.publisher.security.UserIdResolver;
 import org.openmastery.storyweb.client.FaqClient;
 import org.openmastery.storyweb.client.GlossaryClient;
-import org.openmastery.storyweb.client.SPCClient;
+import org.openmastery.storyweb.client.MetricsClient;
 import org.openmastery.time.MockTimeService;
 import org.openmastery.time.TimeService;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,8 +59,8 @@ public class IfmPublisherTestConfig {
 	}
 
 	@Bean
-	public IdeaFlowClient ideaFlowClient() {
-		return new IdeaFlowClient(hostUri)
+	public TimelineClient ideaFlowClient() {
+		return new TimelineClient(hostUri)
 				.apiKey(testUser().getApiKey());
 	}
 
@@ -84,8 +83,8 @@ public class IfmPublisherTestConfig {
 	}
 
 	@Bean
-	public SPCClient spcClient() {
-		return new SPCClient(hostUri)
+	public MetricsClient spcClient() {
+		return new MetricsClient(hostUri)
 				.apiKey(testUser().getApiKey());
 	}
 

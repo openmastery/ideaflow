@@ -45,10 +45,8 @@ class RelativeTimeProcessor {
 		}
 	}
 
-	private IntervalGapGenerator intervalGapGenerator = new IntervalGapGenerator()
-
 	public void computeRelativeTime(List<Positionable> positionables) {
-		positionables = sortPositionablesAndInsertIdleBandsBetweenIntervalGaps(positionables)
+		positionables = positionables.sort(false, IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE)
 
 		long relativeTime = 0
 		Positionable previousPositionable = null
@@ -80,16 +78,6 @@ class RelativeTimeProcessor {
 				previousIdleBand = positionable
 			}
 		}
-	}
-
-	private List<Positionable> sortPositionablesAndInsertIdleBandsBetweenIntervalGaps(List<Positionable> positionables) {
-		List<Interval> intervalList = positionables.findAll { it instanceof Interval }
-		List<Interval> gapBands = intervalGapGenerator.generateIntervalGapsAsIdleTimeBands(intervalList)
-
-		List positionablesWithGaps = new ArrayList(positionables)
-		positionablesWithGaps.addAll(gapBands)
-		positionablesWithGaps.sort(IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE)
-		positionablesWithGaps
 	}
 
 }

@@ -16,6 +16,8 @@
 package org.openmastery.publisher.api.metrics;
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
+import org.openmastery.storyweb.api.metrics.Metric;
+import org.openmastery.storyweb.api.metrics.MetricThreshold;
 
 public interface MetricsCalculator<V> {
 
@@ -23,5 +25,5 @@ public interface MetricsCalculator<V> {
 
 	Metric<V> calculateMetrics(IdeaFlowTimeline timeline);
 
-	V getDangerThreshold();
+	MetricThreshold<V> getDangerThreshold();
 }

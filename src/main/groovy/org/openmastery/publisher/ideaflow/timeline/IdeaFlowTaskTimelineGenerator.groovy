@@ -23,7 +23,6 @@ import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.api.activity.BlockActivity
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
@@ -38,7 +37,6 @@ import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 class IdeaFlowTaskTimelineGenerator {
@@ -52,11 +50,17 @@ class IdeaFlowTaskTimelineGenerator {
 	private List<BlockActivity> blockActivities = []
 
 	private EntityMapper entityMapper = new EntityMapper()
+	private InitialSubtaskGenerator initialSubtaskGenerator = new InitialSubtaskGenerator()
+
+	private IdleTimeProcessor idleTimeProcessor
+	private RelativeTimeProcessor relativeTimeProcessor
 	private IdeaFlowBandGenerator bandGenerator
 	private int strategyBandMinimumDurationInMinutes
 
-	IdeaFlowTaskTimelineGenerator(IdeaFlowBandGenerator bandGenerator) {
+	IdeaFlowTaskTimelineGenerator(IdeaFlowBandGenerator bandGenerator, IdleTimeProcessor idleTimeProcessor, RelativeTimeProcessor relativeTimeProcessor) {
 		this.bandGenerator = bandGenerator
+		this.idleTimeProcessor = idleTimeProcessor
+		this.relativeTimeProcessor = relativeTimeProcessor
 		this.strategyBandMinimumDurationInMinutes = bandGenerator.strategyBandMinimumDurationInMinutes
 	}
 
@@ -75,6 +79,7 @@ class IdeaFlowTaskTimelineGenerator {
 		this
 	}
 
+	//TODO where do I put this shared logic?
 	IdeaFlowTaskTimelineGenerator executionActivities(List<ExecutionActivityEntity> executionActivities) {
 		this.executionEvents = executionActivities.collect { ExecutionActivityEntity entity ->
 			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)
@@ -97,6 +102,8 @@ class IdeaFlowTaskTimelineGenerator {
 	}
 
 	IdeaFlowTaskTimeline generate() {
+		idleTimeBands += idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(events)
+
 		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
 
 		// NOTE: calendar events MUST be added BEFORE relative time is computed
@@ -105,7 +112,7 @@ class IdeaFlowTaskTimelineGenerator {
 		//when no modification activity above threshold, create learning bands
 		//when WTF, WTF, AWESOME combo, create conflict band that spans this time
 
-		collapseIdleTime(ideaFlowBands)
+		idleTimeProcessor.collapseIdleTime(ideaFlowBands, idleTimeBands)
 		convertLearningBandsUnderMinimumThresholdToProgress(ideaFlowBands)
 		computeRelativeTime(ideaFlowBands)
 
@@ -125,16 +132,10 @@ class IdeaFlowTaskTimelineGenerator {
 		bandGenerator.generateIdeaFlowBands(positionables)
 	}
 
-	private void collapseIdleTime(List<IdeaFlowBandModel> ideaFlowBands) {
-		IdleTimeProcessor idleTimeProcessor = new IdleTimeProcessor()
-		idleTimeBands = idleTimeProcessor.collapseIdleTime(ideaFlowBands, idleTimeBands, events)
-	}
-
 	private void computeRelativeTime(List<IdeaFlowBandModel> ideaFlowBands) {
 		List<Positionable> positionables = getAllItemsAsPositionableList()
 		positionables.addAll(getIdeaFlowBandsWithContents(ideaFlowBands))
 
-		RelativeTimeProcessor relativeTimeProcessor = new RelativeTimeProcessor()
 		relativeTimeProcessor.computeRelativeTime(positionables)
 	}
 
@@ -197,22 +198,10 @@ class IdeaFlowTaskTimelineGenerator {
 	}
 
 	private void addInitialStrategySubtaskEventAndSortEventsList(Long taskId, LocalDateTime timelineStart) {
-		Collections.sort(events, PositionableComparator.INSTANCE);
-		Event firstSubtaskEvent = events.find { it.type == EventType.SUBTASK }
-		if ((firstSubtaskEvent != null) && firstSubtaskEvent.position.isEqual(timelineStart)) {
-			return
+		Event initialStrategySubtaskEvent = initialSubtaskGenerator.generateInitialStrategySubtaskEvent(events, taskId, timelineStart)
+		if (initialStrategySubtaskEvent != null) {
+			events.add(initialStrategySubtaskEvent)
 		}
-
-		Event initialStrategySubtaskEvent = Event.builder()
-				.id(-1)
-				.type(EventType.SUBTASK)
-				.comment("Initial Strategy")
-				.build()
-		initialStrategySubtaskEvent.taskId = taskId
-		initialStrategySubtaskEvent.position = timelineStart
-		initialStrategySubtaskEvent.relativePositionInSeconds = 0
-
-		events.add(initialStrategySubtaskEvent)
 		Collections.sort(events, PositionableComparator.INSTANCE);
 	}
 
@@ -221,10 +210,14 @@ class IdeaFlowTaskTimelineGenerator {
 	public static class Factory {
 
 		@Autowired
-		private IdeaFlowBandGenerator bandGenerator = new IdeaFlowBandGenerator()
+		private IdeaFlowBandGenerator bandGenerator
+		@Autowired
+		private IdleTimeProcessor idleTimeProcessor
+		@Autowired
+		private RelativeTimeProcessor relativeTimeProcessor
 
 		public IdeaFlowTaskTimelineGenerator create() {
-			return new IdeaFlowTaskTimelineGenerator(bandGenerator)
+			return new IdeaFlowTaskTimelineGenerator(bandGenerator, idleTimeProcessor, relativeTimeProcessor)
 		}
 
 	}

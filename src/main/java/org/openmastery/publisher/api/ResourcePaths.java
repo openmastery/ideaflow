@@ -31,9 +31,22 @@ public class ResourcePaths {
 	public static final String IDEAFLOW_PATH = "/ideaflow";
 
 	public static final String IDEAFLOW_TIMELINE = "/timeline";
-	public static final String IDEAFLOW_METRICS = "/metrics";
 	public static final String IDEAFLOW_TASK = "/task";
 	public static final String IDEAFLOW_SUBTASK = "/subtask";
+
+	// event paths
+	public static final String EVENT_PATH = "/event";
+	public static final String EVENT_TASK_ACTIVATE = "/activate";
+	public static final String EVENT_TASK_DEACTIVATE = "/deactivate";
+	public static final String EVENT_SUBTASK = "/subtask";
+	public static final String EVENT_MILESTONE = "/milestone";
+	public static final String EVENT_JOURNEY = "/journey";
+	public static final String EVENT_WTF = "/wtf";
+	public static final String EVENT_DISCOVERY = "/discovery";
+	public static final String EVENT_EXPERIMENT = "/experiment";
+
+	public static final String EVENT_ANNOTATION_PATH = "/annotation";
+	public static final String EVENT_FAQ_PATH = "/faq";
 
 
 
@@ -42,16 +55,6 @@ public class ResourcePaths {
 	public static final String EDITOR_PATH = "/editor";
 	public static final String IDLE_PATH = "/idle";
 	public static final String EXTERNAL_PATH = "/external";
-
-	// event paths
-	public static final String EVENT_PATH = "/event";
-	public static final String EVENT_NOTE_PATH = "/note";
-	public static final String EVENT_SUBTASK_PATH = "/subtask";
-	public static final String EVENT_WTF_PATH = "/wtf";
-	public static final String EVENT_AWESOME_PATH = "/awesome";
-	public static final String EVENT_ANNOTATION_PATH = "/annotation";
-	public static final String EVENT_FAQ_PATH = "/faq";
-
 
 	// timeline paths
 	public static final String TIMELINE_PATH = "/timeline";
@@ -70,6 +73,6 @@ public class ResourcePaths {
 	public static final String APIKEY_PATH = "/apikey";
 
 	//batch paths
-	public static final String COLLECT_PATH = "/collect";
+	public static final String PUBLISHER_PATH = "/publisher";
 	public static final String BATCH_PATH = "/batch";
 }

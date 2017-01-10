@@ -85,6 +85,7 @@ public interface IdeaFlowPersistenceService {
 
 	List<SnippetAnnotationEntity> getSnippetAnnotationList(long taskId);
 
+	//TODO this needs to take userId
 	EventEntity findEventById(long eventId);
 
 	void deleteFAQAnnotation(long eventId);

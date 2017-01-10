@@ -21,4 +21,6 @@ public interface IdeaFlowTimeline {
 
 	LocalDateTime getEnd();
 
+	Long getRelativePositionInSeconds();
+
 }

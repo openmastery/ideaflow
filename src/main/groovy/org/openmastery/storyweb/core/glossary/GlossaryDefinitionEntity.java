@@ -21,17 +21,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "glossary")
 @Data
-@EqualsAndHashCode(of = "name")
+@EqualsAndHashCode(of = "id")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class GlossaryDefinitionEntity {
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "glossary_seq_gen")
+	@SequenceGenerator(name = "glossary_seq_gen", sequenceName = "glossary_seq")
+	private Long id;
+
 	private String name;
 	private String description;
 }

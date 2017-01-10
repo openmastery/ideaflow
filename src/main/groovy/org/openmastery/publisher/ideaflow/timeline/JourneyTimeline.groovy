@@ -67,7 +67,7 @@ public class JourneyTimeline implements IdeaFlowTimeline {
 
 		@Override
 		LocalDateTime getStart() {
-			return journey.start
+			return journey.position
 		}
 
 		@Override
@@ -75,4 +75,8 @@ public class JourneyTimeline implements IdeaFlowTimeline {
 			return journey.end
 		}
 
+	@Override
+	Long getRelativePositionInSeconds() {
+		return journey.relativeStart
+	}
 }
