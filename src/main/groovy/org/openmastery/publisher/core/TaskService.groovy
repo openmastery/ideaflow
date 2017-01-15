@@ -18,31 +18,35 @@ package org.openmastery.publisher.core
 import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.mapper.EntityMapper
-import org.openmastery.publisher.api.ResourcePage
+import org.openmastery.publisher.api.PagedResult
 import org.openmastery.publisher.api.task.NewTask
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.core.task.TaskRepository
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.core.convert.converter.Converter
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
 
 @Component
 class TaskService {
 
+	//@Autowired
+	//private IdeaFlowPersistenceService persistenceService;
+
 	@Autowired
-	private IdeaFlowPersistenceService persistenceService;
+	private TaskRepository taskRepository;
+
 	@Autowired
 	private TimeService timeService;
 	@Autowired
 	private InvocationContext invocationContext;
 
 	private EntityMapper entityMapper = new EntityMapper();
-
-    private TaskEntityConverter taskEntityConverter = new TaskEntityConverter();
 
 	public Task create(NewTask newTask) {
 		long userId = invocationContext.getUserId()
@@ -56,15 +60,15 @@ class TaskService {
 				.modifyDate(timeService.javaNow())
 				.build();
 
-		TaskEntity existingTask = persistenceService.findTaskWithName(userId, task.getName());
+		TaskEntity existingTask = taskRepository.findByOwnerIdAndName(userId, task.getName());
 		if (existingTask != null) {
 			throw new ConflictException(toApiTask(existingTask));
 		}
 
 		try {
-			task = persistenceService.saveTask(task);
+			task = taskRepository.save(task);
 		} catch (DataIntegrityViolationException ex) {
-			existingTask = persistenceService.findTaskWithName(userId, task.getName());
+			existingTask = taskRepository.findByOwnerIdAndName(userId, task.getName());
 			throw new ConflictingTaskException(toApiTask(existingTask));
 		}
 
@@ -73,7 +77,7 @@ class TaskService {
 	}
 
 	public Task findTaskWithId(Long taskId) {
-		TaskEntity taskEntity = persistenceService.findTaskWithId(taskId);
+		TaskEntity taskEntity = taskRepository.findOne(taskId);
 		if (taskEntity == null) {
 			throw new NotFoundException("No task found with id=${taskId}");
 		}
@@ -81,25 +85,39 @@ class TaskService {
 	}
 
 	public Task findTaskWithName(String taskName) {
-		TaskEntity taskEntity = persistenceService.findTaskWithName(invocationContext.getUserId(), taskName);
+		TaskEntity taskEntity = taskRepository.findByOwnerIdAndName(invocationContext.getUserId(), taskName);
 		return toApiTask(taskEntity);
 	}
 
-    public Page<Task> findRecentTasks(int page, int perPage) {
-        Page<TaskEntity> taskEntityList = persistenceService.findRecentTasks(invocationContext.getUserId(), page, perPage);
-        return taskEntityList.map(taskEntityConverter);
+    public PagedResult<Task> findRecentTasks(int pageNumber, int elementsPerPage) {
+		PageRequest pageRequest = new PageRequest(pageNumber, elementsPerPage, Sort.Direction.DESC, "modifyDate")
+		Page<TaskEntity> taskEntityPage = taskRepository.findByOwnerId(invocationContext.getUserId(), pageRequest);
+        return toPageable(taskEntityPage)
     }
+
+	private PagedResult<Task> toPageable(Page<?> dataPage) {
+		PagedResult pageable = new PagedResult()
+		pageable.hasNext = dataPage.hasNext()
+		pageable.hasPrevious = dataPage.hasPrevious()
+		pageable.contents = entityMapper.mapList(dataPage.content, Task.class)
+		pageable.pageNumber = dataPage.number
+		pageable.totalPages = dataPage.totalPages
+		pageable.totalElements = dataPage.totalElements
+		pageable.elementsPerPage = dataPage.size
+		pageable.addSortOrder("modifyDate", PagedResult.SortOrder.Direction.DESC)
+		return pageable
+	}
 
 	private Task toApiTask(TaskEntity taskEntity) {
 		return entityMapper.mapIfNotNull(taskEntity, Task.class);
 	}
 
 	Task updateTask(Task taskWithUpdates) {
-		TaskEntity taskEntity = persistenceService.findTaskWithId(taskWithUpdates.id)
+		TaskEntity taskEntity = taskRepository.findOne(taskWithUpdates.id)
 		taskEntity.description = taskWithUpdates.description
 		taskEntity.project = taskWithUpdates.project
 		taskEntity.modifyDate = timeService.javaNow()
-		TaskEntity savedEntity = persistenceService.saveTask(taskEntity)
+		TaskEntity savedEntity = taskRepository.save(taskEntity)
 		return toApiTask(savedEntity);
 	}
 
@@ -110,10 +128,5 @@ class TaskService {
 		}
 	}
 
-    class TaskEntityConverter implements Converter<TaskEntity, Task> {
-        Task convert(TaskEntity sourceTask) {
-            return entityMapper.mapIfNotNull(sourceTask, Task.class);
-        }
-    }
 
 }

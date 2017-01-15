@@ -4,14 +4,13 @@ import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.joda.time.LocalDateTime
 import org.openmastery.publisher.ComponentTest
-import org.openmastery.publisher.api.ResourcePage
+import org.openmastery.publisher.api.PagedResult
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import static org.openmastery.publisher.ARandom.aRandom
@@ -124,10 +123,13 @@ class TaskResourceSpec extends Specification {
 		Task mostRecent = taskClient.createTask("recent2", "description", "project")
 
 		when:
-		ResourcePage<Task> taskList = taskClient.findRecentTasks(0, 2)
+		PagedResult<Task> taskPage = taskClient.findRecentTasks(0, 2)
 
 		then:
-		assert taskList.content == [mostRecent, secondMostRecent]
+		assert taskPage.contents == [mostRecent, secondMostRecent]
+		assert taskPage.totalPages == 6
+		assert taskPage.totalElements == 12
+		assert taskPage.pageNumber == 0
 	}
 
 	//@Ignore
@@ -142,10 +144,17 @@ class TaskResourceSpec extends Specification {
 		expectedTasks = expectedTasks.reverse()
 
 		when:
-		ResourcePage<Task> taskList = taskClient.findRecentTasks(1, 5)
+		PagedResult<Task> taskPage = taskClient.findRecentTasks(1, 5)
 
 		then:
-		assert taskList.content == expectedTasks.subList(5, 10)
+		assert taskPage.contents == expectedTasks.subList(5, 10)
+		assert taskPage.totalPages == 2
+		assert taskPage.totalElements == 10
+		assert taskPage.pageNumber == 1
+		assert taskPage.hasPrevious == true
+		assert taskPage.hasNext == false
+
+
 	}
 
 

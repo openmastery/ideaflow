@@ -2,14 +2,13 @@ package org.openmastery.publisher.client;
 
 import com.bancvue.rest.client.crud.CrudClientRequest;
 import com.bancvue.rest.client.crud.GenericTypeFactory;
+import org.openmastery.publisher.api.PagedResult;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
-import org.openmastery.publisher.api.ResourcePage;
 
 import javax.ws.rs.core.GenericType;
 import java.lang.reflect.Field;
-import java.util.List;
 
 public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
 
@@ -33,10 +32,10 @@ public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
 
 	private static final GenericTypeFactory GENERIC_TYPE_FACTORY = GenericTypeFactory.getInstance();
 
-	public ResourcePage<Task> findRecentTasks(Integer page, Integer perPage) {
-		GenericType<ResourcePage<Task>> entityType = GENERIC_TYPE_FACTORY.createGenericType(ResourcePage.class, Task.class);
+	public PagedResult<Task> findRecentTasks(Integer pageNumber, Integer perPage) {
+		GenericType<PagedResult<Task>> entityType = GENERIC_TYPE_FACTORY.createGenericType(PagedResult.class, Task.class);
 		CrudClientRequest request = getUntypedCrudClientRequest()
-                .queryParam("page", page)
+                .queryParam("page_number", pageNumber)
                 .queryParam("per_page", perPage);
 
 		try {
@@ -47,7 +46,7 @@ public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
 			throw new RuntimeException(ex);
 		}
 
-		return (ResourcePage<Task>) request.find();
+		return (PagedResult<Task>) request.find();
 	}
 
 }

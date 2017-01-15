@@ -15,17 +15,16 @@
  */
 package org.openmastery.publisher.resources;
 
+import org.openmastery.publisher.api.PagedResult;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.publisher.core.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 @Component
 @Path(ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH)
@@ -89,18 +88,18 @@ public class TaskResource {
 	}
 
 	/**
-	 * List all the recent tasks sorted by most recently modified tasks.
+	 * List all the recent tasks sorted by most recently modified tasks (sort order not currently configurable)
 	 * Tasks are modified everytime new event or activity data is saved for the task
 	 *
-	 * @param page the page number to retrieve, defaults to page 0
-	 * @param perPage the number of tasks per page to retrieve, defaults to 10
-	 * @return List<Task>
+	 * @param pageNumber the page number to retrieve, defaults to page 0
+	 * @param elementsPerPage the number of tasks per page to retrieve, defaults to 10
+	 * @return PagedResult<Task>
 	 */
 
 	@GET
-	public Page<Task> findRecentTasks(@DefaultValue("0") @QueryParam("page") Integer page,
-									  @DefaultValue("10") @QueryParam("per_page") Integer perPage) {
-		return taskService.findRecentTasks(page, perPage);
+	public PagedResult<Task> findRecentTasks(@DefaultValue("0") @QueryParam("page_number") Integer pageNumber,
+									  @DefaultValue("10") @QueryParam("per_page") Integer elementsPerPage) {
+		return taskService.findRecentTasks(pageNumber, elementsPerPage);
 	}
 
 
