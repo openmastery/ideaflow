@@ -33,6 +33,23 @@ public interface TaskRepository extends PagingAndSortingRepository<TaskEntity, L
 
 	Page<TaskEntity> findByOwnerId(@Param("ownerId") Long userId, Pageable pageable);
 
+
+	@Query(nativeQuery = true, value = "select count(*) from task t where t.owner_id=:ownerId and " +
+			"(exists (select 1 from event e where e.task_id=t.id and lower(e.comment) similar to (:pattern)) " +
+			"or exists (select 1 from annotation faq " +
+			"where faq.task_id=t.id and faq.type = 'faq' and lower(faq.metadata) similar to (:pattern))) ")
+	Integer countTasksMatchingTags(@Param("ownerId") Long userId, @Param("pattern") String tagPattern);
+
+	@Query(nativeQuery = true, value = "select t.* from task t where t.owner_id=:ownerId and " +
+			"(exists " +
+			"(select 1 from event e where e.task_id=t.id and lower(e.comment) similar to (:pattern)) " +
+			"or exists " +
+			"(select 1 from annotation faq where faq.task_id=t.id and faq.type = 'faq' and lower(faq.metadata) similar to (:pattern)) " +
+			") order by t.modify_date desc, t.id limit :limit offset :offset")
+	List<TaskEntity> findByOwnerIdAndMatchingTags(@Param("ownerId") Long userId, @Param("pattern") String tagPattern,
+												  @Param("limit") int limit,  @Param("offset") int offset);
+
+
 	@Query(nativeQuery = true, value = "select * from task where owner_id=(?1) " +
 			"and creation_date <= (?3) and modify_date >= (?2) order by modify_date desc")
 	List<TaskEntity> findTasksWithinRange(Long userId, Timestamp startTime, Timestamp endTime);

@@ -26,6 +26,7 @@ public class PagedResult<T> {
 
 	public PagedResult() {
 		propertySortOrders = new ArrayList<SortOrder>();
+		contents = new ArrayList<T>();
 	}
 
 	public void addSortOrder(String property, PagedResult.SortOrder.Direction direction) {

@@ -9,6 +9,7 @@ import org.openmastery.publisher.api.task.Task;
 
 import javax.ws.rs.core.GenericType;
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
 
@@ -30,14 +31,33 @@ public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
 				.path(taskName).entity(Task.class).find();
 	}
 
-	private static final GenericTypeFactory GENERIC_TYPE_FACTORY = GenericTypeFactory.getInstance();
 
 	public PagedResult<Task> findRecentTasks(Integer pageNumber, Integer perPage) {
-		GenericType<PagedResult<Task>> entityType = GENERIC_TYPE_FACTORY.createGenericType(PagedResult.class, Task.class);
 		CrudClientRequest request = getUntypedCrudClientRequest()
                 .queryParam("page_number", pageNumber)
                 .queryParam("per_page", perPage);
 
+
+		return (PagedResult<Task>) withPagedResultType(request).find();
+	}
+
+	public PagedResult<Task> findRecentTasksMatchingTags(List<String> tags, Integer pageNumber, Integer perPage) {
+		CrudClientRequest request = getUntypedCrudClientRequest()
+				.queryParam("page_number", pageNumber)
+				.queryParam("per_page", perPage);
+
+		for (String tag : tags) {
+			request = request.queryParam("tag", tag);
+		}
+
+		return (PagedResult<Task>) withPagedResultType(request).find();
+	}
+
+
+	private static final GenericTypeFactory GENERIC_TYPE_FACTORY = GenericTypeFactory.getInstance();
+
+	private CrudClientRequest withPagedResultType(CrudClientRequest request) {
+		GenericType<PagedResult<Task>> entityType = GENERIC_TYPE_FACTORY.createGenericType(PagedResult.class, Task.class);
 		try {
 			Field entityField = request.getClass().getDeclaredField("entity");
 			entityField.setAccessible(true);
@@ -45,8 +65,6 @@ public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
-
-		return (PagedResult<Task>) request.find();
+		return request;
 	}
-
 }

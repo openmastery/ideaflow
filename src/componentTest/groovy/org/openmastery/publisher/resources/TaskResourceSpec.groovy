@@ -8,6 +8,7 @@ import org.openmastery.publisher.api.PagedResult
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -110,7 +111,6 @@ class TaskResourceSpec extends Specification {
 		taskComparator.assertEquals(ex.entity, expectedConflict)
 	}
 
-	//@Ignore
 	def "SHOULD return most recent tasks"() {
 		given:
 		for (int i = 0; i < 10; i++) {
@@ -132,8 +132,7 @@ class TaskResourceSpec extends Specification {
 		assert taskPage.pageNumber == 0
 	}
 
-	//@Ignore
-	def "SHOULD return page 2 of tasks"() {
+	def "findRecentTasks SHOULD return page 2 of tasks"() {
 		given:
 		List<Task> expectedTasks = []
 		for (int i = 0; i < 10; i++) {
@@ -153,10 +152,54 @@ class TaskResourceSpec extends Specification {
 		assert taskPage.pageNumber == 1
 		assert taskPage.hasPrevious == true
 		assert taskPage.hasNext == false
+	}
 
+	def "findRecentTasksMatchingTags SHOULD filter tasks according to #tags in FAQ or event comments"() {
+		given:
+		for (int i = 0; i < 10; i++) {
+			taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50), aRandom.text(50))
+			timeService.plusMinutes(10)
+		}
+		timeService.plusHours(1)
+		Task mostRecent = taskClient.createTask("recent2", "description", "project")
+
+		EventEntity event = aRandom.eventEntity().taskId(mostRecent.id).comment("Comment with #tag").build()
+		persistenceService.saveEvent(event)
+
+		when:
+		PagedResult<Task> taskPage = taskClient.findRecentTasksMatchingTags(["#tag"], 0, 2)
+
+		then:
+		assert taskPage.contents == [mostRecent]
+		assert taskPage.totalPages == 1
+		assert taskPage.totalElements == 1
+		assert taskPage.pageNumber == 0
+		assert taskPage.hasNext == false
+		assert taskPage.hasPrevious == false
 
 	}
 
+	def "findRecentTasksMatchingTags SHOULD return the second page of results"() {
+		given:
+		for (int i = 0; i < 10; i++) {
+			Task task = taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50), aRandom.text(50))
+			timeService.plusMinutes(10)
 
+			EventEntity event = aRandom.eventEntity().taskId(task.id).comment("Comment with #tag").build()
+			persistenceService.saveEvent(event)
+		}
+
+		when:
+		PagedResult<Task> taskPage = taskClient.findRecentTasksMatchingTags(["#tag"], 1, 5)
+
+		then:
+		assert taskPage.contents.size() == 5
+		assert taskPage.totalPages == 2
+		assert taskPage.totalElements == 10
+		assert taskPage.pageNumber == 1
+		assert taskPage.hasNext == false
+		assert taskPage.hasPrevious == true
+
+	}
 
 }

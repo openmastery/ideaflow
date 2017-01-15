@@ -24,6 +24,7 @@ import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.core.task.TaskRepository
 import org.openmastery.publisher.security.InvocationContext
+import org.openmastery.storyweb.core.SearchUtils
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
@@ -89,23 +90,52 @@ class TaskService {
 		return toApiTask(taskEntity);
 	}
 
+
+	public PagedResult<Task> findRecentTasksMatchingTags(List<String> tags, int pageNumber, int elementsPerPage) {
+		String tagPattern = SearchUtils.createSearchPattern(tags)
+		Long userId = invocationContext.getUserId()
+
+		int recordCount = taskRepository.countTasksMatchingTags(userId, tagPattern)
+
+		if (recordCount > 0) {
+			PagedResult<Task> pagedResult = createPagedResult(recordCount, pageNumber, elementsPerPage)
+			List<TaskEntity> taskEntity = taskRepository.findByOwnerIdAndMatchingTags(userId, tagPattern, elementsPerPage, pageNumber * elementsPerPage);
+			pagedResult.contents = entityMapper.mapList(taskEntity, Task.class)
+			return pagedResult
+		} else {
+			return createPagedResult(0, pageNumber, elementsPerPage)
+		}
+	}
+
     public PagedResult<Task> findRecentTasks(int pageNumber, int elementsPerPage) {
 		PageRequest pageRequest = new PageRequest(pageNumber, elementsPerPage, Sort.Direction.DESC, "modifyDate")
 		Page<TaskEntity> taskEntityPage = taskRepository.findByOwnerId(invocationContext.getUserId(), pageRequest);
-        return toPageable(taskEntityPage)
+        return toPagedResult(taskEntityPage)
     }
 
-	private PagedResult<Task> toPageable(Page<?> dataPage) {
-		PagedResult pageable = new PagedResult()
-		pageable.hasNext = dataPage.hasNext()
-		pageable.hasPrevious = dataPage.hasPrevious()
-		pageable.contents = entityMapper.mapList(dataPage.content, Task.class)
-		pageable.pageNumber = dataPage.number
-		pageable.totalPages = dataPage.totalPages
-		pageable.totalElements = dataPage.totalElements
-		pageable.elementsPerPage = dataPage.size
-		pageable.addSortOrder("modifyDate", PagedResult.SortOrder.Direction.DESC)
-		return pageable
+	private PagedResult<Task> createPagedResult(int recordCount, int pageNumber, int elementsPerPage) {
+		PagedResult pagedResult = new PagedResult()
+		pagedResult.hasNext = (pageNumber + 1) * elementsPerPage < recordCount
+		pagedResult.hasPrevious = pageNumber > 0
+		pagedResult.pageNumber = pageNumber
+		pagedResult.totalPages = (recordCount / elementsPerPage) + ((recordCount % elementsPerPage) > 0 ? 1 : 0)
+		pagedResult.totalElements = recordCount
+		pagedResult.elementsPerPage = elementsPerPage
+		pagedResult.addSortOrder("modifyDate", PagedResult.SortOrder.Direction.DESC)
+		return pagedResult
+	}
+
+	private PagedResult<Task> toPagedResult(Page<?> dataPage) {
+		PagedResult pagedResult = new PagedResult()
+		pagedResult.hasNext = dataPage.hasNext()
+		pagedResult.hasPrevious = dataPage.hasPrevious()
+		pagedResult.pageNumber = dataPage.number
+		pagedResult.totalPages = dataPage.totalPages
+		pagedResult.totalElements = dataPage.totalElements
+		pagedResult.elementsPerPage = dataPage.size
+		pagedResult.contents = entityMapper.mapList(dataPage.content, Task.class)
+		pagedResult.addSortOrder("modifyDate", PagedResult.SortOrder.Direction.DESC)
+		return pagedResult
 	}
 
 	private Task toApiTask(TaskEntity taskEntity) {

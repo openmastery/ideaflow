@@ -39,6 +39,7 @@ public interface AnnotationRespository extends PagingAndSortingRepository<Annota
 	@Query(nativeQuery = true, value = "select faq.task_id, faq.event_id, e.comment eventComment, faq.metadata faqJson, e.position " +
 			"from event e, annotation faq where e.id = faq.event_id and faq.type = 'faq' " +
 			"and (lower(faq.metadata) similar to (?1) or lower(e.comment) similar to (?1))")
+
 	List<Object []> findFaqsBySearchCriteria(String pattern);
 
 	@Query(nativeQuery = true, value = "select a.* from annotation a, event e where a.type = 'faq' " +
