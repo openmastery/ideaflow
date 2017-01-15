@@ -31,22 +31,22 @@ public interface TaskRepository extends PagingAndSortingRepository<TaskEntity, L
 	@Query(nativeQuery = true, value = "select * from task where owner_id=:ownerId order by modify_date desc limit :limit")
 	List<TaskEntity> findRecent(@Param("ownerId") Long userId, @Param("limit") int limit);
 
-	Page<TaskEntity> findByOwnerId(@Param("ownerId") Long userId, Pageable pageable);
+	Page<TaskEntity> findByOwnerIdAndProjectLike(@Param("ownerId") Long userId, @Param("project") String project, Pageable pageable);
 
 
-	@Query(nativeQuery = true, value = "select count(*) from task t where t.owner_id=:ownerId and " +
+	@Query(nativeQuery = true, value = "select count(*) from task t where t.owner_id=:ownerId and t.project like :project and " +
 			"(exists (select 1 from event e where e.task_id=t.id and lower(e.comment) similar to (:pattern)) " +
 			"or exists (select 1 from annotation faq " +
 			"where faq.task_id=t.id and faq.type = 'faq' and lower(faq.metadata) similar to (:pattern))) ")
-	Integer countTasksMatchingTags(@Param("ownerId") Long userId, @Param("pattern") String tagPattern);
+	Integer countTasksMatchingTags(@Param("ownerId") Long userId, @Param("project") String project, @Param("pattern") String tagPattern);
 
-	@Query(nativeQuery = true, value = "select t.* from task t where t.owner_id=:ownerId and " +
+	@Query(nativeQuery = true, value = "select t.* from task t where t.owner_id=:ownerId and t.project like :project and " +
 			"(exists " +
 			"(select 1 from event e where e.task_id=t.id and lower(e.comment) similar to (:pattern)) " +
 			"or exists " +
 			"(select 1 from annotation faq where faq.task_id=t.id and faq.type = 'faq' and lower(faq.metadata) similar to (:pattern)) " +
 			") order by t.modify_date desc, t.id limit :limit offset :offset")
-	List<TaskEntity> findByOwnerIdAndMatchingTags(@Param("ownerId") Long userId, @Param("pattern") String tagPattern,
+	List<TaskEntity> findByOwnerIdAndMatchingTags(@Param("ownerId") Long userId, @Param("project") String project, @Param("pattern") String tagPattern,
 												  @Param("limit") int limit,  @Param("offset") int offset);
 
 

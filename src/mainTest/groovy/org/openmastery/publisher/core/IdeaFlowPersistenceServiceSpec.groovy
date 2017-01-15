@@ -55,59 +55,6 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		persistenceService.saveActivity(entity)
 	}
 
-	def "findRecentTasks should return empty list if no tasks"() {
-		expect:
-		assert persistenceService.findRecentTasks(-1L, 0, 10).content.isEmpty()
-	}
-
-	def "findRecentTasks should return entire list if number of tasks less than limit"() {
-		given:
-		TaskEntity task = saveTask(aRandom.taskEntity())
-
-		when:
-		Page<TaskEntity> taskList = persistenceService.findRecentTasks(task.ownerId, 0, 5)
-
-		then:
-		assert taskList.content == [task]
-	}
-
-	def "findRecentTasks should return the most recently modified tasks"() {
-		given:
-		TaskEntity mostRecent = saveTask(aRandom.taskEntity().modifyDate(mockTimeService.javaHoursInFuture(24)))
-		for (int i = 0; i < 5; i++) {
-			saveTask(aRandom.taskEntity()
-					         .ownerId(mostRecent.ownerId)
-					         .modifyDate(mockTimeService.javaHoursInFuture(i)))
-		}
-		TaskEntity secondMostRecent = saveTask(aRandom.taskEntity()
-				                                       .ownerId(mostRecent.ownerId)
-				                                       .modifyDate(mockTimeService.javaHoursInFuture(23)))
-
-		when:
-		Page<TaskEntity> taskList = persistenceService.findRecentTasks(mostRecent.ownerId, 0, 2)
-
-		then:
-		assert taskList.content == [mostRecent, secondMostRecent]
-	}
-
-	def "findRecentTasks return page 2 of tasks"() {
-		given:
-		Long ownerId = 3
-		List<TaskEntity> tasks = []
-		for (int i = 0; i < 10; i++) {
-			tasks.add(saveTask(aRandom.taskEntity()
-					.ownerId(ownerId)
-					.modifyDate(mockTimeService.javaHoursInFuture(i))))
-		}
-		tasks = tasks.reverse()
-
-		when:
-		Page<TaskEntity> taskList = persistenceService.findRecentTasks(ownerId, 1, 5)
-
-		then:
-		assert taskList.content == tasks.subList(5, 10)
-	}
-
 	def "saveTask should fail if task with existing name and owner_id is created"() {
 		given:
 		saveTask(aRandom.taskEntity().name("task").ownerId(1))

@@ -154,6 +154,29 @@ class TaskResourceSpec extends Specification {
 		assert taskPage.hasNext == false
 	}
 
+	def "findRecentTasks SHOULD filter by project"() {
+		given:
+		for (int i = 0; i < 10; i++) {
+			taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50), aRandom.text(50))
+			timeService.plusMinutes(10)
+		}
+		timeService.plusHours(1)
+		Task secondMostRecent = taskClient.createTask("recent1", "description", "project")
+		timeService.plusHours(1)
+		Task mostRecent = taskClient.createTask("recent2", "description", "project")
+
+		when:
+		PagedResult<Task> taskPage = taskClient.findRecentTasksForProject("project", 0, 5)
+
+		then:
+		assert taskPage.contents == [mostRecent, secondMostRecent]
+		assert taskPage.totalPages == 1
+		assert taskPage.totalElements == 2
+		assert taskPage.pageNumber == 0
+		assert taskPage.hasNext == false
+		assert taskPage.hasPrevious == false
+	}
+
 	def "findRecentTasksMatchingTags SHOULD filter tasks according to #tags in FAQ or event comments"() {
 		given:
 		for (int i = 0; i < 10; i++) {
@@ -199,6 +222,34 @@ class TaskResourceSpec extends Specification {
 		assert taskPage.pageNumber == 1
 		assert taskPage.hasNext == false
 		assert taskPage.hasPrevious == true
+
+	}
+
+	def "findRecentTasksMatchingTags SHOULD filter by project"() {
+		given:
+		for (int i = 0; i < 10; i++) {
+			Task task = taskClient.createTask("${aRandom.text(10)}-${i}", aRandom.text(50), aRandom.text(50))
+			timeService.plusMinutes(10)
+
+			EventEntity event = aRandom.eventEntity().taskId(task.id).comment("Comment with #tag").build()
+			persistenceService.saveEvent(event)
+		}
+
+		timeService.plusHours(1)
+		Task mostRecent = taskClient.createTask("recent2", "description", "project")
+		EventEntity event = aRandom.eventEntity().taskId(mostRecent.id).comment("Comment with #tag").build()
+		persistenceService.saveEvent(event)
+
+		when:
+		PagedResult<Task> taskPage = taskClient.findRecentTasksMatchingTagsAndProject(["#tag"], "project", 0, 5)
+
+		then:
+		assert taskPage.contents.size() == 1
+		assert taskPage.totalPages == 1
+		assert taskPage.totalElements == 1
+		assert taskPage.pageNumber == 0
+		assert taskPage.hasNext == false
+		assert taskPage.hasPrevious == false
 
 	}
 

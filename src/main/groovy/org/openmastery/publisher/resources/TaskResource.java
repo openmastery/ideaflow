@@ -93,6 +93,7 @@ public class TaskResource {
 	 * Tasks are modified everytime new event or activity data is saved for the task
 	 *
 	 * @param tags the hashtags to filter for (searches FAQ and event comments)
+	 * @param project optional project name filter
 	 * @param pageNumber the page number to retrieve, defaults to page 0
 	 * @param elementsPerPage the number of tasks per page to retrieve, defaults to 10
 	 * @return PagedResult<Task>
@@ -100,12 +101,13 @@ public class TaskResource {
 
 	@GET
 	public PagedResult<Task> findRecentTasks(@QueryParam("tag") List<String> tags,
+											 @QueryParam("project") String project,
 											 @DefaultValue("0") @QueryParam("page_number") Integer pageNumber,
 									  		@DefaultValue("10") @QueryParam("per_page") Integer elementsPerPage ) {
 		if (tags != null && tags.size() > 0) {
-			return taskService.findRecentTasksMatchingTags(tags, pageNumber, elementsPerPage);
+			return taskService.findRecentTasksMatchingTags(project, tags, pageNumber, elementsPerPage);
 		} else {
-			return taskService.findRecentTasks(pageNumber, elementsPerPage);
+			return taskService.findRecentTasks(project, pageNumber, elementsPerPage);
 		}
 	}
 

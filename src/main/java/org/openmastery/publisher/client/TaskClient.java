@@ -41,10 +41,32 @@ public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
 		return (PagedResult<Task>) withPagedResultType(request).find();
 	}
 
+	public PagedResult<Task> findRecentTasksForProject(String projectName, Integer pageNumber, Integer perPage) {
+		CrudClientRequest request = getUntypedCrudClientRequest()
+				.queryParam("page_number", pageNumber)
+				.queryParam("per_page", perPage)
+				.queryParam("project", projectName);
+
+		return (PagedResult<Task>) withPagedResultType(request).find();
+	}
+
 	public PagedResult<Task> findRecentTasksMatchingTags(List<String> tags, Integer pageNumber, Integer perPage) {
 		CrudClientRequest request = getUntypedCrudClientRequest()
 				.queryParam("page_number", pageNumber)
 				.queryParam("per_page", perPage);
+
+		for (String tag : tags) {
+			request = request.queryParam("tag", tag);
+		}
+
+		return (PagedResult<Task>) withPagedResultType(request).find();
+	}
+
+	public PagedResult<Task> findRecentTasksMatchingTagsAndProject(List<String> tags, String projectName, Integer pageNumber, Integer perPage) {
+		CrudClientRequest request = getUntypedCrudClientRequest()
+				.queryParam("page_number", pageNumber)
+				.queryParam("per_page", perPage)
+				.queryParam("project", projectName);
 
 		for (String tag : tags) {
 			request = request.queryParam("tag", tag);

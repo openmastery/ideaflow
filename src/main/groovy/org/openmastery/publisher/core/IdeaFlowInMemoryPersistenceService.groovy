@@ -230,16 +230,5 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 		return eventList
 	}
 
-	@Override
-	Page<TaskEntity> findRecentTasks(Long userId, int page, int perPage) {
-		if (perPage < 1) {
-			return []
-		} else if (perPage >= taskList.size()) {
-			return taskList.asImmutable()
-		} else {
-			List<TaskEntity> sortedList = taskList.toSorted { a, b -> b.modifyDate <=> a.modifyDate }
-			return sortedList.subList(0, perPage)
-		}
-	}
 
 }

@@ -79,8 +79,6 @@ public interface IdeaFlowPersistenceService {
 
 	List<EventEntity> findRecentEvents(Long userId, Timestamp afterDate, Integer limit);
 
-	Page<TaskEntity> findRecentTasks(Long userId, int page, int perPage);
-
 	List<FaqAnnotationEntity> getFaqAnnotationList(long taskId);
 
 	List<SnippetAnnotationEntity> getSnippetAnnotationList(long taskId);

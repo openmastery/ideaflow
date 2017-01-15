@@ -210,9 +210,4 @@ public class IdeaFlowRelationalPersistenceService implements IdeaFlowPersistence
 		return eventRepository.findRecentEvents(userId, afterDate, limit);
 	}
 
-	@Override
-	public Page<TaskEntity> findRecentTasks(Long userId, int page, int perPage) {
-		return taskRepository.findByOwnerId(userId, new PageRequest(page, perPage, Sort.Direction.DESC, "modifyDate"));
-	}
-
 }
