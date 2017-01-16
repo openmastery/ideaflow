@@ -67,7 +67,7 @@ class MetricsServiceSpec extends Specification {
 
 		then:
 		assert metricSet != null
-		assert metricSet.getFlattenedMetrics().size() == 17
+		assert metricSet.getFlattenedMetrics().size() == 15
 
 		Metric maxCyclesMetric = metricSet.getFlattenedMetrics().find() { Metric metric -> metric.type == MetricType.MAX_EXPERIMENT_CYCLES }
 		assert maxCyclesMetric.value == 3

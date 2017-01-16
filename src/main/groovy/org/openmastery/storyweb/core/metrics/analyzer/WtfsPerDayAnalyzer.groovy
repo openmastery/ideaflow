@@ -32,7 +32,7 @@ import org.openmastery.time.TimeConverter
 class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 
 	WtfsPerDayAnalyzer() {
-		super(MetricType.WTFS_PER_DAY, true)
+		super(MetricType.WTFS_PER_DAY, false)
 	}
 
 	@Override
@@ -42,87 +42,43 @@ class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 			event.type == EventType.WTF || event.type == EventType.AWESOME
 		}
 
-		LocalDate start = timeline.start.toLocalDate()
-		LocalDate end = timeline.end.toLocalDate()
-
-		List<GraphPoint<Double>> allPoints = calculateWtfsPerDay(start, end, wtfYayEvents)
-
-		return createAggregatePoint(timeline, allPoints)
-	}
-
-	@Override
-	GraphPoint<Double> assignBlameToSubtasks(IdeaFlowStory ideaFlowStory, GraphPoint<Double> summaryPoint) {
-
-		ideaFlowStory.subtasks.each { SubtaskStory subtaskStory ->
-			GraphPoint<Double> subtaskPoint = analyzeIdeaFlowStory(subtaskStory.timeline, subtaskStory.troubleshootingJourneys)
-			if (subtaskPoint) {
-				subtaskPoint.relativePath = subtaskStory.relativePath
-				subtaskPoint.contextTags = subtaskStory.contextTags
-				summaryPoint.childPoints.add(subtaskPoint)
-			}
+		List<Event> wtfEvents = wtfYayEvents.findAll() { Event event ->
+			event.type == EventType.WTF
 		}
 
-		return summaryPoint
+		Double days = calculateNumberDaysInSample(timeline.durationInSeconds)
+
+		GraphPoint<Double> point = createTimelinePoint(timeline, [])
+		point.painTags = extractPainTags(wtfYayEvents)
+		point.value = roundOff( wtfEvents.size() / days )
+		point.danger = isOverThreshold(point.value)
+
+		return point
 	}
 
+	double roundOff(double rawDouble) {
+		return Math.round(rawDouble * 100)/100
+	}
+
+	double calculateNumberDaysInSample(long durationInSeconds) {
+		double days = durationInSeconds.toDouble() / (60 * 60 * 6)
+		return Math.max(days, 1);
+	}
 
 	@Override
 	GraphPoint<Double> createAggregatePoint(IdeaFlowTimeline timeline, List<GraphPoint<Double>> allPoints) {
 		GraphPoint timelinePoint = null
 		if (allPoints.size() > 0) {
-
-			timelinePoint = createTimelinePoint(timeline, allPoints)
-			timelinePoint.value = getMaximumValue(allPoints)
-			timelinePoint.danger = isOverThreshold(timelinePoint.value)
+			timelinePoint = analyzeIdeaFlowStory(timeline, [])
+			timelinePoint.childPoints = allPoints
 		}
 		return timelinePoint
 	}
 
-	private List<GraphPoint<Double>> calculateWtfsPerDay(LocalDate start, LocalDate end, List<Event> wtfYayEvents) {
-		List<GraphPoint<Double>> allPoints = []
-
-		for (LocalDate currentdate = start; currentdate.isBefore(end) || currentdate.isEqual(end);
-			 currentdate = currentdate.plusDays(1)) {
-
-			List<Event> dailyWtfs = findWtfsForTheDay(wtfYayEvents, currentdate)
-			Set<String> painTags = extractPainTagsForTheDay(wtfYayEvents, currentdate)
-
-			if (dailyWtfs.size() > 0) {
-				String formattedDate = TimeConverter.formatDate(currentdate)
-				GraphPoint<Double> dailyWtfsPoint = createEmptyPoint("/day/" + formattedDate)
-				dailyWtfsPoint.distance = 60 * 60 * 24
-				dailyWtfsPoint.position = currentdate.toLocalDateTime(new LocalTime(0))
-				dailyWtfsPoint.relativePositionInSeconds = findFirstRelativePositionWithMatchingDate(dailyWtfs, currentdate)
-				dailyWtfsPoint.painTags = painTags
-				dailyWtfsPoint.value = dailyWtfs.size()
-				dailyWtfsPoint.danger = isOverThreshold(dailyWtfsPoint.value)
-
-				allPoints.add(dailyWtfsPoint)
-			}
-		}
-
-		return allPoints
-	}
-
-	long findFirstRelativePositionWithMatchingDate(List<Event> wtfEvents, LocalDate localDate) {
-		Event event = wtfEvents.find() { Event wtf ->
-			wtf.position.toLocalDate().equals(localDate)
-		}
-		event.relativePositionInSeconds
-	}
-
-	List<Event> findWtfsForTheDay(List<Event> wtfYayEvents, LocalDate currentDate) {
-		wtfYayEvents.findAll() { Event wtf ->
-			wtf.position.toLocalDate().equals(currentDate) && wtf.type == EventType.WTF
-		}
-	}
-
-	Set<String> extractPainTagsForTheDay(List<Event> wtfYayEvents, LocalDate currentDate) {
+	Set<String> extractPainTags(List<Event> wtfYayEvents) {
 		Set<String> painTags = new HashSet<>()
-		wtfYayEvents.findAll() { Event wtf ->
-			wtf.position.toLocalDate().equals(currentDate)
-		}.each {
-			painTags.addAll(TagsUtil.extractUniqueHashTags(it.comment))
+		wtfYayEvents.each { Event event ->
+			painTags.addAll(TagsUtil.extractUniqueHashTags(event.comment))
 		}
 		return painTags
 	}

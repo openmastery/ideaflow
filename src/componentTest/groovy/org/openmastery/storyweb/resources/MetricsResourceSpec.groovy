@@ -91,8 +91,8 @@ class MetricsResourceSpec extends Specification {
 		then:
 		assert chart.graphPoints.size() == 5
 		assert chart.meta.totalFirstDegree == 5
-		assert chart.meta.totalSecondDegree == 5
-		assert chart.meta.totalThirdDegree == 4
+		assert chart.meta.totalSecondDegree == 4
+		assert chart.meta.totalThirdDegree == 3
 		assert chart.meta.totalFourthDegree == 6
 
 	}
