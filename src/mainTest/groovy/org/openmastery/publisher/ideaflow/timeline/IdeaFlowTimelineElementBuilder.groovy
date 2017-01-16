@@ -152,6 +152,11 @@ class IdeaFlowTimelineElementBuilder {
 		this
 	}
 
+	IdeaFlowTimelineElementBuilder distraction() {
+		addEvent(EventType.DISTRACTION)
+		this
+	}
+
 	IdeaFlowTimelineElementBuilder wtf(String comment) {
 		addEvent(EventType.WTF, comment)
 		this

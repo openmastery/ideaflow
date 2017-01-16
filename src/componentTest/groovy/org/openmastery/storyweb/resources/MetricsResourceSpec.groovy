@@ -61,7 +61,7 @@ class MetricsResourceSpec extends Specification {
 		then:
 		assert chart != null
 		assert chart.graphPoints.size()
-		assert chart.painThresholds.size() == 5
+		assert chart.painThresholds.size() == 6
 	}
 
 	def "generateSPCChart SHOULD generate graph points for each task"() {
@@ -71,6 +71,7 @@ class MetricsResourceSpec extends Specification {
 				.advanceMinutes(30)
 				.executeCode()
 				.executeCode()
+				.distraction()
 				.executeCode()
 				.advanceMinutes(1)
 				.wtf()
@@ -89,9 +90,9 @@ class MetricsResourceSpec extends Specification {
 		SPCChart chart = metricsClient.generateChart(builder.startTime.toLocalDate(), builder.deactivationTime.toLocalDate())
 
 		then:
-		assert chart.graphPoints.size() == 5
-		assert chart.meta.totalFirstDegree == 5
-		assert chart.meta.totalSecondDegree == 4
+		assert chart.graphPoints.size() == 6
+		assert chart.meta.totalFirstDegree == 6
+		assert chart.meta.totalSecondDegree == 5
 		assert chart.meta.totalThirdDegree == 3
 		assert chart.meta.totalFourthDegree == 6
 

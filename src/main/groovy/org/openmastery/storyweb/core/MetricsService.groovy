@@ -21,7 +21,7 @@ import org.openmastery.publisher.api.journey.IdeaFlowStory
 import org.openmastery.publisher.ideaflow.story.IdeaFlowStoryGenerator
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.metrics.SPCChart
-
+import org.openmastery.storyweb.core.metrics.analyzer.DisruptionsPerDayAnalyzer
 import org.openmastery.storyweb.core.metrics.analyzer.ExperimentFrequencyAnalyzer
 import org.openmastery.storyweb.core.metrics.analyzer.HaystackAnalyzer
 import org.openmastery.storyweb.core.metrics.analyzer.HumanCycleTimeAnalyzer
@@ -71,6 +71,7 @@ class MetricsService {
 		metricSet.addMetric(new HumanCycleTimeAnalyzer())
 		metricSet.addMetric(new ExperimentFrequencyAnalyzer())
 		metricSet.addMetric(new WtfsPerDayAnalyzer())
+		metricSet.addMetric(new DisruptionsPerDayAnalyzer())
 
 		return metricSet.calculate(story)
 	}

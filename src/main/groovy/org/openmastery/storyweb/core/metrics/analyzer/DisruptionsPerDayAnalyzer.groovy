@@ -15,38 +15,36 @@
  */
 package org.openmastery.storyweb.core.metrics.analyzer
 
-import org.joda.time.LocalDate
-import org.joda.time.LocalTime
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.IdeaFlowStory
-import org.openmastery.publisher.api.journey.SubtaskStory
 import org.openmastery.publisher.api.journey.TagsUtil
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
-import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.storyweb.api.metrics.MetricThreshold
-import org.openmastery.time.TimeConverter
 
-class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
+class DisruptionsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 
-	WtfsPerDayAnalyzer() {
-		super(MetricType.WTFS_PER_DAY, false)
+	DisruptionsPerDayAnalyzer() {
+		super(MetricType.DISRUPTIONS_PER_DAY, false)
 	}
 
 	@Override
 	GraphPoint<Double> analyzeIdeaFlowStory(IdeaFlowTimeline timeline, List<TroubleshootingJourney> journeys) {
 
-		List<Event> wtfYayEvents = MetricsUtils.findEventsMatchingType(timeline.events, EventType.WTF, EventType.AWESOME)
-		List<Event> wtfEvents = MetricsUtils.findEventsMatchingType(wtfYayEvents, EventType.WTF)
+		List<Event> disruptionEvents = MetricsUtils.findEventsMatchingType(timeline.events, EventType.DISTRACTION)
 
 		Double days = MetricsUtils.calculateNumberDaysInSample(timeline.durationInSeconds)
 
-		GraphPoint<Double> point = createTimelinePoint(timeline, [])
-		point.painTags = MetricsUtils.extractPainTags(wtfYayEvents)
-		point.value = MetricsUtils.roundOff( wtfEvents.size() / days )
-		point.danger = isOverThreshold(point.value)
+
+		GraphPoint<Double> point = null;
+
+		if (disruptionEvents.size() > 0) {
+			point = createTimelinePoint(timeline, [])
+			point.value = MetricsUtils.roundOff( disruptionEvents.size() / days )
+			point.danger = isOverThreshold(point.value)
+		}
 
 		return point
 	}
@@ -63,6 +61,6 @@ class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 
 	@Override
 	MetricThreshold<Double> getDangerThreshold() {
-		return createMetricThreshold(10D)
+		return createMetricThreshold(5D)
 	}
 }
