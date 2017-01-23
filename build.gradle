@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = "1.3.5.RELEASE"
+		springBootVersion = "1.4.3.RELEASE"
 		commonRestVersion = "2.0-om.4"
 	}
 	repositories {
@@ -22,7 +22,7 @@ plugins {
 
 apply plugin: "com.bancvue.core-oss"
 apply plugin: "com.bancvue.maven-publish-ext"
-apply plugin: "spring-boot"
+apply plugin: "org.springframework.boot"
 apply plugin: "net.jokubasdargis.build-timer"
 
 repositories {

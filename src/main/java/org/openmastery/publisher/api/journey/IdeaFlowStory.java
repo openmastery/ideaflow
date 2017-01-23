@@ -1,26 +1,29 @@
 package org.openmastery.publisher.api.journey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.joda.time.LocalDateTime;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 import org.openmastery.publisher.api.metrics.CapacityDistribution;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.storyweb.api.metrics.Metric;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor(suppressConstructorProperties = true)
+@JsonIgnoreProperties({"task", "timeline"})
 public class IdeaFlowStory implements StoryContextElement {
 
-	@JsonIgnore
 	Task task;
-
-	@JsonIgnore
 	IdeaFlowTimeline timeline;
 
 	CapacityDistribution capacityDistribution;

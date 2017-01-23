@@ -11,6 +11,9 @@ public class DurationInSeconds implements Comparable<DurationInSeconds> {
 
 	long durationInSeconds;
 
+	public DurationInSeconds(int durationInSeconds) {
+		this.durationInSeconds = durationInSeconds;
+	}
 
 	public boolean greaterThan(DurationInSeconds durationObj) {
 		boolean isGreaterThan = false;

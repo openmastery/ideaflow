@@ -11,7 +11,6 @@ class IdeaFlowRelationalPersistenceServiceSpec extends IdeaFlowPersistenceServic
 
 	@Override
 	protected IdeaFlowPersistenceService getPersistenceService() {
-		assert persistenceService.h.advised.targetSource.target instanceof IdeaFlowRelationalPersistenceService
 		persistenceService
 	}
 

@@ -1,6 +1,7 @@
 package org.openmastery.publisher.api.journey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,15 +18,11 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"subtaskEvent", "timeline", "parentPath"})
 public class SubtaskStory implements StoryContextElement {
 
-	@JsonIgnore
 	Event subtaskEvent;
-
-	@JsonIgnore
 	IdeaFlowTimeline timeline;
-
-	@JsonIgnore
 	String parentPath;
 
 	CapacityDistribution capacityDistribution;
