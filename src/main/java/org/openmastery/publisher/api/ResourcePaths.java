@@ -18,6 +18,7 @@ package org.openmastery.publisher.api;
 public class ResourcePaths {
 
 	public static final String API_KEY_HEADER = "X-API-KEY";
+	public static final String AUTHORIZATION_HEADER = "Authorization";
 
 	public static final String ID_PATH = "/id";
 

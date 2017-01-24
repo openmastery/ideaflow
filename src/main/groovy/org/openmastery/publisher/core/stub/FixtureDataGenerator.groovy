@@ -40,9 +40,9 @@ class FixtureDataGenerator {
 	TaskClient taskClient
 	BatchClient batchClient
 
-	void connect(String apiKey) {
-		taskClient = new TaskClient(hostUri).apiKey(apiKey)
-		batchClient = new BatchClient(hostUri).apiKey(apiKey)
+	void connect(String bearerToken) {
+		taskClient = new TaskClient(hostUri).bearerToken(bearerToken)
+		batchClient = new BatchClient(hostUri).bearerToken(bearerToken)
 	}
 
 	void generateStubTasks() {

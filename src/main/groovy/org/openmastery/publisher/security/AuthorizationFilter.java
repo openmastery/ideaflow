@@ -1,12 +1,12 @@
 /**
  * Copyright 2017 New Iron Group, Inc.
- *
+ * <p>
  * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/gpl-3.0.en.html
- *
+ * <p>
+ * http://www.gnu.org/licenses/gpl-3.0.en.html
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,18 @@
  */
 package org.openmastery.publisher.security;
 
+import com.stormpath.sdk.account.Account;
+import com.stormpath.sdk.api.ApiKey;
+import com.stormpath.sdk.application.Application;
+import com.stormpath.sdk.impl.provider.ProviderAccountResolver;
+import com.stormpath.sdk.oauth.Authenticators;
+import com.stormpath.sdk.oauth.OAuthBearerRequestAuthentication;
+import com.stormpath.sdk.oauth.OAuthBearerRequestAuthenticationResult;
+import com.stormpath.sdk.oauth.OAuthClientCredentialsGrantRequestAuthentication;
+import com.stormpath.sdk.oauth.OAuthClientCredentialsGrantRequestAuthenticationBuilder;
+import com.stormpath.sdk.oauth.OAuthRequestAuthenticationResult;
+import com.stormpath.sdk.oauth.OAuthRequests;
+import com.stormpath.sdk.servlet.account.AccountResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.core.IdeaFlowPersistenceService;
@@ -24,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Priority;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Priorities;
@@ -53,6 +66,12 @@ public class AuthorizationFilter implements ContainerRequestFilter, WriterInterc
 	private InvocationContext invocationContext;
 	@Autowired
 	private UserIdResolver userIdResolver;
+	@Autowired
+	private HttpServletRequest servletRequest;
+	@Autowired
+	private AccountResolver accountResolver;
+	@Autowired
+	private Application stormpathApplication;
 
 	@Override
 	public void filter(ContainerRequestContext request) {
@@ -60,16 +79,45 @@ public class AuthorizationFilter implements ContainerRequestFilter, WriterInterc
 			return;
 		}
 
-		String apiKey = request.getHeaderString(ResourcePaths.API_KEY_HEADER);
-		if (apiKey == null) {
-			throw new ForbiddenException("Missing API key, header=" + ResourcePaths.API_KEY_HEADER);
+		String bearerToken = getBearerToken(request);
+		if (bearerToken == null) {
+			// TODO: log
+			throw new ForbiddenException("User not authenticated");
 		}
 
-		Long userId = userIdResolver.findUserIdByApiKey(apiKey);
+		OAuthBearerRequestAuthentication authRequest = OAuthRequests
+				.OAUTH_BEARER_REQUEST
+				.builder()
+				.setJwt(bearerToken)
+				.build();
+
+		OAuthBearerRequestAuthenticationResult result = Authenticators
+				.OAUTH_BEARER_REQUEST_AUTHENTICATOR
+				.forApplication(stormpathApplication)
+				.withLocalValidation()
+				.authenticate(authRequest);
+
+		Account account = result.getAccount();
+		invocationContext.setStormpathAccount(account);
+
+		Long userId = userIdResolver.findUserIdByEmail(account.getEmail());
 		if (userId == null) {
-			throw new ForbiddenException("Failed to resolve user with apiKey=" + apiKey);
+			throw new ForbiddenException("Failed to resolve user with email=" + account.getEmail());
 		}
 		invocationContext.setUserId(userId);
+	}
+
+	private String getBearerToken(ContainerRequestContext request) {
+		String authorizationHeader = request.getHeaderString("Authorization");
+		if (authorizationHeader == null) {
+			return null;
+		}
+
+		if (authorizationHeader.startsWith("Bearer ")) {
+			return authorizationHeader.substring(7);
+		} else {
+			return null;
+		}
 	}
 
 	@Override

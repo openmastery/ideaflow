@@ -16,10 +16,15 @@
 package org.openmastery.publisher.resources;
 
 
+import com.stormpath.sdk.account.Account;
+import com.stormpath.sdk.api.ApiKey;
+import com.stormpath.sdk.application.Application;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.core.user.UserEntity;
 import org.openmastery.publisher.core.user.UserRepository;
+import org.openmastery.publisher.security.InvocationContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -33,6 +38,8 @@ public class UserResource {
 
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private InvocationContext invocationContext;
 
 	/**
 	 * Create a new user API-Key based on the specified email.
@@ -42,7 +49,6 @@ public class UserResource {
 	 */
 	@POST
 	public String createUser(@QueryParam("email") String userEmail) {
-
 		UserEntity user = UserEntity.builder()
 			.email(userEmail)
 			.apiKey(UUID.randomUUID().toString())
@@ -55,18 +61,16 @@ public class UserResource {
 	/**
 	 * Retrieve the API-Key of an existing user
 	 * @exclude
-	 * @param userEmail a unique email account
 	 * @return API-Key
 	 */
-
 	@GET
 	@Path(ResourcePaths.APIKEY_PATH)
-	public String getAPIKey(@QueryParam("email") String userEmail) {
-		String apiKey = null;
-		UserEntity user = userRepository.findByEmail(userEmail);
-		if (user != null) {
-			apiKey = user.getApiKey() + "\n";
+	public String getAPIKey() {
+		Account account = invocationContext.getStormpathAccount();
+		for (ApiKey key : account.getApiKeys()) {
+			key.delete();
 		}
-		return apiKey;
+		ApiKey apiKey = account.createApiKey();
+		return apiKey.getId() + ":" + apiKey.getSecret();
 	}
 }

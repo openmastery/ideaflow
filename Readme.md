@@ -147,6 +147,24 @@ https://github.com/swagger-api/swagger-ui and copy the dist directory into src/m
 need to update index.html and set url = "/s/api-json/service.json" rather than the default petstore url.
 
 
+## Stormpath
+
+#### Production
+
+set `STORMPATH_API_KEY_ID` and `STORMPATH_API_KEY_SECRET` as Heroku environment vars
+
+#### Development
+
+If you run to run the ideaflow server locally, you first need to (create a Stormpath account)[https://api.stormpath.com/register].
+
+Once logged in, navigate to (Accounts)[https://api.stormpath.com/ui2/index.html#/accounts] and select the user you registered
+under.  Follow (these steps)[https://docs.stormpath.com/rest/product-guide/latest/quickstart.html#create-an-api-key-pair]
+to create your API key and save it locally.  It is important the file is saved to `System.getProperty("user.home") + "/.stormpath/apiKey.properties"`
+since that is where the application will look for it.
+
+That should be it, you're all set to commence the final step - profit!
+
+
 ## Heroku
 
 This application is currently deployed on Heroku at http://om-ideaflow.herokuapp.com.  For an API-Key on the shared service, please contact janelle@openmastery.org.  We will have account creation setup soon, but while this project is still in early development, accounts are created manually.

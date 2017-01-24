@@ -74,6 +74,9 @@ dependencies {
 	compile "com.google.guava:guava:18.0"
 	compile "org.projectlombok:lombok:1.16.4"
 
+	// Auth
+	compile "com.stormpath.spring:stormpath-default-spring-boot-starter:1.4.0"
+
 	clientCompile "com.bancvue:common-rest-client:${commonRestVersion}"
 	clientCompile "org.projectlombok:lombok:1.16.4"
 

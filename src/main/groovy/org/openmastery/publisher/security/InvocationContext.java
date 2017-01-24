@@ -15,15 +15,18 @@
  */
 package org.openmastery.publisher.security;
 
+import com.stormpath.sdk.account.Account;
+import com.stormpath.sdk.servlet.account.AccountResolver;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
 import javax.inject.Named;
-import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 
 @Named
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -34,5 +37,6 @@ import java.util.UUID;
 public class InvocationContext {
 
     private long userId;
+    private Account stormpathAccount;
 
 }

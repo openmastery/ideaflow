@@ -24,6 +24,10 @@ public abstract class IdeaFlowClient<API_TYPE, CLIENT_TYPE extends CrudClient> e
 		return header(ResourcePaths.API_KEY_HEADER, apiKey);
 	}
 
+	public CLIENT_TYPE bearerToken(String bearerToken) {
+		return header(ResourcePaths.AUTHORIZATION_HEADER, "Bearer " + bearerToken);
+	}
+
 	public CLIENT_TYPE readTimeout(int readTimeoutMillis) {
 		return property(ClientProperties.READ_TIMEOUT, Integer.toString(readTimeoutMillis));
 	}
