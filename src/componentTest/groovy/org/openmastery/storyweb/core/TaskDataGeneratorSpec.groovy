@@ -64,4 +64,15 @@ class TaskDataGeneratorSpec extends Specification {
 		assert taskDataList.get(0).task != null
 	}
 
+
+	def "generateTaskData SHOULD not explode when no data"() {
+		given:
+
+		when:
+		List<TaskData> taskDataList =
+				taskDataGenerator.generate(-1, mockTimeService.now().toLocalDate(), mockTimeService.daysInFuture(7).toLocalDate())
+
+		then:
+		assert taskDataList.size() == 0
+	}
 }

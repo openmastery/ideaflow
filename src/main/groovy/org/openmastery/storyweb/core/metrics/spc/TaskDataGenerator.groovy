@@ -79,13 +79,13 @@ class TaskDataGenerator {
 
 		log.debug("generateTaskData from " + startTimestamp + ":" + endTimestamp)
 
-		Set<Long> taskIds = new HashSet<>();
+		Set<Long> collectedTaskIds = new HashSet<>();
 
-		List<Event> eventsWithinRange = findEventsWithinRange(taskIds, userId, startTimestamp, endTimestamp)
-		List<IdleTimeBandModel> idleBands = findIdleBandsWithinRange(taskIds, userId, startTimestamp, endTimestamp)
-		List<ExecutionEvent> executionEvents = findExecutionEventsWithinRange(taskIds, userId, startTimestamp, endTimestamp)
-		List<FaqAnnotationEntity> faqAnnotations = findFaqsWithinRange(taskIds, userId, startTimestamp, endTimestamp)
-		List<Task> tasks = findTasksWithIds(taskIds, userId)
+		List<Event> eventsWithinRange = findEventsWithinRange(collectedTaskIds, userId, startTimestamp, endTimestamp)
+		List<IdleTimeBandModel> idleBands = findIdleBandsWithinRange(collectedTaskIds, userId, startTimestamp, endTimestamp)
+		List<ExecutionEvent> executionEvents = findExecutionEventsWithinRange(collectedTaskIds, userId, startTimestamp, endTimestamp)
+		List<FaqAnnotationEntity> faqAnnotations = findFaqsWithinRange(collectedTaskIds, userId, startTimestamp, endTimestamp)
+		List<Task> tasks = findTasksWithIds(collectedTaskIds, userId)
 
 		List<TaskData> taskDataList = splitIntoTasks(tasks, eventsWithinRange, idleBands, executionEvents, faqAnnotations)
 
@@ -196,9 +196,12 @@ class TaskDataGenerator {
 	}
 
 	private List<Task> findTasksWithIds(Set<Long> taskIds, Long userId) {
-		List<TaskEntity> taskEntities = taskRepository.findTasksWithIds(userId, taskIds.toList())
-
-		return entityMapper.mapList(taskEntities, Task)
+		if (taskIds.size() > 0) {
+			List<TaskEntity> taskEntities = taskRepository.findTasksWithIds(userId, taskIds.toList())
+			return entityMapper.mapList(taskEntities, Task)
+		} else {
+			return []
+		}
 	}
 
 	private List<FaqAnnotationEntity> findFaqsWithinRange(Set<Long> taskIds, Long userId, Timestamp startTimestamp, Timestamp endTimestamp) {
