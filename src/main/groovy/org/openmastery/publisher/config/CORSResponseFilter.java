@@ -27,7 +27,7 @@ public class CORSResponseFilter implements ContainerResponseFilter {
 		@Override
 		public void filter(ContainerRequestContext request,
 						   ContainerResponseContext response) throws IOException {
-			response.getHeaders().add("Access-Control-Allow-Origin", "http://om-ideaflow.herokuapp.com");
+			response.getHeaders().add("Access-Control-Allow-Origin", "*");
 //			response.getHeaders().add("Access-Control-Allow-Origin", "http://localhost:8980");
 			response.getHeaders().add("Access-Control-Allow-Headers", "X-API-KEY");
 		}
