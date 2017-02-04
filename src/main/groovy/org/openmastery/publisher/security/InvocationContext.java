@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 @AllArgsConstructor
 public class InvocationContext {
 
-    private long userId;
+    private Long userId;
     private Account stormpathAccount;
 
 }

@@ -32,7 +32,7 @@ import java.util.Set;
 @ApplicationPath("/")
 public class JerseyConfig extends ResourceConfig {
 
-	@Autowired
+	@Autowired(required = false)
 	protected AuthorizationFilter authorizationFilter;
 
 	@PostConstruct
@@ -45,7 +45,9 @@ public class JerseyConfig extends ResourceConfig {
 		register(LoggingFilter.class);
 		register(CORSResponseFilter.class);
 		register(CustomValueTypeResolver.class);
-		register(authorizationFilter);
+		if (authorizationFilter != null) {
+			register(authorizationFilter);
+		}
 	}
 
 }

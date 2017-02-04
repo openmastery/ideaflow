@@ -26,15 +26,12 @@ public class UserIdRepositoryResolver implements UserIdResolver {
 	private UserRepository userRepository;
 
 	@Override
-	public Long findUserIdByApiKey(String apiKey) {
-		UserEntity user = userRepository.findByApiKey(apiKey);
-		return user == null ? null : user.getId();
-	}
-
-	@Override
-	public Long findUserIdByEmail(String email) {
+	public Long findOrCreateUserIdByEmail(String email) {
 		UserEntity user = userRepository.findByEmail(email);
-		return user == null ? null : user.getId();
+		if (user == null) {
+			user = userRepository.save(UserEntity.builder().email(email).build());
+		}
+		return user.getId();
 	}
 
 }

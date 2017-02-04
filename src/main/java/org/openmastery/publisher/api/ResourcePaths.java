@@ -72,6 +72,7 @@ public class ResourcePaths {
 	//user paths
 	public static final String USER_PATH = "/user";
 	public static final String APIKEY_PATH = "/apikey";
+	public static final String BEARER_TOKEN_PATH = "/bearertoken";
 
 	//batch paths
 	public static final String PUBLISHER_PATH = "/publisher";

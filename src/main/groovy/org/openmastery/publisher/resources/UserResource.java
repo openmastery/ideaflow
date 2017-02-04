@@ -23,6 +23,7 @@ import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.core.user.UserEntity;
 import org.openmastery.publisher.core.user.UserRepository;
 import org.openmastery.publisher.security.InvocationContext;
+import org.openmastery.publisher.security.StormpathService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,8 @@ public class UserResource {
 	private UserRepository userRepository;
 	@Autowired
 	private InvocationContext invocationContext;
+	@Autowired
+	private StormpathService stormpathService;
 
 	/**
 	 * Create a new user API-Key based on the specified email.
@@ -73,4 +76,11 @@ public class UserResource {
 		ApiKey apiKey = account.createApiKey();
 		return apiKey.getId() + ":" + apiKey.getSecret();
 	}
+
+	@GET
+	@Path(ResourcePaths.BEARER_TOKEN_PATH)
+	public String getBearerToken(@QueryParam("apiKey") String encodedApiKey) {
+		return stormpathService.getBearerToken(encodedApiKey);
+	}
+
 }

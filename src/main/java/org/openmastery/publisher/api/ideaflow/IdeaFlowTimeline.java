@@ -1,6 +1,5 @@
 package org.openmastery.publisher.api.ideaflow;
 
-import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.ExecutionEvent;

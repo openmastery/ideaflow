@@ -17,8 +17,6 @@ package org.openmastery.publisher.security;
 
 public interface UserIdResolver {
 
-	Long findUserIdByApiKey(String apiKey);
-
-	Long findUserIdByEmail(String email);
+	Long findOrCreateUserIdByEmail(String email);
 
 }

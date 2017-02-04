@@ -21,7 +21,8 @@ import org.openmastery.publisher.client.EventClient;
 import org.openmastery.publisher.client.TimelineClient;
 import org.openmastery.publisher.client.TaskClient;
 import org.openmastery.publisher.core.user.UserEntity;
-import org.openmastery.publisher.security.UserIdResolver;
+import org.openmastery.publisher.security.AuthorizationFilter;
+import org.openmastery.publisher.security.TestAuthorizationFilter;
 import org.openmastery.storyweb.client.FaqClient;
 import org.openmastery.storyweb.client.GlossaryClient;
 import org.openmastery.storyweb.client.MetricsClient;
@@ -54,8 +55,8 @@ public class IfmPublisherTestConfig {
 
 	@Bean
 	@Primary
-	public UserIdResolver userIdResolver() {
-		return new StubUserIdResolver(testUser());
+	public AuthorizationFilter authorizationFilter() {
+		return new TestAuthorizationFilter();
 	}
 
 	@Bean
@@ -117,26 +118,6 @@ public class IfmPublisherTestConfig {
 	public RESTClient managementRestClient(@Value("${management.port}") String managementPort) throws URISyntaxException {
 		RESTClient client = new RESTClient(serverBaseUrl + ":" + managementPort);
 		return client;
-	}
-
-
-	private static class StubUserIdResolver implements UserIdResolver {
-
-		private UserEntity user;
-
-		public StubUserIdResolver(UserEntity user) {
-			this.user = user;
-		}
-
-		@Override
-		public Long findUserIdByApiKey(String apiKey) {
-			return user.getApiKey().equals(apiKey) ? user.getId() : null;
-		}
-
-		@Override
-		public Long findUserIdByEmail(String email) {
-			return user.getEmail().equals(email) ? user.getId() : null;
-		}
 	}
 
 }

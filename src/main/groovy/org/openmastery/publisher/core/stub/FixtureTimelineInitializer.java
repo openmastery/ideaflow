@@ -29,6 +29,8 @@ import com.stormpath.sdk.oauth.OAuthRequests;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openmastery.publisher.core.user.UserEntity;
 import org.openmastery.publisher.core.user.UserRepository;
+import org.openmastery.publisher.security.StormpathApiKey;
+import org.openmastery.publisher.security.StormpathService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.stereotype.Component;
@@ -44,17 +46,9 @@ public class FixtureTimelineInitializer {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	private Client stormpathClient;
-	@Autowired
-	private Application stormpathApplication;
-	@Autowired
 	private FixtureDataGenerator fixtureDataGenerator;
-	private String stormpathDnsLabel;
-
-	@PostConstruct
-	private void setStormpathDnsLabel() {
-		stormpathDnsLabel = stormpathApplication.getWebConfig().getDnsLabel();
-	}
+	@Autowired
+	private StormpathService stormpathService;
 
 	public void initialize() {
 		initializeUserAccount("everything-is-awesome@openmastery.org");
@@ -65,7 +59,7 @@ public class FixtureTimelineInitializer {
 	}
 
 	String initializeUserAccount(String userEmail) {
-		Account account = findOrCreateStormpathAccountWithEmail(userEmail);
+		Account account = stormpathService.findOrCreateStormpathAccountWithEmail(userEmail);
 		UserEntity user = userRepository.findByEmail(userEmail);
 		if (user == null) {
 			user = UserEntity.builder()
@@ -74,71 +68,21 @@ public class FixtureTimelineInitializer {
 			userRepository.save(user);
 		}
 
-		ApiKey apiKey = getOrCreateApiKey(account);
-		String bearerToken = getBearerToken(apiKey);
+		StormpathApiKey apiKey = stormpathService.getOrCreateApiKey(account);
+		String bearerToken = stormpathService.getBearerToken(apiKey);
 		System.out.println("************************************************************************************************");
 		System.out.println("************************************************************************************************");
 		System.out.println("************************************************************************************************");
 		System.out.println("Email        : " + account.getEmail());
-		System.out.println("API Key      : " + base64EncodeApiKey(apiKey));
+		System.out.println("API Key      : " + apiKey.getEncodedValue());
 		System.out.println("Bearer Token : " + bearerToken);
 		System.out.println("Bearer Token Curl...");
-		System.out.println(getBearerTokenCurl(apiKey));
+		System.out.println(stormpathService.getBearerTokenCurl(apiKey));
 		System.out.println("************************************************************************************************");
 		System.out.println("************************************************************************************************");
 		System.out.println("************************************************************************************************");
 
 		return bearerToken;
-	}
-
-	private String getBearerTokenCurl(ApiKey apiKey) {
-		String encodedApiKey = base64EncodeApiKey(apiKey);
-		return "curl -X POST -H \"Accept: application/json\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Authorization: Basic " + encodedApiKey + "\" --data \"grant_type=client_credentials\" https://" + stormpathDnsLabel + ".apps.stormpath.io/oauth/token";
-	}
-
-	private Account findOrCreateStormpathAccountWithEmail(String email) {
-		AccountList accountList = stormpathApplication.getAccounts(Accounts.where(Accounts.email().eqIgnoreCase(email)));
-		if (accountList.getSize() == 0) {
-			Account account = stormpathClient.instantiate(Account.class);
-			account.setGivenName(email.substring(0, email.indexOf('@')));
-			account.setEmail(email);
-			account.setPassword(RandomStringUtils.randomAlphanumeric(10));
-			account.setEmailVerificationStatus(EmailVerificationStatus.VERIFIED);
-			stormpathApplication.createAccount(account);
-			return account;
-		} else {
-			return accountList.single();
-		}
-	}
-
-	private ApiKey getOrCreateApiKey(Account account) {
-		Iterator<ApiKey> apiKeyIterator = account.getApiKeys().iterator();
-		if (apiKeyIterator.hasNext()) {
-			return apiKeyIterator.next();
-		} else {
-			return account.createApiKey();
-		}
-	}
-
-	private String base64EncodeApiKey(ApiKey apiKey) {
-		String apiKeyString = apiKey.getId() + ":" + apiKey.getSecret();
-		byte[] encodedBytes = Base64.getEncoder().encode(apiKeyString.getBytes());
-		return new String(encodedBytes);
-	}
-
-	private String getBearerToken(ApiKey apiKey) {
-		OAuthClientCredentialsGrantRequestAuthentication authRequest = OAuthRequests
-				.OAUTH_CLIENT_CREDENTIALS_GRANT_REQUEST
-				.builder()
-				.setApiKeyId(apiKey.getId())
-				.setApiKeySecret(apiKey.getSecret())
-				.build();
-
-		OAuthGrantRequestAuthenticationResult result = Authenticators
-				.OAUTH_CLIENT_CREDENTIALS_GRANT_REQUEST_AUTHENTICATOR
-				.forApplication(stormpathApplication)
-				.authenticate(authRequest);
-		return result.getAccessTokenString();
 	}
 
 }
