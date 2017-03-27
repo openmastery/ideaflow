@@ -18,6 +18,7 @@ package org.openmastery.publisher.resources;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview;
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview;
+import org.openmastery.publisher.api.ideaflow.TaskTimelineWithAllSubtasks;
 import org.openmastery.publisher.ideaflow.IdeaFlowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,11 +36,12 @@ public class TimelineResource {
 
 
 	/**
-	 * Generate an IdeaFlowTimeline and calculate metrics for each subtask to give an overview of a task.
-	 * Tasks are broken down into subtasks
+	 * Returns an IdeaFlowTimeline with metrics calculated for each subtask to give an overview of a task.
+	 * Tasks are broken down into subtasks, but none of the subtask details are available.
+	 * This object includes a task-level overview only.
 	 *
 	 * @param taskId
-	 * @return IdeaFlowTimeline
+	 * @return TaskTimelineOverview
 	 */
 
 	@GET
@@ -51,7 +53,29 @@ public class TimelineResource {
 
 
 	/**
-	 * Generate drill-downable detailed overview of a subtask, along with a timeline, progress, and metrics overview
+	 * Returns an IdeaFlowTimeline with detailed metrics, and IdeaFlowSubtaskTimelines for each subtask.
+	 * The IdeaFlowStoryTree is fully-populated with all available tree metrics, with correlated references
+	 * between the timelines and the tree.
+	 *
+	 * This is the all-in-one heavy-weight object API, that returns everything you might possibly want to know
+	 * about the task within a single call.
+	 *
+	 * @param taskId
+	 * @return TaskTimelineWithAllSubtasks
+	 */
+
+	@GET
+	@Path(ResourcePaths.IDEAFLOW_TASK + "/{taskId}" + ResourcePaths.IDEAFLOW_FULL)
+	public TaskTimelineWithAllSubtasks getTimelineOverviewForTaskWithAllSubtasks(@PathParam("taskId") Long taskId) {
+
+		return ideaFlowService.generateTimelineWithAllSubtasks(taskId);
+	}
+
+
+	/**
+	 * Returns an IdeaFlowSubtaskTimeline for the requested subtask, along with an IdeaFlowStoryTree
+	 * with the branch that corresponds to the selected subtask fully populated with all available tree metrics,
+	 * with correlated references between the timeline and the tree.
 	 *
 	 * @param taskId
 	 * @param subtaskId

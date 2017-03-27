@@ -19,9 +19,11 @@ import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineValidator
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
+import org.openmastery.publisher.api.ideaflow.TaskTimelineWithAllSubtasks
 import org.openmastery.publisher.api.metrics.SubtaskOverview
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.client.BatchClient
@@ -109,6 +111,40 @@ class TimelineResourceSpec extends Specification {
 		validator.assertEvents(1, EventType.CALENDAR)
 		validator.assertStrategyBand(0, timeService.now(), timeService.hoursInFuture(3))
 		validator.assertValidationComplete()
+	}
+
+	def "generateTimelineWithAllSubtasks SHOULD generate IdeaFlow timeline with all subtasks populated"() {
+		given:
+		Task task = taskClient.createTask("basic", "create basic timeline with a couple subtasks", "project")
+
+		NewIFMBatch batch = aRandom.batch().timeSent(timeService.now())
+				.newEvent(task.id, timeService.minutesInFuture(1), EventType.WTF, "WTF is this?!")
+				.newExecutionActivity(task.id, timeService.minutesInFuture(5), 15, "TestMe", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.minutesInFuture(10), 30, 80)
+				.newExecutionActivity(task.id, timeService.minutesInFuture(15), 15, "TestMe", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.minutesInFuture(17), 30, 80)
+				.newEvent(task.id, timeService.minutesInFuture(18), EventType.AWESOME, "Yay!")
+
+				.newEvent(task.id, timeService.minutesInFuture(19), EventType.SUBTASK, "Subtask 2")
+				.newEvent(task.id, timeService.minutesInFuture(20), EventType.WTF, "WTF is this?!")
+				.newExecutionActivity(task.id, timeService.minutesInFuture(22), 15, "TestYou", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.minutesInFuture(24), 30, 80)
+				.newExecutionActivity(task.id, timeService.minutesInFuture(27), 15, "TestYou", "JUnit", 0, false)
+				.newModificationActivity(task.id, timeService.minutesInFuture(30), 30, 80)
+				.newEvent(task.id, timeService.minutesInFuture(33), EventType.AWESOME, "Yay!")
+				.newEvent(task.id, timeService.hoursInFuture(3), EventType.DEACTIVATE, "pause")
+				.build()
+
+		batchClient.addIFMBatch(batch)
+
+		when:
+		TaskTimelineWithAllSubtasks overview = ideaFlowClient.getTimelineOverviewForTaskWithAllSubtasks(task.id)
+
+		then:
+		assert overview.ideaFlowStory.metrics.size() == 5
+		assert overview.task.name == "basic"
+		assert overview.timeline != null
+		assert overview.subtaskTimelines.size() == 2
 	}
 
 	def "generateRiskSummariesBySubtask SHOULD generate metrics for each subtask"() {

@@ -33,6 +33,8 @@ public class ResourcePaths {
 	public static final String IDEAFLOW_TIMELINE = "/timeline";
 	public static final String IDEAFLOW_TASK = "/task";
 	public static final String IDEAFLOW_SUBTASK = "/subtask";
+	public static final String IDEAFLOW_FULL = "/full";
+
 
 	// event paths
 	public static final String EVENT_PATH = "/event";

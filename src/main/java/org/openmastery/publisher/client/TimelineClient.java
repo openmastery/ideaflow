@@ -18,6 +18,11 @@ package org.openmastery.publisher.client;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview;
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview;
+import org.openmastery.publisher.api.ideaflow.TaskTimelineWithAllSubtasks;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 public class TimelineClient extends IdeaFlowClient<Object, TimelineClient> {
 
@@ -31,6 +36,16 @@ public class TimelineClient extends IdeaFlowClient<Object, TimelineClient> {
 				.path(ResourcePaths.IDEAFLOW_TASK)
 				.path(taskId)
 				.entity(TaskTimelineOverview.class)
+				.find();
+	}
+
+	public TaskTimelineWithAllSubtasks getTimelineOverviewForTaskWithAllSubtasks(long taskId) {
+		return (TaskTimelineWithAllSubtasks) getUntypedCrudClientRequest()
+				.path(ResourcePaths.IDEAFLOW_TIMELINE)
+				.path(ResourcePaths.IDEAFLOW_TASK)
+				.path(taskId)
+				.path(ResourcePaths.IDEAFLOW_FULL)
+				.entity(TaskTimelineWithAllSubtasks.class)
 				.find();
 	}
 

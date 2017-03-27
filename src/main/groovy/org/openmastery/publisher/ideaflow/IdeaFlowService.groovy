@@ -21,6 +21,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.ideaflow.SubtaskTimelineOverview
 import org.openmastery.publisher.api.ideaflow.TaskTimelineOverview
+import org.openmastery.publisher.api.ideaflow.TaskTimelineWithAllSubtasks
 import org.openmastery.publisher.api.journey.IdeaFlowStory
 import org.openmastery.publisher.api.journey.StoryElement
 import org.openmastery.publisher.api.journey.SubtaskStory
@@ -215,4 +216,24 @@ class IdeaFlowService {
 		return timeline
 	}
 
+	TaskTimelineWithAllSubtasks generateTimelineWithAllSubtasks(Long taskId) {
+		Task task = taskService.findTaskWithId(taskId)
+		IdeaFlowTaskTimeline taskTimeline = generateTaskTimeline(task);
+
+		List<IdeaFlowSubtaskTimeline> subtaskTimelines = splitTimelineBySubtaskEvents(taskTimeline)
+
+		IdeaFlowStory story = storyGenerator.generateIdeaFlowStory(taskTimeline)
+
+		capacityDecorator.decorateStoryWithCapacityDistributions(story)
+		annotationDecorator.decorateStoryWithAnnotations(story)
+		metricsDecorator.decorateStoryWithMetrics(story)
+
+		TaskTimelineWithAllSubtasks.builder()
+				.task(task)
+				.timeline(taskTimeline)
+				.subtaskTimelines(subtaskTimelines)
+				.ideaFlowStory(story)
+				.build()
+
+	}
 }
