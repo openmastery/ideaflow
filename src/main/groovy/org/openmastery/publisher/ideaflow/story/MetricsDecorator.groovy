@@ -36,16 +36,16 @@ class MetricsDecorator {
 			[it.relativePath, it]
 		}
 
-		story.metrics = findAllMetricMatchingPath(story.fullPath, metrics)
+		story.allMetrics = findAllMetricMatchingPath(story.fullPath, metrics)
 
 		story.subtasks.each { SubtaskStory subtaskStory ->
-			subtaskStory.metrics = findAllMetricMatchingPath(subtaskStory.fullPath, metrics)
+			subtaskStory.allMetrics = findAllMetricMatchingPath(subtaskStory.fullPath, metrics)
 
 			subtaskStory.troubleshootingJourneys.each { TroubleshootingJourney journey ->
-				journey.metrics = findAllMetricMatchingPath(journey.fullPath, metrics)
+				journey.allMetrics = findAllMetricMatchingPath(journey.fullPath, metrics)
 
 				journey.discoveryCycles.each { DiscoveryCycle cycle ->
-					cycle.metrics = findAllMetricMatchingPath(cycle.fullPath, metrics)
+					cycle.allMetrics = findAllMetricMatchingPath(cycle.fullPath, metrics)
 				}
 			}
 		}

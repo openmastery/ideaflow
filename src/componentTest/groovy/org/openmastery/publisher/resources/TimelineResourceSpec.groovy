@@ -141,7 +141,7 @@ class TimelineResourceSpec extends Specification {
 		TaskTimelineWithAllSubtasks overview = ideaFlowClient.getTimelineOverviewForTaskWithAllSubtasks(task.id)
 
 		then:
-		assert overview.ideaFlowStory.metrics.size() == 5
+		assert overview.ideaFlowStory.allMetrics.size() == 5
 		assert overview.task.name == "basic"
 		assert overview.timeline != null
 		assert overview.subtaskTimelines.size() == 2
@@ -175,7 +175,7 @@ class TimelineResourceSpec extends Specification {
 
 		when:
 		TaskTimelineOverview overview = ideaFlowClient.getTimelineOverviewForTask(task.id)
-		List<Metric<?>> metrics = overview.ideaFlowStory.metrics
+		List<Metric<?>> metrics = overview.ideaFlowStory.allMetrics
 
 
 		then:
@@ -184,7 +184,7 @@ class TimelineResourceSpec extends Specification {
 
 		when:
 		SubtaskTimelineOverview subtaskTimelineOverview = ideaFlowClient.getTimelineOverviewForSubtask(task.id, -1)
-		List<Metric<?>> subtaskMetrics = subtaskTimelineOverview.ideaFlowStory.metrics
+		List<Metric<?>> subtaskMetrics = subtaskTimelineOverview.ideaFlowStory.allMetrics
 
 		then:
 		assert subtaskMetrics != null

@@ -36,7 +36,8 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 
 	List<DiscoveryCycle> discoveryCycles;
 
-	List<Metric<?>> metrics;
+	List<Metric<?>> allMetrics;
+	List<Metric<?>> dangerMetrics;
 
 	public TroubleshootingJourney(String parentPath, IdeaFlowBand band) {
 		this.band = band;

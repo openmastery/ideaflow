@@ -34,7 +34,8 @@ public class DiscoveryCycle extends AbstractRelativeInterval implements StoryEle
 
 	List<ExperimentCycle> experimentCycles;
 
-	List<Metric<?>> metrics;
+	List<Metric<?>> allMetrics;
+	List<Metric<?>> dangerMetrics;
 
 	public DiscoveryCycle(String parentPath, Event wtfYayEvent, Long durationInSeconds) {
 		this.parentPath = parentPath;

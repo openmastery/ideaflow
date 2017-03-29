@@ -33,6 +33,9 @@ public class SubtaskStory implements StoryContextElement {
 	Set<String> painTags;
 	Set<String> contextTags;
 
+	List<Metric<?>> allMetrics;
+	List<Metric<?>> dangerMetrics;
+
 	List<ProgressMilestone> milestones;
 
 	List<TroubleshootingJourney> troubleshootingJourneys;

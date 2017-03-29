@@ -29,7 +29,9 @@ public class IdeaFlowStory implements StoryContextElement {
 	Set<String> painTags;
 	Set<String> contextTags;
 
-	List<Metric<?>> metrics;
+	List<Metric<?>> allMetrics;
+	List<Metric<?>> dangerMetrics;
+
 
 	public IdeaFlowStory() {
 		subtasks = new ArrayList<SubtaskStory>();

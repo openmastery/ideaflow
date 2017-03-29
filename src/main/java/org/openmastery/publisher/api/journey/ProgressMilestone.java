@@ -7,6 +7,7 @@ import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.metrics.CapacityDistribution;
+import org.openmastery.storyweb.api.metrics.Metric;
 
 import java.util.*;
 
@@ -27,6 +28,9 @@ public class ProgressMilestone extends AbstractRelativeInterval implements Story
 
 	Set<String> painTags;
 	Set<String> contextTags;
+
+	List<Metric<?>> allMetrics;
+	List<Metric<?>> dangerMetrics;
 
 
 	public ProgressMilestone(String parentPath, Event progressEvent) {

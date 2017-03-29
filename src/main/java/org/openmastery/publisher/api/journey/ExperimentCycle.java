@@ -5,6 +5,7 @@ import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.ExecutionEvent;
+import org.openmastery.storyweb.api.metrics.Metric;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,6 +28,9 @@ public class ExperimentCycle extends AbstractRelativeInterval implements StoryEl
 
 	Set<String> painTags;
 	Set<String> contextTags;
+
+	List<Metric<?>> allMetrics;
+	List<Metric<?>> dangerMetrics;
 
 
 	public ExperimentCycle(String parentPath, ExecutionEvent executionEvent, Long durationInSeconds) {
