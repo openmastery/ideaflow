@@ -57,6 +57,10 @@ public class DiscoveryCycle extends AbstractRelativeInterval implements StoryEle
 		return "/discovery/"+event.getId();
 	}
 
+	public String getEventType() {
+		return event.getType().name();
+	}
+
 	@JsonIgnore
 	public String getFullPath() { return parentPath + getRelativePath(); }
 

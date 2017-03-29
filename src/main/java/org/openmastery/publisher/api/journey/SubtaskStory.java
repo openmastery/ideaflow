@@ -40,8 +40,6 @@ public class SubtaskStory implements StoryContextElement {
 
 	List<TroubleshootingJourney> troubleshootingJourneys;
 
-	List<Metric<?>> metrics;
-
 	public SubtaskStory(String parentPath, Event subtask, IdeaFlowTimeline timeline) {
 		this.subtaskEvent = subtask;
 		this.timeline = timeline;
