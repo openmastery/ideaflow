@@ -37,6 +37,7 @@ class MetricsDecorator {
 		}
 
 		story.allMetrics = findAllMetricMatchingPath(story.fullPath, metrics)
+		story.dangerMetrics = findAllDangerMetrics(story.allMetrics)
 
 		story.subtasks.each { SubtaskStory subtaskStory ->
 			subtaskStory.allMetrics = findAllMetricMatchingPath(subtaskStory.fullPath, metrics)

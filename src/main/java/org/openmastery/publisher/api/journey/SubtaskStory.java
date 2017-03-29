@@ -91,6 +91,7 @@ public class SubtaskStory implements StoryContextElement {
 		return subtaskEvent.getId();
 	}
 
+	@JsonIgnore
 	@Override
 	public int getFrequency() { return milestones.size(); }
 

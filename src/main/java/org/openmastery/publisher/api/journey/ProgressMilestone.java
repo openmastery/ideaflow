@@ -75,7 +75,7 @@ public class ProgressMilestone extends AbstractRelativeInterval implements Story
 	}
 
 
-
+	@JsonIgnore
 	@Override
 	public int getFrequency() {
 		return 1;

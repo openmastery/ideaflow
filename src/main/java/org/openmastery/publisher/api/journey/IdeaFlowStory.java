@@ -75,6 +75,7 @@ public class IdeaFlowStory implements StoryContextElement {
 		return timeline.getStart();
 	}
 
+	@JsonIgnore
 	@Override
 	public int getFrequency() { return subtasks.size(); }
 
