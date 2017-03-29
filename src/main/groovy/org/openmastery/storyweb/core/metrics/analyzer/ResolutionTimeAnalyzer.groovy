@@ -16,7 +16,7 @@
 package org.openmastery.storyweb.core.metrics.analyzer
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.DiscoveryCycle
+import org.openmastery.publisher.api.journey.PainCycle
 import org.openmastery.publisher.api.journey.StoryElement
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
@@ -35,7 +35,7 @@ class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 
 		List<GraphPoint<DurationInSeconds>> allPoints = journeys.collect { TroubleshootingJourney journey ->
 			GraphPoint<DurationInSeconds> bandPoint = createPointFromStoryElement(journey)
-			bandPoint.childPoints = generatePointsForDiscoveryCycles(journey.discoveryCycles)
+			bandPoint.childPoints = generatePointsForPainCycles(journey.painCycles)
 			return bandPoint
 		}
 
@@ -55,16 +55,16 @@ class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 		return timelinePoint
 	}
 
-	List<GraphPoint<DurationInSeconds>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
-		List<GraphPoint<DurationInSeconds>> discoveryPoints =
-				discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
-					 createPointFromStoryElement(discoveryCycle)
+	List<GraphPoint<DurationInSeconds>> generatePointsForPainCycles(List<PainCycle> painCycles) {
+		List<GraphPoint<DurationInSeconds>> painPoints =
+				painCycles.collect { PainCycle painCycle ->
+					 createPointFromStoryElement(painCycle)
 				}
 
-		discoveryPoints.removeAll { GraphPoint<DurationInSeconds> discoveryPoint ->
-			discoveryPoint.distance == 0L
+		painPoints.removeAll { GraphPoint<DurationInSeconds> painPoint ->
+			painPoint.distance == 0L
 		}
-		return discoveryPoints
+		return painPoints
 	}
 
 	GraphPoint<DurationInSeconds> createPointFromStoryElement(StoryElement storyElement) {

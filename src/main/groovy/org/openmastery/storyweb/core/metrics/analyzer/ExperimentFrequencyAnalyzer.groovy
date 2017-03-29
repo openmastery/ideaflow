@@ -16,14 +16,11 @@
 package org.openmastery.storyweb.core.metrics.analyzer
 
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.DiscoveryCycle
+import org.openmastery.publisher.api.journey.PainCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
-import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.metrics.MetricThreshold
-
-import java.util.function.DoubleBinaryOperator
 
 /**
  * Look for spikes in experiments/journey as a clue that there might be problems with experiment output
@@ -41,7 +38,7 @@ class ExperimentFrequencyAnalyzer extends AbstractTimelineAnalyzer<Double> {
 		List<GraphPoint<Double>> allPoints = journeys.collect { TroubleshootingJourney journey ->
 			GraphPoint<Double> journeyPoint = createPointFromStoryElement(journey)
 
-			journeyPoint.childPoints = generatePointsForDiscoveryCycles(journey.discoveryCycles)
+			journeyPoint.childPoints = generatePointsForPainCycles(journey.painCycles)
 			journeyPoint.frequency = getSumOfFrequency(journeyPoint.childPoints)
 			journeyPoint.value = getSumOfValues(journeyPoint.childPoints)
 			journeyPoint.danger = isOverThreshold(journeyPoint.value)
@@ -63,17 +60,17 @@ class ExperimentFrequencyAnalyzer extends AbstractTimelineAnalyzer<Double> {
 	}
 
 
-	List<GraphPoint<Double>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
-		List<GraphPoint<Double>> discoveryPoints = discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
-			GraphPoint<Double> discoveryPoint = createPointFromStoryElement(discoveryCycle)
-			discoveryPoint.value = Double.valueOf(discoveryCycle.getFrequency())
-			discoveryPoint.danger = isOverThreshold(discoveryPoint.value)
-			return discoveryPoint
+	List<GraphPoint<Double>> generatePointsForPainCycles(List<PainCycle> painCycles) {
+		List<GraphPoint<Double>> painPoints = painCycles.collect { PainCycle painCycle ->
+			GraphPoint<Double> painPoint = createPointFromStoryElement(painCycle)
+			painPoint.value = Double.valueOf(painCycle.getFrequency())
+			painPoint.danger = isOverThreshold(painPoint.value)
+			return painPoint
 		}
-		discoveryPoints.removeAll { GraphPoint<Double> discoveryPoint ->
-			discoveryPoint.distance == 0L
+		painPoints.removeAll { GraphPoint<Double> painPoint ->
+			painPoint.distance == 0L
 		}
-		return discoveryPoints
+		return painPoints
 	}
 
 

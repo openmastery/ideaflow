@@ -22,7 +22,7 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.DiscoveryCycle
+import org.openmastery.publisher.api.journey.PainCycle
 import org.openmastery.publisher.api.journey.ExperimentCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
@@ -69,49 +69,49 @@ class TroubleshootingJourneyGenerator {
 	}
 
 	void fillWithActivity(TroubleshootingJourney journey, List<ExecutionEvent> executionEvents) {
-		journey.getDiscoveryCycles().each { DiscoveryCycle discoveryCycle ->
-			log.debug("Populating Discovery Cycle [" + discoveryCycle.relativeStart + " : " + discoveryCycle.relativeEnd + "]")
+		journey.getPainCycles().each { PainCycle painCycle ->
+			log.debug("Populating Pain Cycle [" + painCycle.relativeStart + " : " + painCycle.relativeEnd + "]")
 
 			ExecutionEvent lastExecutionEvent = null
 			for (ExecutionEvent executionEvent : executionEvents) {
-				if (discoveryCycle.shouldContain(executionEvent)) {
+				if (painCycle.shouldContain(executionEvent)) {
 
 
-					if (lastExecutionEvent != null && discoveryCycle.experimentCycles.size() == 0) {
-						addShortenedExecutionContext(discoveryCycle, lastExecutionEvent, executionEvent)
+					if (lastExecutionEvent != null && painCycle.experimentCycles.size() == 0) {
+						addShortenedExecutionContext(painCycle, lastExecutionEvent, executionEvent)
 					}
 
-					addExecutionEvent(discoveryCycle, executionEvent)
+					addExecutionEvent(painCycle, executionEvent)
 				}
 				lastExecutionEvent = executionEvent
 			}
 		}
 	}
 
-	private void addShortenedExecutionContext(DiscoveryCycle discoveryCycle, ExecutionEvent contextEvent, ExecutionEvent firstEvent) {
-		long initialDuration = firstEvent.relativePositionInSeconds - discoveryCycle.relativeStart
+	private void addShortenedExecutionContext(PainCycle painCycle, ExecutionEvent contextEvent, ExecutionEvent firstEvent) {
+		long initialDuration = firstEvent.relativePositionInSeconds - painCycle.relativeStart
 
 		if (initialDuration > 0) {
-			ExperimentCycle experimentCycle = new ExperimentCycle(discoveryCycle.fullPath, contextEvent, initialDuration)
-			experimentCycle.relativeStart = discoveryCycle.relativeStart
+			ExperimentCycle experimentCycle = new ExperimentCycle(painCycle.fullPath, contextEvent, initialDuration)
+			experimentCycle.relativeStart = painCycle.relativeStart
 
 			log.debug("Context Exec [${contextEvent.id}, ${experimentCycle.relativeStart} ] : "+initialDuration)
 
-			discoveryCycle.addExperimentCycle(experimentCycle)
+			painCycle.addExperimentCycle(experimentCycle)
 		}
 	}
 
-	private void addExecutionEvent(DiscoveryCycle discoveryCycle, ExecutionEvent event) {
+	private void addExecutionEvent(PainCycle painCycle, ExecutionEvent event) {
 		//execution starts somewhere in the middle, could extend beyond end (truncate)
-		if (discoveryCycle.experimentCycles.size() > 0) {
-			ExperimentCycle last = discoveryCycle.experimentCycles.last()
+		if (painCycle.experimentCycles.size() > 0) {
+			ExperimentCycle last = painCycle.experimentCycles.last()
 			last.durationInSeconds = event.relativePositionInSeconds - last.relativeStart
 		}
-		long duration = discoveryCycle.relativeEnd - event.relativePositionInSeconds
-		ExperimentCycle experimentCycle = new ExperimentCycle(discoveryCycle.fullPath, event, duration)
+		long duration = painCycle.relativeEnd - event.relativePositionInSeconds
+		ExperimentCycle experimentCycle = new ExperimentCycle(painCycle.fullPath, event, duration)
 
 		log.debug("Adding Exec [${event.id}, ${event.relativePositionInSeconds} ] : "+duration)
-		discoveryCycle.addExperimentCycle(experimentCycle)
+		painCycle.addExperimentCycle(experimentCycle)
 	}
 
 	void annotateJourneys(List<TroubleshootingJourney> journeys, List<FaqAnnotationEntity> faqs, List<SnippetAnnotationEntity> snippets) {
@@ -171,7 +171,7 @@ class TroubleshootingJourneyGenerator {
 						durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
 					}
 					log.debug("Adding event: " + wtfYayEvent.type + ":" + wtfYayEvent.id + " {position: " + wtfYayEvent.relativePositionInSeconds + ", duration: " + durationInSeconds + "}")
-					journey.addPartialDiscovery(wtfYayEvent, durationInSeconds);
+					journey.addPainCycle(wtfYayEvent, durationInSeconds);
 
 				}
 			}

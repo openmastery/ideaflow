@@ -15,7 +15,7 @@
  */
 package org.openmastery.publisher.ideaflow.story
 
-import org.openmastery.publisher.api.journey.DiscoveryCycle
+import org.openmastery.publisher.api.journey.PainCycle
 import org.openmastery.publisher.api.journey.IdeaFlowStory
 import org.openmastery.publisher.api.journey.SubtaskStory
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
@@ -47,7 +47,7 @@ class MetricsDecorator {
 				journey.allMetrics = findAllMetricMatchingPath(journey.fullPath, metrics)
 				journey.dangerMetrics = findAllDangerMetrics(journey.allMetrics)
 
-				journey.discoveryCycles.each { DiscoveryCycle cycle ->
+				journey.painCycles.each { PainCycle cycle ->
 					cycle.allMetrics = findAllMetricMatchingPath(cycle.fullPath, metrics)
 					cycle.dangerMetrics = findAllDangerMetrics(cycle.allMetrics)
 				}

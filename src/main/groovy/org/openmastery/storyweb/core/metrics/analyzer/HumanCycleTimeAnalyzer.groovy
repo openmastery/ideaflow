@@ -17,7 +17,7 @@ package org.openmastery.storyweb.core.metrics.analyzer
 
 import groovy.util.logging.Slf4j
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.DiscoveryCycle
+import org.openmastery.publisher.api.journey.PainCycle
 import org.openmastery.publisher.api.journey.ExperimentCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
@@ -36,7 +36,7 @@ class HumanCycleTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 
 		List<GraphPoint<DurationInSeconds>> allPoints = journeys.collect { TroubleshootingJourney journey ->
 			GraphPoint<DurationInSeconds> journeyPoint = createPointFromStoryElement(journey)
-			journeyPoint.childPoints = generatePointsForDiscoveryCycles(journey.discoveryCycles)
+			journeyPoint.childPoints = generatePointsForPainCycles(journey.painCycles)
 			journeyPoint.frequency = getSumOfFrequency(journeyPoint.childPoints)
 			journeyPoint.value = getWeightedAverage(journeyPoint.childPoints)
 			journeyPoint.danger = isOverThreshold(journeyPoint.value)
@@ -58,20 +58,20 @@ class HumanCycleTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 		return timelinePoint
 	}
 
-	List<GraphPoint<DurationInSeconds>> generatePointsForDiscoveryCycles(List<DiscoveryCycle> discoveryCycles) {
-		List<GraphPoint<?>> discoveryPoints = discoveryCycles.collect { DiscoveryCycle discoveryCycle ->
-			GraphPoint<DurationInSeconds> discoveryPoint = createPointFromStoryElement(discoveryCycle)
-			discoveryPoint.value = calculateWeightedAverage(discoveryCycle)
-			discoveryPoint.danger = isOverThreshold(discoveryPoint.value)
-			return discoveryPoint
+	List<GraphPoint<DurationInSeconds>> generatePointsForPainCycles(List<PainCycle> painCycles) {
+		List<GraphPoint<?>> painPoints = painCycles.collect { PainCycle painCycle ->
+			GraphPoint<DurationInSeconds> painPoint = createPointFromStoryElement(painCycle)
+			painPoint.value = calculateWeightedAverage(painCycle)
+			painPoint.danger = isOverThreshold(painPoint.value)
+			return painPoint
 		}
-		discoveryPoints.removeAll { GraphPoint<DurationInSeconds> discoveryPoint ->
-			discoveryPoint.distance == 0L
+		painPoints.removeAll { GraphPoint<DurationInSeconds> painPoint ->
+			painPoint.distance == 0L
 		}
-		return discoveryPoints
+		return painPoints
 	}
 
-	DurationInSeconds calculateWeightedAverage(DiscoveryCycle discoveryCycle) {
+	DurationInSeconds calculateWeightedAverage(PainCycle discoveryCycle) {
 		long sum = 0
 		int frequency = 0
 		discoveryCycle.experimentCycles.each { ExperimentCycle experimentCycle ->

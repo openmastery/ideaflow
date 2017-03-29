@@ -5,6 +5,7 @@ import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.storyweb.api.metrics.Metric;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.Set;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Builder
-public class DiscoveryCycle extends AbstractRelativeInterval implements StoryElement {
+public class PainCycle extends AbstractRelativeInterval implements StoryElement {
 
 
 	@JsonIgnore
@@ -37,7 +38,7 @@ public class DiscoveryCycle extends AbstractRelativeInterval implements StoryEle
 	List<Metric<?>> allMetrics;
 	List<Metric<?>> dangerMetrics;
 
-	public DiscoveryCycle(String parentPath, Event wtfYayEvent, Long durationInSeconds) {
+	public PainCycle(String parentPath, Event wtfYayEvent, Long durationInSeconds) {
 		this.parentPath = parentPath;
 		this.event = wtfYayEvent;
 		this.experimentCycles = new ArrayList<ExperimentCycle>();
@@ -54,11 +55,15 @@ public class DiscoveryCycle extends AbstractRelativeInterval implements StoryEle
 	public Long getId() { return event.getId(); }
 
 	public String getRelativePath() {
-		return "/discovery/"+event.getId();
+		return "/"+getEventType().toLowerCase()+"/"+event.getId();
 	}
 
 	public String getEventType() {
-		return event.getType().name();
+		String eventType = event.getType().name();
+		if (event.getType() == EventType.WTF) {
+			eventType = "PAIN";
+		}
+		return eventType;
 	}
 
 	@JsonIgnore

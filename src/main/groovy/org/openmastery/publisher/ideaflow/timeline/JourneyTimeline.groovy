@@ -20,7 +20,7 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.DiscoveryCycle
+import org.openmastery.publisher.api.journey.PainCycle
 import org.openmastery.publisher.api.journey.ExperimentCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 
@@ -42,7 +42,7 @@ public class JourneyTimeline implements IdeaFlowTimeline {
 		List<ExecutionEvent> getExecutionEvents() {
 			List<ExecutionEvent> allExecutionEvents = []
 
-			journey.discoveryCycles.each { DiscoveryCycle partialDiscovery ->
+			journey.getPainCycles.each { PainCycle partialDiscovery ->
 				partialDiscovery.experimentCycles.each { ExperimentCycle experimentCycle ->
 					allExecutionEvents.add(experimentCycle.executionEvent)
 				}
@@ -54,7 +54,7 @@ public class JourneyTimeline implements IdeaFlowTimeline {
 		@Override
 		List<Event> getEvents() {
 			List<Event> allEvents = []
-			journey.discoveryCycles.each { DiscoveryCycle partialDiscovery ->
+			journey.getPainCycles.each { PainCycle partialDiscovery ->
 				allEvents.add(partialDiscovery.event)
 			}
 			return allEvents

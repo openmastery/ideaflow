@@ -34,7 +34,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	Set<String> contextTags;
 	Set<String> painTags; //derived from WTF/YAY #hashtags
 
-	List<DiscoveryCycle> discoveryCycles;
+	List<PainCycle> painCycles;
 
 	List<Metric<?>> allMetrics;
 	List<Metric<?>> dangerMetrics;
@@ -45,7 +45,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 		setRelativeStart(band.getRelativePositionInSeconds());
 		setDurationInSeconds(band.getDurationInSeconds());
 
-		this.discoveryCycles = new ArrayList<DiscoveryCycle>();
+		this.painCycles = new ArrayList<PainCycle>();
 		this.contextTags = new HashSet<String>();
 		this.painTags = new HashSet<String>();
 	}
@@ -58,8 +58,8 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 
 	public String getDescription() {
 		String description = "";
-		if (discoveryCycles.size() > 0) {
-			description = discoveryCycles.get(0).event.getComment();
+		if (painCycles.size() > 0) {
+			description = painCycles.get(0).event.getComment();
 		}
 		return description;
 	}
@@ -72,12 +72,12 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 		band.setFullPath(getFullPath());
 		event.setFullPath(getFullPath());
 
-		for (DiscoveryCycle discoveryCycle : discoveryCycles) {
+		for (PainCycle discoveryCycle : painCycles) {
 			discoveryCycle.setParentPath(getFullPath());
 		}
 	}
 
-	public void addPartialDiscovery(Event wtfYayEvent, Long durationInSeconds) {
+	public void addPainCycle(Event wtfYayEvent, Long durationInSeconds) {
 		if (id == null) {
 			id = wtfYayEvent.getId();
 			relativePath = "/journey/"+id;
@@ -86,16 +86,16 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 			event.setFullPath(getFullPath());
 		}
 
-		DiscoveryCycle discoveryCycle = new DiscoveryCycle(getFullPath(), wtfYayEvent, durationInSeconds);
-		painTags.addAll(discoveryCycle.painTags);
-		discoveryCycles.add(discoveryCycle);
+		PainCycle painCycle = new PainCycle(getFullPath(), wtfYayEvent, durationInSeconds);
+		painTags.addAll(painCycle.painTags);
+		painCycles.add(painCycle);
 	}
 
 	public boolean containsEvent(long eventId) {
 		boolean containsEvent = false;
 
-		for (DiscoveryCycle partialDiscovery : discoveryCycles) {
-			if (partialDiscovery.event.getId() == eventId) {
+		for (PainCycle painCycle : painCycles) {
+			if (painCycle.event.getId() == eventId) {
 				containsEvent = true;
 				break;
 			}
@@ -104,7 +104,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	}
 
 	public void addFAQ(long eventId, String faqComment) {
-		for (DiscoveryCycle discoveryCycle : discoveryCycles) {
+		for (PainCycle discoveryCycle : painCycles) {
 			if (discoveryCycle.event.getId() == eventId) {
 				discoveryCycle.addFaq(faqComment);
 				contextTags.addAll(discoveryCycle.contextTags);
@@ -114,7 +114,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	}
 
 	public void addSnippet(long eventId, String source, String snippet) {
-		for (DiscoveryCycle partialDiscovery : discoveryCycles) {
+		for (PainCycle partialDiscovery : painCycles) {
 			if (partialDiscovery.event.getId() == eventId) {
 				partialDiscovery.formattableSnippet = new FormattableSnippet(source, snippet);
 				break;
@@ -130,13 +130,13 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 
 	@JsonIgnore
 	public int getFrequency() {
-		return getDiscoveryCycles().size();
+		return getPainCycles().size();
 	}
 
 	@JsonIgnore
 	@Override
 	public List<? extends StoryElement> getChildStoryElements() {
-		return discoveryCycles;
+		return painCycles;
 	}
 
 
