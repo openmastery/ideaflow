@@ -48,8 +48,6 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 		this.discoveryCycles = new ArrayList<DiscoveryCycle>();
 		this.contextTags = new HashSet<String>();
 		this.painTags = new HashSet<String>();
-
-
 	}
 
 	public Long getRelativePositionInSeconds() { return band.getRelativeStart(); }

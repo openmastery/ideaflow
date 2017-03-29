@@ -40,16 +40,25 @@ class MetricsDecorator {
 
 		story.subtasks.each { SubtaskStory subtaskStory ->
 			subtaskStory.allMetrics = findAllMetricMatchingPath(subtaskStory.fullPath, metrics)
+			subtaskStory.dangerMetrics = findAllDangerMetrics(subtaskStory.allMetrics)
 
 			subtaskStory.troubleshootingJourneys.each { TroubleshootingJourney journey ->
 				journey.allMetrics = findAllMetricMatchingPath(journey.fullPath, metrics)
+				journey.dangerMetrics = findAllDangerMetrics(journey.allMetrics)
 
 				journey.discoveryCycles.each { DiscoveryCycle cycle ->
 					cycle.allMetrics = findAllMetricMatchingPath(cycle.fullPath, metrics)
+					cycle.dangerMetrics = findAllDangerMetrics(cycle.allMetrics)
 				}
 			}
 		}
 
+	}
+
+	List<Metric<?>> findAllDangerMetrics(List<Metric<?>> metrics) {
+		metrics.findAll { Metric<?> metric ->
+			metric.danger == true
+		}
 	}
 
 	List<Metric<?>> findAllMetricMatchingPath(String storyPath, Map<String, Metric<?>> metrics) {
