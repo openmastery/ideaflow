@@ -21,6 +21,7 @@ import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.PagedResult
 import org.openmastery.publisher.api.task.NewTask
 import org.openmastery.publisher.api.task.Task
+import org.openmastery.publisher.api.task.TaskPatch
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.core.task.TaskRepository
 import org.openmastery.publisher.security.InvocationContext
@@ -153,10 +154,19 @@ class TaskService {
 		return entityMapper.mapIfNotNull(taskEntity, Task.class);
 	}
 
-	Task updateTask(Task taskWithUpdates) {
-		TaskEntity taskEntity = taskRepository.findOne(taskWithUpdates.id)
-		taskEntity.description = taskWithUpdates.description
-		taskEntity.project = taskWithUpdates.project
+	Task updateTask(Long taskId, TaskPatch taskPatch) {
+		TaskEntity taskEntity = taskRepository.findOne(taskId)
+
+		if (taskPatch.name) {
+			taskEntity.name = taskPatch.name
+		}
+		if (taskPatch.description) {
+			taskEntity.description = taskPatch.description
+		}
+		if (taskPatch.project) {
+			taskEntity.project = taskPatch.project
+		}
+
 		taskEntity.modifyDate = timeService.javaNow()
 		TaskEntity savedEntity = taskRepository.save(taskEntity)
 		return toApiTask(savedEntity);

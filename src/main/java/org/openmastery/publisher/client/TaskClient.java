@@ -6,15 +6,16 @@ import org.openmastery.publisher.api.PagedResult;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
+import org.openmastery.publisher.api.task.TaskPatch;
 
 import javax.ws.rs.core.GenericType;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
+public class TaskClient extends IdeaFlowClient<Task, TaskClient> {
 
 	public TaskClient(String baseUrl) {
-		super(baseUrl, ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH, Object.class);
+		super(baseUrl, ResourcePaths.IDEAFLOW_PATH + ResourcePaths.TASK_PATH, Task.class);
 	}
 
 	public Task createTask(String taskName, String description, String project) {
@@ -25,6 +26,11 @@ public class TaskClient extends IdeaFlowClient<Object, TaskClient> {
 				.build();
 		return (Task)crudClientRequest.entity(Task.class).createWithPost(task);
 	}
+
+	public Task updateTask(Long taskId, TaskPatch taskPatch) {
+		return (Task) crudClientRequest.path(ResourcePaths.ID_PATH).path(taskId).updateWithPut(taskPatch);
+	}
+
 
 	public Task findTaskWithName(String taskName) {
 		return (Task)crudClientRequest.path(ResourcePaths.TASK_NAME_PATH)

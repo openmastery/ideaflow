@@ -6,6 +6,7 @@ import org.joda.time.LocalDateTime
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.PagedResult
 import org.openmastery.publisher.api.task.Task
+import org.openmastery.publisher.api.task.TaskPatch
 import org.openmastery.publisher.client.TaskClient
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.event.EventEntity
@@ -77,8 +78,9 @@ class TaskResourceSpec extends Specification {
 
 		when:
 		Task createdTask = taskClient.createTask(name, description, project)
-		createdTask.description = "new description"
-		taskClient.update(createdTask)
+		TaskPatch patch = new TaskPatch(description: "new description")
+
+		Task updatedTask = taskClient.updateTask(createdTask.id, patch)
 
 		then:
 		Task expectedTask = Task.builder()
@@ -88,7 +90,7 @@ class TaskResourceSpec extends Specification {
 				.creationDate(creationDate)
 				.modifyDate(creationDate)
 				.build()
-		taskComparator.assertEquals(expectedTask, createdTask)
+		taskComparator.assertEquals(expectedTask, updatedTask)
 		assert createdTask.id != null
 	}
 

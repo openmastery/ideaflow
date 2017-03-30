@@ -47,7 +47,7 @@ public class IdeaFlowStory implements StoryContextElement {
 
 	@Override
 	public String getRelativePath() {
-		return "/task/"+task.getId();
+		return "/task/id/"+task.getId();
 	}
 
 	@JsonIgnore

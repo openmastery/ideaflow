@@ -19,6 +19,7 @@ import org.openmastery.publisher.api.PagedResult;
 import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
+import org.openmastery.publisher.api.task.TaskPatch;
 import org.openmastery.publisher.core.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,18 +57,16 @@ public class TaskResource {
 	 * Updates details for a task like name, description, and project.
 	 * Intended to be used for inline editing of task details
 	 *
-	 * @param taskWithUpdates Task object with updates in it
+	 * @param taskPatch TaskPatch object with name, description, project updates
 	 * @return Task
 	 */
 
-	@PUT
-	public Task updateTask(Task taskWithUpdates) {
+	@PUT //TODO change to PATCH
+	@Path(ResourcePaths.ID_PATH + "/{id}")
+	public Task updateTask(@PathParam("id") Long taskId, TaskPatch taskPatch) {
 		Task updatedTask;
-		if (taskWithUpdates == null || taskWithUpdates.getId() == null) {
-			throw new NotFoundException();
-		} else {
-			updatedTask = taskService.updateTask(taskWithUpdates);
-		}
+			updatedTask = taskService.updateTask(taskId, taskPatch);
+
 		return updatedTask;
 	}
 
@@ -110,6 +109,8 @@ public class TaskResource {
 			return taskService.findRecentTasks(project, pageNumber, elementsPerPage);
 		}
 	}
+
+
 
 
 }
