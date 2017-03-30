@@ -41,6 +41,8 @@ import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTaskTimelineGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
 
 import org.openmastery.storyweb.api.metrics.Metric
+import org.openmastery.storyweb.core.MetricsService
+import org.openmastery.storyweb.core.metrics.spc.MetricSet
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -74,7 +76,9 @@ class IdeaFlowService {
 	private AnnotationDecorator annotationDecorator
 
 	@Autowired //TODO this has a storyweb dependency
-	private MetricsDecorator metricsDecorator
+	private MetricsService metricsService
+
+	private MetricsDecorator metricsDecorator = new MetricsDecorator()
 
 	private IdeaFlowStoryGenerator storyGenerator = new IdeaFlowStoryGenerator()
 	private CapacityDistributionDecorator capacityDecorator = new CapacityDistributionDecorator()
@@ -93,7 +97,9 @@ class IdeaFlowService {
 		}
 		IdeaFlowStory story = storyGenerator.generateIdeaFlowStory(timeline)
 		capacityDecorator.decorateStoryWithCapacityDistributions(story)
-		metricsDecorator.decorateStoryWithMetrics(story)
+
+		MetricSet metricSet = metricsService.generateMetricsForTask(story)
+		metricsDecorator.decorateStoryWithMetrics(story, metricSet)
 
 		cascadePainAndContextTags(story)
 		pruneToSubtaskDepth(story)
@@ -159,7 +165,9 @@ class IdeaFlowService {
 
 		capacityDecorator.decorateStoryWithCapacityDistributions(story)
 		annotationDecorator.decorateStoryWithAnnotations(story)
-		metricsDecorator.decorateStoryWithMetrics(story)
+		MetricSet metricSet = metricsService.generateMetricsForTask(story)
+		metricsDecorator.decorateStoryWithMetrics(story, metricSet)
+
 
 		if (subtaskTimeline != null) {
 			List<Event> filteredEvents = filterEventsByType(subtaskTimeline.events, SUBTASK_TIMELINE_EVENTS_TO_RETAIN)
@@ -226,7 +234,9 @@ class IdeaFlowService {
 
 		capacityDecorator.decorateStoryWithCapacityDistributions(story)
 		annotationDecorator.decorateStoryWithAnnotations(story)
-		metricsDecorator.decorateStoryWithMetrics(story)
+		MetricSet metricSet = metricsService.generateMetricsForTask(story)
+		metricsDecorator.decorateStoryWithMetrics(story, metricSet)
+
 
 		TaskTimelineWithAllSubtasks.builder()
 				.task(task)

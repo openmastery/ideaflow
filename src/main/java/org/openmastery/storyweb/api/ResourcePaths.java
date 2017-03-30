@@ -21,9 +21,15 @@ public class ResourcePaths {
 
 	public static final String STORY_WEB_PATH = "/storyweb";
 
-	public static final String TASK_PATH = "/task";
 	public static final String ID_PATH = "/id";
+
+	public static final String TASK_PATH = "/task";
 	public static final String TASK_NAME_PATH = "/name";
+	public static final String TASK_SUBTASK_PATH = "/subtask";
+	public static final String TASK_JOURNEY_PATH = "/journey";
+	public static final String TASK_MILESTONE_PATH = "/milestone";
+
+
 
 	public static final String GLOSSARY_PATH = "/glossary";
 	public static final String GLOSSARY_BLANK_PATH = "/blank";

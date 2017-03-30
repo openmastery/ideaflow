@@ -21,11 +21,18 @@ public class Metric<V> implements Cloneable {
 	@JsonIgnore
 	String relativePath;
 
+	@JsonIgnore
+	Set<String> contextTags;
+	@JsonIgnore
+	Set<String> painTags;
+
 	V value;
 
 	MetricType type;
 	private String valueType;
 	private boolean danger;
+
+
 
 
 	public void setValue(V value) {

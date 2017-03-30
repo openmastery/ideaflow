@@ -58,6 +58,8 @@ public class GraphPoint<V> implements Positionable, Explodable<GraphPoint<V>>, C
 		metric.setRelativePath(path + "/" + metricType.name());
 		metric.setValue(value);
 		metric.setType(metricType);
+		metric.setPainTags(painTags);
+		metric.setContextTags(contextTags);
 
 		metric.setDanger(danger);
 

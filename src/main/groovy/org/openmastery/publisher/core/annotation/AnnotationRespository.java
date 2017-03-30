@@ -37,7 +37,7 @@ public interface AnnotationRespository extends PagingAndSortingRepository<Annota
 	List<SnippetAnnotationEntity> findSnippetsByTaskId(long taskId);
 
 	@Query(nativeQuery = true, value = "select faq.task_id, faq.event_id, e.comment eventComment, faq.metadata faqJson, e.position " +
-			"from event e, annotation faq where e.id = faq.event_id and faq.type = 'faq' " +
+			"from event e left outer join annotation faq on e.id = faq.event_id where (faq.type = 'faq' or faq.type is null) " +
 			"and (lower(faq.metadata) similar to (?1) or lower(e.comment) similar to (?1))")
 
 	List<Object []> findFaqsBySearchCriteria(String pattern);

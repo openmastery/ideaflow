@@ -21,6 +21,7 @@ import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.FaqSummary
 import org.openmastery.publisher.api.journey.TagsUtil
+import org.openmastery.storyweb.api.PainPoint
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -32,7 +33,6 @@ class StoryWebService {
 
 	@Autowired
 	AnnotationRespository annotationRepository
-
 
 	@Autowired
 	InvocationContext invocationContext
@@ -61,7 +61,6 @@ class StoryWebService {
 	}
 
 
-
 	private Set<String> extractUniqueTags(String eventComment, String faqComment) {
 		Set<String> tagSet = []
 		tagSet.addAll(TagsUtil.extractUniqueHashTags(eventComment))
@@ -73,6 +72,10 @@ class StoryWebService {
 	private String extractCommentFromJSON(String jsonMetadata) {
 		CommentHolder commentHolder = jsonMapper.readValue(jsonMetadata, CommentHolder.class)
 		return commentHolder.comment
+	}
+
+	List<PainPoint> findPainfulStoryPoints(List<String> tags) {
+
 	}
 
 

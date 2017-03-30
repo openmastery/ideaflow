@@ -178,7 +178,11 @@ class TaskDataGenerator {
 	private List<Event> findEventsWithinRange(Set<Long> taskIds, Long userId, Timestamp startTimestamp, Timestamp endTimestamp) {
 		List<EventEntity> eventEntities = eventRepository.findEventsWithinsRange(userId, startTimestamp, endTimestamp)
 		taskIds.addAll(eventEntities.collect { it.taskId })
-		return entityMapper.mapList(eventEntities, Event)
+		return eventEntities.collect { EventEntity entity ->
+			Event event = entityMapper.mapIfNotNull(entity, Event)
+			event.description = entity.comment
+			return event
+		}
 	}
 
 	private List<ExecutionEvent> findExecutionEventsWithinRange(Set<Long> taskIds, Long userId, Timestamp startTimestamp, Timestamp endTimestamp) {
