@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true, of = {})
 public class ExternalActivityEntity extends ActivityEntity {
 
-	private static final String COMMENT_KEY = "comment";
+	private static final String COMMENT_KEY = "description";
 
 	private ExternalActivityEntity() {}
 

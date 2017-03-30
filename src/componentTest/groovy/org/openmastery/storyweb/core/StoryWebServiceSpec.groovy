@@ -29,7 +29,7 @@ class StoryWebServiceSpec extends Specification {
 	def "findFaqsBySearchCriteria SHOULD join event and faq details"() {
 		given:
 		EventEntity event = aRandom.eventEntity().taskId(taskId).build()
-		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(taskId).comment("for #this and #that")build()
+		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(taskId).comment("for #this and #that").build()
 
 		EventEntity savedEvent = persistenceService.saveEvent(event)
 		annotation.eventId = savedEvent.id

@@ -124,7 +124,7 @@ class IdeaFlowTimelineElementBuilder {
 		event.id = eventId++
 		event.position = timeService.now()
 		event.type = eventType
-		event.comment = comment
+		event.description = comment
 		event.relativePositionInSeconds = computeRelativePositionInSeconds()
 		eventList << event
 	}

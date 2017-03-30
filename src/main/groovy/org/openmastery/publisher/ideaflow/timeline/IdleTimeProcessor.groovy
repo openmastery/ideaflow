@@ -58,7 +58,7 @@ class IdleTimeProcessor {
 		IdleTimeBandModel.builder()
 				.start(deactivationEvent.position)
 				.end(activationEvent.position)
-				.comment(deactivationEvent.comment)
+				.comment(deactivationEvent.description)
 				.auto(true)
 				.build()
 	}

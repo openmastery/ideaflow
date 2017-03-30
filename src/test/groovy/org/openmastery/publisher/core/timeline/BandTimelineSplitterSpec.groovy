@@ -189,14 +189,14 @@ class BandTimelineSplitterSpec extends Specification {
 		given:
 		testSupport.startBandAndAdvanceHours(LEARNING, 1)
 		testSupport.note()
-		testSupport.startSubtaskAndAdvanceHours("subtask comment", 1)
+		testSupport.startSubtaskAndAdvanceHours("subtask description", 1)
 
 		when:
 		List<BandTimelineSegment> segments = createTimelineSegmentAndSplit()
 
 		then:
 		assert segments[0].description == inputSegment.description
-		assert segments[1].description == "subtask comment"
+		assert segments[1].description == "subtask description"
 	}
 
 }

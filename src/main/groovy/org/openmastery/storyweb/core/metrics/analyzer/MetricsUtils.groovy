@@ -34,7 +34,7 @@ class MetricsUtils {
 	static Set<String> extractPainTags(List<Event> events) {
 		Set<String> painTags = new HashSet<>()
 		events.each { Event event ->
-			painTags.addAll(TagsUtil.extractUniqueHashTags(event.comment))
+			painTags.addAll(TagsUtil.extractUniqueHashTags(event.description))
 		}
 		return painTags
 	}

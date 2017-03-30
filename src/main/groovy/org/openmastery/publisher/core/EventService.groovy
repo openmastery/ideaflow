@@ -77,12 +77,16 @@ class EventService {
 
 	Event toApi(EventEntity entity) {
 		EntityMapper mapper = new EntityMapper()
-		return mapper.mapIfNotNull(entity, Event.class)
+		Event event = mapper.mapIfNotNull(entity, Event.class)
+		event.description = entity.comment
+		return event
 	}
 
 	EventEntity toEntity(Event event) {
 		EntityMapper mapper = new EntityMapper()
-		return mapper.mapIfNotNull(event, EventEntity.class)
+		EventEntity entity = mapper.mapIfNotNull(event, EventEntity.class)
+		entity.comment = event.description
+		return entity
 	}
 
 	Event annotateWithFAQ(Long userId, Long eventId, String faqComment) {

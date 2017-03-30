@@ -121,7 +121,7 @@ class IdeaFlowStateMachineSpec extends Specification {
 		then:
 		assertExpectedStates(PROGRESS, TROUBLESHOOTING, LEARNING)
 		assert getPersistedState(LEARNING).isLinkedToPrevious()
-		assert getPersistedState(TROUBLESHOOTING).endingComment == "learning" //TODO is this what we want? conflict resolution is learning comment
+		assert getPersistedState(TROUBLESHOOTING).endingComment == "learning" //TODO is this what we want? conflict resolution is learning description
 	}
 
 	def "WHEN Conflict then start Rework SHOULD link Rework state to previous Conflict state"() {

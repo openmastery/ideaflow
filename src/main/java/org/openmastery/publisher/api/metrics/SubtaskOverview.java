@@ -5,17 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import org.openmastery.publisher.api.RelativeInterval;
 import org.openmastery.publisher.api.RelativePositionable;
 import org.openmastery.publisher.api.event.Event;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder
@@ -40,7 +32,7 @@ public class SubtaskOverview implements RelativePositionable {
 	}
 
 	public String getDescription() {
-		return subtaskEvent.getComment();
+		return subtaskEvent.getDescription();
 	}
 
 	public Long getRelativePositionInSeconds() {

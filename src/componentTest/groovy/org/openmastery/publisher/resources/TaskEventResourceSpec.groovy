@@ -1,8 +1,5 @@
 package org.openmastery.publisher.resources
 
-import org.openmastery.mapper.EntityMapper
-import org.openmastery.publisher.api.annotation.FAQAnnotation
-import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.core.task.TaskEntity
@@ -14,7 +11,6 @@ import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import static org.openmastery.publisher.ARandom.aRandom
@@ -61,7 +57,7 @@ class TaskEventResourceSpec extends Specification {
 
 		then:
 		assert savedEvent != null
-		assert savedEvent.comment == "hello"
+		assert savedEvent.description == "hello"
 	}
 
 	def "Should update FAQ for existing event"() {

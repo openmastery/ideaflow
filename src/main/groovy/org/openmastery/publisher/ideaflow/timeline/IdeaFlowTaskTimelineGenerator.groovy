@@ -75,7 +75,11 @@ class IdeaFlowTaskTimelineGenerator {
 	}
 
 	IdeaFlowTaskTimelineGenerator events(List<EventEntity> events) {
-		this.events = entityMapper.mapList(events, Event)
+		this.events = events.collect { EventEntity entity ->
+			Event event = entityMapper.mapIfNotNull(entity, Event)
+			event.description = entity.comment
+			return event
+		}
 		this
 	}
 

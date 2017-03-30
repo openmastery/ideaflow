@@ -36,7 +36,7 @@ public class FaqResource {
 
 
 
-	//TODO needs to POST FAQ comment to specific URL
+	//TODO needs to POST FAQ description to specific URL
 
 	/**
 	 * Retrieves FaqSummary that include the specific FAQ notes found,

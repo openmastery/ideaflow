@@ -47,7 +47,7 @@ public class SubtaskStory implements StoryContextElement {
 		this.milestones = new ArrayList<ProgressMilestone>();
 		this.troubleshootingJourneys = new ArrayList<TroubleshootingJourney>();
 
-		contextTags = TagsUtil.extractUniqueHashTags(subtaskEvent.getComment());
+		contextTags = TagsUtil.extractUniqueHashTags(subtaskEvent.getDescription());
 		painTags = new HashSet<String>();
 
 		subtaskEvent.setFullPath(getFullPath());
@@ -63,7 +63,7 @@ public class SubtaskStory implements StoryContextElement {
 
 	@Override
 	public String getDescription() {
-		return subtaskEvent.getComment();
+		return subtaskEvent.getDescription();
 	}
 
 	@Override

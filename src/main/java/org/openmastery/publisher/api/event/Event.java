@@ -14,7 +14,7 @@ import org.openmastery.publisher.api.AbstractPositionable;
 public class Event extends AbstractPositionable {
 
 	private String fullPath;
-	private String comment;
+	private String description;
 	private EventType type;
 
 	@JsonIgnore

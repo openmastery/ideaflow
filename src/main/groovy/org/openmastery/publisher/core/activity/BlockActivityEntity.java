@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 @ToString(callSuper = true)
 public class BlockActivityEntity extends ActivityEntity {
 
-	private static final String COMMENT_KEY = "comment";
+	private static final String COMMENT_KEY = "description";
 
 	private BlockActivityEntity() {
 	}

@@ -43,7 +43,7 @@ public class PainCycle extends AbstractRelativeInterval implements StoryElement 
 		this.event = wtfYayEvent;
 		this.experimentCycles = new ArrayList<ExperimentCycle>();
 		this.contextTags = new HashSet<String>();
-		this.painTags = TagsUtil.extractUniqueHashTags(wtfYayEvent.getComment());
+		this.painTags = TagsUtil.extractUniqueHashTags(wtfYayEvent.getDescription());
 
 		setRelativeStart(wtfYayEvent.getRelativePositionInSeconds());
 		setDurationInSeconds(durationInSeconds);
@@ -85,7 +85,7 @@ public class PainCycle extends AbstractRelativeInterval implements StoryElement 
 	}
 
 	public String getDescription() {
-		return event.getComment();
+		return event.getDescription();
 	}
 
 	public void addExperimentCycle(ExperimentCycle experimentCycle) {

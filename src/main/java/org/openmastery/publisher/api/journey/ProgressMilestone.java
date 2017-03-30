@@ -38,7 +38,7 @@ public class ProgressMilestone extends AbstractRelativeInterval implements Story
 		this.parentPath = parentPath;
 		setRelativeStart(progressEvent.getRelativePositionInSeconds());
 
-		contextTags = TagsUtil.extractUniqueHashTags(progressEvent.getComment());
+		contextTags = TagsUtil.extractUniqueHashTags(progressEvent.getDescription());
 		painTags = new HashSet<String>();
 
 		//TODO fix this hack properly in IdeaFlowStoryGenerator... overwriting subtask for default milestone
@@ -66,7 +66,7 @@ public class ProgressMilestone extends AbstractRelativeInterval implements Story
 	}
 
 	public String getDescription() {
-		return event.getComment();
+		return event.getDescription();
 	}
 
 	@JsonIgnore

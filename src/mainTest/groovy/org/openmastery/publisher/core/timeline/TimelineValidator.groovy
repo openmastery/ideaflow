@@ -6,13 +6,8 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.api.timeline.TimeBandGroup
-import org.openmastery.publisher.api.timeline.TreeNode
-import org.openmastery.publisher.api.timeline.TreeNodeType
-import org.openmastery.publisher.api.timeline.TreeTimeline
 
 import java.time.Duration
-
-import static IdeaFlowStateType.PROGRESS
 
 class TimelineValidator {
 
@@ -68,7 +63,7 @@ class TimelineValidator {
 		Event event = bandTimeline.events[eventIndex++]
 		assert event.type == expectedEventType
 		assert event.relativePositionInSeconds != null
-		assert event.comment == expectedComment
+		assert event.description == expectedComment
 		if (eventIndex > 1) {
 			assert event.relativePositionInSeconds > 0
 		}

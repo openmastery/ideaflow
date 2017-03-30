@@ -59,7 +59,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	public String getDescription() {
 		String description = "";
 		if (painCycles.size() > 0) {
-			description = painCycles.get(0).event.getComment();
+			description = painCycles.get(0).event.getDescription();
 		}
 		return description;
 	}

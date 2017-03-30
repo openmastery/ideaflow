@@ -33,7 +33,7 @@ class InitialSubtaskGenerator {
 		Event initialStrategySubtaskEvent = Event.builder()
 				.id(-1)
 				.type(EventType.SUBTASK)
-				.comment("Initial Strategy")
+				.description("Initial Strategy")
 				.build()
 		initialStrategySubtaskEvent.taskId = taskId
 		initialStrategySubtaskEvent.position = timelineStart

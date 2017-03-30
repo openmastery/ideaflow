@@ -89,7 +89,7 @@ public class TimeBandGroupModel extends TimeBandModel<TimeBandGroupModel> {
 
 //conflict <- rework | nested conflict | nested conflict | end rework
 
-//group comment is first comment in the grouping.
+//group description is first description in the grouping.
 //group contains conflict, rework with nested conflicts
 
 //subtask in the middle of a timeband, need to split the band.

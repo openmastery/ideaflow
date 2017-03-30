@@ -172,7 +172,7 @@ class TroubleshootingJourneyGeneratorSpec extends Specification {
 
 		builder.activate()
 		builder.advanceMinutes(5)
-		builder.wtf("This comment has a #hashtag")
+		builder.wtf("This description has a #hashtag")
 
 		Set expectedTags = ['#hashtag']
 
