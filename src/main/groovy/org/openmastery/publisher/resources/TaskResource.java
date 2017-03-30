@@ -17,10 +17,14 @@ package org.openmastery.publisher.resources;
 
 import org.openmastery.publisher.api.PagedResult;
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.event.EventPatch;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.publisher.api.task.TaskPatch;
+import org.openmastery.publisher.core.EventService;
 import org.openmastery.publisher.core.TaskService;
+import org.openmastery.publisher.security.InvocationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +38,13 @@ import java.util.List;
 public class TaskResource {
 
 	@Autowired
+	private InvocationContext invocationContext;
+
+	@Autowired
 	private TaskService taskService;
+
+	@Autowired
+	private EventService eventService;
 
 	@POST
 	public Task create(NewTask newTask) {
@@ -69,6 +79,8 @@ public class TaskResource {
 
 		return updatedTask;
 	}
+
+
 
 	/**
 	 * Find a task using the name rather than the id.

@@ -22,10 +22,7 @@ import org.openmastery.storyweb.core.StoryWebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -38,9 +35,12 @@ public class FaqResource {
 	StoryWebService persistenceService;
 
 
+
+	//TODO needs to POST FAQ comment to specific URL
+
 	/**
-	 * Retrieves IFMs with specific event pointers that include either FAQ notes
-	 * or event comments that with at least one of the specified tags.
+	 * Retrieves FaqSummary that include the specific FAQ notes found,
+	 * along with a referencable link to a task, and a path within a task
 	 *
 	 * @param tags tags to search for (without #)
 	 * @return List<FaqSummary>
@@ -48,7 +48,15 @@ public class FaqResource {
 	@GET
 	public List<FaqSummary> findAllFaqMatchingCriteria(@QueryParam("tag") List<String> tags) {
 
+		//TODO needs to return everything with FAQ notes when there's no tags present
 		return persistenceService.findAllFaqMatchingTags(tags);
 	}
+
+	//@POST
+//	public List<FaqSummary> findAllFaqMatchingCriteria(@QueryParam("tag") List<String> tags) {
+//
+//		return persistenceService.findAllFaqMatchingTags(tags);
+//	}
+
 
 }

@@ -16,6 +16,7 @@
 package org.openmastery.publisher.core.event;
 
 import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.core.task.TaskEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -34,4 +35,9 @@ public interface EventRepository extends PagingAndSortingRepository<EventEntity,
 
 	@Query(nativeQuery = true, value = "select * from event where owner_id=(?1) and position between (?2) and (?3) order by position asc")
 	List<EventEntity> findEventsWithinsRange(Long userId, Timestamp startTime, Timestamp endTime);
+
+
+	EventEntity findByOwnerIdAndId(Long ownerId, Long eventId);
+
+
 }

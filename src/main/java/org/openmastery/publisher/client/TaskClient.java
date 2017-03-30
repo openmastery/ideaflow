@@ -4,6 +4,8 @@ import com.bancvue.rest.client.crud.CrudClientRequest;
 import com.bancvue.rest.client.crud.GenericTypeFactory;
 import org.openmastery.publisher.api.PagedResult;
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.event.EventPatch;
 import org.openmastery.publisher.api.task.NewTask;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.publisher.api.task.TaskPatch;
@@ -29,6 +31,13 @@ public class TaskClient extends IdeaFlowClient<Task, TaskClient> {
 
 	public Task updateTask(Long taskId, TaskPatch taskPatch) {
 		return (Task) crudClientRequest.path(ResourcePaths.ID_PATH).path(taskId).updateWithPut(taskPatch);
+	}
+
+	public Event updateSubtask(Long taskId, Long subtaskId, EventPatch eventPatch) {
+		return (Event) getUntypedCrudClientRequest()
+				.path(ResourcePaths.ID_PATH).path(taskId)
+				.path(ResourcePaths.TASK_SUBTASK_PATH).path(subtaskId)
+				.entity(Event.class).updateWithPut(eventPatch);
 	}
 
 

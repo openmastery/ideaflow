@@ -17,7 +17,7 @@ package org.openmastery.publisher;
 
 import groovyx.net.http.RESTClient;
 import org.openmastery.publisher.client.BatchClient;
-import org.openmastery.publisher.client.EventClient;
+import org.openmastery.publisher.client.TaskEventClient;
 import org.openmastery.publisher.client.TimelineClient;
 import org.openmastery.publisher.client.TaskClient;
 import org.openmastery.publisher.core.user.UserEntity;
@@ -65,8 +65,8 @@ public class IfmPublisherTestConfig {
 	}
 
 	@Bean
-	public EventClient eventClient() {
-		return new EventClient(hostUri)
+	public TaskEventClient eventClient() {
+		return new TaskEventClient(hostUri)
 				.apiKey(testUser().getApiKey());
 	}
 

@@ -25,8 +25,11 @@ import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
+import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.core.event.EventRepository
+import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -34,9 +37,11 @@ import org.springframework.stereotype.Component
 @Component
 class EventService {
 
+	@Autowired
+	private EventRepository eventRepository
 
 	@Autowired
-	private IdeaFlowPersistenceService persistenceService
+	private AnnotationRespository annotationRespository
 
 
 	public List<Event> getLatestEventsByType(Long userId, EventType eventType, LocalDateTime afterDate, Integer limit) {
@@ -45,7 +50,7 @@ class EventService {
 
 
 	public List<Event> getLatestEvents(Long userId, LocalDateTime afterDate, Integer limit) {
-		List<EventEntity> eventEntityList = persistenceService.findRecentEvents(userId, TimeConverter.toSqlTimestamp(afterDate), limit)
+		List<EventEntity> eventEntityList = eventRepository.findRecentEvents(userId, TimeConverter.toSqlTimestamp(afterDate), limit)
 
 		List<Event> eventList = eventEntityList.collect() { EventEntity entity ->
 			EntityMapper mapper = new EntityMapper()
@@ -58,21 +63,15 @@ class EventService {
 		throw new NotYetImplementedException("Need to implement this still!")
 	}
 
+
+
 	Event updateEvent(Long userId, Long eventId, String comment) {
 		//TODO this query should take userId too
-		EventEntity entity = persistenceService.findEventById(eventId)
+		EventEntity entity = eventRepository.findByOwnerIdAndId(userId, eventId)
 		entity.comment = comment
 		entity.ownerId = userId
 
-		EventEntity savedEntity = persistenceService.saveEvent(entity);
-		return toApi(savedEntity)
-	}
-
-	Event updateEvent(Long userId, Event eventToUpdate) {
-		EventEntity entityToSave = toEntity(eventToUpdate);
-		entityToSave.ownerId = userId
-		EventEntity savedEntity = persistenceService.saveEvent(entityToSave);
-
+		EventEntity savedEntity = eventRepository.save(entity);
 		return toApi(savedEntity)
 	}
 
@@ -86,13 +85,13 @@ class EventService {
 		return mapper.mapIfNotNull(event, EventEntity.class)
 	}
 
-	FAQAnnotation annotateWithFAQ(Long userId, Long eventId, String faqComment) {
-		EventEntity eventEntity = persistenceService.findEventById(eventId)
+	Event annotateWithFAQ(Long userId, Long eventId, String faqComment) {
+		EventEntity eventEntity = eventRepository.findByOwnerIdAndId(userId, eventId)
 		if (eventEntity == null) {
 			throw new NotFoundException("Unable to annotate event.  EventId = $eventId not found.")
 		}
 
-		persistenceService.deleteFAQAnnotation(eventId)
+		annotationRespository.deleteByEventAndType(eventId, "faq");
 
 		FaqAnnotationEntity faqAnnotationEntity = FaqAnnotationEntity.builder()
 				.ownerId(userId)
@@ -100,9 +99,9 @@ class EventService {
 				.eventId(eventId)
 				.comment(faqComment).build()
 
-		persistenceService.saveAnnotation(faqAnnotationEntity)
+		annotationRespository.save(faqAnnotationEntity)
 
-		return new FAQAnnotation(eventId: faqAnnotationEntity.eventId, faq: faqAnnotationEntity.comment);
+		return toApi(eventEntity);
 	}
 
 

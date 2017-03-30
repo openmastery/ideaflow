@@ -23,9 +23,20 @@ public class ResourcePaths {
 
 	// task paths
 	public static final String TASK_PATH = "/task";
+	public static final String TASK_NAME_PATH = "/name";
+	public static final String TASK_SUBTASK_PATH = "/subtask";
+	public static final String TASK_MILESTONE_PATH = "/milestone";
+
+	public static final String TASK_JOURNEY_PATH = "/journey";
+	public static final String TASK_PAIN_PATH = "/pain";
+	public static final String TASK_AWESOME_PATH = "/awesome";
+
+
+
+
+
 	public static final String RECENT_PATH = "/recent";
 	public static final String ACTIVATE_PATH = "/activate";
-	public static final String TASK_NAME_PATH = "/name";
 
 	// ideaflow paths
 	public static final String IDEAFLOW_PATH = "/ideaflow";
