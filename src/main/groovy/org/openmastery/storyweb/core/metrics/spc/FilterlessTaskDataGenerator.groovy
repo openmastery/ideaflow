@@ -146,7 +146,7 @@ class FilterlessTaskDataGenerator {
 			}
 		}
 
-		return taskDataMap.values().toList()
+		return taskDataMap.values().toList().findAll { it.task != null}
 	}
 
 	private List<IdleTimeBandModel> findIdleBandsWithinRange(Set<Long> taskIds, Long userId) {
