@@ -126,13 +126,7 @@ class TaskService {
 	}
 
 	private PagedResult<Task> createPagedResult(int recordCount, int pageNumber, int elementsPerPage) {
-		PagedResult pagedResult = new PagedResult()
-		pagedResult.hasNext = (pageNumber + 1) * elementsPerPage < recordCount
-		pagedResult.hasPrevious = pageNumber > 0
-		pagedResult.pageNumber = pageNumber
-		pagedResult.totalPages = (recordCount / elementsPerPage) + ((recordCount % elementsPerPage) > 0 ? 1 : 0)
-		pagedResult.totalElements = recordCount
-		pagedResult.elementsPerPage = elementsPerPage
+		PagedResult pagedResult = PagedResult.create(recordCount, pageNumber, elementsPerPage)
 		pagedResult.addSortOrder("modifyDate", PagedResult.SortOrder.Direction.DESC)
 		return pagedResult
 	}
@@ -152,6 +146,15 @@ class TaskService {
 
 	private Task toApiTask(TaskEntity taskEntity) {
 		return entityMapper.mapIfNotNull(taskEntity, Task.class);
+	}
+
+	Task updateTask(Task taskWithUpdates) {
+		TaskEntity taskEntity = taskRepository.findOne(taskWithUpdates.id)
+		taskEntity.description = taskWithUpdates.description
+		taskEntity.project = taskWithUpdates.project
+		taskEntity.modifyDate = timeService.javaNow()
+		TaskEntity savedEntity = taskRepository.save(taskEntity)
+		return toApiTask(savedEntity);
 	}
 
 	Task updateTask(Long taskId, TaskPatch taskPatch) {

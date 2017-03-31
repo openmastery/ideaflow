@@ -64,18 +64,5 @@ public class MetricsResource {
 		return metricsService.generateSPCChart(jodaStartDate, jodaEndDate);
 	}
 
-	/**
-	 * Send a configuration of filters, aggregators, and the metrics you're interested in,
-	 * and we'll give you back some interesting data.
-	 * @param makeThisChart InterestingChart -- why look at it if it's not interesting?
-	 * @return SPCChart
-	 */
-	@GET
-	@Path(ResourcePaths.METRICS_SPC_PATH + ResourcePaths.METRICS_SEARCH)
-	SPCChart searchForMetrics(InterestingChart makeThisChart) {
-
-		throw new NotImplementedException("Come back later!  We're working on it!");
-	}
-
 
 }

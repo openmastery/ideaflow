@@ -40,7 +40,7 @@ class AnnotationDecorator {
 		annotateStory(story, faqs, snippets)
 	}
 
-	private void annotateStory(IdeaFlowStory story, List<FaqAnnotationEntity> faqs, List<SnippetAnnotationEntity> snippets) {
+	void annotateStory(IdeaFlowStory story, List<FaqAnnotationEntity> faqs, List<SnippetAnnotationEntity> snippets) {
 		story.getSubtasks().each { SubtaskStory subtaskStory ->
 			subtaskStory.troubleshootingJourneys.each { TroubleshootingJourney journey ->
 					fillJourneyWithAnnotations(journey, faqs, snippets)

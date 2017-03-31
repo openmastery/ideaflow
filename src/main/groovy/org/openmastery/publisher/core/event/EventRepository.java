@@ -37,6 +37,9 @@ public interface EventRepository extends PagingAndSortingRepository<EventEntity,
 	List<EventEntity> findEventsWithinsRange(Long userId, Timestamp startTime, Timestamp endTime);
 
 
+	@Query(nativeQuery = true, value = "select * from event where owner_id=(?1) order by position asc")
+	List<EventEntity> findAllByUser(Long userId);
+
 	EventEntity findByOwnerIdAndId(Long ownerId, Long eventId);
 
 

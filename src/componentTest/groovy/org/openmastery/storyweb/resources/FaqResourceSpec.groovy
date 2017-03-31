@@ -1,12 +1,19 @@
 package org.openmastery.storyweb.resources
 
 import org.openmastery.publisher.ComponentTest
+import org.openmastery.publisher.api.PagedResult
+import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.core.user.UserEntity
+import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.storyweb.api.FaqSummary
+import org.openmastery.storyweb.api.PainPoint
 import org.openmastery.storyweb.client.FaqClient
+import org.openmastery.storyweb.core.FixturePersistenceHelper
+import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
@@ -20,13 +27,29 @@ class FaqResourceSpec extends Specification {
 	FaqClient faqClient
 
 	@Autowired
+	private UserEntity testUser;
+
+
+	@Autowired
 	private IdeaFlowPersistenceService persistenceService
+
+	@Autowired
+	private FixturePersistenceHelper fixturePersistenceHelper
+
 
 	private long taskId
 
+	MockTimeService mockTimeService = new MockTimeService()
+	IdeaFlowTimelineElementBuilder builder = new IdeaFlowTimelineElementBuilder(mockTimeService)
+
+
 	def setup() {
-		taskId = persistenceService.saveTask(aRandom.taskEntity().build()).id
+		taskId = persistenceService.saveTask(
+				aRandom.taskEntity().ownerId(testUser.id).build()).id
 	}
+
+
+
 
 
 	//TODO please define all tests this way -
@@ -37,24 +60,38 @@ class FaqResourceSpec extends Specification {
 
 	def "findAllFaqMatchingCriteria SHOULD match the search criteria WHEN comment includes one or more tags"() {
 		given:
-		EventEntity event = aRandom.eventEntity().taskId(taskId).build()
-		FaqAnnotationEntity annotation = aRandom.faqAnnotationEntity().taskId(taskId).comment("for #this and #that")build()
 
-		EventEntity savedEvent = persistenceService.saveEvent(event)
-		annotation.eventId = savedEvent.id
-		persistenceService.saveAnnotation(annotation)
+		builder.activate()
+				.wtf()
+				.advanceMinutes(30)
+				.executeCode()
+				.executeCode()
+				.distraction()
+				.executeCode()
+				.advanceMinutes(1)
+				.wtf("This is a comment #this")
+				.advanceMinutes(30)
+				.executeCode()
+				.executeCode()
+				.idleDays(1)
+				.advanceMinutes(5)
+				.awesome()
+				.advanceMinutes(5)
+				.deactivate()
+
+		fixturePersistenceHelper.saveIdeaFlow(testUser.id, taskId, builder)
 
 		when:
 
-		List<FaqSummary> faqs = faqClient.findAllFaqMatchingCriteria(["this", "othertag"]);
+		PagedResult<PainPoint> painPointResults = faqClient.findAllFaqMatchingCriteria(["this", "othertag"], null, null);
 		then:
-		assert faqs.size() == 1
-		assert faqs.get(0).taskId == event.taskId
-		assert faqs.get(0).eventId == savedEvent.id
-		assert faqs.get(0).position == TimeConverter.toJodaLocalDateTime(event.position)
-		assert faqs.get(0).faqComment == annotation.comment
-		assert faqs.get(0).eventComment == event.comment
-		assert faqs.get(0).tags == ["#this", "#that"].toSet()
+		assert painPointResults.contents.size() == 1
+//		assert faqs.get(0).taskId == event.taskId
+//		assert faqs.get(0).eventId == savedEvent.id
+//		assert faqs.get(0).position == TimeConverter.toJodaLocalDateTime(event.position)
+//		assert faqs.get(0).faqComment == annotation.comment
+//		assert faqs.get(0).eventComment == event.comment
+//		assert faqs.get(0).tags == ["#this", "#that"].toSet()
 
 	}
 }

@@ -26,6 +26,7 @@ class FixturePersistenceHelper {
 			EventEntity entity = entityMapper.mapIfNotNull(event, EventEntity)
 			entity.taskId = taskId
 			entity.ownerId = ownerId
+			entity.comment = event.description
 			persistenceService.saveEvent(entity)
 		}
 

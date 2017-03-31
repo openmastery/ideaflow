@@ -20,8 +20,10 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.journey.IdeaFlowStory
 import org.openmastery.publisher.api.journey.PainCycle
 import org.openmastery.publisher.api.journey.SubtaskStory
+import org.openmastery.publisher.api.journey.TagsUtil
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
+import org.openmastery.publisher.ideaflow.story.AnnotationDecorator
 import org.openmastery.publisher.ideaflow.story.IdeaFlowStoryGenerator
 import org.openmastery.publisher.ideaflow.story.MetricsDecorator
 import org.openmastery.publisher.security.InvocationContext
@@ -35,6 +37,7 @@ import org.openmastery.storyweb.core.metrics.analyzer.HumanCycleTimeAnalyzer
 import org.openmastery.storyweb.core.metrics.analyzer.ResolutionTimeAnalyzer
 import org.openmastery.storyweb.core.metrics.analyzer.TotalResolutionTimeAnalyzer
 import org.openmastery.storyweb.core.metrics.analyzer.WtfsPerDayAnalyzer
+import org.openmastery.storyweb.core.metrics.spc.FilterlessTaskDataGenerator
 import org.openmastery.storyweb.core.metrics.spc.MetricSet
 import org.openmastery.storyweb.core.metrics.spc.TaskData
 import org.openmastery.storyweb.core.metrics.spc.TaskDataGenerator
@@ -48,7 +51,13 @@ class MetricsService {
 	TaskDataGenerator taskDataGenerator
 
 	@Autowired
+	FilterlessTaskDataGenerator filterlessTaskDataGenerator
+
+	@Autowired
 	InvocationContext invocationContext
+
+	@Autowired
+	AnnotationDecorator annotationDecorator
 
 	IdeaFlowStoryGenerator storyGenerator = new IdeaFlowStoryGenerator()
 
@@ -76,8 +85,10 @@ class MetricsService {
 		if (tags != null && tags.size() > 0) {
 			painPoints = painPoints.findAll { PainPoint painPoint ->
 				boolean matchesTag = false;
+
 				tags.each { String tag ->
-					matchesTag |= painPoint.contextTags.contains(tag) || painPoint.painTags.contains(tag)
+					String tagWithHash = TagsUtil.prefixHashtag(tag)
+					matchesTag |= painPoint.contextTags.contains(tagWithHash) || painPoint.painTags.contains(tagWithHash)
 				}
 
 				matchesTag
@@ -92,14 +103,11 @@ class MetricsService {
 
 		Long userId = invocationContext.userId
 
-		//hack to return all data
-		LocalDate startDate = LocalDate.now().minusYears(10);
-		LocalDate endDate = LocalDate.now().plusDays(1)
-
-		List<TaskData> taskDataList = taskDataGenerator.generate(userId, startDate, endDate)
+		List<TaskData> taskDataList = filterlessTaskDataGenerator.generate(userId)
 		taskDataList.each { TaskData taskData ->
 			IdeaFlowTaskTimeline taskTimeline = taskData.toIdeaFlowTaskTimeline()
 			IdeaFlowStory story = storyGenerator.generateIdeaFlowStory(taskTimeline)
+			annotationDecorator.annotateStory(story, taskData.faqAnnotations, [])
 
 			List<PainPoint> painPoints = generatePainPoints(story)
 			allPainPoints.addAll(painPoints)

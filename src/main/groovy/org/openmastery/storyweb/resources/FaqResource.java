@@ -30,9 +30,9 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Component
-@Path(ResourcePaths.STORY_WEB_PATH)
+@Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.FAQ_PATH)
 @Produces(MediaType.APPLICATION_JSON)
-public class StoryWebResource {
+public class FaqResource {
 
 
 	@Autowired
@@ -49,19 +49,17 @@ public class StoryWebResource {
 												  @DefaultValue("0") @QueryParam("page_number") Integer pageNumber,
 												  @DefaultValue("10") @QueryParam("per_page") Integer elementsPerPage,
 												  @QueryParam("tag") List<String> tags) {
+
 		List<PainPoint> painPoints = metricsService.findAndFilterBiggestPainPoints(tags);
 
-		PagedResult<PainPoint> pagedResult = new PagedResult<PainPoint>();
+		PagedResult<PainPoint> pagedResult = PagedResult.create(painPoints.size(), pageNumber, elementsPerPage);
 		int firstIndex = pageNumber * elementsPerPage;
-		int lastIndex = Math.min(painPoints.size() - 1, ((pageNumber + 1) * elementsPerPage));
-		int numPages = painPoints.size() / elementsPerPage + ((painPoints.size() % elementsPerPage) > 0? 1 : 0);
 
+		int lastIndex = (pageNumber + 1) * elementsPerPage;
+		if (lastIndex > painPoints.size()) {
+			lastIndex = painPoints.size();
+		}
 		pagedResult.setContents(painPoints.subList(firstIndex, lastIndex));
-		pagedResult.setPageNumber(pageNumber);
-		pagedResult.setElementsPerPage(elementsPerPage);
-		pagedResult.setTotalPages(numPages);
-		pagedResult.setHasNext(pageNumber < numPages - 1);
-		pagedResult.setHasPrevious(pageNumber > 0);
 
 		return pagedResult;
 	}

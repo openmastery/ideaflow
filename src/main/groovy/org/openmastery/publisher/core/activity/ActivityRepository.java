@@ -51,6 +51,10 @@ public interface ActivityRepository extends PagingAndSortingRepository<ActivityE
 			"and (start_time between (?2) and (?3) or end_time between (?2) and (?3)) order by start_time")
 	List<IdleActivityEntity> findIdlesWithinRange(long userId, Timestamp start, Timestamp end);
 
+	@Query(nativeQuery = true, value = "select * from activity where type = 'idle' and owner_id = ?1 " +
+			"order by start_time")
+	List<IdleActivityEntity> findAllIdlesForUser(long userId);
+
 	@Query(nativeQuery = true, value = "select * from activity where type = 'execution' and owner_id=(?1) " +
 			"and (start_time between (?2) and (?3) or end_time between (?2) and (?3)) order by start_time")
 	List<ExecutionActivityEntity> findExecutionActivityWithinRange(Long userId, Timestamp startTime, Timestamp endTime);

@@ -33,6 +33,17 @@ public class PagedResult<T> {
 		propertySortOrders.add( new SortOrder(property, direction));
 	}
 
+	public static PagedResult create(int recordCount, int pageNumber, int elementsPerPage) {
+		PagedResult pagedResult = new PagedResult();
+		pagedResult.hasNext = (pageNumber + 1) * elementsPerPage < recordCount;
+		pagedResult.hasPrevious = pageNumber > 0;
+		pagedResult.pageNumber = pageNumber;
+		pagedResult.totalPages = (recordCount / elementsPerPage) + ((recordCount % elementsPerPage) > 0 ? 1 : 0);
+		pagedResult.totalElements = recordCount;
+		pagedResult.elementsPerPage = elementsPerPage;
+		return pagedResult;
+	}
+
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Data

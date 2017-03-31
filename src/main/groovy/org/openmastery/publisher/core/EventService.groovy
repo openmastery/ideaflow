@@ -22,6 +22,7 @@ import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.annotation.FAQAnnotation
 import org.openmastery.publisher.api.batch.NewBatchEvent
+import org.openmastery.publisher.api.event.AnnotatedEvent
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
@@ -89,7 +90,7 @@ class EventService {
 		return entity
 	}
 
-	Event annotateWithFAQ(Long userId, Long eventId, String faqComment) {
+	AnnotatedEvent annotateWithFAQ(Long userId, Long eventId, String faqComment) {
 		EventEntity eventEntity = eventRepository.findByOwnerIdAndId(userId, eventId)
 		if (eventEntity == null) {
 			throw new NotFoundException("Unable to annotate event.  EventId = $eventId not found.")
@@ -105,7 +106,14 @@ class EventService {
 
 		annotationRespository.save(faqAnnotationEntity)
 
-		return toApi(eventEntity);
+		AnnotatedEvent event = new AnnotatedEvent()
+		event.taskId = eventEntity.taskId
+		event.eventId = eventEntity.id
+		event.type = eventEntity.type
+		event.description = eventEntity.comment
+		event.faq = faqAnnotationEntity.comment
+
+		return event;
 	}
 
 

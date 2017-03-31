@@ -49,6 +49,14 @@ public interface AnnotationRespository extends PagingAndSortingRepository<Annota
 			"order by position asc")
 	List<FaqAnnotationEntity> findFaqsWithinRange(Long userId, Timestamp startTime, Timestamp endTime);
 
+	@Query(nativeQuery = true, value = "select a.* from annotation a, event e where a.type = 'faq' " +
+			"and a.event_id=e.id " +
+			"and a.owner_id=(?1) " +
+			"order by position asc")
+	List<FaqAnnotationEntity> findAllFaqsByUser(Long userId);
+
+
+
 	@Modifying
 	@Transactional
 	@Query(value="delete from annotation where event_id = ?1 and type = ?2")

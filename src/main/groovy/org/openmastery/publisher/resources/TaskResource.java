@@ -52,6 +52,26 @@ public class TaskResource {
 	}
 
 	/**
+	 * Updates details for a task like name, description, and project.
+	 * Intended to be used for inline editing of task details
+	 *
+	 * @param taskWithUpdates Task object with updates in it
+	 * @return Task
+	 */
+
+	@PUT
+	public Task updateTask(Task taskWithUpdates) {
+		Task updatedTask;
+		if (taskWithUpdates == null || taskWithUpdates.getId() == null) {
+			throw new NotFoundException();
+		} else {
+			updatedTask = taskService.updateTask(taskWithUpdates);
+		}
+		return updatedTask;
+	}
+
+
+	/**
 	 * Retrieve the details for a specific task
 	 * @param taskId the persistent id
 	 * @return Task

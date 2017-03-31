@@ -45,7 +45,9 @@ import java.sql.Timestamp
 
 @Slf4j
 @Component
-class TaskDataGenerator {
+class FilterlessTaskDataGenerator {
+
+	//TODO total hack need to delete this whole class...
 
 
 	@Autowired
@@ -73,22 +75,16 @@ class TaskDataGenerator {
 	EntityMapper entityMapper = new EntityMapper()
 
 
-	List<TaskData> generate(long userId, LocalDate startDate, LocalDate endDate) {
-
-		Timestamp startTimestamp = toBeginningOfDayTimestamp(startDate)
-		Timestamp endTimestamp = toEndOfDayTimestamp(endDate)
-
-		log.debug("generateTaskData from " + startTimestamp + ":" + endTimestamp)
+	List<TaskData> generate(long userId) {
 
 		Set<Long> collectedTaskIds = new HashSet<>();
 
-		List<Event> eventsWithinRange = findEventsWithinRange(collectedTaskIds, userId, startTimestamp, endTimestamp)
-		List<IdleTimeBandModel> idleBands = findIdleBandsWithinRange(collectedTaskIds, userId, startTimestamp, endTimestamp)
-		List<ExecutionEvent> executionEvents = findExecutionEventsWithinRange(collectedTaskIds, userId, startTimestamp, endTimestamp)
-		List<FaqAnnotationEntity> faqAnnotations = findFaqsWithinRange(collectedTaskIds, userId, startTimestamp, endTimestamp)
+		List<Event> eventsWithinRange = findEventsWithinRange(collectedTaskIds, userId)
+		List<IdleTimeBandModel> idleBands = findIdleBandsWithinRange(collectedTaskIds, userId)
+		List<FaqAnnotationEntity> faqAnnotations = findFaqsWithinRange(collectedTaskIds, userId)
 		List<Task> tasks = findTasksWithIds(collectedTaskIds, userId)
 
-		List<TaskData> taskDataList = splitIntoTasks(tasks, eventsWithinRange, idleBands, executionEvents, faqAnnotations)
+		List<TaskData> taskDataList = splitIntoTasks(tasks, eventsWithinRange, idleBands, faqAnnotations)
 
 		taskDataList.each { TaskData taskData ->
 
@@ -116,7 +112,7 @@ class TaskDataGenerator {
 
 
 	private List<TaskData> splitIntoTasks(List<Task> tasks, List<Event> events, List<IdleTimeBandModel> idleBands,
-										  List<ExecutionEvent> executionEvents, List<FaqAnnotationEntity> faqs) {
+										  List<FaqAnnotationEntity> faqs) {
 		Map<Long, TaskData> taskDataMap = [:]
 
 		//Events get to determine whether or not a task exists in scope.
@@ -143,13 +139,6 @@ class TaskDataGenerator {
 			}
 		}
 
-		executionEvents.each { ExecutionEvent executionEvent ->
-			TaskData data = taskDataMap.get(executionEvent.taskId)
-			if (data != null) {
-				data.addExecutionEvent(executionEvent)
-			}
-		}
-
 		faqs.each { FaqAnnotationEntity faqEntity ->
 			TaskData data = taskDataMap.get(faqEntity.taskId)
 			if (data != null) {
@@ -160,44 +149,20 @@ class TaskDataGenerator {
 		return taskDataMap.values().toList()
 	}
 
-	private Timestamp toBeginningOfDayTimestamp(LocalDate localDate) {
-		LocalDateTime beginningOfDay = localDate.toLocalDateTime(new LocalTime(0, 0, 0))
-		return TimeConverter.toSqlTimestamp(beginningOfDay)
-	}
-
-	private Timestamp toEndOfDayTimestamp(LocalDate localDate) {
-		LocalDateTime endOfDay = localDate.toLocalDateTime(new LocalTime(23, 59, 59))
-		return TimeConverter.toSqlTimestamp(endOfDay)
-	}
-
-	private List<IdleTimeBandModel> findIdleBandsWithinRange(Set<Long> taskIds, Long userId, Timestamp startTimestamp, Timestamp endTimestamp) {
-		List<IdleActivityEntity> idleActivities = activityRepository.findIdlesWithinRange(userId, startTimestamp, endTimestamp)
+	private List<IdleTimeBandModel> findIdleBandsWithinRange(Set<Long> taskIds, Long userId) {
+		List<IdleActivityEntity> idleActivities = activityRepository.findAllIdlesForUser(userId)
 		taskIds.addAll(idleActivities.collect { it.taskId })
 		return entityMapper.mapList(idleActivities, IdleTimeBandModel)
 	}
 
-	private List<Event> findEventsWithinRange(Set<Long> taskIds, Long userId, Timestamp startTimestamp, Timestamp endTimestamp) {
-		List<EventEntity> eventEntities = eventRepository.findEventsWithinsRange(userId, startTimestamp, endTimestamp)
+	private List<Event> findEventsWithinRange(Set<Long> taskIds, Long userId) {
+		List<EventEntity> eventEntities = eventRepository.findAllByUser(userId)
 		taskIds.addAll(eventEntities.collect { it.taskId })
 		return eventEntities.collect { EventEntity entity ->
 			Event event = entityMapper.mapIfNotNull(entity, Event)
 			event.description = entity.comment
 			return event
 		}
-	}
-
-	private List<ExecutionEvent> findExecutionEventsWithinRange(Set<Long> taskIds, Long userId, Timestamp startTimestamp, Timestamp endTimestamp) {
-		List<ExecutionActivityEntity> eventEntities = activityRepository.findExecutionActivityWithinRange(userId, startTimestamp, endTimestamp)
-		List<ExecutionEvent> executionEvents = []
-		eventEntities.each { ExecutionActivityEntity entity ->
-			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)
-			execution.failed = entity.exitCode != 0
-			execution.durationInSeconds = TimeConverter.between(entity.start, entity.end).standardSeconds
-			executionEvents.add(execution)
-			taskIds.add(execution.taskId)
-		}
-
-		return executionEvents
 	}
 
 	private List<Task> findTasksWithIds(Set<Long> taskIds, Long userId) {
@@ -209,8 +174,8 @@ class TaskDataGenerator {
 		}
 	}
 
-	private List<FaqAnnotationEntity> findFaqsWithinRange(Set<Long> taskIds, Long userId, Timestamp startTimestamp, Timestamp endTimestamp) {
-		List<FaqAnnotationEntity> faqEntities = annotationRespository.findFaqsWithinRange(userId, startTimestamp, endTimestamp)
+	private List<FaqAnnotationEntity> findFaqsWithinRange(Set<Long> taskIds, Long userId) {
+		List<FaqAnnotationEntity> faqEntities = annotationRespository.findAllFaqsByUser(userId)
 		taskIds.addAll(faqEntities.collect { it.taskId })
 		return faqEntities
 	}
