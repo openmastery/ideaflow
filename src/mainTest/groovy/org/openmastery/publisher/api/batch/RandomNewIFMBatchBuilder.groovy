@@ -10,6 +10,7 @@ import org.openmastery.publisher.api.activity.NewIdleActivity
 import org.openmastery.publisher.api.activity.NewModificationActivity
 import org.openmastery.publisher.api.activity.RandomNewEditorActivityBuilder
 import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.event.NewSnippetEvent
 import org.openmastery.time.TimeConverter
 
 class RandomNewIFMBatchBuilder extends NewIFMBatch.NewIFMBatchBuilder {
@@ -79,7 +80,6 @@ class RandomNewIFMBatchBuilder extends NewIFMBatch.NewIFMBatchBuilder {
 		return this
 	}
 
-
 	public RandomNewIFMBatchBuilder newExecutionActivity(Long taskId, LocalDateTime endTime, Long durationInSeconds, String processName, String executionTaskType,
 									 int exitCode, boolean isDebug) {
 		NewExecutionActivity activity = NewExecutionActivity.builder()
@@ -108,8 +108,6 @@ class RandomNewIFMBatchBuilder extends NewIFMBatch.NewIFMBatchBuilder {
 		return this
 	}
 
-
-
 	public RandomNewIFMBatchBuilder newEvent(Long taskId, LocalDateTime position, EventType eventType, String comment) {
 		NewBatchEvent event = NewBatchEvent.builder()
 				.taskId(taskId)
@@ -122,5 +120,16 @@ class RandomNewIFMBatchBuilder extends NewIFMBatch.NewIFMBatchBuilder {
 		return this
 	}
 
+	public RandomNewIFMBatchBuilder newSnippetEvent(Long taskId, LocalDateTime position, String source, String snippet) {
+		NewSnippetEvent event = NewSnippetEvent.builder()
+				.taskId(taskId)
+				.position(position)
+				.source(source)
+				.snippet(snippet)
+				.build();
+
+		super.snippetEvent(event)
+		return this
+	}
 
 }
