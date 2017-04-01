@@ -27,7 +27,7 @@ import org.openmastery.publisher.ideaflow.story.AnnotationDecorator
 import org.openmastery.publisher.ideaflow.story.IdeaFlowStoryGenerator
 import org.openmastery.publisher.ideaflow.story.MetricsDecorator
 import org.openmastery.publisher.security.InvocationContext
-import org.openmastery.storyweb.api.PainPoint
+import org.openmastery.storyweb.api.StoryPoint
 import org.openmastery.storyweb.api.metrics.Metric
 import org.openmastery.storyweb.api.metrics.SPCChart
 import org.openmastery.storyweb.core.metrics.analyzer.DisruptionsPerDayAnalyzer
@@ -80,10 +80,10 @@ class MetricsService {
 		return chart;
 	}
 
-	List<PainPoint> findAndFilterBiggestPainPoints(List<String> tags) {
-		List<PainPoint> painPoints = findBiggestPainPoints();
+	List<StoryPoint> findAndFilterBiggestPainPoints(List<String> tags) {
+		List<StoryPoint> painPoints = findBiggestPainPoints();
 		if (tags != null && tags.size() > 0) {
-			painPoints = painPoints.findAll { PainPoint painPoint ->
+			painPoints = painPoints.findAll { StoryPoint painPoint ->
 				boolean matchesTag = false;
 
 				tags.each { String tag ->
@@ -98,8 +98,8 @@ class MetricsService {
 	}
 
 
-	List<PainPoint> findBiggestPainPoints() {
-		List<PainPoint> allPainPoints = []
+	List<StoryPoint> findBiggestPainPoints() {
+		List<StoryPoint> allPainPoints = []
 
 		Long userId = invocationContext.userId
 
@@ -109,15 +109,15 @@ class MetricsService {
 			IdeaFlowStory story = storyGenerator.generateIdeaFlowStory(taskTimeline)
 			annotationDecorator.annotateStory(story, taskData.faqAnnotations, [])
 
-			List<PainPoint> painPoints = generatePainPoints(story)
+			List<StoryPoint> painPoints = generatePainPoints(story)
 			allPainPoints.addAll(painPoints)
 		}
 
-		return allPainPoints.sort { PainPoint point -> point.journeyPainInSeconds }.reverse()
+		return allPainPoints.sort { StoryPoint point -> point.journeyPainInSeconds }.reverse()
 
 	}
 
-	List<PainPoint> generatePainPoints(IdeaFlowStory ideaFlowStory) {
+	List<StoryPoint> generatePainPoints(IdeaFlowStory ideaFlowStory) {
 		MetricSet metricSet = new MetricSet()
 		metricSet.addMetric(new TotalResolutionTimeAnalyzer())
 		metricSet.calculate(ideaFlowStory)
@@ -125,17 +125,18 @@ class MetricsService {
 		MetricsDecorator decorator = new MetricsDecorator()
 		decorator.decorateStoryWithMetrics(ideaFlowStory, metricSet)
 
-		List<PainPoint> painPoints = []
+		List<StoryPoint> painPoints = []
 
 		ideaFlowStory.subtasks.each { SubtaskStory subtask ->
 			subtask.troubleshootingJourneys.each { TroubleshootingJourney journey ->
 				journey.painCycles.each { PainCycle painCycle ->
-					PainPoint painPoint = new PainPoint()
+					StoryPoint painPoint = new StoryPoint()
 					painPoint.taskPath = ideaFlowStory.fullPath
 					painPoint.fullPath = painCycle.fullPath
 
-					painPoint.description = painCycle.description
-					painPoint.faq = painCycle.faqAnnotation
+					painPoint.faqType = painCycle.eventType
+					painPoint.eventDescription = painCycle.description
+					painPoint.faqAnnotation = painCycle.faqAnnotation
 					painPoint.taskName = ideaFlowStory.task.name
 
 					painPoint.position = painCycle.position

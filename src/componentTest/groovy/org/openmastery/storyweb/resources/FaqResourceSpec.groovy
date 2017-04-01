@@ -2,19 +2,13 @@ package org.openmastery.storyweb.resources
 
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.PagedResult
-import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
-import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
-import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
-import org.openmastery.storyweb.api.FaqSummary
-import org.openmastery.storyweb.api.PainPoint
+import org.openmastery.storyweb.api.StoryPoint
 import org.openmastery.storyweb.client.FaqClient
 import org.openmastery.storyweb.core.FixturePersistenceHelper
 import org.openmastery.time.MockTimeService
-import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
@@ -83,7 +77,7 @@ class FaqResourceSpec extends Specification {
 
 		when:
 
-		PagedResult<PainPoint> painPointResults = faqClient.findAllFaqMatchingCriteria(["this", "othertag"], null, null);
+		PagedResult<StoryPoint> painPointResults = faqClient.findAllFaqMatchingCriteria(["this", "othertag"], null, null);
 		then:
 		assert painPointResults.contents.size() == 1
 //		assert faqs.get(0).taskId == event.taskId

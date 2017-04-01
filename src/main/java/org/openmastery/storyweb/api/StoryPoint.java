@@ -5,21 +5,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
+import org.openmastery.publisher.api.event.EventType;
 
 import java.util.Set;
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PainPoint {
+public class StoryPoint {
 
 	String taskPath;
 	String fullPath;
 
-	String description;
-	String faq;
+	String faqType;
+	String eventDescription;
+	String faqAnnotation;
 	String taskName;
-
 	LocalDateTime position;
 
 	Long journeyPainInSeconds;

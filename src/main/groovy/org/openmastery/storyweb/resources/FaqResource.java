@@ -17,11 +17,9 @@ package org.openmastery.storyweb.resources;
 
 
 import org.openmastery.publisher.api.PagedResult;
-import org.openmastery.storyweb.api.FaqSummary;
-import org.openmastery.storyweb.api.PainPoint;
+import org.openmastery.storyweb.api.StoryPoint;
 import org.openmastery.storyweb.api.ResourcePaths;
 import org.openmastery.storyweb.core.MetricsService;
-import org.openmastery.storyweb.core.StoryWebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,18 +39,18 @@ public class FaqResource {
 	/**
 	 * Returns the most painful points in the StoryWeb, optionally filterable by tag
 	 * @param tags Can be contextTags, painTags or a mix of both
-	 * @return List<PainPoint>
+	 * @return List<StoryPoint>
 	 */
 
 	@GET
-	public PagedResult<PainPoint> findPainfulStoryPoints(@QueryParam("project") String project,
+	public PagedResult<StoryPoint> findPainfulStoryPoints(@QueryParam("project") String project,
 												  @DefaultValue("0") @QueryParam("page_number") Integer pageNumber,
 												  @DefaultValue("10") @QueryParam("per_page") Integer elementsPerPage,
 												  @QueryParam("tag") List<String> tags) {
 
-		List<PainPoint> painPoints = metricsService.findAndFilterBiggestPainPoints(tags);
+		List<StoryPoint> painPoints = metricsService.findAndFilterBiggestPainPoints(tags);
 
-		PagedResult<PainPoint> pagedResult = PagedResult.create(painPoints.size(), pageNumber, elementsPerPage);
+		PagedResult<StoryPoint> pagedResult = PagedResult.create(painPoints.size(), pageNumber, elementsPerPage);
 		int firstIndex = pageNumber * elementsPerPage;
 
 		int lastIndex = (pageNumber + 1) * elementsPerPage;
