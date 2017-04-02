@@ -180,6 +180,8 @@ Deploy the application on heroku
 ### How to Troubleshooting Heroku DB specific Issue
 
 `heroku pg:backups:capture`
+
 `heroku pg:backups:download`
+
 `pg_restore --verbose --clean --no-acl --no-owner -h local.docker -U postgres -d ideaflow latest.dump`
 
