@@ -3,7 +3,8 @@ sudo: required
 language: java
 
 services:
-    - docker
+  - docker
+  - postgresql
 
 jdk:
   - oraclejdk8
@@ -18,7 +19,7 @@ cache:
     - $HOME/.gradle/wrapper/
 
 before_install:
-  - ./gradlew pullPostgres createPostgres createTestDatabase
+  - sed -i '' 's/password=postgres/password=/g' src/main/resources/application.properties
 
 notifications:
   email:
