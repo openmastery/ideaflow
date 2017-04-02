@@ -22,7 +22,7 @@ before_install:
   - sed -i 's/password=postgres/password=/g' src/main/resources/application.properties
 
 before_script:
-  - psql -c 'create database ideaflow-test;' -U postgres
+  - psql -c 'create database "ideaflow-test";' -U postgres
 
 notifications:
   email:
