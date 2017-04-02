@@ -141,12 +141,17 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		return graphPoint
 	}
 
+	abstract T createEmptyValue();
+
 	T getMaximumValue(Collection<GraphPoint<T>> graphPoints) { //get max of empty = null
 		T maxValue = null;
 		graphPoints.each { GraphPoint<T> point ->
 			if (maxValue == null || point.value > maxValue)  {
 				maxValue = point.value
 			}
+		}
+		if (maxValue == null) {
+			maxValue = createEmptyValue()
 		}
 		return maxValue
 	}
@@ -160,6 +165,9 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 				sum = sum + point.value
 			}
 		}
+		if (sum == null) {
+			sum = createEmptyValue()
+		}
 		return sum
 	}
 
@@ -169,13 +177,16 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 
 		graphPoints.each { GraphPoint<T> point ->
 			if (sum == null) {
+				//TODO fix NPE happening on this line
 				sum = point.value * point.frequency
 			} else {
 				sum += point.value * point.frequency
 			}
 			totalSamples += point.frequency
 		}
-
+		if (sum == null) {
+			sum = createEmptyValue()
+		}
 		T average = sum
 		if (totalSamples > 0) {
 			average = sum / totalSamples
@@ -196,4 +207,6 @@ abstract class AbstractTimelineAnalyzer<T extends Comparable<T>> {
 		MetricThreshold<T> threshold = getDangerThreshold()
 		return value > threshold.threshold
 	}
+
+	
 }

@@ -80,5 +80,9 @@ class ResolutionTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 		return createMetricThreshold(new DurationInSeconds(30 * 60))
 	}
 
+	@Override
+	DurationInSeconds createEmptyValue() {
+		return new DurationInSeconds(0)
+	}
 }
 

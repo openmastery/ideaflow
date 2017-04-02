@@ -24,6 +24,7 @@ import org.openmastery.publisher.api.journey.IdeaFlowStory
 import org.openmastery.publisher.api.journey.SubtaskStory
 import org.openmastery.publisher.api.journey.TagsUtil
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.metrics.MetricThreshold
@@ -64,5 +65,10 @@ class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 	@Override
 	MetricThreshold<Double> getDangerThreshold() {
 		return createMetricThreshold(10D)
+	}
+
+	@Override
+	Double createEmptyValue() {
+		return 0d
 	}
 }

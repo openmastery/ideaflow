@@ -257,4 +257,9 @@ class HaystackAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds> {
 		}
 	}
 
+	@Override
+	DurationInSeconds createEmptyValue() {
+		return new DurationInSeconds(0)
+	}
+
 }

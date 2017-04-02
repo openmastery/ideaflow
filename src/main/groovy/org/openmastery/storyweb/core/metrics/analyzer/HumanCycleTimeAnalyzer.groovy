@@ -90,4 +90,9 @@ class HumanCycleTimeAnalyzer extends AbstractTimelineAnalyzer<DurationInSeconds>
 		return createMetricThreshold(new DurationInSeconds(10 * 60))
 	}
 
+	@Override
+	DurationInSeconds createEmptyValue() {
+		return new DurationInSeconds(0)
+	}
+
 }

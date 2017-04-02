@@ -20,6 +20,7 @@ import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.TagsUtil
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
+import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.storyweb.api.metrics.MetricThreshold
@@ -62,5 +63,10 @@ class DisruptionsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 	@Override
 	MetricThreshold<Double> getDangerThreshold() {
 		return createMetricThreshold(5D)
+	}
+
+	@Override
+	Double createEmptyValue() {
+		return 0d
 	}
 }

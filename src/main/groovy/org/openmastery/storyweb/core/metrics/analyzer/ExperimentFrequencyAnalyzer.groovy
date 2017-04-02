@@ -79,4 +79,8 @@ class ExperimentFrequencyAnalyzer extends AbstractTimelineAnalyzer<Double> {
 		return createMetricThreshold(15D)
 	}
 
+	@Override
+	Double createEmptyValue() {
+		return 0d
+	}
 }
