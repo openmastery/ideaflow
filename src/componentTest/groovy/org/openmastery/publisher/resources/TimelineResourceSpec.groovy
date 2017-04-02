@@ -191,4 +191,14 @@ class TimelineResourceSpec extends Specification {
 		assert subtaskMetrics.size() == 5
 	}
 
+	def "generateTimelineWithAllSubtasks SHOULD NOT return 404"() {
+		Task task = taskClient.createTask("basic", "create empty task", "project")
+
+		when:
+		ideaFlowClient.getTimelineOverviewForTaskWithAllSubtasks(task.id)
+
+		then:
+		thrown(NotFoundException)
+	}
+
 }

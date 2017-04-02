@@ -15,6 +15,7 @@
  */
 package org.openmastery.publisher.ideaflow
 
+import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
@@ -227,6 +228,9 @@ class IdeaFlowService {
 	TaskTimelineWithAllSubtasks generateTimelineWithAllSubtasks(Long taskId) {
 		Task task = taskService.findTaskWithId(taskId)
 		IdeaFlowTaskTimeline taskTimeline = generateTaskTimeline(task);
+		if (taskTimeline == null) {
+			throw new NotFoundException();
+		}
 
 		List<IdeaFlowSubtaskTimeline> subtaskTimelines = splitTimelineBySubtaskEvents(taskTimeline)
 
