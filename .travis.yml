@@ -19,7 +19,7 @@ cache:
     - $HOME/.gradle/wrapper/
 
 before_install:
-  - sed -i '' 's/password=postgres/password=/g' src/main/resources/application.properties
+  - sed -i 's/password=postgres/password=/g' src/main/resources/application.properties
 
 notifications:
   email:
