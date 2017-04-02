@@ -153,25 +153,35 @@ need to update index.html and set url = "/s/api-json/service.json" rather than t
 
 This application is currently deployed on Heroku at http://om-ideaflow.herokuapp.com.  For an API-Key on the shared service, please contact janelle@openmastery.org.  We will have account creation setup soon, but while this project is still in early development, accounts are created manually.
 
-To deploy to Heroku:
-
 Install heroku cli (google)
 
 Log into heroku
 
 `heroku login`
 
+#### Initial Heroku Application Creation
+
 Create the heroku application
 
 `heroku create om-ideaflow`
 
-Or, if the application has already been created, initialize the remote
-
-`heroku git:remote -a om-ideaflow`
-
 Create the database (can upgrade to hobby-basic just by associating credit card w/ account)
 
 `heroku addons:create heroku-postgresql:hobby-dev`
+
+Configure the domain
+
+`heroku domains:add ideaflowdx.openmastery.org`
+
+Set up SSL
+
+`heroku certs:auto:enable`
+
+#### Ongoing Heroku Application Deployment
+
+If you have not previously deployed to Heroku, initialize the remote
+
+`heroku git:remote -a om-ideaflow`
 
 Deploy the application on heroku
 
