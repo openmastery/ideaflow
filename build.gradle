@@ -121,7 +121,7 @@ task removePostgres(type: Exec) {
 }
 
 task createPostgres(type: Exec) {
-	commandLine 'docker create --name=postgres --publish=15342:5432 --env="POSTGRES_USER=postgres" --env="POSTGRES_PASSWORD=postgres" postgres:9.5.5'.split(/\s+/)
+	commandLine 'docker create --name=postgres --publish=5432:5432 --env="POSTGRES_USER=postgres" --env="POSTGRES_PASSWORD=postgres" postgres:9.5.5'.split(/\s+/)
 	mustRunAfter pullPostgres, removePostgres
 }
 
