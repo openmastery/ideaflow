@@ -18,9 +18,12 @@ cache:
     - $HOME/.gradle/wrapper/
 
 before_install:
-  - sudo echo "127.0.0.1 local.docker" >> /etc/hosts
   - ./gradlew pullPostgres createPostgres createTestDatabase
 
 notifications:
   email:
     - janelle@openmastery.org
+
+addons:
+  hosts:
+    - local.docker
