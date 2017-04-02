@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/openmastery/ideaflow.svg?branch=master)](https://travis-ci.org/openmastery/ideaflow)
+
 # IdeaFlow Metrics Server 
 
 The "/ideaflow" service acts as a centralized endpoint for IdeaFlow data collection (@see https://plugins.jetbrains.com/idea/plugin/9239) and low-level metrics profiling on individual Idea Flow Maps (@see github.com/openmastery/ideaflow-profiler).
