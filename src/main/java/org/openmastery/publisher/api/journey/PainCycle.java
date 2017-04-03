@@ -66,7 +66,6 @@ public class PainCycle extends AbstractRelativeInterval implements StoryElement 
 		return eventType;
 	}
 
-	@JsonIgnore
 	public String getFullPath() { return parentPath + getRelativePath(); }
 
 	public void setParentPath(String parentPath) {

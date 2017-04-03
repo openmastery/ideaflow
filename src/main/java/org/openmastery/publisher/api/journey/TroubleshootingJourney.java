@@ -64,7 +64,6 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 		return description;
 	}
 
-	@JsonIgnore
 	public String getFullPath() { return parentPath + getRelativePath(); }
 
 	public void setParentPath(String parentPath) {

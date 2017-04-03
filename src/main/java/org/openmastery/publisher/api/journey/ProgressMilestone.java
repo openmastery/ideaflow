@@ -56,7 +56,6 @@ public class ProgressMilestone extends AbstractRelativeInterval implements Story
 		return "/milestone/" + event.getId();
 	}
 
-	@JsonIgnore
 	public String getFullPath() {
 		return parentPath + getRelativePath();
 	}

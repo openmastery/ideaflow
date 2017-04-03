@@ -58,7 +58,6 @@ public class SubtaskStory implements StoryContextElement {
 		return "/subtask/"+getId();
 	}
 
-	@JsonIgnore
 	public String getFullPath() { return parentPath + getRelativePath(); }
 
 	@Override

@@ -50,7 +50,6 @@ public class IdeaFlowStory implements StoryContextElement {
 		return "/task/id/"+task.getId();
 	}
 
-	@JsonIgnore
 	public String getFullPath() {
 		return getRelativePath();
 	}

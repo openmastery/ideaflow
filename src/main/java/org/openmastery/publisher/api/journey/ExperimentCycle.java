@@ -59,7 +59,6 @@ public class ExperimentCycle extends AbstractRelativeInterval implements StoryEl
 		executionEvent.setFullPath(getFullPath());
 	}
 
-	@JsonIgnore
 	public String getFullPath() {
 		return parentPath + getRelativePath();
 	}
