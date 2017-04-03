@@ -85,6 +85,7 @@ class TaskEventResourceSpec extends Specification {
 
 		when:
 		Event savedEvent = eventClient.updateEventSnippet("/task/id/$taskId/subtask/${eventEntity.id}", snippet)
+		savedEvent = eventClient.updateEventSnippet("/task/id/$taskId/subtask/${eventEntity.id}", snippet)
 
 		then:
 		assert savedEvent != null

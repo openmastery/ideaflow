@@ -64,8 +64,6 @@ public interface AnnotationRespository extends PagingAndSortingRepository<Annota
 	@Modifying
 	@Transactional
 	@Query(value="delete from annotation where event_id = ?1 and type = ?2")
-	void deleteByEventAndType(long eventId, String faq);
-
-
+	void deleteByEventAndType(long eventId, String type);
 
 }

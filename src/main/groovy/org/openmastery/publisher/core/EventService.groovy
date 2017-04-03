@@ -133,6 +133,7 @@ class EventService {
 			.source(formattableSnippet.source)
 			.build()
 
+		annotationRespository.deleteByEventAndType(eventId, "snippet")
 		annotationRespository.save(snippetAnnotationEntity)
 
 		AnnotatedEvent event = new AnnotatedEvent()
