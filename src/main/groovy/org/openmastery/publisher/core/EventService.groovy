@@ -25,9 +25,11 @@ import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.event.AnnotatedEvent
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
+import org.openmastery.publisher.api.journey.FormattableSnippet
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
+import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.event.EventRepository
 import org.openmastery.publisher.security.InvocationContext
@@ -117,4 +119,28 @@ class EventService {
 	}
 
 
+	AnnotatedEvent annotateWithSnippet(long userId, Long eventId, FormattableSnippet formattableSnippet) {
+		EventEntity eventEntity = eventRepository.findByOwnerIdAndId(userId, eventId)
+		if (eventEntity == null) {
+			throw new NotFoundException("Unable to annotate event.  EventId = $eventId not found.")
+		}
+
+		SnippetAnnotationEntity snippetAnnotationEntity = SnippetAnnotationEntity.builder()
+			.ownerId(userId)
+			.taskId(eventEntity.taskId)
+			.eventId(eventId)
+			.snippet(formattableSnippet.contents)
+			.source(formattableSnippet.source)
+			.build()
+
+		annotationRespository.save(snippetAnnotationEntity)
+
+		AnnotatedEvent event = new AnnotatedEvent()
+		event.taskId = eventEntity.taskId
+		event.eventId = eventEntity.id
+		event.type = eventEntity.type
+		event.description = eventEntity.comment
+
+		return event
+	}
 }

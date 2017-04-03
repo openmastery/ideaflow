@@ -57,6 +57,9 @@ public class SnippetAnnotationEntity extends AnnotationEntity {
 		setMetadataField(SNIPPET_KEY, snippet);
 	}
 
+	public static SnippetAnnotationEntityBuilder builder() {
+		return new SnippetAnnotationEntityBuilder();
+	}
 
 	public static class SnippetAnnotationEntityBuilder extends AnnotationEntityBuilder<SnippetAnnotationEntityBuilder> {
 

@@ -126,6 +126,10 @@ public class TaskEventResource {
 		if (patch.getFaq() != null) {
 			event = eventService.annotateWithFAQ(invocationContext.getUserId(), painId, patch.getFaq());
 		}
+		if (patch.getFormattableSnippet() != null) {
+			eventService.annotateWithSnippet(invocationContext.getUserId(), painId, patch.getFormattableSnippet());
+		}
+
 		event.setFullPath(ResourcePaths.TASK_PATH + ResourcePaths.ID_PATH + "/" +taskId
 						+ ResourcePaths.TASK_SUBTASK_PATH + "/" +subtaskId
 						+ ResourcePaths.TASK_JOURNEY_PATH + "/" + journeyId
@@ -162,6 +166,10 @@ public class TaskEventResource {
 		if (patch.getFaq() != null) {
 			event = eventService.annotateWithFAQ(invocationContext.getUserId(), awesomeId, patch.getFaq());
 		}
+		if (patch.getFormattableSnippet() != null) {
+			eventService.annotateWithSnippet(invocationContext.getUserId(), awesomeId, patch.getFormattableSnippet());
+		}
+
 		event.setFullPath(ResourcePaths.TASK_PATH + ResourcePaths.ID_PATH + "/" +taskId
 				+ ResourcePaths.TASK_SUBTASK_PATH + "/" +subtaskId
 				+ ResourcePaths.TASK_JOURNEY_PATH + "/" + journeyId

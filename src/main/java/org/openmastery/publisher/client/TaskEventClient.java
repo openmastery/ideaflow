@@ -6,6 +6,7 @@ import org.openmastery.publisher.api.ResourcePaths;
 import org.openmastery.publisher.api.annotation.FAQAnnotation;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.EventPatch;
+import org.openmastery.publisher.api.journey.FormattableSnippet;
 
 
 import java.util.List;
@@ -28,6 +29,14 @@ public class TaskEventClient extends IdeaFlowClient<Event, TaskEventClient> {
 	public Event updateEventFaq(String fullPath, String faq) {
 		EventPatch patch = new EventPatch();
 		patch.setFaq(faq);
+		return crudClientRequest
+				.path(fullPath)
+				.updateWithPut(patch);
+	}
+
+	public Event updateEventSnippet(String fullPath, FormattableSnippet snippet) {
+		EventPatch patch = new EventPatch();
+		patch.setFormattableSnippet(snippet);
 		return crudClientRequest
 				.path(fullPath)
 				.updateWithPut(patch);

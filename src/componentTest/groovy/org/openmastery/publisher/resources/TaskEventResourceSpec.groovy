@@ -1,6 +1,7 @@
 package org.openmastery.publisher.resources
 
 import org.openmastery.publisher.api.event.Event
+import org.openmastery.publisher.api.journey.FormattableSnippet
 import org.openmastery.publisher.client.BatchClient
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.ComponentTest
@@ -68,6 +69,22 @@ class TaskEventResourceSpec extends Specification {
 
 		when:
 		Event savedEvent = eventClient.updateEventFaq("/task/id/$taskId/subtask/${eventEntity.id}", "My FAQ!")
+
+		then:
+		assert savedEvent != null
+
+	}
+
+	def "Should update Snippet for existing event"() {
+		given:
+		EventEntity eventEntity = createRandomEvent()
+		eventEntity.type = EventType.WTF
+		eventEntity = persistenceService.saveEvent(eventEntity)
+
+		FormattableSnippet snippet = new FormattableSnippet(source: 'file', contents: '{{ callThisCode(); }}')
+
+		when:
+		Event savedEvent = eventClient.updateEventSnippet("/task/id/$taskId/subtask/${eventEntity.id}", snippet)
 
 		then:
 		assert savedEvent != null
