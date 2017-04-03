@@ -43,6 +43,14 @@ public class GlossaryClient extends StorywebClient<GlossaryDefinition, GlossaryC
 				.find();
 	}
 
+	public Glossary findAllDefinitionsByTask(Long taskId) {
+		return (Glossary) getUntypedCrudClientRequest()
+				.entity(Glossary.class)
+				.path(ResourcePaths.TASK_PATH)
+				.path(taskId)
+				.find();
+	}
+
 	public Glossary findDefinitionsbyTag(List<String> tags) {
 		CrudClientRequest<Glossary> findFilteredRequest = getUntypedCrudClientRequest();
 

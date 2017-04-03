@@ -79,7 +79,7 @@ public class GlossaryResource {
 	/**
 	 * Retrieve all glossary definitions, or if tags are specified, filter by tags
 	 * @param tags Return only the specified tags
-	 * @return List<GlossaryDefinition>
+	 * @return Glossary
 	 */
 	@GET
 	public Glossary findGlossaryDefinitionsByTag(@QueryParam("tag") List<String> tags) {
@@ -88,6 +88,17 @@ public class GlossaryResource {
 		} else {
 			return glossaryService.findGlossaryDefinitionsByTag(tags);
 		}
+	}
+
+	/**
+	 * Retrieve all glossary definitions mentioned by the associated task
+	 * @param taskId Return only the terms tagged within the task
+	 * @return Glossary
+	 */
+	@GET
+	@Path(ResourcePaths.TASK_PATH + "/{taskId}")
+	public Glossary findGlossaryDefinitionsByTask(@PathParam("taskId") Long taskId) {
+			return glossaryService.findAllGlossaryDefinitionsByTask(taskId);
 	}
 
 }

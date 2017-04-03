@@ -21,6 +21,7 @@ import org.openmastery.storyweb.api.FaqSummary;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
@@ -55,7 +56,10 @@ public interface AnnotationRespository extends PagingAndSortingRepository<Annota
 			"order by position asc")
 	List<FaqAnnotationEntity> findAllFaqsByUser(Long userId);
 
-
+	@Query(nativeQuery = true, value = "select a.* from annotation a where a.type = 'faq' " +
+			"and a.task_id=(:taskId) " +
+			"and a.owner_id=(:ownerId) ")
+	List<FaqAnnotationEntity> findByOwnerIdAndTaskId(@Param("ownerId") Long ownerId, @Param("taskId") Long taskId);
 
 	@Modifying
 	@Transactional

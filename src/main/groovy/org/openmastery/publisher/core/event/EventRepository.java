@@ -28,6 +28,7 @@ public interface EventRepository extends PagingAndSortingRepository<EventEntity,
 
 	List<EventEntity> findByTaskId(long taskId);
 
+	List<EventEntity> findByOwnerIdAndTaskId(long ownerId, long taskId);
 
 	@Query(nativeQuery = true, value = "select * from event where owner_id=:ownerId and position >= :position order by position asc limit :limit")
 	List<EventEntity> findRecentEvents(@Param("ownerId") Long userId, @Param("position") Timestamp afterDate,  @Param("limit") Integer limit);

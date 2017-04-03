@@ -3,6 +3,8 @@ package org.openmastery.storyweb.resources
 import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.publisher.ComponentTest
+import org.openmastery.publisher.api.task.Task
+import org.openmastery.publisher.client.TaskClient
 import org.openmastery.storyweb.api.glossary.Glossary
 import org.openmastery.storyweb.api.glossary.GlossaryDefinition
 import org.openmastery.storyweb.client.GlossaryClient
@@ -14,6 +16,9 @@ class GlossaryResourceSpec extends Specification {
 
 	@Autowired
 	private GlossaryClient glossaryClient
+
+	@Autowired
+	private TaskClient taskClient
 
 	def "createNewTerm SHOULD create entry"() {
 		given:
@@ -67,6 +72,20 @@ class GlossaryResourceSpec extends Specification {
 
 		then:
 		thrown(NotFoundException)
+	}
+
+	def "findDefinitionsByTask SHOULD return all definitions associated with a task"() {
+		given:
+		Task task = taskClient.createTask('US12345', "A description that includes a #hashtag", "myproject")
+
+		when:
+		Glossary glossary = glossaryClient.findAllDefinitionsByTask(task.id)
+
+		then:
+		assert glossary.definitions.size() == 1
+		assert glossary.definitions.get(0).name == '#hashtag'
+		assert glossary.definitions.get(0).description == null
+
 	}
 
 

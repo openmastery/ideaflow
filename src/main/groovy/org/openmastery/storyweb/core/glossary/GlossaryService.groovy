@@ -18,6 +18,13 @@ package org.openmastery.storyweb.core.glossary
 import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
 import org.openmastery.mapper.EntityMapper
+import org.openmastery.publisher.core.annotation.AnnotationRespository
+import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
+import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.core.event.EventRepository
+import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.core.task.TaskRepository
+import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.glossary.Glossary
 import org.openmastery.storyweb.api.glossary.GlossaryDefinition
 import org.openmastery.publisher.api.journey.TagsUtil
@@ -30,6 +37,18 @@ class GlossaryService {
 
 	@Autowired
 	GlossaryRepository glossaryRepository
+
+	@Autowired
+	TaskRepository taskRepository
+
+	@Autowired
+	EventRepository eventRepository
+
+	@Autowired
+	AnnotationRespository annotationRespository
+
+	@Autowired
+	InvocationContext invocationContext
 
 	private EntityMapper entityMapper = new EntityMapper();
 
@@ -96,6 +115,7 @@ class GlossaryService {
 			if (definitionsByTag.get(tag) == null) {
 				GlossaryDefinitionEntity newEntry = new GlossaryDefinitionEntity(null, tag, null)
 				glossaryRepository.save(newEntry)
+				definitionsByTag.put(tag, newEntry)
 			}
 		}
 
@@ -106,4 +126,26 @@ class GlossaryService {
 	}
 
 
+	Glossary findAllGlossaryDefinitionsByTask(Long taskId) {
+		TaskEntity taskEntity = taskRepository.findOne(taskId);
+		List<EventEntity> eventEntities = eventRepository.findByOwnerIdAndTaskId(invocationContext.userId, taskId)
+		List<FaqAnnotationEntity> annotationEntities = annotationRespository.findByOwnerIdAndTaskId(invocationContext.userId, taskId)
+
+		Set<String> hashTags = []
+		hashTags.addAll(TagsUtil.extractUniqueHashTags(taskEntity.description))
+
+		eventEntities.each { EventEntity eventEntity ->
+			hashTags.addAll( TagsUtil.extractUniqueHashTags(eventEntity.comment))
+		}
+
+		annotationEntities.each { FaqAnnotationEntity annotationEntity ->
+			hashTags.addAll( TagsUtil.extractUniqueHashTags(annotationEntity.comment))
+		}
+
+		//task description
+		//all event comment tags, subtask, milestone, wtf, yay
+		//all faq comments associated with the task
+		//collect all the tags across all of these, then findByTagsLike() and return the associated definition list
+		return createGlossaryDefinitionsWhenNotExists(hashTags.toList());
+	}
 }
