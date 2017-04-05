@@ -15,12 +15,13 @@
  */
 package org.openmastery.publisher.core
 
+import com.bancvue.rest.exception.ForbiddenException
+import groovy.util.logging.Slf4j
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.activity.NewActivity
 import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.NewSnippetEvent
-import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.activity.ActivityEntity
 import org.openmastery.publisher.core.activity.BlockActivityEntity
 import org.openmastery.publisher.core.activity.EditorActivityEntity
@@ -40,6 +41,7 @@ import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDateTime
 
+@Slf4j
 @Component
 class IFMBatchService {
 
@@ -58,6 +60,8 @@ class IFMBatchService {
 	}
 
 	public void addIFMBatch(NewIFMBatch batch) {
+		assertAllBatchItemsAreAssociatedWithTasksOwnedByCaller(batch)
+
 		Duration adjustment = determineTimeAdjustment(TimeConverter.toJavaLocalDateTime(batch.timeSent))
 
 		EntityBuilder entityBuilder = new EntityBuilder(invocationContext.getUserId())
@@ -72,6 +76,25 @@ class IFMBatchService {
 
 		saveTaskModifyDates(entityBuilder.getTaskModificationDates())
 
+	}
+
+	private void assertAllBatchItemsAreAssociatedWithTasksOwnedByCaller(NewIFMBatch batch) {
+		Set<Long> taskIds = []
+		batch.getBatchItems().each {
+			taskIds.add(it.taskId)
+		}
+
+		long userId = invocationContext.getUserId();
+		for (Long taskId : taskIds) {
+			TaskEntity task = persistenceService.findTaskWithId(taskId)
+			if (task == null || task.ownerId != userId) {
+				if (task == null) {
+					// TODO: warning almost meaningless... should be saving the entire batch for reference
+					log.warn("Attempting to add batch item non-existent taskId, taskId={}", taskId)
+				}
+				throw new ForbiddenException("Attempting to add items to task user does not own, userId=${userId}, taskId=${taskId}")
+			}
+		}
 	}
 
 	private void saveActivities(List<ActivityEntity> activityList) {

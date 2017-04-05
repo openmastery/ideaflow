@@ -11,7 +11,7 @@ import org.openmastery.publisher.api.event.EventType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewBatchEvent {
+public class NewBatchEvent implements BatchItem {
 
 	private Long taskId;
 	private String comment;

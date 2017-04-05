@@ -1,5 +1,6 @@
 package org.openmastery.publisher.resources
 
+import com.bancvue.rest.exception.ValidationException
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
@@ -16,6 +17,7 @@ import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.task.TaskEntity
+import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.testsupport.BeanCompare
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,12 +36,16 @@ class BatchResourceSpec extends Specification {
 	private IdeaFlowPersistenceService persistenceService
 	@Autowired
 	private TimeService timeService
+	@Autowired
+	private UserEntity testUser
 	private BeanCompare comparator = new BeanCompare().excludeFields("id", "ownerId", "metadata", "metadataContainer")
 
 	private Long taskId
 
 	def setup() {
-		TaskEntity taskEntity = aRandom.taskEntity().build()
+		TaskEntity taskEntity = aRandom.taskEntity()
+				.ownerId(testUser.id)
+				.build()
 		taskId = persistenceService.saveTask(taskEntity).id
 	}
 

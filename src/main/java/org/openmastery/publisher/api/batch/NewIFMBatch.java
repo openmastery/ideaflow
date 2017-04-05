@@ -1,10 +1,13 @@
 package org.openmastery.publisher.api.batch;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.activity.*;
 import org.openmastery.publisher.api.event.NewSnippetEvent;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -24,17 +27,38 @@ public class NewIFMBatch {
 	@Singular("event")private List<NewBatchEvent> eventList;
 	@Singular("snippetEvent") private List<NewSnippetEvent> snippetEventList;
 
-	public boolean isEmpty() {
-		boolean hasContent = editorActivityList != null && !editorActivityList.isEmpty();
-		hasContent |= externalActivityList != null && !externalActivityList.isEmpty();
-		hasContent |= idleActivityList != null && !idleActivityList.isEmpty();
-		hasContent |= executionActivityList != null && !executionActivityList.isEmpty();
-		hasContent |= modificationActivityList != null && !modificationActivityList.isEmpty();
-		hasContent |= blockActivityList != null && !blockActivityList.isEmpty();
-		hasContent |= eventList != null && !eventList.isEmpty();
-		hasContent |= snippetEventList != null && !snippetEventList.isEmpty();
+	private List<List<? extends BatchItem>> getBatchItemLists() {
+		ArrayList<List<? extends BatchItem>> batchItemLists = new ArrayList<>(10);
+		batchItemLists.add(getNotNullList(editorActivityList));
+		batchItemLists.add(getNotNullList(externalActivityList));
+		batchItemLists.add(getNotNullList(idleActivityList));
+		batchItemLists.add(getNotNullList(executionActivityList));
+		batchItemLists.add(getNotNullList(modificationActivityList));
+		batchItemLists.add(getNotNullList(blockActivityList));
+		batchItemLists.add(getNotNullList(eventList));
+		batchItemLists.add(getNotNullList(snippetEventList));
+		return batchItemLists;
+	}
 
-		return !hasContent;
+	private List<? extends BatchItem> getNotNullList(List<? extends BatchItem> list) {
+		return list == null ? Collections.EMPTY_LIST : list;
+	}
+
+	@JsonIgnore
+	public List<BatchItem> getBatchItems() {
+		List<BatchItem> batchItems = new ArrayList<>();
+		getBatchItemLists().forEach(batchItems::addAll);
+		return batchItems;
+	}
+
+	@JsonIgnore
+	public boolean isEmpty() {
+		for (List<? extends BatchItem> list : getBatchItemLists()) {
+			if (list.isEmpty() == false) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

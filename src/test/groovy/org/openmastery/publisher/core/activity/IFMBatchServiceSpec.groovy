@@ -1,9 +1,13 @@
 package org.openmastery.publisher.core.activity
 
+import com.bancvue.rest.exception.ForbiddenException
 import org.openmastery.publisher.api.activity.NewEditorActivity
 import org.openmastery.publisher.api.batch.NewBatchEvent
+import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.core.IFMBatchService
+import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeConverter
@@ -16,16 +20,16 @@ import static org.openmastery.publisher.ARandom.aRandom
 
 class IFMBatchServiceSpec extends Specification {
 
-	IFMBatchService ifmBatchService
-	IFMBatchService.EntityBuilder entityBuilder
-	MockTimeService mockTimeService
+	IFMBatchService ifmBatchService = new IFMBatchService()
+	IFMBatchService.EntityBuilder entityBuilder = new IFMBatchService.EntityBuilder(-1)
+	MockTimeService mockTimeService = new MockTimeService()
+	InvocationContext invocationContext = Mock(InvocationContext)
+	IdeaFlowPersistenceService persistenceService = Mock(IdeaFlowPersistenceService)
 
 	def setup() {
-		ifmBatchService = new IFMBatchService()
-		entityBuilder = new IFMBatchService.EntityBuilder(-1)
-		mockTimeService = new MockTimeService()
 		ifmBatchService.timeService = mockTimeService
-		ifmBatchService.invocationContext = Mock(InvocationContext)
+		ifmBatchService.invocationContext = invocationContext
+		ifmBatchService.persistenceService = persistenceService
 	}
 
 	def "determineTimeAdjustment SHOULD adjust for local clock being behind"() {
@@ -118,4 +122,24 @@ class IFMBatchServiceSpec extends Specification {
 		then:
 		thrown(UnsupportedOperationException)
 	}
+
+	def "addIFMBatch should throw Forbidden if task owner does not match current user"() {
+		given:
+		TaskEntity taskEntity = TaskEntity.builder()
+				.id(2)
+				.ownerId(3)
+				.build()
+		NewIFMBatch batch = NewIFMBatch.builder()
+				.event(NewBatchEvent.builder().taskId(taskEntity.id).build())
+				.build()
+		invocationContext.getUserId() >> taskEntity.ownerId + 1
+		persistenceService.findTaskWithId(taskEntity.id) >> taskEntity
+
+		when:
+		ifmBatchService.addIFMBatch(batch)
+
+		then:
+		thrown(ForbiddenException)
+	}
+
 }
