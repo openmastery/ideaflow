@@ -56,6 +56,8 @@ public class CapacityDistributionDecorator {
 		saveTotalDurationForBandType(capacity, timeline, IdeaFlowStateType.PROGRESS)
 		saveTotalDurationForBandType(capacity, timeline, IdeaFlowStateType.TROUBLESHOOTING)
 
+		capacity.calculatePercentages()
+
 		return capacity
 	}
 
@@ -79,6 +81,7 @@ public class CapacityDistributionDecorator {
 			}
 		}
 
+		distribution.calculatePercentages()
 		return distribution
 	}
 

@@ -15,15 +15,38 @@ import java.util.Map;
 @AllArgsConstructor
 public class CapacityDistribution {
 
-	Map<IdeaFlowStateType, Long> capacityDistributionByType = new HashMap<IdeaFlowStateType, Long>();
+
+	Map<IdeaFlowStateType, Entry> capacityDistributionByType = new HashMap<IdeaFlowStateType, Entry>();
 
 	public void addDurationForType(IdeaFlowStateType ideaFlowStateType, Long durationInSeconds) {
-		Long existingTime = capacityDistributionByType.get(ideaFlowStateType);
+		Entry existingEntry = capacityDistributionByType.get(ideaFlowStateType);
 
-		if (existingTime == null) {
-			capacityDistributionByType.put(ideaFlowStateType, durationInSeconds);
+		if (existingEntry == null) {
+			Entry entry = new Entry();
+			entry.durationInSeconds = durationInSeconds;
+			capacityDistributionByType.put(ideaFlowStateType, entry);
 		} else {
-			capacityDistributionByType.put(ideaFlowStateType, existingTime + durationInSeconds);
+			existingEntry.durationInSeconds = existingEntry.durationInSeconds + durationInSeconds;
 		}
 	}
+
+	public void calculatePercentages() {
+		long sumDuration = 0L;
+		for (Entry capacityEntry : capacityDistributionByType.values()) {
+			sumDuration += capacityEntry.durationInSeconds;
+		}
+
+		for (Entry capacityEntry : capacityDistributionByType.values()) {
+			capacityEntry.percentCapacity = 100 * capacityEntry.durationInSeconds / sumDuration;
+		}
+	}
+
+	@Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class Entry {
+		Long durationInSeconds;
+		Long percentCapacity;
+	}
+
 }

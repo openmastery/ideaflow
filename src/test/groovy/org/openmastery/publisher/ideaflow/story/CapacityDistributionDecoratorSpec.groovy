@@ -45,7 +45,11 @@ class CapacityDistributionDecoratorSpec extends Specification {
 		CapacityDistribution value = decorator.calculateCapacity(timeline)
 
 		then:
-		assert value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING, 45)
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING).durationInSeconds ==  45L
+
+
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING).percentCapacity == 100L;
+
 	}
 
 	def "calculateCapacityDistribution SHOULD add up the duration for bands by type"() {
@@ -73,9 +77,11 @@ class CapacityDistributionDecoratorSpec extends Specification {
 		CapacityDistribution value = decorator.calculateCapacity(timeline)
 
 		then:
-		assert value.capacityDistributionByType.get(IdeaFlowStateType.LEARNING, 30)
-		assert value.capacityDistributionByType.get(IdeaFlowStateType.PROGRESS, 40)
-		assert value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING, 15)
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.LEARNING).durationInSeconds ==  30L
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.PROGRESS).durationInSeconds == 40L
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING).durationInSeconds == 15L
+
+		assert value.capacityDistributionByType.get(IdeaFlowStateType.TROUBLESHOOTING).percentCapacity == 17L;
 	}
 
 
