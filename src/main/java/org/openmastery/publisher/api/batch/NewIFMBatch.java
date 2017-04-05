@@ -28,7 +28,7 @@ public class NewIFMBatch {
 	@Singular("snippetEvent") private List<NewSnippetEvent> snippetEventList;
 
 	private List<List<? extends BatchItem>> getBatchItemLists() {
-		ArrayList<List<? extends BatchItem>> batchItemLists = new ArrayList<>(10);
+		ArrayList<List<? extends BatchItem>> batchItemLists = new ArrayList<List<? extends BatchItem>>(10);
 		batchItemLists.add(getNotNullList(editorActivityList));
 		batchItemLists.add(getNotNullList(externalActivityList));
 		batchItemLists.add(getNotNullList(idleActivityList));
@@ -46,8 +46,10 @@ public class NewIFMBatch {
 
 	@JsonIgnore
 	public List<BatchItem> getBatchItems() {
-		List<BatchItem> batchItems = new ArrayList<>();
-		getBatchItemLists().forEach(batchItems::addAll);
+		List<BatchItem> batchItems = new ArrayList<BatchItem>();
+		for (List<? extends BatchItem> list : getBatchItemLists()) {
+			batchItems.addAll(list);
+		}
 		return batchItems;
 	}
 
