@@ -168,7 +168,7 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 				.readCodeAndAdvance(30)
 				.wtf()
 				.readCodeAndAdvance(30)
-				.awesome()
+				.troubleshootingJourneyComplete()
 				.readCodeAndAdvance(5)
 				.wtf()
 				.readCodeAndAdvance(30)
@@ -186,6 +186,30 @@ public class IdeaFlowBandGeneratorSpec extends Specification {
 		assertTroubleshootingBand(ideaFlowBands[3], startTime.plusMinutes(65), startTime.plusMinutes(95))
 		assertStrategyBand(ideaFlowBands[4], startTime.plusMinutes(95), startTime.plusMinutes(125))
 		assert ideaFlowBands.size() == 5
+	}
+
+	def "generateIdeaFlowBands should not split strategy band if awesome event with no resolve tag"() {
+		given:
+		builder.activate()
+				.readCodeAndAdvance(30)
+				.wtf()
+				.readCodeAndAdvance(30)
+				.awesome()
+				.readCodeAndAdvance(5)
+				.wtf()
+				.readCodeAndAdvance(30)
+				.awesome()
+				.readCodeAndAdvance(30)
+				.deactivate()
+
+		when:
+		List<IdeaFlowBandModel> ideaFlowBands = generateIdeaFlowBands()
+
+		then:
+		assertStrategyBand(ideaFlowBands[0], startTime, startTime.plusMinutes(30))
+		assertTroubleshootingBand(ideaFlowBands[1], startTime.plusMinutes(30), startTime.plusMinutes(95))
+		assertStrategyBand(ideaFlowBands[2], startTime.plusMinutes(95), startTime.plusMinutes(125))
+		assert ideaFlowBands.size() == 3
 	}
 
 	def "generateIdeaFlowBands should ignore strategy band if strategy starts and ends within troubleshooting band"() {

@@ -2,6 +2,7 @@ package org.openmastery.publisher.ideaflow.timeline
 
 import org.joda.time.Duration
 import org.joda.time.LocalDateTime
+import org.openmastery.publisher.api.SharedTags
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
@@ -164,6 +165,11 @@ class IdeaFlowTimelineElementBuilder {
 
 	IdeaFlowTimelineElementBuilder awesome() {
 		addEvent(EventType.AWESOME)
+		this
+	}
+
+	IdeaFlowTimelineElementBuilder troubleshootingJourneyComplete() {
+		addEvent(EventType.AWESOME, "done ${SharedTags.RESOLVE_TROUBLESHOOTING_JOURNEY}")
 		this
 	}
 

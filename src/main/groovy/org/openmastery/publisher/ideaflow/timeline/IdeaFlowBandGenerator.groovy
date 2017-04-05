@@ -19,6 +19,7 @@ import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
+import org.openmastery.publisher.api.SharedTags
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
@@ -138,6 +139,7 @@ class IdeaFlowBandGenerator {
 		List<IdeaFlowBandModel> troubleshootingBandList = []
 		LocalDateTime troubleshootingStart = null
 		LocalDateTime troubleshootingEnd = null
+		LocalDateTime lastAwesomeEvent = null
 		List<Event> troubleshootingEvents = getTroubleshootingEvents(sortedPositionableList)
 		for (Event event : troubleshootingEvents) {
 			if (event.type == EventType.WTF) {
@@ -145,6 +147,7 @@ class IdeaFlowBandGenerator {
 					troubleshootingBandList << createIdeaFlowBand(troubleshootingStart, troubleshootingEnd, IdeaFlowStateType.TROUBLESHOOTING)
 					troubleshootingStart = null
 					troubleshootingEnd = null
+					lastAwesomeEvent = null
 				}
 
 				if (troubleshootingStart == null) {
@@ -152,15 +155,26 @@ class IdeaFlowBandGenerator {
 				}
 			} else if (event.type == EventType.AWESOME) {
 				if (troubleshootingStart != null) {
-					troubleshootingEnd = event.position
+					if (isTroubleshootingJourneyResolved(event)) {
+						troubleshootingEnd = event.position
+					} else {
+						lastAwesomeEvent = event.position
+					}
 				}
 			}
 		}
 
+		if ((troubleshootingEnd == null) && lastAwesomeEvent != null) {
+			troubleshootingEnd = lastAwesomeEvent
+		}
 		if (troubleshootingEnd != null) {
 			troubleshootingBandList << createIdeaFlowBand(troubleshootingStart, troubleshootingEnd, IdeaFlowStateType.TROUBLESHOOTING)
 		}
 		troubleshootingBandList
+	}
+
+	private boolean isTroubleshootingJourneyResolved(Event event) {
+		event?.description?.contains(SharedTags.RESOLVE_TROUBLESHOOTING_JOURNEY)
 	}
 
 	private List<Event> getTroubleshootingEvents(List<Positionable> sortedPositionableList) {
