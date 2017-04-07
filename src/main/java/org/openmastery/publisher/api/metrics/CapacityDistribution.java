@@ -37,6 +37,9 @@ public class CapacityDistribution {
 		}
 
 		for (Entry capacityEntry : capacityDistributionByType.values()) {
+			if (sumDuration == 0) {
+				sumDuration = 1;
+			}
 			capacityEntry.percentCapacity = 100 * capacityEntry.durationInSeconds / sumDuration;
 		}
 	}
