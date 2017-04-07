@@ -35,7 +35,7 @@ public class TagsUtil {
 				hashtags.add(matcher.group(1));
 			}
 		}
-
+		hashtags.remove("#resolve");
 		return hashtags;
 	}
 
