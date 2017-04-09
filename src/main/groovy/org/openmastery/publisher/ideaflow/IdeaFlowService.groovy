@@ -232,6 +232,11 @@ class IdeaFlowService {
 			throw new NotFoundException();
 		}
 
+		if (taskTimeline != null) {
+			List<Event> filteredEvents = filterEventsByType(taskTimeline.events, TASK_TIMELINE_EVENTS_TO_RETAIN)
+			taskTimeline.setEvents(filteredEvents)
+		}
+
 		List<IdeaFlowSubtaskTimeline> subtaskTimelines = splitTimelineBySubtaskEvents(taskTimeline)
 
 		IdeaFlowStory story = storyGenerator.generateIdeaFlowStory(taskTimeline)
