@@ -27,8 +27,6 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	IdeaFlowBand band;
 	@JsonIgnore
 	Long id;
-	@JsonIgnore
-	Event event;
 
 	String relativePath;
 	Set<String> contextTags;
@@ -59,7 +57,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	public String getDescription() {
 		String description = "";
 		if (painCycles.size() > 0) {
-			description = painCycles.get(0).event.getDescription();
+			description = painCycles.get(0).getDescription();
 		}
 		return description;
 	}
@@ -69,20 +67,18 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	public void setParentPath(String parentPath) {
 		this.parentPath = parentPath;
 		band.setFullPath(getFullPath());
-		event.setFullPath(getFullPath());
 
-		for (PainCycle discoveryCycle : painCycles) {
-			discoveryCycle.setParentPath(getFullPath());
+		for (PainCycle painCycle : painCycles) {
+			painCycle.setParentPath(getFullPath());
 		}
 	}
 
 	public void addPainCycle(Event wtfYayEvent, Long durationInSeconds) {
+		// TODO: this is a very non-obvious side-effect of calling this method... consider an alternative
 		if (id == null) {
 			id = wtfYayEvent.getId();
 			relativePath = "/journey/"+id;
-			this.event = wtfYayEvent;
 			band.setFullPath(getFullPath());
-			event.setFullPath(getFullPath());
 		}
 
 		PainCycle painCycle = new PainCycle(getFullPath(), wtfYayEvent, durationInSeconds);
@@ -94,7 +90,7 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 		boolean containsEvent = false;
 
 		for (PainCycle painCycle : painCycles) {
-			if (painCycle.event.getId() == eventId) {
+			if (painCycle.getId() == eventId) {
 				containsEvent = true;
 				break;
 			}
@@ -103,19 +99,19 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 	}
 
 	public void addFAQ(long eventId, String faqComment) {
-		for (PainCycle discoveryCycle : painCycles) {
-			if (discoveryCycle.event.getId() == eventId) {
-				discoveryCycle.addFaq(faqComment);
-				contextTags.addAll(discoveryCycle.contextTags);
+		for (PainCycle painCycle : painCycles) {
+			if (painCycle.getId() == eventId) {
+				painCycle.addFaq(faqComment);
+				contextTags.addAll(painCycle.contextTags);
 				break;
 			}
 		}
 	}
 
 	public void addSnippet(long eventId, String source, String snippet) {
-		for (PainCycle partialDiscovery : painCycles) {
-			if (partialDiscovery.event.getId() == eventId) {
-				partialDiscovery.formattableSnippet = new FormattableSnippet(source, snippet);
+		for (PainCycle partialPain : painCycles) {
+			if (partialPain.getId() == eventId) {
+				partialPain.formattableSnippet = new FormattableSnippet(source, snippet);
 				break;
 			}
 		}
