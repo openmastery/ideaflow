@@ -19,7 +19,6 @@ import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.*
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
 
@@ -47,7 +46,7 @@ class IdeaFlowStoryGenerator {
 
 		subtaskTimelines.collect() { IdeaFlowSubtaskTimeline subtaskTimeline ->
 			SubtaskStory subtaskStory = new SubtaskStory(parentPath, subtaskTimeline.subtask, subtaskTimeline)
-			subtaskStory.milestones = generateProgressMilestones(subtaskStory.fullPath, subtaskTimeline)
+			subtaskStory.progressTicks = generateProgressMilestones(subtaskStory.fullPath, subtaskTimeline)
 			subtaskStory.troubleshootingJourneys = journeyGenerator.createFromTimeline(subtaskTimeline);
 
 			subtaskStory.troubleshootingJourneys.each { TroubleshootingJourney journey ->
@@ -64,7 +63,7 @@ class IdeaFlowStoryGenerator {
 				.splitBySubtaskEvents()
 	}
 
-	private List<ProgressMilestone> generateProgressMilestones(String parentPath, IdeaFlowSubtaskTimeline subtaskTimeline) {
+	private List<ProgressTick> generateProgressMilestones(String parentPath, IdeaFlowSubtaskTimeline subtaskTimeline) {
 		Long relativeStart = subtaskTimeline.relativeStart
 		Long relativeEnd = subtaskTimeline.relativeEnd
 
@@ -72,31 +71,31 @@ class IdeaFlowStoryGenerator {
 			event.type == EventType.NOTE
 		}
 
-		ProgressMilestone lastMilestone = null
-		List<ProgressMilestone> progressMilestones = []
+		ProgressTick lastTick = null
+		List<ProgressTick> progressTicks = []
 
 		Event defaultEvent = subtaskTimeline.subtask
-		ProgressMilestone defaultMilestone = new ProgressMilestone(parentPath, defaultEvent)
-		defaultMilestone.durationInSeconds = relativeEnd - relativeStart
-		progressMilestones.add(defaultMilestone)
+		ProgressTick defaultTick = new ProgressTick(parentPath, defaultEvent)
+		defaultTick.durationInSeconds = relativeEnd - relativeStart
+		progressTicks.add(defaultTick)
 
-		lastMilestone = defaultMilestone
+		lastTick = defaultTick
 
 		progressNotes.each { Event progressNote ->
-			ProgressMilestone milestone = new ProgressMilestone(parentPath, progressNote)
-			progressMilestones.add(milestone)
+			ProgressTick progressTick = new ProgressTick(parentPath, progressNote)
+			progressTicks.add(progressTick)
 
-			lastMilestone.durationInSeconds = progressNote.relativePositionInSeconds - lastMilestone.relativePositionInSeconds
-			lastMilestone = milestone
+			lastTick.durationInSeconds = progressNote.relativePositionInSeconds - lastTick.relativePositionInSeconds
+			lastTick = progressTick
 		}
 
-		lastMilestone.durationInSeconds = relativeEnd - lastMilestone.relativePositionInSeconds
+		lastTick.durationInSeconds = relativeEnd - lastTick.relativePositionInSeconds
 
-		if (progressMilestones.size() == 1) {
-			progressMilestones = []
+		if (progressTicks.size() == 1) {
+			progressTicks = []
 		}
 
-		return progressMilestones
+		return progressTicks
 	}
 
 }

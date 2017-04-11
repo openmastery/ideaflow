@@ -19,9 +19,7 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
 import org.openmastery.publisher.api.journey.IdeaFlowStory
-import org.openmastery.publisher.api.journey.ProgressMilestone
-import org.openmastery.publisher.api.journey.StoryContextElement
-import org.openmastery.publisher.api.journey.StoryElement
+import org.openmastery.publisher.api.journey.ProgressTick
 import org.openmastery.publisher.api.journey.SubtaskStory
 import org.openmastery.publisher.api.metrics.CapacityDistribution
 
@@ -35,16 +33,16 @@ public class CapacityDistributionDecorator {
 		List<SubtaskStory> subtaskStories = story.getSubtasks()
 		subtaskStories.each { SubtaskStory subtaskStory ->
 			subtaskStory.capacityDistribution = calculateCapacity(subtaskStory.timeline)
-			decorateCapacityForMilestones(subtaskStory.timeline, subtaskStory.milestones)
+			decorateCapacityForMilestones(subtaskStory.timeline, subtaskStory.progressTicks)
 		}
 
 	}
 
-	private void decorateCapacityForMilestones(IdeaFlowTimeline timeline, List<ProgressMilestone> milestones) {
-		milestones.each { ProgressMilestone milestone ->
-			Long relativeStart = milestone.relativePositionInSeconds
-			Long relativeEnd = milestone.relativePositionInSeconds + milestone.getDurationInSeconds()
-			milestone.capacityDistribution = calculateCapacityWithinWindow(timeline, relativeStart, relativeEnd)
+	private void decorateCapacityForMilestones(IdeaFlowTimeline timeline, List<ProgressTick> progressTicks) {
+		progressTicks.each { ProgressTick progressTick ->
+			Long relativeStart = progressTick.relativePositionInSeconds
+			Long relativeEnd = progressTick.relativePositionInSeconds + progressTick.getDurationInSeconds()
+			progressTick.capacityDistribution = calculateCapacityWithinWindow(timeline, relativeStart, relativeEnd)
 
 		}
 	}

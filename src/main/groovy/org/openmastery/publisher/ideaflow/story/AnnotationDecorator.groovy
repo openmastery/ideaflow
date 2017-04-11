@@ -16,8 +16,6 @@
 package org.openmastery.publisher.ideaflow.story
 
 import org.openmastery.publisher.api.journey.IdeaFlowStory
-import org.openmastery.publisher.api.journey.ProgressMilestone
-import org.openmastery.publisher.api.journey.StoryElement
 import org.openmastery.publisher.api.journey.SubtaskStory
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.core.annotation.AnnotationRespository

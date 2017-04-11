@@ -176,6 +176,8 @@ class TroubleshootingJourneyGenerator {
 				}
 			}
 
+			//TODO if journey has no pain cycles, throw exception
+			//TODO if events don't correspond to a band,
 			journeyList.add(journey)
 		}
 

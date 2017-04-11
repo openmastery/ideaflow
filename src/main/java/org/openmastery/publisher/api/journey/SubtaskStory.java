@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.ideaflow.Haystack;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 import org.openmastery.publisher.api.metrics.CapacityDistribution;
 import org.openmastery.storyweb.api.metrics.Metric;
@@ -36,15 +37,17 @@ public class SubtaskStory implements StoryContextElement {
 	List<Metric<?>> allMetrics;
 	List<Metric<?>> dangerMetrics;
 
-	List<ProgressMilestone> milestones;
+	List<ProgressTick> progressTicks;
 
+
+	List<Haystack> haystacks;
 	List<TroubleshootingJourney> troubleshootingJourneys;
 
 	public SubtaskStory(String parentPath, Event subtask, IdeaFlowTimeline timeline) {
 		this.subtaskEvent = subtask;
 		this.timeline = timeline;
 		this.parentPath = parentPath;
-		this.milestones = new ArrayList<ProgressMilestone>();
+		this.progressTicks = new ArrayList<ProgressTick>();
 		this.troubleshootingJourneys = new ArrayList<TroubleshootingJourney>();
 
 		contextTags = TagsUtil.extractUniqueHashTags(subtaskEvent.getDescription());
@@ -90,12 +93,12 @@ public class SubtaskStory implements StoryContextElement {
 
 	@JsonIgnore
 	@Override
-	public int getFrequency() { return milestones.size(); }
+	public int getFrequency() { return progressTicks.size(); }
 
 	@JsonIgnore
 	@Override
 	public List<? extends StoryElement> getChildStoryElements() {
-		return milestones;
+		return progressTicks;
 	}
 
 

@@ -59,6 +59,13 @@ public class IdeaFlowStory implements StoryContextElement {
 		return task.getName() + " : " + task.getDescription();
 	}
 
+	public LocalDateTime getStart() {
+		return timeline.getStart();
+	}
+	public LocalDateTime getEnd() {
+		return timeline.getEnd();
+	}
+
 	@Override
 	public Long getRelativePositionInSeconds() {
 		return timeline.getRelativePositionInSeconds();
@@ -69,10 +76,13 @@ public class IdeaFlowStory implements StoryContextElement {
 		return timeline.getDurationInSeconds();
 	}
 
+
+	@JsonIgnore
 	@Override
 	public LocalDateTime getPosition() {
 		return timeline.getStart();
 	}
+
 
 	@JsonIgnore
 	@Override

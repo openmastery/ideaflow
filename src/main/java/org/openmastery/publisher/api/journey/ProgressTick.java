@@ -16,7 +16,7 @@ import java.util.*;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class ProgressMilestone extends AbstractRelativeInterval implements StoryContextElement {
+public class ProgressTick extends AbstractRelativeInterval implements StoryContextElement {
 
 	@JsonIgnore
 	Event event;
@@ -33,7 +33,7 @@ public class ProgressMilestone extends AbstractRelativeInterval implements Story
 	List<Metric<?>> dangerMetrics;
 
 
-	public ProgressMilestone(String parentPath, Event progressEvent) {
+	public ProgressTick(String parentPath, Event progressEvent) {
 		this.event = progressEvent;
 		this.parentPath = parentPath;
 		setRelativeStart(progressEvent.getRelativePositionInSeconds());
