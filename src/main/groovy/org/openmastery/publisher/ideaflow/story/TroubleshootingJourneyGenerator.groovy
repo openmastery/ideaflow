@@ -187,7 +187,6 @@ class TroubleshootingJourneyGenerator {
 				}
 				log.debug("Adding event: " + wtfYayEvent.type + ":" + wtfYayEvent.id + " {position: " + wtfYayEvent.relativePositionInSeconds + ", duration: " + durationInSeconds + "}")
 				journey.addPainCycle(wtfYayEvent, durationInSeconds);
-
 			}
 		}
 

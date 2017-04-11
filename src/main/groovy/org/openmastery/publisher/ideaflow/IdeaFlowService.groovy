@@ -40,8 +40,6 @@ import org.openmastery.publisher.ideaflow.story.IdeaFlowStoryGenerator
 import org.openmastery.publisher.ideaflow.story.MetricsDecorator
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTaskTimelineGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
-
-import org.openmastery.storyweb.api.metrics.Metric
 import org.openmastery.storyweb.core.MetricsService
 import org.openmastery.storyweb.core.metrics.spc.MetricSet
 import org.springframework.beans.factory.annotation.Autowired
@@ -142,14 +140,14 @@ class IdeaFlowService {
 
 	private void pruneToSubtaskDepth(IdeaFlowStory ideaFlowStory) {
 		ideaFlowStory.subtasks.each { SubtaskStory subtaskStory ->
-			subtaskStory.milestones = []
+			subtaskStory.progressTicks = []
 			subtaskStory.troubleshootingJourneys = []
 		}
 	}
 /**
 	 * Generates a timeline and the corresponding story structure for a given subtask
 	 * Stories are broken down into significantly more detail with the addition of
-	 * milestones and troubleshooting journeys
+	 * progressTicks and troubleshooting journeys
 	 *
 	 * @param taskId
 	 * @param subtaskId
@@ -246,6 +244,7 @@ class IdeaFlowService {
 		MetricSet metricSet = metricsService.generateMetricsForTask(story)
 		metricsDecorator.decorateStoryWithMetrics(story, metricSet)
 
+		cascadePainAndContextTags(story)
 
 		TaskTimelineWithAllSubtasks.builder()
 				.task(task)
