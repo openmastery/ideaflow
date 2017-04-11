@@ -16,6 +16,11 @@ public class FaqClient extends StorywebClient<StoryPoint, FaqClient> {
 		super(baseUrl, ResourcePaths.STORY_WEB_PATH + ResourcePaths.FAQ_PATH, StoryPoint.class);
 	}
 
+	public PagedResult<StoryPoint> findAllFaq() {
+		CrudClientRequest request = getUntypedCrudClientRequest();
+		return (PagedResult<StoryPoint>) withPagedResultType(request).find();
+	}
+
 	public PagedResult<StoryPoint> findAllFaqMatchingCriteria(List<String> tags, Integer pageNumber, Integer perPage) {
 		CrudClientRequest request = getUntypedCrudClientRequest()
 				.queryParam("page_number", pageNumber)

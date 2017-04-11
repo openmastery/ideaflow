@@ -149,39 +149,49 @@ class TroubleshootingJourneyGenerator {
 	List<TroubleshootingJourney> splitIntoJourneys(List<Event> wtfYayEvents, List<IdeaFlowBand> troubleshootingBands) {
 		List<TroubleshootingJourney> journeyList = []
 
-
 		troubleshootingBands.each { IdeaFlowBand troubleshootingBand ->
-			TroubleshootingJourney journey = new TroubleshootingJourney("", troubleshootingBand)
-			log.debug("Generating Journey [" + journey.relativeStart + ", " + journey.relativeEnd + "]")
+			TroubleshootingJourney journey = createTroubleshootingJourney(troubleshootingBand, wtfYayEvents)
 
-
-			for (int activeIndex = 0; activeIndex < wtfYayEvents.size(); activeIndex++) {
-				Event wtfYayEvent = wtfYayEvents.get(activeIndex)
-				Long eventPosition = wtfYayEvent.relativePositionInSeconds
-
-				if ((wtfYayEvent.type == EventType.WTF && eventPosition >= journey.relativeStart && eventPosition < journey.relativeEnd) ||
-						(wtfYayEvent.type == EventType.AWESOME && eventPosition > journey.relativeStart && eventPosition <= journey.relativeEnd)) {
-
-					Long durationInSeconds = 0;
-					if (wtfYayEvents.size() > activeIndex + 1 && wtfYayEvents.get(activeIndex + 1).relativePositionInSeconds < troubleshootingBand.relativeEnd) {
-						Event peekAtNextEvent = wtfYayEvents.get(activeIndex + 1)
-
-						durationInSeconds = peekAtNextEvent.relativePositionInSeconds - wtfYayEvent.relativePositionInSeconds
-					} else {
-						durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
-					}
-					log.debug("Adding event: " + wtfYayEvent.type + ":" + wtfYayEvent.id + " {position: " + wtfYayEvent.relativePositionInSeconds + ", duration: " + durationInSeconds + "}")
-					journey.addPainCycle(wtfYayEvent, durationInSeconds);
-
-				}
+			if (isValidTroubleshootingJourney(journey)) {
+				journeyList.add(journey)
+			} else {
+				log.warn("Invalid TroubleshootingJourney - no pain cycles, troubleshootingBand={}, events={}", troubleshootingBand, wtfYayEvents);
 			}
-
-			journeyList.add(journey)
 		}
 
 		return journeyList
-
 	}
 
+	private boolean isValidTroubleshootingJourney(TroubleshootingJourney journey) {
+		return journey.getPainCycles().size() > 0;
+	}
+
+	private TroubleshootingJourney createTroubleshootingJourney(IdeaFlowBand troubleshootingBand, List<Event> wtfYayEvents) {
+		TroubleshootingJourney journey = new TroubleshootingJourney("", troubleshootingBand)
+		log.debug("Generating Journey [" + journey.relativeStart + ", " + journey.relativeEnd + "]")
+
+		for (int activeIndex = 0; activeIndex < wtfYayEvents.size(); activeIndex++) {
+			Event wtfYayEvent = wtfYayEvents.get(activeIndex)
+			Long eventPosition = wtfYayEvent.relativePositionInSeconds
+
+			if ((wtfYayEvent.type == EventType.WTF && eventPosition >= journey.relativeStart && eventPosition < journey.relativeEnd) ||
+					(wtfYayEvent.type == EventType.AWESOME && eventPosition > journey.relativeStart && eventPosition <= journey.relativeEnd)) {
+
+				Long durationInSeconds;
+				if (wtfYayEvents.size() > activeIndex + 1 && wtfYayEvents.get(activeIndex + 1).relativePositionInSeconds < troubleshootingBand.relativeEnd) {
+					Event peekAtNextEvent = wtfYayEvents.get(activeIndex + 1)
+
+					durationInSeconds = peekAtNextEvent.relativePositionInSeconds - wtfYayEvent.relativePositionInSeconds
+				} else {
+					durationInSeconds = troubleshootingBand.relativeEnd - wtfYayEvent.relativePositionInSeconds
+				}
+				log.debug("Adding event: " + wtfYayEvent.type + ":" + wtfYayEvent.id + " {position: " + wtfYayEvent.relativePositionInSeconds + ", duration: " + durationInSeconds + "}")
+				journey.addPainCycle(wtfYayEvent, durationInSeconds);
+
+			}
+		}
+
+		journey
+	}
 
 }
