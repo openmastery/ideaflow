@@ -8,6 +8,8 @@ import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.stub.FixtureDataGenerator
 import org.openmastery.publisher.core.user.UserEntity
 import org.openmastery.publisher.resources.TimelineResource
+import org.openmastery.storyweb.client.FaqClient
+import org.openmastery.storyweb.client.StorywebClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import spock.lang.Specification
@@ -24,6 +26,8 @@ class FixtureTimelineValidationSpec extends Specification {
 	private UserEntity userEntity
 	@Autowired
 	private TaskClient taskClient
+	@Autowired
+	private FaqClient faqClient
 	@Autowired
 	private TimelineResource timelineResource
 	private FixtureDataGenerator fixtureDataGenerator = new FixtureDataGenerator()
@@ -52,6 +56,12 @@ class FixtureTimelineValidationSpec extends Specification {
 				throw new RuntimeException("Failed to retrieve timeline for taskName=${task.name}, taskId=${task.id}", ex)
 			}
 		}
+
+		then:
+		notThrown(Exception)
+
+		when:
+		faqClient.findAllFaq()
 
 		then:
 		notThrown(Exception)
