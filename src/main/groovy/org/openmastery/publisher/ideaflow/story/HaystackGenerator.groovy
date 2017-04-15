@@ -15,6 +15,54 @@
  */
 package org.openmastery.publisher.ideaflow.story
 
+import org.openmastery.publisher.api.Positionable
+import org.openmastery.publisher.api.PositionableComparator
+import org.openmastery.publisher.api.activity.EditorActivity
+import org.openmastery.publisher.api.event.ExecutionEvent
+import org.openmastery.publisher.api.ideaflow.Haystack
+import org.springframework.stereotype.Component
 
+@Component
 class HaystackGenerator {
+
+	List<Haystack> generateHaystacks(List<ExecutionEvent> executionEvents, List<EditorActivity> editorActivities) {
+		//sort the list all together, and then break into groups
+		//progress ticks in list?
+		//idles in the list?
+		//disruptions in the list?
+
+		List<Haystack> haystacks = []
+
+		List<Positionable> positionables = getAllItemsSortedByStartTime(executionEvents, editorActivities)
+
+		Haystack activeHaystack = null
+
+		positionables.eachWithIndex { Positionable positionable, int i ->
+			if (positionable instanceof ExecutionEvent) {
+				if (activeHaystack != null) {
+					haystacks.add(activeHaystack)
+				}
+
+				activeHaystack = new Haystack()
+				activeHaystack.executionEvent = positionable;
+
+			} else if (positionable instanceof EditorActivity) {
+				activeHaystack.addEditorActivity(positionable)
+			}
+		}
+		if (activeHaystack != null) {
+			haystacks.add(activeHaystack)
+		}
+
+		return haystacks
+	}
+
+	public List<Positionable> getAllItemsSortedByStartTime(List<ExecutionEvent> executionEvents, List<EditorActivity> editorActivities) {
+		List<Positionable> positionables = []
+		positionables.addAll(executionEvents)
+		positionables.addAll(editorActivities)
+		Collections.sort(positionables, PositionableComparator.INSTANCE)
+
+		return positionables
+	}
 }
