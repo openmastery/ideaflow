@@ -15,7 +15,7 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
@@ -50,7 +50,7 @@ class IdeaFlowTaskTimelineGenerator {
 	private List<ExecutionEvent> executionEvents = []
 	private List<BlockActivity> blockActivities = []
 
-	private EntityMapper entityMapper = new EntityMapper()
+	private ValueObjectMapper entityMapper = new ValueObjectMapper()
 	private InitialSubtaskGenerator initialSubtaskGenerator = new InitialSubtaskGenerator()
 
 	private IdleTimeProcessor idleTimeProcessor

@@ -17,7 +17,7 @@ package org.openmastery.storyweb.core.glossary
 
 import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
@@ -50,7 +50,7 @@ class GlossaryService {
 	@Autowired
 	InvocationContext invocationContext
 
-	private EntityMapper entityMapper = new EntityMapper();
+	private ValueObjectMapper entityMapper = new ValueObjectMapper();
 
 	public Glossary findGlossaryDefinitionsByTag(List<String> tags) {
 		String searchPattern = SearchUtils.createSearchPattern(tags)

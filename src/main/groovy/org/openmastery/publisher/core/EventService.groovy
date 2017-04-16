@@ -18,7 +18,7 @@ package org.openmastery.publisher.core
 import com.bancvue.rest.exception.NotFoundException
 import org.apache.commons.lang3.NotImplementedException
 import org.hibernate.cfg.NotYetImplementedException
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.api.event.AnnotatedEvent
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
@@ -53,7 +53,7 @@ class EventService {
 		List<EventEntity> eventEntityList = eventRepository.findRecentEvents(userId, TimeConverter.toSqlTimestamp(afterDate), limit)
 
 		List<Event> eventList = eventEntityList.collect() { EventEntity entity ->
-			EntityMapper mapper = new EntityMapper()
+			ValueObjectMapper mapper = new ValueObjectMapper()
 			mapper.mapIfNotNull(entity, Event.class)
 		}
 		return eventList
@@ -76,14 +76,14 @@ class EventService {
 	}
 
 	Event toApi(EventEntity entity) {
-		EntityMapper mapper = new EntityMapper()
+		ValueObjectMapper mapper = new ValueObjectMapper()
 		Event event = mapper.mapIfNotNull(entity, Event.class)
 		event.description = entity.comment
 		return event
 	}
 
 	EventEntity toEntity(Event event) {
-		EntityMapper mapper = new EntityMapper()
+		ValueObjectMapper mapper = new ValueObjectMapper()
 		EventEntity entity = mapper.mapIfNotNull(event, EventEntity.class)
 		entity.comment = event.description
 		return entity

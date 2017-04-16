@@ -16,7 +16,7 @@
 package org.openmastery.storyweb.core.metrics.spc
 
 import groovy.util.logging.Slf4j
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.task.Task
@@ -64,7 +64,7 @@ class FilterlessTaskDataGenerator {
 	TaskRepository taskRepository
 
 
-	EntityMapper entityMapper = new EntityMapper()
+	ValueObjectMapper entityMapper = new ValueObjectMapper()
 
 
 	List<TaskData> generate(long userId) {

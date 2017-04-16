@@ -15,10 +15,8 @@
  */
 package org.openmastery.mapper;
 
-import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -26,19 +24,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class EntityMapper {
-    private Mapper mapper = createMapper();
+public class ValueObjectMapper {
 
-    private Mapper createMapper() {
-        DozerBeanMapper mapper = new DozerBeanMapper();
-        mapper.setMappingFiles(getMappingConfigurationFiles());
-        return mapper;
+    private Mapper mapper;
+
+    public ValueObjectMapper() {
+        this(new DozerMapperFactory());
     }
 
-    private List<String> getMappingConfigurationFiles() {
-        List<String> mappingConfigurationFiles = new ArrayList<>();
-        mappingConfigurationFiles.add("dozerConfig.xml");
-        return mappingConfigurationFiles;
+    public ValueObjectMapper(DozerMapperFactory mapperFactory) {
+        mapper = mapperFactory.createMapper();
     }
 
     public <S, D> D mapIfNotNull(S source, Class<D> destType) {
@@ -66,4 +61,5 @@ public class EntityMapper {
     private <T> Stream<T> toStream(Iterable<T> iterable) {
         return StreamSupport.stream(iterable.spliterator(), false);
     }
+
 }

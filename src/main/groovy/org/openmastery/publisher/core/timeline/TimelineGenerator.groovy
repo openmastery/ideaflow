@@ -16,7 +16,7 @@
 package org.openmastery.publisher.core.timeline
 
 import com.bancvue.rest.exception.NotFoundException
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.api.timeline.ActivityTimeline
 import org.openmastery.publisher.api.timeline.BandTimeline
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
@@ -40,7 +40,7 @@ class TimelineGenerator {
 
 	public BandTimeline createBandTimelineForTask(long taskId) {
 		BandTimelineSegment segment = createBandTimelineSegmentBuilder(taskId).build()
-		EntityMapper mapper = new EntityMapper()
+		ValueObjectMapper mapper = new ValueObjectMapper()
 		mapper.mapIfNotNull(segment, BandTimeline.class)
 	}
 

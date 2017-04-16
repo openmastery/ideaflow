@@ -16,7 +16,7 @@
 package org.openmastery.storyweb.core
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.FaqSummary
@@ -36,7 +36,7 @@ class StoryWebService {
 	@Autowired
 	InvocationContext invocationContext
 
-	private EntityMapper entityMapper = new EntityMapper();
+	private ValueObjectMapper entityMapper = new ValueObjectMapper();
 
 	private ObjectMapper jsonMapper = new ObjectMapper()
 

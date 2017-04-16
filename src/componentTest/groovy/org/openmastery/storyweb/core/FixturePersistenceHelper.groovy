@@ -1,6 +1,6 @@
 package org.openmastery.storyweb.core
 
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
@@ -18,7 +18,7 @@ class FixturePersistenceHelper {
 	@Autowired
 	IdeaFlowPersistenceService persistenceService
 
-	EntityMapper entityMapper = new EntityMapper()
+	ValueObjectMapper entityMapper = new ValueObjectMapper()
 
 	void saveIdeaFlow(Long ownerId, Long taskId, IdeaFlowTimelineElementBuilder builder) {
 		builder.eventList.each { Event event ->

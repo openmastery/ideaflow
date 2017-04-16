@@ -17,7 +17,7 @@ package org.openmastery.publisher.core
 
 import com.bancvue.rest.exception.ForbiddenException
 import groovy.util.logging.Slf4j
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.api.activity.NewActivity
 import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.batch.NewIFMBatch
@@ -118,7 +118,7 @@ class IFMBatchService {
 
 	static class EntityBuilder {
 
-		private EntityMapper entityMapper = new EntityMapper()
+		private ValueObjectMapper entityMapper = new ValueObjectMapper()
 		private long userId
 
 		private Map<Long, LocalDateTime> taskModificationDates = [:]
@@ -148,7 +148,7 @@ class IFMBatchService {
 		}
 
 		void buildAndSaveSnippets(NewIFMBatch batch, Duration adjustment, IdeaFlowPersistenceService persistenceService) {
-			EntityMapper entityMapper = new EntityMapper()
+			ValueObjectMapper entityMapper = new ValueObjectMapper()
 
 			batch.snippetEventList.each { NewSnippetEvent snippet ->
 				EventEntity eventEntity = entityMapper.mapIfNotNull(snippet, EventEntity.class)

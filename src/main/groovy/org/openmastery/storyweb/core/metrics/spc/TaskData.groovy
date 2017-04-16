@@ -15,7 +15,7 @@
  */
 package org.openmastery.storyweb.core.metrics.spc
 
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.api.event.Event
@@ -92,7 +92,7 @@ class TaskData {
 
 	IdeaFlowTaskTimeline toIdeaFlowTaskTimeline() {
 
-		EntityMapper mapper = new EntityMapper()
+		ValueObjectMapper mapper = new ValueObjectMapper()
 		InitialSubtaskGenerator subtaskGenerator = new InitialSubtaskGenerator()
 
 		IdeaFlowTaskTimeline taskTimeline = IdeaFlowTaskTimeline.builder()

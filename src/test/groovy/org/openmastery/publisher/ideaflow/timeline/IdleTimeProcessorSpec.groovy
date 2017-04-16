@@ -1,6 +1,6 @@
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
@@ -37,7 +37,7 @@ class IdleTimeProcessorSpec extends Specification {
 				.events(testSupport.getEventList())
 				.build()
 
-		EntityMapper entityMapper = new EntityMapper()
+		ValueObjectMapper entityMapper = new ValueObjectMapper()
 		List<IdleTimeBandModel> idleTimeBandModelList = entityMapper.mapList(testSupport.getIdleActivityList(), IdleTimeBandModel)
 		idleTimeProcessor.collapseIdleTime(segment.ideaFlowBands, idleTimeBandModelList)
 		segment.ideaFlowBands

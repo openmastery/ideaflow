@@ -17,7 +17,7 @@ package org.openmastery.publisher.core
 
 import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
-import org.openmastery.mapper.EntityMapper
+import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.api.PagedResult
 import org.openmastery.publisher.api.task.NewTask
 import org.openmastery.publisher.api.task.Task
@@ -48,7 +48,7 @@ class TaskService {
 	@Autowired
 	private InvocationContext invocationContext;
 
-	private EntityMapper entityMapper = new EntityMapper();
+	private ValueObjectMapper entityMapper = new ValueObjectMapper();
 
 	public Task create(NewTask newTask) {
 		long userId = invocationContext.getUserId()
