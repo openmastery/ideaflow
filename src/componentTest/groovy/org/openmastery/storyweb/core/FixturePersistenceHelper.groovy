@@ -9,7 +9,6 @@ import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
-import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

@@ -25,6 +25,11 @@ public class IntervalImpl implements Interval, Positionable {
 	}
 
 	@Override
+	public Long getDurationInSeconds() {
+		return getDuration().getSeconds();
+	}
+
+	@Override
 	public LocalDateTime getPosition() {
 		return start;
 	}

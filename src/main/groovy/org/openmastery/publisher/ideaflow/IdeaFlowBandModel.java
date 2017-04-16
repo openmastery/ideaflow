@@ -70,6 +70,11 @@ public class IdeaFlowBandModel extends TimeBandModel<IdeaFlowBandModel> {
 		return Duration.between(start, end).minus(getIdleDuration());
 	}
 
+	@Override
+	public Long getDurationInSeconds() {
+		return getDuration().getSeconds();
+	}
+
 	public List<Positionable> getAllContentsFlattenedAsPositionableList() {
 		// use a set b/c we could have duplicate idle bands (e.g. if idle is w/in nested conflict)
 		// TODO: there's no test that fails if this is a List... either make it a list or add a test that proves the above statement

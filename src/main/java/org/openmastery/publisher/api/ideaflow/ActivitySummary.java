@@ -12,19 +12,22 @@ import org.openmastery.publisher.api.activity.EditorActivity;
 @NoArgsConstructor
 public class ActivitySummary {
 
-	private long durationInSeconds;
-	private String filePath;
-	private boolean isModified;
+	private String activityType;
+	private String activityName;
+	private String activityDetail;
 
-	public ActivitySummary(EditorActivity editorActivity) {
-		this.durationInSeconds = editorActivity.getDurationInSeconds();
-		this.filePath = editorActivity.getFilePath();
-		this.isModified = editorActivity.isModified();
-	}
+	private Long durationInSeconds;
+	private Long durationModifiedInSeconds;
 
-
-	public void aggregateWith(EditorActivity editorActivity) {
-		durationInSeconds += editorActivity.getDurationInSeconds();
-		isModified |= editorActivity.isModified();
-	}
+//	public ActivitySummary(EditorActivity editorActivity) {
+//		this.durationInSeconds = editorActivity.getDurationInSeconds();
+//		this.filePath = editorActivity.getFilePath();
+//		this.isModified = editorActivity.isModified();
+//	}
+//
+//
+//	public void aggregateWith(EditorActivity editorActivity) {
+//		durationInSeconds += editorActivity.getDurationInSeconds();
+//		isModified |= editorActivity.isModified();
+//	}
 }

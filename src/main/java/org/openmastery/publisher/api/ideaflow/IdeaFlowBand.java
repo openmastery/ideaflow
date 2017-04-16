@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openmastery.publisher.api.Interval;
 import org.openmastery.publisher.api.Positionable;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaFlowBand implements Positionable {
+public class IdeaFlowBand implements Positionable, Interval {
 
 	@JsonIgnore //will these ever be persistent?
 	private long id;
@@ -58,16 +60,16 @@ public class IdeaFlowBand implements Positionable {
 	}
 
 
-	// simplify dozer mapping
+	// simplify dozer mapping between this object and IdeaFlowBandModel
 
 	@JsonIgnore
-	public Long getDuration() {
-		return durationInSeconds;
+	public Duration getDuration() {
+		return Duration.ofSeconds(durationInSeconds);
 	}
 
 	@JsonIgnore
-	public void setDuration(Long duration) {
-		durationInSeconds = duration;
+	public void setDuration(Duration duration) {
+		durationInSeconds = duration.getSeconds();
 	}
 
 }

@@ -45,6 +45,10 @@ public abstract class TimeBandModel<T extends TimeBandModel> implements Position
 
 	public abstract Duration getDuration();
 
+	public Long getDurationInSeconds() {
+		return getDuration().getSeconds();
+	}
+
 	public abstract List<? extends TimeBandModel> getContainedBands();
 
 	public boolean contains(LocalDateTime position) {

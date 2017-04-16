@@ -15,15 +15,90 @@
  */
 package org.openmastery.publisher.ideaflow.story
 
+import lombok.AllArgsConstructor
+import lombok.Builder
+import lombok.Data
+import lombok.NoArgsConstructor
+import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.api.activity.EditorActivity
+import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.Haystack
+import org.openmastery.publisher.core.activity.EditorActivityEntity
+import org.openmastery.publisher.core.activity.ExecutionActivityEntity
+import org.openmastery.publisher.core.activity.ExternalActivityEntity
+import org.openmastery.publisher.core.activity.IdleActivityEntity
+import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.ideaflow.timeline.IdleTimeProcessor
 import org.springframework.stereotype.Component
 
-@Component
+import java.time.Duration
+import java.time.LocalDateTime
+
 class HaystackGenerator {
+
+	// IdleActivityEntity
+	// EditorActivityEntity
+	// ExternalActivityEntity
+	// ExecutionActivityEntity
+
+	// EditorActivityEntity, sum duration per file path, aggregate modified flag
+	// ExternalActivityEntity, aggregate total time
+	// ExecutionActivityEntity bounds haystacks, include debug flag
+
+	private IdleTimeProcessor idleTimeProcessor
+	private List<IdleActivityEntity> idleActivities
+	private List<EditorActivityEntity> editorActivities
+	private List<ExternalActivityEntity> externalActivities
+	private List<ExecutionActivityEntity> executionActivities
+	private List<EventEntity> events
+
+	HaystackGenerator idleTimeProcessor(IdleTimeProcessor idleTimeProcessor) {
+		this.idleTimeProcessor = idleTimeProcessor
+		this
+	}
+
+	HaystackGenerator idleActivities(List<IdleActivityEntity> idleActivities) {
+		this.idleActivities = idleActivities
+		this
+	}
+
+	HaystackGenerator editorActivities(List<EditorActivityEntity> editorActivities) {
+		this.editorActivities = editorActivities
+		this
+	}
+
+	HaystackGenerator externalActivities(List<ExternalActivityEntity> externalActivities) {
+		this.externalActivities = externalActivities
+		this
+	}
+
+	HaystackGenerator executionActivities(List<ExecutionActivityEntity> executionActivities) {
+		this.executionActivities = executionActivities
+		this
+	}
+
+	HaystackGenerator events(List<EventEntity> events) {
+		this.events = events
+		this
+	}
+
+	List<Haystack> generate() {
+		idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(events)
+
+//		executionActivities.sort()
+//		for (ExternalActivityEntity externalActivity : externalActivities) {
+//			externalActivity.start
+//			externalActivity.end
+//			externalActivity.duration
+//		}
+
+//		editorActivities
+		null
+	}
+
 
 	List<Haystack> generateHaystacks(List<ExecutionEvent> executionEvents, List<EditorActivity> editorActivities) {
 		//sort the list all together, and then break into groups
@@ -65,4 +140,28 @@ class HaystackGenerator {
 
 		return positionables
 	}
+
+	private static class Activity {
+
+		String activityType
+		String activityName
+		String activityDetail
+
+		Long durationInSeconds
+		Long durationModifiedInSeconds
+
+	}
+
+	private static class ActivityInterval implements Interval {
+
+		LocalDateTime start
+		LocalDateTime end
+		Duration Duration
+		Long durationInSeconds
+
+		LocalDateTime position
+		Long relativePositionInSeconds
+
+	}
+
 }

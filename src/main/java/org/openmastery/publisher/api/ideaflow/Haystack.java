@@ -25,34 +25,34 @@ public class Haystack {
 		activitySummaryMap = new HashMap<>();
 	}
 
-	public void addEditorActivity(EditorActivity editorActivity) {
-		ActivitySummary summary = activitySummaryMap.get(editorActivity.getFilePath());
-		if (summary == null) {
-			summary = new ActivitySummary(editorActivity);
-			activitySummaryMap.put(editorActivity.getFilePath(), summary);
-		} else {
-			summary.aggregateWith(editorActivity);
-		}
-	}
-
-	public List<ActivitySummary> getActivitySummary() {
-		List<ActivitySummary> summaryList = new ArrayList<>(activitySummaryMap.values());
-		Collections.sort(summaryList, new Comparator<ActivitySummary>() {
-			final int BEFORE = -1;
-			final int EQUAL = 0;
-			final int AFTER = 1;
-
-			@Override
-			public int compare(ActivitySummary summary1, ActivitySummary summary2) {
-				if (summary1.getDurationInSeconds() < summary2.getDurationInSeconds()) {
-					return BEFORE;
-				} else if (summary1.getDurationInSeconds() > summary2.getDurationInSeconds()) {
-					return AFTER;
-				} else {
-					return EQUAL;
-				}
-			}
-		});
-		return summaryList;
-	}
+//	public void addEditorActivity(EditorActivity editorActivity) {
+//		ActivitySummary summary = activitySummaryMap.get(editorActivity.getFilePath());
+//		if (summary == null) {
+//			summary = new ActivitySummary(editorActivity);
+//			activitySummaryMap.put(editorActivity.getFilePath(), summary);
+//		} else {
+//			summary.aggregateWith(editorActivity);
+//		}
+//	}
+//
+//	public List<ActivitySummary> getActivitySummary() {
+//		List<ActivitySummary> summaryList = new ArrayList<>(activitySummaryMap.values());
+//		Collections.sort(summaryList, new Comparator<ActivitySummary>() {
+//			final int BEFORE = -1;
+//			final int EQUAL = 0;
+//			final int AFTER = 1;
+//
+//			@Override
+//			public int compare(ActivitySummary summary1, ActivitySummary summary2) {
+//				if (summary1.getDurationInSeconds() < summary2.getDurationInSeconds()) {
+//					return BEFORE;
+//				} else if (summary1.getDurationInSeconds() > summary2.getDurationInSeconds()) {
+//					return AFTER;
+//				} else {
+//					return EQUAL;
+//				}
+//			}
+//		});
+//		return summaryList;
+//	}
 }

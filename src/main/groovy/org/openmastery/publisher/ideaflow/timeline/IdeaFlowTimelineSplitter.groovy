@@ -15,14 +15,15 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
+import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
-import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
+import org.openmastery.publisher.ideaflow.IntervalSplitter
 
 import java.time.LocalDateTime
 
@@ -126,7 +127,14 @@ public class IdeaFlowTimelineSplitter {
 		Long relativeStartInSeconds = subtask.getRelativePositionInSeconds()
 		List<Event> eventsBetween = filter.getItemsBetween(events, timelineStart, timelineEnd);
 		List<ExecutionEvent> executionEventsBetween = filter.getItemsBetween(executionEvents, timelineStart, timelineEnd);
-		List<IdeaFlowBand> splitIdeaFlowBands = getIdeaFlowBandsBetweenSplitOnOverlap(timelineStart, timelineEnd, relativeStartInSeconds, durationInSeconds);
+		List<IdeaFlowBand> splitIdeaFlowBands = new IntervalSplitter<>()
+				.start(timelineStart)
+				.end(timelineEnd)
+				.durationInSeconds(durationInSeconds)
+				.relativePositionInSeconds(relativeStartInSeconds)
+				.intervals(ideaFlowBands)
+				.intervalFactory(new IdeaFlowBandFactory())
+				.split()
 
 		return IdeaFlowSubtaskTimeline.builder()
 				.subtask(subtask)
@@ -140,47 +148,18 @@ public class IdeaFlowTimelineSplitter {
 				.build();
 	}
 
-	private List<IdeaFlowBand> getIdeaFlowBandsBetweenSplitOnOverlap(LocalDateTime timelineStart, LocalDateTime timelineEnd,
-	                                                                 Long timelineRelativePositionInSeconds, Long timelineDurationInSeconds) {
-		List<IdeaFlowBand> ideaFlowbandsToReturn = new ArrayList<IdeaFlowBand>();
-		for (IdeaFlowBand ideaFlowBand : ideaFlowBands) {
-			LocalDateTime bandStart = ideaFlowBand.getStart();
-			LocalDateTime bandEnd = ideaFlowBand.getEnd();
-
-			boolean startsWithinRange = bandStart.isEqual(timelineStart) || (bandStart.isAfter(timelineStart) && bandStart.isBefore(timelineEnd));
-			boolean endsWithinRange = bandEnd.isEqual(timelineEnd) || (bandEnd.isBefore(timelineEnd) && bandEnd.isAfter(timelineStart));
-
-			IdeaFlowBand ideaFlowBandToReturn = null;
-			if (startsWithinRange && endsWithinRange) {
-				ideaFlowBandToReturn = ideaFlowBand;
-			} else {
-				if (startsWithinRange) {
-					Long ideaFlowBandDuration = timelineDurationInSeconds - (ideaFlowBand.getRelativePositionInSeconds() - timelineRelativePositionInSeconds);
-					ideaFlowBandToReturn = createBand(ideaFlowBand.getType(), bandStart, timelineEnd, ideaFlowBand.getRelativePositionInSeconds(), ideaFlowBandDuration);
-				} else if (endsWithinRange) {
-					Long ideaFlowBandDuration = ideaFlowBand.getDuration() - (timelineRelativePositionInSeconds - ideaFlowBand.getRelativePositionInSeconds());
-					ideaFlowBandToReturn = createBand(ideaFlowBand.getType(), timelineStart, bandEnd, timelineRelativePositionInSeconds, ideaFlowBandDuration);
-				} else if (timelineStart.isAfter(bandStart) && timelineEnd.isBefore(bandEnd)) {
-					ideaFlowBandToReturn = createBand(ideaFlowBand.getType(), timelineStart, timelineEnd, timelineRelativePositionInSeconds, timelineDurationInSeconds);
-				}
-			}
-
-			if (ideaFlowBandToReturn != null) {
-				ideaFlowbandsToReturn.add(ideaFlowBandToReturn);
-			}
+	private static final class IdeaFlowBandFactory implements Interval.Factory<IdeaFlowBand> {
+		@Override
+		IdeaFlowBand create(IdeaFlowBand interval, LocalDateTime start, LocalDateTime end, Long relativePositionInSeconds, Long durationInSeconds) {
+			return IdeaFlowBand.builder()
+					.start(start)
+					.end(end)
+					.relativePositionInSeconds(relativePositionInSeconds)
+					.durationInSeconds(durationInSeconds)
+					.type(interval.type)
+					.nestedBands(new ArrayList())
+					.build();
 		}
-		return ideaFlowbandsToReturn;
-	}
-
-	private IdeaFlowBand createBand(IdeaFlowStateType type, LocalDateTime start, LocalDateTime end, Long relativePositionInSeconds, Long durationInSeconds) {
-		return IdeaFlowBand.builder()
-				.start(start)
-				.end(end)
-				.relativePositionInSeconds(relativePositionInSeconds)
-				.durationInSeconds(durationInSeconds)
-				.type(type)
-				.nestedBands(new ArrayList())
-				.build();
 	}
 
 	private static class ItemFilter {

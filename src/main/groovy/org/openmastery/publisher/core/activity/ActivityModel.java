@@ -57,4 +57,8 @@ public abstract class ActivityModel<T extends ActivityEntity> implements Positio
 		return Duration.between(getStart(), getEnd());
 	}
 
+	public Long getDurationInSeconds() {
+		return getDuration().getSeconds();
+	}
+
 }

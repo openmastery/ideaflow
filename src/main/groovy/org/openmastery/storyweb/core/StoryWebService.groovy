@@ -21,7 +21,6 @@ import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.storyweb.api.FaqSummary
 import org.openmastery.publisher.api.journey.TagsUtil
-import org.openmastery.storyweb.api.StoryPoint
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
