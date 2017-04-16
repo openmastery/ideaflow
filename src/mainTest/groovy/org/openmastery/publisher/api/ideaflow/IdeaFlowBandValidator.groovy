@@ -1,6 +1,6 @@
 package org.openmastery.publisher.api.ideaflow
 
-import org.joda.time.LocalDateTime
+import java.time.LocalDateTime
 
 
 class IdeaFlowBandValidator {

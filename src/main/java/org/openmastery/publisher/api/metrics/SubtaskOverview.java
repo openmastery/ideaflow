@@ -5,9 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.RelativePositionable;
 import org.openmastery.publisher.api.event.Event;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder

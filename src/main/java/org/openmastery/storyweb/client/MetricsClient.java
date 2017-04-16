@@ -1,10 +1,10 @@
 package org.openmastery.storyweb.client;
 
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.storyweb.api.ResourcePaths;
 import org.openmastery.storyweb.api.metrics.SPCChart;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class MetricsClient extends StorywebClient<SPCChart, MetricsClient> {
 
@@ -13,9 +13,9 @@ public class MetricsClient extends StorywebClient<SPCChart, MetricsClient> {
 	}
 
 	public SPCChart generateChart(LocalDate startDate, LocalDate endDate) {
-		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
-		String startDateStr = formatter.print(startDate);
-		String endDateStr = formatter.print(endDate);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		String startDateStr = formatter.format(startDate);
+		String endDateStr = formatter.format(endDate);
 
 		return crudClientRequest.path(ResourcePaths.METRICS_SPC_PATH)
 				.queryParam("startDate", startDateStr)

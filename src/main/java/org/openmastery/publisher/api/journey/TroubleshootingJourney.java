@@ -1,13 +1,18 @@
 package org.openmastery.publisher.api.journey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-import org.joda.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
 import org.openmastery.storyweb.api.metrics.Metric;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,9 +48,9 @@ public class TroubleshootingJourney extends AbstractRelativeInterval implements 
 		setRelativeStart(band.getRelativePositionInSeconds());
 		setDurationInSeconds(band.getDurationInSeconds());
 
-		this.painCycles = new ArrayList<PainCycle>();
-		this.contextTags = new HashSet<String>();
-		this.painTags = new HashSet<String>();
+		this.painCycles = new ArrayList<>();
+		this.contextTags = new HashSet<>();
+		this.painTags = new HashSet<>();
 	}
 
 	public Long getRelativePositionInSeconds() { return band.getRelativeStart(); }

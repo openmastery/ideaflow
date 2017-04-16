@@ -12,7 +12,5 @@ public class Source {
 	private String sourceField;
 	private Duration duration;
 	private LocalDateTime localDateTime;
-	private LocalDateTime convertJavaLocalDateTime;
-	private org.joda.time.LocalDateTime convertJodaLocalDateTime;
 
 }

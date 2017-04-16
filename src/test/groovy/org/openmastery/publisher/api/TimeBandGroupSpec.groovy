@@ -1,9 +1,10 @@
 package org.openmastery.publisher.api
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.core.timeline.TimeBandGroupModel
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
+
+import java.time.LocalDateTime
 
 public class TimeBandGroupSpec extends Specification implements TimeBandTestSupport {
 

@@ -1,10 +1,11 @@
 package org.openmastery.publisher.core.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.api.TimeBandTestSupport
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
+
+import java.time.LocalDateTime
 
 class TimeBandIdleCalculatorSpec extends Specification implements TimeBandTestSupport {
 

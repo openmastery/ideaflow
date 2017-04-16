@@ -15,7 +15,6 @@
  */
 package org.openmastery.storyweb.core.metrics.spc
 
-import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
@@ -29,6 +28,8 @@ import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.ideaflow.timeline.InitialSubtaskGenerator
+
+import java.time.LocalDateTime
 
 class TaskData {
 

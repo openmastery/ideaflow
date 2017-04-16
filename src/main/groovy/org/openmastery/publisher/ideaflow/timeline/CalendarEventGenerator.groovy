@@ -15,14 +15,13 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.DateTime
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.IntervalComparator
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
-import org.openmastery.time.TimeConverter
+
+import java.time.LocalDateTime
 
 class CalendarEventGenerator {
 
@@ -57,20 +56,20 @@ class CalendarEventGenerator {
 	}
 
 	private boolean spansDay(Interval interval) {
-		DateTime startDateTime = interval.start.toDateTime().withTimeAtStartOfDay()
-		DateTime endDateTime = interval.end.toDateTime().withTimeAtStartOfDay()
+		LocalDateTime startDateTime = interval.start.toLocalDate().atStartOfDay()
+		LocalDateTime endDateTime = interval.end.toLocalDate().atStartOfDay()
 
 		endDateTime.isAfter(startDateTime)
 	}
 
 	private List<LocalDateTime> getStartOfDaysBetweenInterval(Interval interval) {
-		DateTime startDateTime = interval.start.toDateTime().withTimeAtStartOfDay()
-		DateTime endDateTime = interval.end.toDateTime().withTimeAtStartOfDay()
+		LocalDateTime startDateTime = interval.start.toLocalDate().atStartOfDay()
+		LocalDateTime endDateTime = interval.end.toLocalDate().atStartOfDay()
 
 		List<LocalDateTime> startTimes = []
 		while (endDateTime.isAfter(startDateTime)) {
 			startDateTime = startDateTime.plusDays(1)
-			startTimes << startDateTime.toLocalDateTime()
+			startTimes << startDateTime
 		}
 		startTimes
 	}

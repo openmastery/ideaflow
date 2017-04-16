@@ -15,7 +15,6 @@
  */
 package org.openmastery.storyweb.core
 
-import org.joda.time.LocalDate
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.journey.IdeaFlowStory
 import org.openmastery.publisher.api.journey.PainCycle
@@ -43,6 +42,8 @@ import org.openmastery.storyweb.core.metrics.spc.TaskData
 import org.openmastery.storyweb.core.metrics.spc.TaskDataGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
+import java.time.LocalDate
 
 @Component
 class MetricsService {

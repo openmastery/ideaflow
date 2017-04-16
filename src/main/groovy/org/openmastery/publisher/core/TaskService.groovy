@@ -58,8 +58,8 @@ class TaskService {
 				.name(newTask.getName())
 				.description(newTask.getDescription())
 				.project(newTask.getProject())
-				.creationDate(timeService.javaNow())
-				.modifyDate(timeService.javaNow())
+				.creationDate(timeService.now())
+				.modifyDate(timeService.now())
 				.build();
 
 		TaskEntity existingTask = taskRepository.findByOwnerIdAndName(userId, task.getName());
@@ -152,7 +152,7 @@ class TaskService {
 		TaskEntity taskEntity = taskRepository.findOne(taskWithUpdates.id)
 		taskEntity.description = taskWithUpdates.description
 		taskEntity.project = taskWithUpdates.project
-		taskEntity.modifyDate = timeService.javaNow()
+		taskEntity.modifyDate = timeService.now()
 		TaskEntity savedEntity = taskRepository.save(taskEntity)
 		return toApiTask(savedEntity);
 	}
@@ -170,7 +170,7 @@ class TaskService {
 			taskEntity.project = taskPatch.project
 		}
 
-		taskEntity.modifyDate = timeService.javaNow()
+		taskEntity.modifyDate = timeService.now()
 		TaskEntity savedEntity = taskRepository.save(taskEntity)
 		return toApiTask(savedEntity);
 	}

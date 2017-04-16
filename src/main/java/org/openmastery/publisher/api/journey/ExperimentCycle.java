@@ -2,11 +2,11 @@ package org.openmastery.publisher.api.journey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.ExecutionEvent;
 import org.openmastery.storyweb.api.metrics.Metric;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -36,8 +36,8 @@ public class ExperimentCycle extends AbstractRelativeInterval implements StoryEl
 	public ExperimentCycle(String parentPath, ExecutionEvent executionEvent, Long durationInSeconds) {
 		this.parentPath = parentPath;
 		this.executionEvent = executionEvent;
-		painTags = new HashSet<String>();
-		contextTags = new HashSet<String>();
+		painTags = new HashSet<>();
+		contextTags = new HashSet<>();
 
 		setRelativeStart(executionEvent.getRelativePositionInSeconds());
 		setDurationInSeconds(durationInSeconds);

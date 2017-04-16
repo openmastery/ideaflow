@@ -26,8 +26,6 @@ import org.openmastery.publisher.core.activity.ExternalActivityModel
 import org.openmastery.publisher.core.event.EventModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 
-import static org.openmastery.time.TimeConverter.toJodaLocalDateTime
-
 class ActivityTimelineBuilder {
 
 	private List<ActivityNode> activityNodes = []
@@ -107,7 +105,7 @@ class ActivityTimelineBuilder {
 
 			ActivityNode endNode = ActivityNode.builder()
 					.type(ActivityNodeType.BAND)
-					.position(toJodaLocalDateTime(ideaFlowBand.end))
+					.position(ideaFlowBand.end)
 					.relativePositionInSeconds(ideaFlowBand.relativePositionInSeconds + ideaFlowBand.duration.seconds)
 					.bandComment(ideaFlowBand.endingComent)
 					.bandStateType(ideaFlowBand.type)
@@ -133,7 +131,7 @@ class ActivityTimelineBuilder {
 	private ActivityNode.ActivityNodeBuilder createActivityNodeBuilder(Positionable positionable, ActivityNodeType type) {
 		ActivityNode.builder()
 				.type(type)
-				.position(toJodaLocalDateTime(positionable.position))
+				.position(positionable.position)
 				.relativePositionInSeconds(positionable.relativePositionInSeconds)
 	}
 

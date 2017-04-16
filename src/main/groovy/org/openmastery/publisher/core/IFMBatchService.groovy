@@ -33,7 +33,6 @@ import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.security.InvocationContext
-import org.openmastery.time.TimeConverter
 import org.openmastery.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -54,7 +53,7 @@ class IFMBatchService {
 
 
 	Duration determineTimeAdjustment(LocalDateTime messageSentAt) {
-		LocalDateTime now = timeService.javaNow()
+		LocalDateTime now = timeService.now()
 
 		Duration.between(messageSentAt, now)
 	}
@@ -62,7 +61,7 @@ class IFMBatchService {
 	public void addIFMBatch(NewIFMBatch batch) {
 		assertAllBatchItemsAreAssociatedWithTasksOwnedByCaller(batch)
 
-		Duration adjustment = determineTimeAdjustment(TimeConverter.toJavaLocalDateTime(batch.timeSent))
+		Duration adjustment = determineTimeAdjustment(batch.timeSent)
 
 		EntityBuilder entityBuilder = new EntityBuilder(invocationContext.getUserId())
 		List<ActivityEntity> activityEntities = entityBuilder.buildActivities(batch, adjustment)
@@ -153,16 +152,16 @@ class IFMBatchService {
 
 			batch.snippetEventList.each { NewSnippetEvent snippet ->
 				EventEntity eventEntity = entityMapper.mapIfNotNull(snippet, EventEntity.class)
-				LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(snippet.position)
-				eventEntity.setPosition(endTime.plus(adjustment))
-				eventEntity.setOwnerId(userId)
-				eventEntity.setType(snippet.eventType)
+				LocalDateTime endTime = snippet.position
+				eventEntity.position = endTime.plus(adjustment)
+				eventEntity.ownerId = userId
+				eventEntity.type = snippet.eventType
 
 				EventEntity savedEvent = persistenceService.saveEvent(eventEntity)
 
 				SnippetAnnotationEntity annotationEntity = entityMapper.mapIfNotNull(snippet, SnippetAnnotationEntity.class)
-				annotationEntity.setOwnerId(userId)
-				annotationEntity.setEventId(savedEvent.id)
+				annotationEntity.ownerId = userId
+				annotationEntity.eventId = savedEvent.id
 
 				persistenceService.saveAnnotation(annotationEntity)
 
@@ -185,10 +184,10 @@ class IFMBatchService {
 		private ActivityEntity buildActivityEntity( NewActivity activity, Duration adjustment, Class clazz) {
 			ActivityEntity entity = entityMapper.mapIfNotNull(activity, clazz) as ActivityEntity
 
-			LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(activity.endTime)
-			entity.setStart( endTime.plus(adjustment).minusSeconds(activity.getDurationInSeconds()))
-			entity.setEnd( endTime.plus(adjustment))
-			entity.setOwnerId(userId);
+			LocalDateTime endTime = activity.endTime
+			entity.start = endTime.plus(adjustment).minusSeconds(activity.durationInSeconds)
+			entity.end = endTime.plus(adjustment)
+			entity.ownerId = userId
 
 			recordTaskModification(entity.taskId, entity.end)
 			return entity
@@ -197,16 +196,13 @@ class IFMBatchService {
 		private EventEntity buildEventEntity ( NewBatchEvent event, Duration adjustment) {
 			EventEntity entity = entityMapper.mapIfNotNull(event, EventEntity.class)
 
-			LocalDateTime endTime = TimeConverter.toJavaLocalDateTime(event.position)
-			entity.setPosition(endTime.plus(adjustment))
-			entity.setOwnerId(userId)
+			LocalDateTime endTime = event.position
+			entity.position = endTime.plus(adjustment)
+			entity.ownerId = userId
 
 			recordTaskModification(entity.taskId, entity.position)
 			return entity
 		}
-
-
-
 
 		private void recordTaskModification(Long taskId, LocalDateTime modifyDate) {
 			LocalDateTime lastModified = taskModificationDates.get(taskId)

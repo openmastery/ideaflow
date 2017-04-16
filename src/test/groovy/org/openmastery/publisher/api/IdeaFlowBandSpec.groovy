@@ -1,9 +1,10 @@
 package org.openmastery.publisher.api
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
+
+import java.time.LocalDateTime
 
 public class IdeaFlowBandSpec extends Specification implements TimeBandTestSupport {
 

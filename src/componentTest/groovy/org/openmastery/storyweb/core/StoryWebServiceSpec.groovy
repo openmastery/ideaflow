@@ -42,7 +42,7 @@ class StoryWebServiceSpec extends Specification {
 		assert faqs.size() == 1
 		assert faqs.get(0).taskId == event.taskId
 		assert faqs.get(0).eventId == savedEvent.id
-		assert faqs.get(0).position == TimeConverter.toJodaLocalDateTime(event.position)
+		assert faqs.get(0).position == event.position
 		assert faqs.get(0).faqComment == annotation.comment
 		assert faqs.get(0).eventComment == event.comment
 		assert faqs.get(0).tags == ["#this", "#that"].toSet()

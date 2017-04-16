@@ -1,6 +1,5 @@
 package org.openmastery.publisher.api.ideaflow
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
@@ -12,6 +11,9 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeConverter
+
+import java.time.Duration
+import java.time.LocalDateTime
 
 class IdeaFlowTimelineBuilder {
 
@@ -54,7 +56,7 @@ class IdeaFlowTimelineBuilder {
 	}
 
 	private Long secondsBetween(LocalDateTime start, LocalDateTime end) {
-		TimeConverter.between(start, end).toStandardSeconds().seconds
+		return Duration.between(start, end).seconds
 	}
 
 	private IdeaFlowTimelineBuilder modificationActivity(int modificationCount, LocalDateTime start, LocalDateTime end) {

@@ -1,18 +1,15 @@
 package org.openmastery.storyweb.core
 
-import org.joda.time.Duration
-import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.ComponentTest
-import org.openmastery.publisher.api.metrics.DurationInSeconds
 import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
-import org.openmastery.storyweb.api.metrics.SPCChart
 import org.openmastery.storyweb.core.metrics.spc.TaskData
 import org.openmastery.storyweb.core.metrics.spc.TaskDataGenerator
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
+import java.time.Duration
 
 import static org.openmastery.publisher.ARandom.aRandom
 
@@ -60,7 +57,7 @@ class TaskDataGeneratorSpec extends Specification {
 		then:
 		assert taskDataList.size() == 1
 		assert taskDataList.get(0).troubleshootingBands.size() == 1
-		assert taskDataList.get(0).troubleshootingBands.get(0).duration == Duration.standardMinutes(65)
+		assert taskDataList.get(0).troubleshootingBands.get(0).duration == Duration.ofMinutes(65)
 		assert taskDataList.get(0).task != null
 	}
 

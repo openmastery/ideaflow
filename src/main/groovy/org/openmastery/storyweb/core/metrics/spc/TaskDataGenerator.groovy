@@ -16,9 +16,6 @@
 package org.openmastery.storyweb.core.metrics.spc
 
 import groovy.util.logging.Slf4j
-import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
-import org.joda.time.LocalTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.event.Event
@@ -42,6 +39,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import java.sql.Timestamp
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 @Slf4j
 @Component
@@ -161,12 +162,11 @@ class TaskDataGenerator {
 	}
 
 	private Timestamp toBeginningOfDayTimestamp(LocalDate localDate) {
-		LocalDateTime beginningOfDay = localDate.toLocalDateTime(new LocalTime(0, 0, 0))
-		return TimeConverter.toSqlTimestamp(beginningOfDay)
+		return TimeConverter.toSqlTimestamp(localDate.atStartOfDay())
 	}
 
 	private Timestamp toEndOfDayTimestamp(LocalDate localDate) {
-		LocalDateTime endOfDay = localDate.toLocalDateTime(new LocalTime(23, 59, 59))
+		LocalDateTime endOfDay = localDate.atTime(23, 59, 59)
 		return TimeConverter.toSqlTimestamp(endOfDay)
 	}
 
@@ -192,7 +192,7 @@ class TaskDataGenerator {
 		eventEntities.each { ExecutionActivityEntity entity ->
 			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)
 			execution.failed = entity.exitCode != 0
-			execution.durationInSeconds = TimeConverter.between(entity.start, entity.end).standardSeconds
+			execution.durationInSeconds = Duration.between(entity.start, entity.end).seconds
 			executionEvents.add(execution)
 			taskIds.add(execution.taskId)
 		}

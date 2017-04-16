@@ -56,7 +56,7 @@ public class IdeaFlowStateMachine {
 				.ownerId(invocationContext.getUserId())
 				.taskId(taskId)
 				.type(IdeaFlowStateType.PROGRESS)
-				.start(timeService.javaNow())
+				.start(timeService.now())
 				.build();
 	}
 
@@ -70,7 +70,7 @@ public class IdeaFlowStateMachine {
 				.taskId(taskId)
 				.type(type)
 				.startingComment(startingComment)
-				.start(timeService.javaNow())
+				.start(timeService.now())
 				.build();
 	}
 
@@ -78,7 +78,7 @@ public class IdeaFlowStateMachine {
 		return IdeaFlowStateEntity.from(startState)
 				.ownerId(invocationContext.getUserId())
 				.taskId(startState.getTaskId())
-				.end(timeService.javaNow())
+				.end(timeService.now())
 				.endingComment(endingComment)
 				.build();
 	}

@@ -15,7 +15,7 @@
  */
 package org.openmastery.publisher.api;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 public interface Positionable {
 

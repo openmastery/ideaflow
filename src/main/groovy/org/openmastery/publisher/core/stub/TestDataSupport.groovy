@@ -205,13 +205,8 @@ class TestDataSupport {
 		}
 
 		@Override
-		LocalDateTime javaNow() {
-			return now
-		}
-
-		@Override
-		org.joda.time.LocalDateTime now() {
-			return TimeConverter.toJodaLocalDateTime(javaNow())
+		LocalDateTime now() {
+			now
 		}
 
 		MockTimeService plusHours(int hours) {
@@ -244,7 +239,7 @@ class TestDataSupport {
 		}
 
 		LocalDateTime now() {
-			timeService.javaNow()
+			timeService.now()
 		}
 
 		List<EventEntity> getEventList() {
@@ -256,7 +251,7 @@ class TestDataSupport {
 					.ownerId(ownerId)
 					.name(name)
 					.description(description)
-					.creationDate(timeService.javaNow())
+					.creationDate(timeService.now())
 					.build();
 
 			task = persistenceService.saveTask(task)
@@ -271,7 +266,7 @@ class TestDataSupport {
 					.ownerId(ownerId)
 					.taskId(taskId)
 					.type(EventType.SUBTASK)
-					.position(timeService.javaNow())
+					.position(timeService.now())
 					.comment(comment)
 					.build()
 			persistenceService.saveEvent(event)
@@ -288,19 +283,19 @@ class TestDataSupport {
 					.ownerId(ownerId)
 					.taskId(taskId)
 					.type(EventType.NOTE)
-					.position(timeService.javaNow())
+					.position(timeService.now())
 					.comment(comment)
 					.build()
 			persistenceService.saveEvent(note)
 		}
 
 		void idle(int hours) {
-			LocalDateTime start = timeService.javaNow()
+			LocalDateTime start = timeService.now()
 			timeService.plusHours(hours)
 			IdleActivityEntity idleActivity = IdleActivityEntity.builder()
 					.ownerId(ownerId)
 					.start(start)
-					.end(timeService.javaNow()).build()
+					.end(timeService.now()).build()
 			persistenceService.saveActivity(idleActivity)
 		}
 

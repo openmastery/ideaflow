@@ -17,19 +17,19 @@ package org.openmastery.storyweb.resources;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.openmastery.storyweb.api.ResourcePaths;
 import org.openmastery.storyweb.api.metrics.SPCChart;
-import org.openmastery.storyweb.api.metrics.InterestingChart;
 import org.openmastery.storyweb.core.MetricsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Component
 @Path(ResourcePaths.STORY_WEB_PATH + ResourcePaths.METRICS_PATH)
@@ -53,9 +53,9 @@ public class MetricsResource {
 		LocalDate jodaStartDate;
 		LocalDate jodaEndDate;
 		if (startDate != null && endDate != null) {
-			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
-			jodaStartDate = formatter.parseLocalDate(startDate);
-			jodaEndDate = formatter.parseLocalDate(endDate);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+			jodaStartDate = LocalDate.parse(startDate, formatter);
+			jodaEndDate = LocalDate.parse(endDate, formatter);
 		} else {
 			jodaStartDate = LocalDate.now().minusDays(7);
 			jodaEndDate = LocalDate.now();

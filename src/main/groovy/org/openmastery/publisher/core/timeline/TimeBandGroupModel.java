@@ -21,10 +21,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

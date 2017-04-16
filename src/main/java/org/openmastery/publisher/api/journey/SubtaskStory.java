@@ -5,14 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.ideaflow.Haystack;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 import org.openmastery.publisher.api.metrics.CapacityDistribution;
 import org.openmastery.storyweb.api.metrics.Metric;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -47,11 +50,11 @@ public class SubtaskStory implements StoryContextElement {
 		this.subtaskEvent = subtask;
 		this.timeline = timeline;
 		this.parentPath = parentPath;
-		this.progressTicks = new ArrayList<ProgressTick>();
-		this.troubleshootingJourneys = new ArrayList<TroubleshootingJourney>();
+		this.progressTicks = new ArrayList<>();
+		this.troubleshootingJourneys = new ArrayList<>();
 
 		contextTags = TagsUtil.extractUniqueHashTags(subtaskEvent.getDescription());
-		painTags = new HashSet<String>();
+		painTags = new HashSet<>();
 
 		subtaskEvent.setFullPath(getFullPath());
 	}

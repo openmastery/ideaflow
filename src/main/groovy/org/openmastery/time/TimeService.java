@@ -15,11 +15,9 @@
  */
 package org.openmastery.time;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 public interface TimeService {
-
-	java.time.LocalDateTime javaNow();
 
 	LocalDateTime now();
 

@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
@@ -35,9 +34,11 @@ import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
-import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
+import java.time.Duration
+import java.time.LocalDateTime
 
 class IdeaFlowTaskTimelineGenerator {
 
@@ -88,7 +89,7 @@ class IdeaFlowTaskTimelineGenerator {
 		this.executionEvents = executionActivities.collect { ExecutionActivityEntity entity ->
 			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)
 			execution.failed = entity.exitCode != 0
-			execution.durationInSeconds = TimeConverter.between(entity.start, entity.end).standardSeconds
+			execution.durationInSeconds = Duration.between(entity.start, entity.end).seconds
 			return execution
 		}
 		this
@@ -125,7 +126,7 @@ class IdeaFlowTaskTimelineGenerator {
 
 	void convertLearningBandsUnderMinimumThresholdToProgress(List<IdeaFlowBandModel> ideaFlowBandModels) {
 		ideaFlowBandModels.each { IdeaFlowBandModel band ->
-			if (band.type == IdeaFlowStateType.LEARNING && (band.duration.standardMinutes < strategyBandMinimumDurationInMinutes)) {
+			if (band.type == IdeaFlowStateType.LEARNING && (band.duration.toMinutes() < strategyBandMinimumDurationInMinutes)) {
 				band.type = IdeaFlowStateType.PROGRESS
 			}
 		}

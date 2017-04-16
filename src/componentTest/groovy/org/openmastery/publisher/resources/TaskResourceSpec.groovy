@@ -2,7 +2,6 @@ package org.openmastery.publisher.resources
 
 import com.bancvue.rest.exception.ConflictException
 import com.bancvue.rest.exception.NotFoundException
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.PagedResult
 import org.openmastery.publisher.api.task.Task
@@ -14,6 +13,8 @@ import org.openmastery.testsupport.BeanCompare
 import org.openmastery.time.MockTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
+
+import java.time.LocalDateTime
 
 import static org.openmastery.publisher.ARandom.aRandom
 

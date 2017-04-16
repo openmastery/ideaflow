@@ -34,10 +34,6 @@ class LongDurationConverter implements CustomConverter {
 			return ((Duration) source).seconds
 		} else if (destinationClass == Duration.class && sourceClass == Long.class) {
 			return Duration.ofSeconds((Long) source)
-		} else if (destinationClass == Long.class && sourceClass == org.joda.time.Duration.class) {
-			return ((org.joda.time.Duration) source).standardSeconds
-		} else if (destinationClass == org.joda.time.Duration.class && sourceClass == Long.class) {
-			return new org.joda.time.Duration((Long) source)
 		} else {
 			throw new MappingException("Converter LongDurationConverter used incorrectly, destination=${destination}, source=${source}")
 		}

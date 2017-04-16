@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
@@ -28,6 +27,9 @@ import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+
+import java.time.Duration
+import java.time.LocalDateTime
 
 @Component
 class IdeaFlowBandGenerator {
@@ -102,7 +104,7 @@ class IdeaFlowBandGenerator {
 		if (start == null) {
 			return false
 		}
-		TimeConverter.between(start, end).toStandardMinutes().minutes >= strategyBandMinimumDurationInMinutes
+		return Duration.between(start, end).toMinutes() >= strategyBandMinimumDurationInMinutes
 	}
 
 	private void addStrategyBand(List<IdeaFlowBandModel> troubleshootingBands, List<IdeaFlowBandModel> strategyBandList, LocalDateTime start, LocalDateTime end) {

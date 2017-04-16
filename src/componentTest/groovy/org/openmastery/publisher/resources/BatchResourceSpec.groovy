@@ -1,6 +1,5 @@
 package org.openmastery.publisher.resources
 
-import com.bancvue.rest.exception.ValidationException
 import org.openmastery.publisher.ComponentTest
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
@@ -53,8 +52,8 @@ class BatchResourceSpec extends Specification {
 		given:
 		Duration expectedDuration = aRandom.duration()
 		EditorActivityEntity expectedActivity = aRandom.editorActivityEntity()
-				.start(timeService.javaNow().minus(expectedDuration))
-				.end(timeService.javaNow())
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
 				.taskId(taskId)
 				.build()
 
@@ -76,8 +75,8 @@ class BatchResourceSpec extends Specification {
 		given:
 		Duration expectedDuration = aRandom.duration()
 		IdleActivityEntity expectedIdle = aRandom.idleActivityEntity()
-				.start(timeService.javaNow().minus(expectedDuration))
-				.end(timeService.javaNow())
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
 				.taskId(taskId)
 				.build()
 
@@ -98,8 +97,8 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post external activity"() {
 		Duration expectedDuration = aRandom.duration()
 		ExternalActivityEntity expectedExternal = aRandom.externalActivityEntity()
-				.start(timeService.javaNow().minus(expectedDuration))
-				.end(timeService.javaNow())
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
 				.taskId(taskId)
 				.build()
 
@@ -120,8 +119,8 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post block activity"() {
 		Duration expectedDuration = aRandom.duration()
 		BlockActivityEntity expectedActivity = aRandom.blockActivityEntity()
-				.start(timeService.javaNow().minus(expectedDuration))
-				.end(timeService.javaNow())
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
 				.taskId(taskId)
 				.build()
 
@@ -142,8 +141,8 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post execution activity"() {
 		Duration expectedDuration = aRandom.duration()
 		ExecutionActivityEntity expectedExecution = aRandom.executionActivityEntity()
-				.start(timeService.javaNow().minus(expectedDuration))
-				.end(timeService.javaNow())
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
 				.taskId(taskId)
 				.build()
 
@@ -165,8 +164,8 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post modification activity"() {
 		Duration expectedDuration = aRandom.duration()
 		ModificationActivityEntity expectedModification = aRandom.modificationActivityEntity()
-				.start(timeService.javaNow().minus(expectedDuration))
-				.end(timeService.javaNow())
+				.start(timeService.now().minus(expectedDuration))
+				.end(timeService.now())
 				.taskId(taskId)
 				.build()
 
@@ -188,7 +187,7 @@ class BatchResourceSpec extends Specification {
 	def "SHOULD post events"() {
 		given:
 		EventEntity expectedEvent = aRandom.eventEntity()
-			.position(timeService.javaNow())
+			.position(timeService.now())
 			.taskId(taskId)
 			.build()
 

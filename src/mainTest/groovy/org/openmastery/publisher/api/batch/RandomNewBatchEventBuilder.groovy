@@ -1,15 +1,15 @@
 package org.openmastery.publisher.api.batch
 
-import org.openmastery.publisher.ARandom
 import org.openmastery.publisher.api.event.EventType
-import org.openmastery.time.TimeConverter
+
+import static org.openmastery.publisher.ARandom.aRandom
 
 class RandomNewBatchEventBuilder extends NewBatchEvent.NewBatchEventBuilder {
 
 	RandomNewBatchEventBuilder() {
-		super.taskId(ARandom.aRandom.nextLong())
+		super.taskId(aRandom.nextLong())
 				.type(EventType.AWESOME)
-				.comment(ARandom.aRandom.text(20))
-				.position(TimeConverter.toJodaLocalDateTime(ARandom.aRandom.dayOfYear()))
+				.comment(aRandom.text(20))
+				.position(aRandom.dayOfYear())
 	}
 }

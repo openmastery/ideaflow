@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.batch.BatchItem;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder

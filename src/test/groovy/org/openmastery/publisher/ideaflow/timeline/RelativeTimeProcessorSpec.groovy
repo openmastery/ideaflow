@@ -1,10 +1,11 @@
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.Duration
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableAndIntervalListBuilder
 import org.openmastery.publisher.api.PositionableComparator
 import spock.lang.Specification
+
+import java.time.Duration
 
 class RelativeTimeProcessorSpec extends Specification {
 
@@ -17,7 +18,7 @@ class RelativeTimeProcessorSpec extends Specification {
 	}
 
 	private long hoursToSeconds(int hours) {
-		Duration.standardHours(hours).standardSeconds
+		Duration.ofHours(hours).seconds
 	}
 
 	def "should adjust instant when idle is before positionable"() {

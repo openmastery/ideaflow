@@ -1,11 +1,10 @@
 package org.openmastery.publisher.api.journey;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.joda.time.LocalDateTime;
 import org.openmastery.storyweb.api.metrics.Metric;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 

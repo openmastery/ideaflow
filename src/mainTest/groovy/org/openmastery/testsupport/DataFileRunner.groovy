@@ -1,13 +1,14 @@
 package org.openmastery.testsupport
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.core.stub.BatchLoader
+
+import java.time.LocalDateTime
 
 class DataFileRunner {
 
 	public static void main(String [] args) {
 		BatchLoader loader = new BatchLoader()
-		LocalDateTime startTime = new LocalDateTime().minusDays(15)
+		LocalDateTime startTime = LocalDateTime.now().minusDays(15)
 
 		List<Object> activityObjects = loader.loadAndAdjustToConsecutiveTime('/stub/task_US12378.in', -1L, startTime)
 

@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.core.stub
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.activity.NewBlockActivity
 import org.openmastery.publisher.api.activity.NewEditorActivity
 import org.openmastery.publisher.api.activity.NewExecutionActivity
@@ -26,6 +25,8 @@ import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.batch.NewIFMBatch
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.NewSnippetEvent
+
+import java.time.LocalDateTime
 
 
 class BatchLoader {

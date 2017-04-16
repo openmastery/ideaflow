@@ -16,16 +16,11 @@
 package org.openmastery.storyweb.core.metrics.spc
 
 import groovy.util.logging.Slf4j
-import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
-import org.joda.time.LocalTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.event.Event
-import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.task.Task
 import org.openmastery.publisher.core.activity.ActivityRepository
-import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
@@ -37,11 +32,8 @@ import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowBandGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdleTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.RelativeTimeProcessor
-import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
-import java.sql.Timestamp
 
 @Slf4j
 @Component
@@ -100,11 +92,11 @@ class FilterlessTaskDataGenerator {
 
 			if (positionables.size() > 0) {
 				Positionable firstEvent = positionables.first()
-				taskData.setStart(firstEvent.position)
+				taskData.start = firstEvent.position
 
 				Positionable lastEvent = positionables.last()
-				taskData.setEnd(lastEvent.position)
-				taskData.setDurationInSeconds(lastEvent.relativePositionInSeconds)
+				taskData.end = lastEvent.position
+				taskData.durationInSeconds = lastEvent.relativePositionInSeconds
 			}
 		}
 		return taskDataList

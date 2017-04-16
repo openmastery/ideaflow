@@ -18,24 +18,21 @@ package org.openmastery.publisher.core
 import com.bancvue.rest.exception.NotFoundException
 import org.apache.commons.lang3.NotImplementedException
 import org.hibernate.cfg.NotYetImplementedException
-import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
-import org.openmastery.publisher.api.annotation.FAQAnnotation
-import org.openmastery.publisher.api.batch.NewBatchEvent
 import org.openmastery.publisher.api.event.AnnotatedEvent
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.journey.FormattableSnippet
-import org.openmastery.publisher.core.IdeaFlowPersistenceService
 import org.openmastery.publisher.core.annotation.AnnotationRespository
 import org.openmastery.publisher.core.annotation.FaqAnnotationEntity
 import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.core.event.EventEntity
 import org.openmastery.publisher.core.event.EventRepository
-import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.TimeConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
+import java.time.LocalDateTime
 
 @Component
 class EventService {

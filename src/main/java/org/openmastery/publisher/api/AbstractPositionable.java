@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.LocalDateTime;
+
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +19,7 @@ public abstract class AbstractPositionable implements Positionable, RelativePosi
 	private Long relativePositionInSeconds;
 
 
-// simplify dozer mapping
+	// simplify dozer mapping
 
 	@JsonIgnore
 	public LocalDateTime getStart() {

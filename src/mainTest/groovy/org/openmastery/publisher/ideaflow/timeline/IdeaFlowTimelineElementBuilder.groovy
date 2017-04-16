@@ -1,7 +1,5 @@
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.Duration
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.SharedTags
 import org.openmastery.publisher.api.activity.ModificationActivity
 import org.openmastery.publisher.api.event.Event
@@ -10,6 +8,9 @@ import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.time.MockTimeService
 import org.openmastery.time.TimeConverter
+
+import java.time.Duration
+import java.time.LocalDateTime
 
 class IdeaFlowTimelineElementBuilder {
 
@@ -21,7 +22,7 @@ class IdeaFlowTimelineElementBuilder {
 	List<IdleTimeBandModel> idleTimeBands = []
 	List<ExecutionEvent> executionEventList = []
 
-	Duration idleDuration = Duration.standardSeconds(0)
+	Duration idleDuration = Duration.ofSeconds(0)
 	LocalDateTime deactivationTime
 	LocalDateTime startTime
 
@@ -50,7 +51,7 @@ class IdeaFlowTimelineElementBuilder {
 	}
 
 	IdeaFlowTimelineElementBuilder idleDays(int days) {
-		idleDuration = idleDuration.plus(Duration.standardDays(days))
+		idleDuration = idleDuration.plus(Duration.ofDays(days))
 		idleTimeBands << IdleTimeBandModel.builder()
 				.id(idleTimeBandId++)
 				.start(timeService.now())
@@ -60,7 +61,7 @@ class IdeaFlowTimelineElementBuilder {
 	}
 
 	IdeaFlowTimelineElementBuilder idleHours(int hours) {
-		idleDuration = idleDuration.plus(Duration.standardHours(hours))
+		idleDuration = idleDuration.plus(Duration.ofHours(hours))
 		idleTimeBands << IdleTimeBandModel.builder()
 				.id(idleTimeBandId++)
 				.start(timeService.now())
@@ -70,7 +71,7 @@ class IdeaFlowTimelineElementBuilder {
 	}
 
 	IdeaFlowTimelineElementBuilder idleMinutes(int minutes) {
-		idleDuration = idleDuration.plus(Duration.standardMinutes(minutes))
+		idleDuration = idleDuration.plus(Duration.ofMinutes(minutes))
 		idleTimeBands << IdleTimeBandModel.builder()
 				.id(idleTimeBandId++)
 				.start(timeService.now())
@@ -131,12 +132,12 @@ class IdeaFlowTimelineElementBuilder {
 	}
 
 	private Long computeRelativePositionInSeconds() {
-		TimeConverter.between(startTime, timeService.now()).minus(idleDuration).standardSeconds
+		Duration.between(startTime, timeService.now()).minus(idleDuration).seconds
 	}
 
 	IdeaFlowTimelineElementBuilder activate() {
 		if (deactivationTime != null) {
-			idleDuration.plus(TimeConverter.between(deactivationTime, timeService.now()))
+			idleDuration.plus(Duration.between(deactivationTime, timeService.now()))
 		}
 		addEvent(EventType.ACTIVATE)
 		this

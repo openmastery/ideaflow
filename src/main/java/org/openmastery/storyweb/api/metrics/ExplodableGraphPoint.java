@@ -3,9 +3,9 @@ package org.openmastery.storyweb.api.metrics;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.metrics.DurationInSeconds;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,10 +32,10 @@ public class ExplodableGraphPoint {
 	List<ExplodableGraphPoint> childPoints;
 
 	public ExplodableGraphPoint() {
-		contextTags = new HashSet<String>();
-		painTags = new HashSet<String>();
+		contextTags = new HashSet<>();
+		painTags = new HashSet<>();
 		durationInSeconds = new DurationInSeconds(0);
-		childPoints = new ArrayList<ExplodableGraphPoint>();
+		childPoints = new ArrayList<>();
 	}
 
 

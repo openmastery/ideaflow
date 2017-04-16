@@ -1,7 +1,5 @@
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.Duration
-import org.joda.time.LocalDateTime
 import org.openmastery.mapper.EntityMapper
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
@@ -12,6 +10,9 @@ import org.openmastery.publisher.core.timeline.TimelineSegmentValidator
 import org.openmastery.publisher.core.timeline.TimelineTestSupport
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
+
+import java.time.Duration
+import java.time.LocalDateTime
 
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.LEARNING
 import static org.openmastery.publisher.api.ideaflow.IdeaFlowStateType.PROGRESS
@@ -54,10 +55,10 @@ class IdleTimeProcessorSpec extends Specification {
 		List<IdeaFlowBandModel> ideaFlowBands = parseIdleTimeAndReturnIdeaFlowBandList()
 
 		then:
-		validator.assertTimeBand(ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
-		validator.assertTimeBand(ideaFlowBands, 1, TROUBLESHOOTING, Duration.standardHours(1))
-		validator.assertTimeBand(ideaFlowBands, 2, PROGRESS, Duration.standardHours(2))
-		validator.assertTimeBand(ideaFlowBands, 3, LEARNING, Duration.standardHours(2), Duration.standardHours(3))
+		validator.assertTimeBand(ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(ideaFlowBands, 1, TROUBLESHOOTING, Duration.ofHours(1))
+		validator.assertTimeBand(ideaFlowBands, 2, PROGRESS, Duration.ofHours(2))
+		validator.assertTimeBand(ideaFlowBands, 3, LEARNING, Duration.ofHours(2), Duration.ofHours(3))
 	}
 
 	def "WHEN idle time is within a nested Timeband SHOULD subtract relative time from parent and child band"() {
@@ -71,10 +72,10 @@ class IdleTimeProcessorSpec extends Specification {
 		List<IdeaFlowBandModel> ideaFlowBands = parseIdleTimeAndReturnIdeaFlowBandList()
 
 		then:
-		validator.assertTimeBand(ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
-		validator.assertTimeBand(ideaFlowBands, 1, LEARNING, Duration.standardHours(4), Duration.standardHours(4))
+		validator.assertTimeBand(ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(ideaFlowBands, 1, LEARNING, Duration.ofHours(4), Duration.ofHours(4))
 		List nestedBands = ideaFlowBands[1].nestedBands
-		validator.assertNestedTimeBand(nestedBands, 0, TROUBLESHOOTING, Duration.standardHours(3), Duration.standardHours(4))
+		validator.assertNestedTimeBand(nestedBands, 0, TROUBLESHOOTING, Duration.ofHours(3), Duration.ofHours(4))
 	}
 
 	def "WHEN multiple idles within band SHOULD provide total idle duration"() {
@@ -88,8 +89,8 @@ class IdleTimeProcessorSpec extends Specification {
 		List<IdeaFlowBandModel> ideaFlowBands = parseIdleTimeAndReturnIdeaFlowBandList()
 
 		then:
-		validator.assertTimeBand(ideaFlowBands, 0, PROGRESS, Duration.standardHours(1))
-		validator.assertTimeBand(ideaFlowBands, 1, LEARNING, Duration.standardHours(4), Duration.standardHours(6))
+		validator.assertTimeBand(ideaFlowBands, 0, PROGRESS, Duration.ofHours(1))
+		validator.assertTimeBand(ideaFlowBands, 1, LEARNING, Duration.ofHours(4), Duration.ofHours(6))
 	}
 
 	def "generateIdleTimeBandsFromDeativationEvents should generate idle for deactivation/activation pair"() {
@@ -103,7 +104,7 @@ class IdleTimeProcessorSpec extends Specification {
 		List<IdleTimeBandModel> idleBands = idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(builder.eventList)
 
 		then:
-		assert idleBands[0].duration == Duration.standardHours(2)
+		assert idleBands[0].duration == Duration.ofHours(2)
 		assert idleBands[0].start == idleStartTime
 		assert idleBands.size() == 1
 	}
@@ -123,7 +124,7 @@ class IdleTimeProcessorSpec extends Specification {
 		List<IdleTimeBandModel> idleBands = idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(builder.eventList)
 
 		then:
-		assert idleBands[0].duration == Duration.standardHours(3)
+		assert idleBands[0].duration == Duration.ofHours(3)
 		assert idleBands[0].start == idleStartTime
 		assert idleBands.size() == 1
 	}

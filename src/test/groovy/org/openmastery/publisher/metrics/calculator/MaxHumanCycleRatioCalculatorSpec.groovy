@@ -1,6 +1,5 @@
 package org.openmastery.publisher.metrics.calculator
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
@@ -10,6 +9,8 @@ import org.openmastery.publisher.api.metrics.MetricType
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
+
+import java.time.LocalDateTime
 
 
 class MaxHumanCycleRatioCalculatorSpec extends Specification {

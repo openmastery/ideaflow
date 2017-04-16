@@ -1,6 +1,5 @@
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
@@ -10,6 +9,7 @@ import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
 import java.time.Duration
+import java.time.LocalDateTime
 
 public class IdeaFlowTaskTimelineGeneratorSpec extends Specification {
 

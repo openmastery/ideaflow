@@ -1,17 +1,17 @@
 package org.openmastery.publisher.api.batch
 
-import org.joda.time.LocalDateTime
-import org.openmastery.publisher.ARandom
 import org.openmastery.publisher.api.activity.NewBlockActivity
 import org.openmastery.publisher.api.activity.NewEditorActivity
 import org.openmastery.publisher.api.activity.NewExecutionActivity
 import org.openmastery.publisher.api.activity.NewExternalActivity
 import org.openmastery.publisher.api.activity.NewIdleActivity
 import org.openmastery.publisher.api.activity.NewModificationActivity
-import org.openmastery.publisher.api.activity.RandomNewEditorActivityBuilder
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.NewSnippetEvent
-import org.openmastery.time.TimeConverter
+
+import java.time.LocalDateTime
+
+import static org.openmastery.publisher.ARandom.aRandom
 
 class RandomNewIFMBatchBuilder extends NewIFMBatch.NewIFMBatchBuilder {
 
@@ -24,7 +24,7 @@ class RandomNewIFMBatchBuilder extends NewIFMBatch.NewIFMBatchBuilder {
 			.idleActivityList([])
 			.eventList([])
 			.snippetEventList([])
-			.timeSent(TimeConverter.toJodaLocalDateTime(ARandom.aRandom.dayOfYear()))
+			.timeSent(aRandom.dayOfYear())
 	}
 
 	RandomNewIFMBatchBuilder timeSent(LocalDateTime localDateTime) {

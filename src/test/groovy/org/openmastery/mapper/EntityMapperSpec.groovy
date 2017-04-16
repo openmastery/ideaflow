@@ -51,21 +51,4 @@ class EntityMapperSpec extends Specification {
 		beanCompare.assertEquals(source, target)
 	}
 
-	def "should convert between joda and java8 time"() {
-		given:
-		LocalDateTime javaNow = LocalDateTimeService.nowTruncateToSeconds()
-		org.joda.time.LocalDateTime jodaNow = LocalDateTimeService.jodaNowTruncateToSeconds()
-		Source source = new Source(
-				convertJavaLocalDateTime: javaNow,
-				convertJodaLocalDateTime: jodaNow,
-		)
-
-		when:
-		Target target = entityMapper.mapIfNotNull(source, Target)
-
-		then:
-		assert javaNow.toEpochSecond(ZoneOffset.UTC) == (target.convertJavaLocalDateTime.toDate(TimeZone.getTimeZone("UTC")).time / 1000)
-		assert (jodaNow.toDate(TimeZone.getTimeZone("UTC")).time / 1000) == target.convertJodaLocalDateTime.toEpochSecond(ZoneOffset.UTC)
-	}
-
 }

@@ -15,13 +15,12 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.Duration
-import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
-import org.openmastery.time.TimeConverter
 import org.springframework.stereotype.Component
+
+import java.time.Duration
 
 @Component
 class RelativeTimeProcessor {
@@ -58,15 +57,15 @@ class RelativeTimeProcessor {
 					if (previousIdleBand.contains(positionable.position)) {
 						duration = Duration.ZERO
 					} else if (previousIdleBand.contains(previousPositionable.position)) {
-						duration = TimeConverter.between(previousIdleBand.end, positionable.getPosition())
+						duration = Duration.between(previousIdleBand.end, positionable.position)
 					}
 				}
 
 				if (duration == null) {
-					duration = TimeConverter.between(previousPositionable.getPosition(), positionable.getPosition())
+					duration = Duration.between(previousPositionable.position, positionable.position)
 				}
 
-				long seconds = duration.standardSeconds
+				long seconds = duration.seconds
 				if (seconds > 0) {
 					relativeTime += seconds
 				}

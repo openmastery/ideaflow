@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.Positionable;
 import org.openmastery.publisher.api.metrics.MetricType;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Data
@@ -35,9 +35,9 @@ public class GraphPoint<V> implements Positionable, Explodable<GraphPoint<V>>, C
 
 
 	public GraphPoint() {
-		contextTags = new HashSet<String>();
-		painTags = new HashSet<String>();
-		childPoints = new ArrayList<GraphPoint<V>>();
+		contextTags = new HashSet<>();
+		painTags = new HashSet<>();
+		childPoints = new ArrayList<>();
 	}
 
 	private void addContextTags(Set<String> contextTags) {
@@ -49,7 +49,7 @@ public class GraphPoint<V> implements Positionable, Explodable<GraphPoint<V>>, C
 	}
 
 	public Metric<V> toMetric(String prefixPath) {
-		Metric<V> metric = new Metric<V>();
+		Metric<V> metric = new Metric<>();
 		String path = relativePath;
 		if (prefixPath.length() > 0) {
 			path = prefixPath + relativePath;
@@ -67,7 +67,7 @@ public class GraphPoint<V> implements Positionable, Explodable<GraphPoint<V>>, C
 	}
 
 	public Map<String, GraphPoint<V>> explodeToMap() throws CloneNotSupportedException {
-		Map<String, GraphPoint<V>> flattenedMap = new HashMap<String, GraphPoint<V>>();
+		Map<String, GraphPoint<V>> flattenedMap = new HashMap<>();
 
 		List<GraphPoint<V>> explodedPoints = explode();
 		for (GraphPoint<V> point : explodedPoints) {
@@ -81,10 +81,10 @@ public class GraphPoint<V> implements Positionable, Explodable<GraphPoint<V>>, C
 	}
 
 	private List<GraphPoint<V>> prefixWithRelativePath(String relativePathPrefix, List<GraphPoint<V>> graphPoints) throws CloneNotSupportedException {
-		List<GraphPoint<V>> prefixedPoints = new ArrayList<GraphPoint<V>>();
+		List<GraphPoint<V>> prefixedPoints = new ArrayList<>();
 
 		for (GraphPoint<V> childPoint : childPoints) {
-			GraphPoint<V> splodePoint = (GraphPoint<V>) childPoint.clone();
+			GraphPoint<V> splodePoint = childPoint.clone();
 			splodePoint.setRelativePath(relativePathPrefix + splodePoint.getRelativePath());
 			prefixedPoints.add(splodePoint);
 		}
@@ -92,10 +92,10 @@ public class GraphPoint<V> implements Positionable, Explodable<GraphPoint<V>>, C
 	}
 
 	private List<GraphPoint<V>> stripPrefixFromRelativePath(String relativePathPrefix, List<GraphPoint<V>> graphPoints) throws CloneNotSupportedException {
-		List<GraphPoint<V>> prefixedPoints = new ArrayList<GraphPoint<V>>();
+		List<GraphPoint<V>> prefixedPoints = new ArrayList<>();
 
 		for (GraphPoint<V> childPoint : childPoints) {
-			GraphPoint<V> splodePoint = (GraphPoint<V>) childPoint.clone();
+			GraphPoint<V> splodePoint = childPoint.clone();
 			splodePoint.setRelativePath(relativePathPrefix + splodePoint.getRelativePath());
 			prefixedPoints.add(splodePoint);
 		}
@@ -124,7 +124,7 @@ public class GraphPoint<V> implements Positionable, Explodable<GraphPoint<V>>, C
 	}
 
 	public void forceBubbleUpAllPain() {
-		Set<String> allPain = new HashSet<String>();
+		Set<String> allPain = new HashSet<>();
 		for (GraphPoint<?> childPoint : childPoints) {
 			childPoint.forceBubbleUpAllPain();
 			allPain.addAll(childPoint.painTags);
@@ -133,7 +133,7 @@ public class GraphPoint<V> implements Positionable, Explodable<GraphPoint<V>>, C
 	}
 
 	public void forceBubbleUpDangerTags() {
-		Set<String> allDangerTags = new HashSet<String>();
+		Set<String> allDangerTags = new HashSet<>();
 		for (GraphPoint<?> childPoint : childPoints) {
 			childPoint.forceBubbleUpDangerTags();
 			if (childPoint.isDanger()) {

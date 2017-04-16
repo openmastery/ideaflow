@@ -52,8 +52,8 @@ class IdleTimeProcessor {
 		IdleTimeBandModel.builder()
 				.id(entity.id)
 				.taskId(entity.taskId)
-				.start(TimeConverter.toJodaLocalDateTime(entity.start))
-				.end(TimeConverter.toJodaLocalDateTime(entity.end))
+				.start(entity.start)
+				.end(entity.end)
 				.build()
 	}
 

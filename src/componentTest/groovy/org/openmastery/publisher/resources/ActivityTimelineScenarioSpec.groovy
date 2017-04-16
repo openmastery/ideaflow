@@ -37,7 +37,7 @@ class ActivityTimelineScenarioSpec  extends Specification {
 	private LocalDateTime start
 
 	def setup() {
-		start = timeService.javaNow()
+		start = timeService.now()
 	}
 
 

@@ -15,88 +15,25 @@
  */
 package org.openmastery.time
 
-import org.joda.time.DateTimeZone
-import org.joda.time.Duration
-import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
-
 import java.sql.Timestamp
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-
 
 class TimeConverter {
 
-	public static org.joda.time.LocalDateTime toJodaLocalDateTime(LocalDateTime localDateTime) {
-		new org.joda.time.LocalDateTime(
-				localDateTime.getYear(),
-				localDateTime.getMonthValue(),
-				localDateTime.getDayOfMonth(),
-				localDateTime.getHour(),
-				localDateTime.getMinute(),
-				localDateTime.getSecond())
-	}
-
-	public static org.joda.time.LocalDateTime toJodaLocalDateTime(Timestamp timestamp) {
-		new org.joda.time.LocalDateTime(timestamp.time)
-	}
-
-	public static LocalDateTime toJavaLocalDateTime(Timestamp timestamp) {
+	public static LocalDateTime toLocalDateTime(Timestamp timestamp) {
 		if (timestamp == null) {
 			return null
 		}
-		LocalDateTime.of(timestamp.getYear(),
-				timestamp.getMonthOfYear(),
-				timestamp.getDayOfMonth(),
-				timestamp.getHourOfDay(),
-				timestamp.getMinuteOfHour(),
-				timestamp.getSecondOfMinute())
+		timestamp.toLocalDateTime()
 	}
 
-
-	public static LocalDateTime toJavaLocalDateTime(org.joda.time.LocalDateTime localDateTime) {
-		LocalDateTime.of(
-				localDateTime.getYear(),
-				localDateTime.getMonthOfYear(),
-				localDateTime.getDayOfMonth(),
-				localDateTime.getHourOfDay(),
-				localDateTime.getMinuteOfHour(),
-				localDateTime.getSecondOfMinute())
+	public static Timestamp toSqlTimestamp(LocalDateTime localDateTime) {
+		new Timestamp(localDateTime.year - 1900,
+				localDateTime.monthValue - 1,
+				localDateTime.dayOfMonth,
+				localDateTime.hour,
+				localDateTime.minute,
+				localDateTime.second, 0)
 	}
 
-	public static ZonedDateTime toJavaDateTime(org.joda.time.LocalDateTime localDateTime) {
-		LocalDateTime javaDateTime = toJavaLocalDateTime(localDateTime)
-		ZonedDateTime.of(javaDateTime.toLocalDate(), javaDateTime.toLocalTime(), ZoneId.of("UTC"));
-	}
-
-	public static Timestamp toSqlTimestamp(org.joda.time.LocalDateTime localDateTime) {
-		new Timestamp(localDateTime.getYear() -1900,
-				localDateTime.getMonthOfYear()-1,
-				localDateTime.getDayOfMonth(),
-				localDateTime.getHourOfDay(),
-				localDateTime.getMinuteOfHour(),
-				localDateTime.getSecondOfMinute(), 0)
-	}
-
-	public static Duration between(org.joda.time.LocalDateTime start, org.joda.time.LocalDateTime end) {
-		return new Duration(start.toDateTime(DateTimeZone.UTC), end.toDateTime(DateTimeZone.UTC))
-	}
-
-	public static Duration between(LocalDateTime start, LocalDateTime end) {
-		return between(toJodaLocalDateTime(start), toJodaLocalDateTime(end));
-	}
-
-	static String formatDate(LocalDate localDate) {
-		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
-
-		return formatter.print(localDate)
-	}
-
-	static String formatDate(org.joda.time.LocalDateTime localDateTime) {
-		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
-
-		return formatter.print(localDateTime)
-	}
 }

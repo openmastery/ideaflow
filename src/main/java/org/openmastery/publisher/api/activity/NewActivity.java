@@ -1,8 +1,9 @@
 package org.openmastery.publisher.api.activity;
 
 
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.batch.BatchItem;
+
+import java.time.LocalDateTime;
 
 public interface NewActivity extends BatchItem {
 

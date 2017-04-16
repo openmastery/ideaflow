@@ -13,7 +13,6 @@ import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.publisher.ideaflow.IdeaFlowPartialStateEntity
 import org.openmastery.time.MockTimeService
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.data.domain.Page
 import spock.lang.Ignore
 import spock.lang.Specification
 
@@ -76,15 +75,15 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 		given:
 		for (int i = 0; i < 5; i++) {
 			saveActivity(
-					aRandom.activityEntity().end(mockTimeService.javaHoursInFuture(i))
+					aRandom.activityEntity().end(mockTimeService.hoursInFuture(i))
 			)
 		}
 		ActivityEntity mostRecentActivity = saveActivity(
-				aRandom.activityEntity().end(mockTimeService.javaHoursInFuture(24))
+				aRandom.activityEntity().end(mockTimeService.hoursInFuture(24))
 		)
 		for (int i = 0; i < 5; i++) {
 			saveActivity(
-					aRandom.activityEntity().end(mockTimeService.javaHoursInFuture(i + 5))
+					aRandom.activityEntity().end(mockTimeService.hoursInFuture(i + 5))
 			)
 		}
 
@@ -94,7 +93,7 @@ abstract class IdeaFlowPersistenceServiceSpec extends Specification {
 
 	def "getMostRecentActivityEnd SHOULD return null WHEN there's no activity"() {
 		given:
-		TaskEntity task = saveTask(aRandom.taskEntity().creationDate(mockTimeService.javaNow()))
+		TaskEntity task = saveTask(aRandom.taskEntity().creationDate(mockTimeService.now()))
 
 		expect:
 		assert null == persistenceService.getMostRecentActivityEnd(task.id)

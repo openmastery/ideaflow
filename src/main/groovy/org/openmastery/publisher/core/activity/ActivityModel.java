@@ -17,11 +17,11 @@ package org.openmastery.publisher.core.activity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
 import org.openmastery.publisher.api.Interval;
 import org.openmastery.publisher.api.Positionable;
-import org.openmastery.time.TimeConverter;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public abstract class ActivityModel<T extends ActivityEntity> implements Positionable, Interval {
 
@@ -46,15 +46,15 @@ public abstract class ActivityModel<T extends ActivityEntity> implements Positio
 	}
 
 	public LocalDateTime getStart() {
-		return TimeConverter.toJodaLocalDateTime(delegate.getStart());
+		return delegate.getStart();
 	}
 
 	public LocalDateTime getEnd() {
-		return TimeConverter.toJodaLocalDateTime(delegate.getEnd());
+		return delegate.getEnd();
 	}
 
 	public Duration getDuration() {
-		return TimeConverter.between(getStart(), getEnd());
+		return Duration.between(getStart(), getEnd());
 	}
 
 }

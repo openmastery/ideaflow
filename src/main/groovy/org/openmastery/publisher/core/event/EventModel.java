@@ -18,10 +18,10 @@ package org.openmastery.publisher.core.event;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.joda.time.LocalDateTime;
-import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.Positionable;
-import org.openmastery.time.TimeConverter;
+import org.openmastery.publisher.api.event.EventType;
+
+import java.time.LocalDateTime;
 
 public class EventModel implements Positionable {
 
@@ -43,7 +43,7 @@ public class EventModel implements Positionable {
 	}
 
 	public LocalDateTime getPosition() {
-		return TimeConverter.toJodaLocalDateTime(delegate.getPosition());
+		return delegate.getPosition();
 	}
 
 	public String getComment() {

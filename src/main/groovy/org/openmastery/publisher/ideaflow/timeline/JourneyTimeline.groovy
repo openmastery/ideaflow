@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.ExecutionEvent
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
@@ -24,56 +23,58 @@ import org.openmastery.publisher.api.journey.PainCycle
 import org.openmastery.publisher.api.journey.ExperimentCycle
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
 
+import java.time.LocalDateTime
+
 
 public class JourneyTimeline implements IdeaFlowTimeline {
 
-		TroubleshootingJourney journey
+	TroubleshootingJourney journey
 
-		JourneyTimeline(TroubleshootingJourney journey) {
-			this.journey = journey
-		}
+	JourneyTimeline(TroubleshootingJourney journey) {
+		this.journey = journey
+	}
 
-		@Override
-		List<IdeaFlowBand> getIdeaFlowBands() {
-			return [ journey.band ]
-		}
+	@Override
+	List<IdeaFlowBand> getIdeaFlowBands() {
+		return [journey.band]
+	}
 
-		@Override
-		List<ExecutionEvent> getExecutionEvents() {
-			List<ExecutionEvent> allExecutionEvents = []
+	@Override
+	List<ExecutionEvent> getExecutionEvents() {
+		List<ExecutionEvent> allExecutionEvents = []
 
-			journey.getPainCycles.each { PainCycle partialDiscovery ->
-				partialDiscovery.experimentCycles.each { ExperimentCycle experimentCycle ->
-					allExecutionEvents.add(experimentCycle.executionEvent)
-				}
+		journey.painCycles.each { PainCycle partialDiscovery ->
+			partialDiscovery.experimentCycles.each { ExperimentCycle experimentCycle ->
+				allExecutionEvents.add(experimentCycle.executionEvent)
 			}
-
-			return allExecutionEvents
 		}
 
-		@Override
-		List<Event> getEvents() {
-			List<Event> allEvents = []
-			journey.getPainCycles.each { PainCycle partialDiscovery ->
-				allEvents.add(partialDiscovery.event)
-			}
-			return allEvents
-		}
+		return allExecutionEvents
+	}
 
-		@Override
-		Long getDurationInSeconds() {
-			return journey.durationInSeconds
+	@Override
+	List<Event> getEvents() {
+		List<Event> allEvents = []
+		journey.painCycles.each { PainCycle partialDiscovery ->
+			allEvents.add(partialDiscovery.event)
 		}
+		return allEvents
+	}
 
-		@Override
-		LocalDateTime getStart() {
-			return journey.position
-		}
+	@Override
+	Long getDurationInSeconds() {
+		return journey.durationInSeconds
+	}
 
-		@Override
-		LocalDateTime getEnd() {
-			return journey.end
-		}
+	@Override
+	LocalDateTime getStart() {
+		return journey.position
+	}
+
+	@Override
+	LocalDateTime getEnd() {
+		return journey.end
+	}
 
 	@Override
 	Long getRelativePositionInSeconds() {

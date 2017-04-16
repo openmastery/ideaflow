@@ -1,6 +1,5 @@
 package org.openmastery.storyweb.core.metrics.analyzer
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
@@ -13,6 +12,8 @@ import org.openmastery.publisher.ideaflow.story.TroubleshootingJourneyGenerator
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
 
+import java.time.LocalDateTime
+
 
 class HumanCycleTimeAnalyzerSpec extends Specification {
 	private MockTimeService mockTimeService = new MockTimeService()
@@ -20,7 +21,6 @@ class HumanCycleTimeAnalyzerSpec extends Specification {
 	private TroubleshootingJourneyGenerator journeyGenerator = new TroubleshootingJourneyGenerator()
 
 	private HumanCycleTimeAnalyzer calculator = new HumanCycleTimeAnalyzer()
-
 
 	LocalDateTime start
 

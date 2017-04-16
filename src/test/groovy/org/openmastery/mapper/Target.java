@@ -12,7 +12,5 @@ public class Target {
 	private String targetField;
 	private Duration duration;
 	private LocalDateTime localDateTime;
-	private LocalDateTime convertJodaLocalDateTime;
-	private org.joda.time.LocalDateTime convertJavaLocalDateTime;
 
 }

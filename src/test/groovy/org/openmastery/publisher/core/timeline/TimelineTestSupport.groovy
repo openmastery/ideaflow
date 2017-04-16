@@ -1,6 +1,5 @@
 package org.openmastery.publisher.core.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.core.IdeaFlowInMemoryPersistenceService
@@ -13,6 +12,8 @@ import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.metrics.machine.IdeaFlowStateMachine
 import org.openmastery.publisher.security.InvocationContext
 import org.openmastery.time.MockTimeService
+
+import java.time.LocalDateTime
 
 import static IdeaFlowStateType.LEARNING
 import static IdeaFlowStateType.REWORK
@@ -64,7 +65,7 @@ class TimelineTestSupport {
 		if (state) {
 			stateList << IdeaFlowStateEntity.from(state)
 					.taskId(taskId)
-					.end(timeService.javaNow())
+					.end(timeService.now())
 					.endingComment("")
 					.build();
 		}
@@ -102,20 +103,20 @@ class TimelineTestSupport {
 	}
 
 	void idle(int hours) {
-		java.time.LocalDateTime start = timeService.javaNow()
+		java.time.LocalDateTime start = timeService.now()
 		timeService.plusHours(hours)
 		IdleActivityEntity idleActivity = IdleActivityEntity.builder()
 				.taskId(taskId)
 				.start(start)
-				.end(timeService.javaNow()).build()
+				.end(timeService.now()).build()
 		persistenceService.saveActivity(idleActivity)
 	}
 
 	void editor() {
 		EditorActivityEntity editorActivity = EditorActivityEntity.builder()
 				.taskId(taskId)
-				.start(timeService.javaNow())
-				.end(timeService.javaNow())
+				.start(timeService.now())
+				.end(timeService.now())
 				.filePath("/some/path")
 				.build()
 		persistenceService.saveActivity(editorActivity)
@@ -125,7 +126,7 @@ class TimelineTestSupport {
 		EventEntity event = EventEntity.builder()
 				.taskId(taskId)
 				.comment(comment)
-				.position(timeService.javaNow())
+				.position(timeService.now())
 				.type(eventType)
 				.build()
 		persistenceService.saveEvent(event)

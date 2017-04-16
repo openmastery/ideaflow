@@ -1,24 +1,20 @@
 package org.openmastery.publisher.metrics.subtask
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimelineBuilder
 import org.openmastery.publisher.api.journey.IdeaFlowStory
-import org.openmastery.publisher.api.journey.TroubleshootingJourney
 import org.openmastery.publisher.api.metrics.DurationInSeconds
-import org.openmastery.publisher.api.task.Task
-import org.openmastery.publisher.ideaflow.story.IdeaFlowStoryGenerator
-import org.openmastery.storyweb.api.metrics.Metric
 import org.openmastery.publisher.api.metrics.MetricType
-import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineElementBuilder
-import org.openmastery.publisher.ideaflow.timeline.JourneyTimeline
+import org.openmastery.publisher.ideaflow.story.IdeaFlowStoryGenerator
 import org.openmastery.publisher.ideaflow.story.TroubleshootingJourneyGenerator
+import org.openmastery.storyweb.api.metrics.Metric
 import org.openmastery.storyweb.core.MetricsService
 import org.openmastery.storyweb.core.metrics.spc.MetricSet
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
+
+import java.time.LocalDateTime
 
 class MetricsServiceSpec extends Specification {
 

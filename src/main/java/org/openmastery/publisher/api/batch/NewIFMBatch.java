@@ -1,11 +1,20 @@
 package org.openmastery.publisher.api.batch;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-import org.joda.time.LocalDateTime;
-import org.openmastery.publisher.api.activity.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
+import org.openmastery.publisher.api.activity.NewBlockActivity;
+import org.openmastery.publisher.api.activity.NewEditorActivity;
+import org.openmastery.publisher.api.activity.NewExecutionActivity;
+import org.openmastery.publisher.api.activity.NewExternalActivity;
+import org.openmastery.publisher.api.activity.NewIdleActivity;
+import org.openmastery.publisher.api.activity.NewModificationActivity;
 import org.openmastery.publisher.api.event.NewSnippetEvent;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +37,7 @@ public class NewIFMBatch {
 	@Singular("snippetEvent") private List<NewSnippetEvent> snippetEventList;
 
 	private List<List<? extends BatchItem>> getBatchItemLists() {
-		ArrayList<List<? extends BatchItem>> batchItemLists = new ArrayList<List<? extends BatchItem>>(10);
+		ArrayList<List<? extends BatchItem>> batchItemLists = new ArrayList<>(10);
 		batchItemLists.add(getNotNullList(editorActivityList));
 		batchItemLists.add(getNotNullList(externalActivityList));
 		batchItemLists.add(getNotNullList(idleActivityList));
@@ -46,10 +55,8 @@ public class NewIFMBatch {
 
 	@JsonIgnore
 	public List<BatchItem> getBatchItems() {
-		List<BatchItem> batchItems = new ArrayList<BatchItem>();
-		for (List<? extends BatchItem> list : getBatchItemLists()) {
-			batchItems.addAll(list);
-		}
+		List<BatchItem> batchItems = new ArrayList<>();
+		getBatchItemLists().forEach(batchItems::addAll);
 		return batchItems;
 	}
 

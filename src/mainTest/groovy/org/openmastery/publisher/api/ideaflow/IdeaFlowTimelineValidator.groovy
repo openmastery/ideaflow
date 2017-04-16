@@ -1,9 +1,10 @@
 package org.openmastery.publisher.api.ideaflow
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.testsupport.BeanCompare
+
+import java.time.LocalDateTime
 
 class IdeaFlowTimelineValidator {
 

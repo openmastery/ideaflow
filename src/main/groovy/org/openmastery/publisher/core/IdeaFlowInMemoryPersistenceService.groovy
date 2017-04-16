@@ -31,8 +31,6 @@ import org.openmastery.publisher.ideaflow.IdeaFlowStateEntity
 import org.openmastery.publisher.core.task.TaskEntity
 import org.openmastery.time.TimeConverter
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 import java.sql.Timestamp
 import java.time.LocalDateTime
@@ -219,8 +217,8 @@ public class IdeaFlowInMemoryPersistenceService implements IdeaFlowPersistenceSe
 	@Override
 	List<EventEntity> findRecentEvents(Long userId, Timestamp afterDate, Integer limit) {
 		List<EventEntity> eventList = eventList.findAll() { EventEntity event ->
-			event.position.equals(TimeConverter.toJavaLocalDateTime(afterDate)) ||
-					event.position.isAfter(TimeConverter.toJavaLocalDateTime(afterDate))
+			event.position.equals(TimeConverter.toLocalDateTime(afterDate)) ||
+					event.position.isAfter(TimeConverter.toLocalDateTime(afterDate))
 		}.sort {
 			eventList.position
 		}

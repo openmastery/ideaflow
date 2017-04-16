@@ -15,20 +15,13 @@
  */
 package org.openmastery.storyweb.core.metrics.analyzer
 
-import org.joda.time.LocalDate
-import org.joda.time.LocalTime
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline
-import org.openmastery.publisher.api.journey.IdeaFlowStory
-import org.openmastery.publisher.api.journey.SubtaskStory
-import org.openmastery.publisher.api.journey.TagsUtil
 import org.openmastery.publisher.api.journey.TroubleshootingJourney
-import org.openmastery.publisher.api.metrics.DurationInSeconds
-import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.publisher.api.metrics.MetricType
+import org.openmastery.storyweb.api.metrics.GraphPoint
 import org.openmastery.storyweb.api.metrics.MetricThreshold
-import org.openmastery.time.TimeConverter
 
 class WtfsPerDayAnalyzer extends AbstractTimelineAnalyzer<Double> {
 

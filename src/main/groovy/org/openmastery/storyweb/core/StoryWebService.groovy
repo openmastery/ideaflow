@@ -52,7 +52,7 @@ class StoryWebService {
 			faqSummary.eventId = (Long) row[1]
 			faqSummary.eventComment = row[2]
 			faqSummary.faqComment = extractCommentFromJSON(row[3].toString())
-			faqSummary.position = TimeConverter.toJodaLocalDateTime((Timestamp) row[4])
+			faqSummary.position = TimeConverter.toLocalDateTime((Timestamp) row[4])
 			faqSummary.tags = extractUniqueTags(faqSummary.eventComment, faqSummary.faqComment)
 			return faqSummary
 		}

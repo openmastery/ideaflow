@@ -1,10 +1,11 @@
 package org.openmastery.publisher.core.timeline
 
-import org.joda.time.Duration
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
+
+import java.time.Duration
+import java.time.LocalDateTime
 
 class TimelineSegmentValidator {
 

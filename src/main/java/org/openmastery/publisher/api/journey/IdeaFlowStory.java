@@ -1,16 +1,19 @@
 package org.openmastery.publisher.api.journey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.*;
-import org.joda.time.LocalDateTime;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTimeline;
 import org.openmastery.publisher.api.metrics.CapacityDistribution;
 import org.openmastery.publisher.api.task.Task;
 import org.openmastery.storyweb.api.metrics.Metric;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -34,7 +37,7 @@ public class IdeaFlowStory implements StoryContextElement {
 
 
 	public IdeaFlowStory() {
-		subtasks = new ArrayList<SubtaskStory>();
+		subtasks = new ArrayList<>();
 	}
 
 	public IdeaFlowStory(Task task, IdeaFlowTimeline timeline) {
@@ -42,7 +45,7 @@ public class IdeaFlowStory implements StoryContextElement {
 		this.timeline = timeline;
 
 		contextTags = TagsUtil.extractUniqueHashTags(task.getDescription());
-		painTags = new HashSet<String>();
+		painTags = new HashSet<>();
 	}
 
 	@Override

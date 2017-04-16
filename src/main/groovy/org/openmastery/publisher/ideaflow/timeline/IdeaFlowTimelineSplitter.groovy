@@ -15,7 +15,6 @@
  */
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
@@ -24,6 +23,8 @@ import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowSubtaskTimeline
 import org.openmastery.publisher.api.ideaflow.IdeaFlowTaskTimeline
+
+import java.time.LocalDateTime
 
 public class IdeaFlowTimelineSplitter {
 

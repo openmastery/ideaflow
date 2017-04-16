@@ -1,12 +1,13 @@
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.Interval
 import org.openmastery.publisher.api.PositionableAndIntervalListBuilder
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.time.MockTimeService;
-import spock.lang.Specification;
+import spock.lang.Specification
+
+import java.time.LocalDateTime;
 
 public class CalendarEventGeneratorSpec extends Specification {
 

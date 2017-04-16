@@ -24,22 +24,12 @@ import java.time.temporal.ChronoUnit;
 public class LocalDateTimeService implements TimeService {
 
 	@Override
-	public LocalDateTime javaNow() {
+	public LocalDateTime now() {
 		return nowTruncateToSeconds();
-	}
-
-	@Override
-	public org.joda.time.LocalDateTime now() {
-		return jodaNowTruncateToSeconds();
 	}
 
 	public static LocalDateTime nowTruncateToSeconds() {
 		return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-	}
-
-	public static org.joda.time.LocalDateTime jodaNowTruncateToSeconds() {
-		org.joda.time.LocalDateTime localDateTime = org.joda.time.LocalDateTime.now();
-		return localDateTime.minusMillis(localDateTime.getMillisOfSecond());
 	}
 
 }

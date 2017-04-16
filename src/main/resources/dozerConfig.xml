@@ -9,20 +9,10 @@
 				<class-a>java.time.Duration</class-a>
 				<class-b>java.lang.Long</class-b>
 			</converter>
-			<converter type="org.openmastery.mapper.LongDurationConverter">
-				<class-a>org.joda.time.Duration</class-a>
-				<class-b>java.lang.Long</class-b>
-			</converter>
-			<converter type="org.openmastery.mapper.JavaTimeJodaTimeConverter">
-				<class-a>java.time.LocalDateTime</class-a>
-				<class-b>org.joda.time.LocalDateTime</class-b>
-			</converter>
 		</custom-converters>
 		<copy-by-references>
 			<copy-by-reference>java.time.LocalDateTime</copy-by-reference>
 			<copy-by-reference>java.time.Duration</copy-by-reference>
-			<copy-by-reference>org.joda.time.LocalDateTime</copy-by-reference>
-			<copy-by-reference>org.joda.time.Duration</copy-by-reference>
 		</copy-by-references>
 	</configuration>
 

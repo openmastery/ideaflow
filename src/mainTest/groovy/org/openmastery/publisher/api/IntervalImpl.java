@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
-import org.openmastery.time.TimeConverter;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 
 @Data
@@ -21,7 +21,7 @@ public class IntervalImpl implements Interval, Positionable {
 
 	@Override
 	public Duration getDuration() {
-		return TimeConverter.between(start, end);
+		return Duration.between(start, end);
 	}
 
 	@Override

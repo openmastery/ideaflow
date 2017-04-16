@@ -41,7 +41,7 @@ class FixturePersistenceHelper {
 			ExecutionActivityEntity entity = entityMapper.mapIfNotNull(executionEvent, ExecutionActivityEntity)
 			entity.taskId = taskId
 			entity.ownerId = ownerId
-			entity.end = TimeConverter.toJavaLocalDateTime(executionEvent.position)
+			entity.end = executionEvent.position
 			persistenceService.saveActivity(entity)
 		}
 	}

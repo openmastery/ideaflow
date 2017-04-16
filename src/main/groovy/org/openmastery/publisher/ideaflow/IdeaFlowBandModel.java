@@ -20,15 +20,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Duration;
 import org.openmastery.publisher.api.Positionable;
-import org.openmastery.publisher.api.ideaflow.IdeaFlowBand;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel;
 import org.openmastery.publisher.core.timeline.TimeBandModel;
 import org.openmastery.time.TimeConverter;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -68,7 +67,7 @@ public class IdeaFlowBandModel extends TimeBandModel<IdeaFlowBandModel> {
 
 	@Override
 	public Duration getDuration() {
-		return TimeConverter.between(start, end).minus(getIdleDuration());
+		return Duration.between(start, end).minus(getIdleDuration());
 	}
 
 	public List<Positionable> getAllContentsFlattenedAsPositionableList() {
@@ -94,24 +93,22 @@ public class IdeaFlowBandModel extends TimeBandModel<IdeaFlowBandModel> {
 	protected IdeaFlowBandModel internalSplitAndReturnLeftSide(LocalDateTime position) {
 		List<IdeaFlowBandModel> splitNestedBands = TimeBandModel.splitAndReturnLeftSide(nestedBands, position);
 		List<IdleTimeBandModel> splitIdleBands = TimeBandModel.splitAndReturnLeftSide(idleBands, position);
-		IdeaFlowBandModel leftBand = IdeaFlowBandModel.from(this)
+		return IdeaFlowBandModel.from(this)
 				.end(position)
 				.idleBands(splitIdleBands)
 				.nestedBands(splitNestedBands)
 				.build();
-		return leftBand;
 	}
 
 	@Override
 	protected IdeaFlowBandModel internalSplitAndReturnRightSide(LocalDateTime position) {
 		List<IdeaFlowBandModel> splitNestedBands = TimeBandModel.splitAndReturnRightSide(nestedBands, position);
 		List<IdleTimeBandModel> splitIdleBands = TimeBandModel.splitAndReturnRightSide(idleBands, position);
-		IdeaFlowBandModel rightBand = IdeaFlowBandModel.from(this)
+		return IdeaFlowBandModel.from(this)
 				.start(position)
 				.idleBands(splitIdleBands)
 				.nestedBands(splitNestedBands)
 				.build();
-		return rightBand;
 	}
 
 	public static IdeaFlowBandModel.IdeaFlowBandModelBuilder from(IdeaFlowBandModel band) {

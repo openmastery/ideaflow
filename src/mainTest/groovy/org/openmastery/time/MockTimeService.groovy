@@ -1,34 +1,13 @@
 package org.openmastery.time
 
-import org.joda.time.LocalDateTime
+import java.time.LocalDateTime
 
 class MockTimeService implements TimeService {
 
 	private LocalDateTime now
 
 	MockTimeService() {
-		now = TimeConverter.toJodaLocalDateTime(java.time.LocalDateTime.of(2016, 1, 1, 0, 0))
-	}
-
-	@Override
-	java.time.LocalDateTime javaNow() {
-		TimeConverter.toJavaLocalDateTime(now)
-	}
-
-	java.time.LocalDateTime javaDaysInFuture(int days) {
-		TimeConverter.toJavaLocalDateTime(daysInFuture(days))
-	}
-
-	java.time.LocalDateTime javaHoursInFuture(int hours) {
-		TimeConverter.toJavaLocalDateTime(hoursInFuture(hours))
-	}
-
-	java.time.LocalDateTime javaMinutesInFuture(int minutes) {
-		TimeConverter.toJavaLocalDateTime(minutesInFuture(minutes))
-	}
-
-	java.time.LocalDateTime javaSecondsInFuture(int seconds) {
-		TimeConverter.toJavaLocalDateTime(secondsInFuture(seconds))
+		now = LocalDateTime.of(2016, 1, 1, 0, 0)
 	}
 
 	@Override

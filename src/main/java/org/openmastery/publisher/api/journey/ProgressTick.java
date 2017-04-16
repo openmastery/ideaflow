@@ -1,15 +1,22 @@
 package org.openmastery.publisher.api.journey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-import org.joda.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.openmastery.publisher.api.AbstractRelativeInterval;
 import org.openmastery.publisher.api.event.Event;
 import org.openmastery.publisher.api.event.EventType;
 import org.openmastery.publisher.api.metrics.CapacityDistribution;
 import org.openmastery.storyweb.api.metrics.Metric;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -39,7 +46,7 @@ public class ProgressTick extends AbstractRelativeInterval implements StoryConte
 		setRelativeStart(progressEvent.getRelativePositionInSeconds());
 
 		contextTags = TagsUtil.extractUniqueHashTags(progressEvent.getDescription());
-		painTags = new HashSet<String>();
+		painTags = new HashSet<>();
 
 		//TODO fix this hack properly in IdeaFlowStoryGenerator... overwriting subtask for default milestone
 		if (event.getType() == EventType.NOTE) {

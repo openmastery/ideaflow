@@ -1,6 +1,5 @@
 package org.openmastery.publisher.ideaflow.timeline
 
-import org.joda.time.LocalDateTime
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.IdeaFlowBand
@@ -11,6 +10,8 @@ import org.openmastery.publisher.core.annotation.SnippetAnnotationEntity
 import org.openmastery.publisher.ideaflow.story.TroubleshootingJourneyGenerator
 import org.openmastery.time.MockTimeService
 import spock.lang.Specification
+
+import java.time.LocalDateTime
 
 class TroubleshootingJourneyGeneratorSpec extends Specification {
 
