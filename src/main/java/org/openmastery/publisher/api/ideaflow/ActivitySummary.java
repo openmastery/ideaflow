@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.openmastery.publisher.api.activity.EditorActivity;
 
 @Data
 @Builder
@@ -16,18 +15,12 @@ public class ActivitySummary {
 	private String activityName;
 	private String activityDetail;
 
-	private Long durationInSeconds;
-	private Long durationModifiedInSeconds;
+	private Long totalDurationInSeconds;
+	private Long modifiedDurationInSeconds;
 
-//	public ActivitySummary(EditorActivity editorActivity) {
-//		this.durationInSeconds = editorActivity.getDurationInSeconds();
-//		this.filePath = editorActivity.getFilePath();
-//		this.isModified = editorActivity.isModified();
-//	}
-//
-//
-//	public void aggregateWith(EditorActivity editorActivity) {
-//		durationInSeconds += editorActivity.getDurationInSeconds();
-//		isModified |= editorActivity.isModified();
-//	}
+	public void aggregate(ActivitySummary activitySummary) {
+		totalDurationInSeconds += activitySummary.totalDurationInSeconds;
+		modifiedDurationInSeconds += activitySummary.modifiedDurationInSeconds;
+	}
+
 }

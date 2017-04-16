@@ -59,6 +59,7 @@ class IntervalSplitter<T extends Interval> {
 	}
 
 	List<T> split() {
+		// TODO: this assumes intervals is sorted, as well as relative time has been processed - should do that here
 		List<T> intervalsToReturn = []
 		for (T interval : intervals) {
 			LocalDateTime intervalStart = interval.start

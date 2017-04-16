@@ -94,11 +94,6 @@ dependencies {
 sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDirs += ["src/main/java"]
 
-compileClientJava {
-	sourceCompatibility = 1.6
-	targetCompatibility = 1.6
-}
-
 publishing_ext {
 	publication('client')
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IntervalImpl implements Interval, Positionable {
+public class IntervalImpl implements Interval {
 
 	private LocalDateTime start;
 	private LocalDateTime end;
