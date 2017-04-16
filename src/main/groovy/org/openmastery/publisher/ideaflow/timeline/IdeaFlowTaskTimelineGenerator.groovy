@@ -32,6 +32,8 @@ import org.openmastery.publisher.core.activity.ExecutionActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
+import org.openmastery.publisher.core.mapper.EventMapper
+import org.openmastery.publisher.core.mapper.ExecutionEventMapper
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IdeaFlowBandModel
 import org.springframework.beans.factory.annotation.Autowired
@@ -50,6 +52,8 @@ class IdeaFlowTaskTimelineGenerator {
 	private List<ExecutionEvent> executionEvents = []
 	private List<BlockActivity> blockActivities = []
 
+	private EventMapper eventMapper = new EventMapper()
+	private ExecutionEventMapper executionEventMapper = new ExecutionEventMapper()
 	private ValueObjectMapper entityMapper = new ValueObjectMapper()
 	private InitialSubtaskGenerator initialSubtaskGenerator = new InitialSubtaskGenerator()
 
@@ -76,22 +80,12 @@ class IdeaFlowTaskTimelineGenerator {
 	}
 
 	IdeaFlowTaskTimelineGenerator events(List<EventEntity> events) {
-		this.events = events.collect { EventEntity entity ->
-			Event event = entityMapper.mapIfNotNull(entity, Event)
-			event.description = entity.comment
-			return event
-		}
+		this.events = eventMapper.mapList(events)
 		this
 	}
 
-	//TODO where do I put this shared logic?
 	IdeaFlowTaskTimelineGenerator executionActivities(List<ExecutionActivityEntity> executionActivities) {
-		this.executionEvents = executionActivities.collect { ExecutionActivityEntity entity ->
-			ExecutionEvent execution = entityMapper.mapIfNotNull(entity, ExecutionEvent)
-			execution.failed = entity.exitCode != 0
-			execution.durationInSeconds = Duration.between(entity.start, entity.end).seconds
-			return execution
-		}
+		this.executionEvents = executionEventMapper.mapList(executionActivities)
 		this
 	}
 
