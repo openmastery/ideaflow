@@ -19,6 +19,7 @@ public class TaskTimelineWithAllSubtasks {
 
 	private IdeaFlowTaskTimeline timeline;
 	private List<IdeaFlowSubtaskTimeline> subtaskTimelines;
+	private List<Haystack> haystacks;
 
 	private IdeaFlowStory ideaFlowStory;
 
