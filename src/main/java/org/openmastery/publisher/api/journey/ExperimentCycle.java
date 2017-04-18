@@ -51,7 +51,7 @@ public class ExperimentCycle extends AbstractRelativeInterval implements StoryEl
 	}
 
 	public String getRelativePath() {
-		return "/experiment/" + executionEvent.getId();
+		return "/haystack/" + executionEvent.getId();
 	}
 
 	public void setParentPath(String parentPath) {

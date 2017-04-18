@@ -34,7 +34,7 @@ class CalendarEventGenerator {
 			if (addNextNonIdleInterval) {
 				if ((interval instanceof IdleTimeBandModel) == false) {
 					addNextNonIdleInterval = false
-					calendarEventPositions.add(interval.start)
+					calendarEventPositions.add(interval.start.toLocalDate().atStartOfDay())
 				}
 			}
 
@@ -51,6 +51,7 @@ class CalendarEventGenerator {
 			Event event = new Event()
 			event.setPosition(position)
 			event.setType(EventType.CALENDAR)
+			event.setFullPath("/calendar/"+position.toLocalDate().toString().trim())
 			event
 		}
 	}
@@ -71,6 +72,8 @@ class CalendarEventGenerator {
 			startDateTime = startDateTime.plusDays(1)
 			startTimes << startDateTime
 		}
+
+		println ("Starttimes: "+startTimes)
 		startTimes
 	}
 
