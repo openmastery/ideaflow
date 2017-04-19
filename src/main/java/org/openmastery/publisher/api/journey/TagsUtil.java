@@ -15,6 +15,8 @@
  */
 package org.openmastery.publisher.api.journey;
 
+import org.openmastery.publisher.api.SharedTags;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +37,7 @@ public class TagsUtil {
 				hashtags.add(matcher.group(1));
 			}
 		}
-		hashtags.remove("#resolve");
+		hashtags.remove(SharedTags.RESOLVE_TROUBLESHOOTING_JOURNEY);
 		return hashtags;
 	}
 
