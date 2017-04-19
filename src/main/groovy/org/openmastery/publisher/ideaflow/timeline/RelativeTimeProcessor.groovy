@@ -17,6 +17,7 @@ package org.openmastery.publisher.ideaflow.timeline
 
 import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
+import org.openmastery.publisher.api.RelativePositionable
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.springframework.stereotype.Component
 
@@ -44,13 +45,13 @@ class RelativeTimeProcessor {
 		}
 	}
 
-	public void computeRelativeTime(List<Positionable> positionables) {
+	public void computeRelativeTime(List<RelativePositionable> positionables) {
 		positionables = positionables.sort(false, IDLE_TIME_BAND_MODEL_COMES_LAST_POSITIONABLE_COMPARABLE)
 
 		long relativeTime = 0
 		Positionable previousPositionable = null
 		IdleTimeBandModel previousIdleBand = null
-		for (Positionable positionable : positionables) {
+		for (RelativePositionable positionable : positionables) {
 			if (previousPositionable != null) {
 				Duration duration
 				if (previousIdleBand != null) {

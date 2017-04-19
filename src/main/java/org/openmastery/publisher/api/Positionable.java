@@ -21,7 +21,4 @@ public interface Positionable {
 
 	LocalDateTime getPosition();
 
-	Long getRelativePositionInSeconds();
-	void setRelativePositionInSeconds(Long relativePositionInSeconds);
-
 }

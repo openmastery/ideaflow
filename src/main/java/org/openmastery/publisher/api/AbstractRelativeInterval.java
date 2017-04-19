@@ -13,16 +13,23 @@ public class AbstractRelativeInterval implements RelativeInterval, RelativePosit
 
 	Long durationInSeconds;
 
-	@JsonIgnore //only used for metrics
-			Long relativeStart;
+
+	@JsonIgnore
+	Long relativeStart; //only used for metrics
 
 	@JsonIgnore //only used for metrics
 	public Long getRelativeEnd() {
 		return relativeStart + durationInSeconds;
 	}
 
+	@Override
 	public Long getRelativePositionInSeconds() {
 		return relativeStart;
+	}
+
+	@Override
+	public void setRelativePositionInSeconds(Long relativePositionInSeconds) {
+		this.relativeStart = relativePositionInSeconds;
 	}
 
 	public boolean shouldContain(RelativePositionable positionable) {

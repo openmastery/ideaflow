@@ -17,13 +17,14 @@ package org.openmastery.publisher.core.timeline;
 
 import org.openmastery.publisher.api.Interval;
 import org.openmastery.publisher.api.Positionable;
+import org.openmastery.publisher.api.RelativePositionable;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TimeBandModel<T extends TimeBandModel> implements Positionable, Interval {
+public abstract class TimeBandModel<T extends TimeBandModel> implements Interval, RelativePositionable {
 
 	private Long relativePositionInSeconds;
 

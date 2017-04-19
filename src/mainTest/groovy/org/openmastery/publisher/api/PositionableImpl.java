@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class PositionableImpl implements Positionable {
+class PositionableImpl implements Positionable, RelativePositionable {
 
 	private LocalDateTime position;
 	private Long relativePositionInSeconds;

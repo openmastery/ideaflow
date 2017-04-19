@@ -19,11 +19,12 @@ package org.openmastery.publisher.core.event;
 import lombok.Getter;
 import lombok.Setter;
 import org.openmastery.publisher.api.Positionable;
+import org.openmastery.publisher.api.RelativePositionable;
 import org.openmastery.publisher.api.event.EventType;
 
 import java.time.LocalDateTime;
 
-public class EventModel implements Positionable {
+public class EventModel implements Positionable, RelativePositionable {
 
 	private EventEntity delegate;
 	@Getter

@@ -19,11 +19,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.openmastery.publisher.api.Interval;
 import org.openmastery.publisher.api.Positionable;
+import org.openmastery.publisher.api.RelativePositionable;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public abstract class ActivityModel<T extends ActivityEntity> implements Positionable, Interval {
+public abstract class ActivityModel<T extends ActivityEntity> implements Interval, RelativePositionable {
 
 	protected T delegate;
 	@Getter @Setter

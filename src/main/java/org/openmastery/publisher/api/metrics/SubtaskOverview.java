@@ -36,8 +36,14 @@ public class SubtaskOverview implements RelativePositionable {
 		return subtaskEvent.getDescription();
 	}
 
+	@Override
 	public Long getRelativePositionInSeconds() {
 		return subtaskEvent.getRelativePositionInSeconds();
+	}
+
+	@Override
+	public void setRelativePositionInSeconds(Long relativePositionInSeconds) {
+		throw new IllegalStateException();
 	}
 
 	Long durationInSeconds;
