@@ -16,8 +16,6 @@
 package org.openmastery.publisher.ideaflow
 
 import com.bancvue.rest.exception.NotFoundException
-import org.openmastery.publisher.api.Positionable
-import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.ideaflow.Haystack
@@ -39,8 +37,6 @@ import org.openmastery.publisher.core.activity.ExternalActivityEntity
 import org.openmastery.publisher.core.activity.IdleActivityEntity
 import org.openmastery.publisher.core.activity.ModificationActivityEntity
 import org.openmastery.publisher.core.event.EventEntity
-import org.openmastery.publisher.core.jpa.LocalDateTimeConverter
-import org.openmastery.publisher.core.timeline.TimelineGenerator
 import org.openmastery.publisher.ideaflow.story.AnnotationDecorator
 import org.openmastery.publisher.ideaflow.story.CapacityDistributionDecorator
 import org.openmastery.publisher.ideaflow.story.HaystackListGenerator
@@ -48,13 +44,13 @@ import org.openmastery.publisher.ideaflow.story.IdeaFlowStoryGenerator
 import org.openmastery.publisher.ideaflow.story.MetricsDecorator
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTaskTimelineGenerator
 import org.openmastery.publisher.ideaflow.timeline.IdeaFlowTimelineSplitter
+import org.openmastery.publisher.ideaflow.timeline.IdleTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.RelativeTimeProcessor
 import org.openmastery.storyweb.core.MetricsService
 import org.openmastery.storyweb.core.metrics.spc.MetricSet
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Component
@@ -273,6 +269,8 @@ class IdeaFlowService {
 
 	// TODO: clean this up
 	@Autowired
+	IdleTimeProcessor idleTimeProcessor
+	@Autowired
 	RelativeTimeProcessor relativeTimeProcessor
 
 	// TODO: taskStart should be calculated within the generator, not passed in
@@ -284,7 +282,7 @@ class IdeaFlowService {
 		List<ExternalActivityEntity> externalActivities = persistenceService.getExternalActivityList(task.id)
 		List<EditorActivityEntity> editorActivities = persistenceService.getEditorActivityList(task.id)
 
-		new HaystackListGenerator(relativeTimeProcessor)
+		new HaystackListGenerator(relativeTimeProcessor, idleTimeProcessor)
 				.idleActivities(idleActivities)
 				.editorActivities(editorActivities)
 				.externalActivities(externalActivities)

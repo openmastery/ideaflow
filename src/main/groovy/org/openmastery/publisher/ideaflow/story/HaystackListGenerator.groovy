@@ -17,8 +17,8 @@ package org.openmastery.publisher.ideaflow.story
 
 import org.openmastery.mapper.ValueObjectMapper
 import org.openmastery.publisher.api.Interval
-import org.openmastery.publisher.api.Positionable
 import org.openmastery.publisher.api.PositionableComparator
+import org.openmastery.publisher.api.RelativePositionable
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.api.event.ExecutionEvent
@@ -34,6 +34,7 @@ import org.openmastery.publisher.core.mapper.EventMapper
 import org.openmastery.publisher.core.mapper.ExecutionEventMapper
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 import org.openmastery.publisher.ideaflow.IntervalSplitter
+import org.openmastery.publisher.ideaflow.timeline.IdleTimeProcessor
 import org.openmastery.publisher.ideaflow.timeline.RelativeTimeProcessor
 
 import java.time.Duration
@@ -49,16 +50,19 @@ class HaystackListGenerator {
 	private ExecutionEventMapper executionEventMapper = new ExecutionEventMapper()
 	private ValueObjectMapper valueObjectMapper = new ValueObjectMapper()
 
+	private IdleTimeProcessor idleTimeProcessor
 	private RelativeTimeProcessor relativeTimeProcessor
 	private LocalDateTime taskStart
 	private List<EditorActivityEntity> editorActivities
 	private List<ExternalActivityEntity> externalActivities
 	private List<ExecutionActivityEntity> executionActivities
 	private List<IdleTimeBandModel> idleTimeBands
+	private List<IdleTimeBandModel> deactivationIdleTimeBands
 	private List<Event> subtaskEvents
 
-	HaystackListGenerator(RelativeTimeProcessor relativeTimeProcessor) {
+	HaystackListGenerator(RelativeTimeProcessor relativeTimeProcessor, idleTimeProcessor) {
 		this.relativeTimeProcessor = relativeTimeProcessor
+		this.idleTimeProcessor = idleTimeProcessor
 	}
 
 	HaystackListGenerator taskStart(LocalDateTime taskStart) {
@@ -86,9 +90,10 @@ class HaystackListGenerator {
 		this
 	}
 
-	HaystackListGenerator events(List<EventEntity> events) {
-		List<EventEntity> subtaskEventEntityList = events.findAll { it.type == EventType.SUBTASK }
-		this.subtaskEvents = eventMapper.mapList(subtaskEventEntityList)
+	HaystackListGenerator events(List<EventEntity> eventEntities) {
+		List<Event> events = eventMapper.mapList(eventEntities)
+		deactivationIdleTimeBands = idleTimeProcessor.generateIdleTimeBandsFromDeativationEvents(events)
+		this.subtaskEvents = events.findAll { it.type == EventType.SUBTASK }
 		this
 	}
 
@@ -109,11 +114,6 @@ class HaystackListGenerator {
 			executionEventList.add(firstHaystackEvent)
 		}
 
-		ExecutionEvent lastHaystackEvent = new ExecutionEvent()
-		lastHaystackEvent.position = getLatestIntervalEnd(activityIntervalList)
-		lastHaystackEvent.durationInSeconds = 0
-		executionEventList.add(lastHaystackEvent)
-
 		executionEventList.sort(PositionableComparator.INSTANCE)
 		executionEventList
 	}
@@ -122,7 +122,7 @@ class HaystackListGenerator {
 		List<ActivityInterval> activityIntervalList = getEditorAndExternalActivityIntervals()
 		List<ExecutionEvent> executionEventList = getHaystackBoundaryEventsAndCalculateRelativeTime(activityIntervalList)
 
-		List positionables = activityIntervalList + executionEventList + idleTimeBands
+		List positionables = activityIntervalList + executionEventList + idleTimeBands + deactivationIdleTimeBands
 		relativeTimeProcessor.computeRelativeTime(positionables)
 
 		List<Haystack> haystackList = []
@@ -150,14 +150,16 @@ class HaystackListGenerator {
 				.split()
 
 		Haystack haystack = new HaystackBuilder()
-				.executionEvent(haystackStart)
+				.executionEvent(haystackEnd)
+				.position(haystackStart.position)
+				.relativePositionInSeconds(haystackStart.relativePositionInSeconds)
 				.durationInSeconds(haystackDurationInSeconds)
 				.activityIntervals(haystackActivityIntervals)
 				.create()
 		haystack
 	}
 
-	private LocalDateTime getLatestIntervalEnd(List<ActivityInterval> activityIntervalList) {
+	private LocalDateTime getGreatestIntervalEnd(List<ActivityInterval> activityIntervalList) {
 		LocalDateTime latestIntervalEnd = taskStart
 		for (ActivityInterval activityInterval : activityIntervalList) {
 			if (activityInterval.end.isAfter(latestIntervalEnd)) {
@@ -171,8 +173,20 @@ class HaystackListGenerator {
 	private static class HaystackBuilder {
 
 		private ExecutionEvent executionEvent
+		private LocalDateTime position
+		private Long relativePositionInSeconds
 		private Long durationInSeconds
 		private Map<String, ActivitySummary> keyToActivitySummaryMap = [:]
+
+		HaystackBuilder position(LocalDateTime position) {
+			this.position = position
+			this
+		}
+
+		HaystackBuilder relativePositionInSeconds(Long relativePositionInSeconds) {
+			this.relativePositionInSeconds = relativePositionInSeconds
+			this
+		}
 
 		HaystackBuilder executionEvent(ExecutionEvent executionEvent) {
 			this.executionEvent = executionEvent
@@ -205,8 +219,8 @@ class HaystackListGenerator {
 			String relativePath = executionEvent.id != null ? "/haystack/${executionEvent.id}" : null
 			Haystack.builder()
 					.relativePath(relativePath)
-					.position(executionEvent.position)
-					.relativePositionInSeconds(executionEvent.relativePositionInSeconds)
+					.position(position)
+					.relativePositionInSeconds(relativePositionInSeconds)
 					.durationInSeconds(durationInSeconds)
 					.executionDurationInSeconds(executionEvent.durationInSeconds)
 					.processName(executionEvent.processName)
@@ -230,7 +244,7 @@ class HaystackListGenerator {
 
 	}
 
-	private static class ActivityInterval implements Interval {
+	private static class ActivityInterval implements Interval, RelativePositionable {
 
 		LocalDateTime start
 		LocalDateTime end

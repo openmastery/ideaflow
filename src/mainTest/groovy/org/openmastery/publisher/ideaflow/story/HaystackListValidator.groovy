@@ -19,7 +19,8 @@ class HaystackListValidator {
 
 	HaystackValidator firstValidator() {
 		createHaystackValidator()
-				.assertFirstHaystack(startTime)
+				.assertPosition(startTime)
+				.assertRelativePositionInMinutes(0)
 	}
 
 	HaystackValidator nextValidatorAtRelativePositionInMinutes(int relativePositionInMinutes) {
@@ -51,7 +52,6 @@ class HaystackListValidator {
 	public static class HaystackValidator {
 
 		private Haystack haystack
-		private int activityIndex
 
 		HaystackValidator(Haystack haystack) {
 			this.haystack = haystack
@@ -79,17 +79,6 @@ class HaystackListValidator {
 
 		HaystackValidator assertExecutionDurationInMinutes(Long executionDurationInMinutes) {
 			assert haystack.executionDurationInSeconds == (executionDurationInMinutes * 60L)
-			this
-		}
-
-		HaystackValidator assertFirstHaystack(LocalDateTime expectedPosition) {
-			assert haystack.processName == null
-			assert haystack.relativePath == null
-			assert haystack.debug == false
-			assert haystack.failed == false
-			assert haystack.relativePositionInSeconds == 0L
-			assert haystack.executionDurationInSeconds == 0L
-			assert haystack.position == expectedPosition
 			this
 		}
 
