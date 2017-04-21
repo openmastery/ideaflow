@@ -29,7 +29,7 @@ public class CORSResponseFilter implements ContainerResponseFilter {
 						   ContainerResponseContext response) throws IOException {
 			response.getHeaders().add("Access-Control-Allow-Origin", "*");
 //			response.getHeaders().add("Access-Control-Allow-Origin", "http://localhost:8980");
-			response.getHeaders().add("Access-Control-Allow-Headers", "X-API-KEY");
+			response.getHeaders().add("Access-Control-Allow-Headers", "X-API-KEY,Content-Type");
 			response.getHeaders().add("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
 		}
 }
