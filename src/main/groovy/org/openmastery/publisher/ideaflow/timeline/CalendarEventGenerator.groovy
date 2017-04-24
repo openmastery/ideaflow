@@ -16,64 +16,96 @@
 package org.openmastery.publisher.ideaflow.timeline
 
 import org.openmastery.publisher.api.Interval
-import org.openmastery.publisher.api.IntervalComparator
+import org.openmastery.publisher.api.Positionable
+import org.openmastery.publisher.api.PositionableComparator
 import org.openmastery.publisher.api.event.Event
 import org.openmastery.publisher.api.event.EventType
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class CalendarEventGenerator {
 
 	List<Event> generateCalendarEvents(List<Interval> intervalList) {
-		intervalList = intervalList.sort(false, IntervalComparator.INSTANCE)
-
-		boolean addNextNonIdleInterval = false;
-		Set<LocalDateTime> calendarEventPositions = []
-		intervalList.each { Interval interval ->
-			if (addNextNonIdleInterval) {
-				if ((interval instanceof IdleTimeBandModel) == false) {
-					addNextNonIdleInterval = false
-					calendarEventPositions.add(interval.start.toLocalDate().atStartOfDay())
-				}
-			}
-
-			if (spansDay(interval)) {
-				if (interval instanceof IdleTimeBandModel) {
-					addNextNonIdleInterval = true;
-				} else {
-					calendarEventPositions.addAll(getStartOfDaysBetweenInterval(interval))
-				}
+		List<Activity> activityList = getSortedDaysWithActivity(intervalList)
+		if (activityList.size() > 0) {
+			while(activityList.last().isIdle()) {
+				activityList.remove(activityList.size() -1)
 			}
 		}
 
-		calendarEventPositions.collect { LocalDateTime position ->
-			Event event = new Event()
-			event.setPosition(position)
-			event.setType(EventType.CALENDAR)
-			event.setFullPath("/calendar/"+position.toLocalDate().toString().trim())
-			event
+		Set<LocalDate> activityDaySet = []
+		LocalDate lastActiveDay = null
+		for (Activity activity : activityList) {
+			if (lastActiveDay != null) {
+				if (lastActiveDay.isBefore(activity.localDate)) {
+					if (activity.idle) {
+						activityDaySet << activity.localDate
+					} else {
+						LocalDate activityDay = activity.localDate
+
+						while (lastActiveDay.isBefore(activityDay)) {
+							activityDaySet << activityDay
+							activityDay = activityDay.minusDays(1)
+						}
+					}
+				}
+			}
+
+			lastActiveDay = activity.localDate
+		}
+
+		activityDaySet.sort().collect {
+			createCalendarEvent(it.atStartOfDay())
 		}
 	}
 
-	private boolean spansDay(Interval interval) {
-		LocalDateTime startDateTime = interval.start.toLocalDate().atStartOfDay()
-		LocalDateTime endDateTime = interval.end.toLocalDate().atStartOfDay()
-
-		endDateTime.isAfter(startDateTime)
+	private Event createCalendarEvent(LocalDateTime position) {
+		Event event = new Event()
+		event.setPosition(position)
+		event.setType(EventType.CALENDAR)
+		event.setFullPath("/calendar/" + position.toLocalDate().toString().trim())
+		event
 	}
 
-	private List<LocalDateTime> getStartOfDaysBetweenInterval(Interval interval) {
-		LocalDateTime startDateTime = interval.start.toLocalDate().atStartOfDay()
-		LocalDateTime endDateTime = interval.end.toLocalDate().atStartOfDay()
-
-		List<LocalDateTime> startTimes = []
-		while (endDateTime.isAfter(startDateTime)) {
-			startDateTime = startDateTime.plusDays(1)
-			startTimes << startDateTime
+	private List<Activity> getSortedDaysWithActivity(List<Interval> intervals) {
+		List<Activity> activityList = []
+		for (Interval interval : intervals) {
+			if (interval instanceof IdleTimeBandModel) {
+				activityList << new Activity(interval.end, true)
+			} else {
+				activityList << new Activity(interval.start, false)
+				activityList << new Activity(interval.end, false)
+			}
 		}
 
-		startTimes
+		activityList.sort(PositionableComparator.INSTANCE)
+		activityList
+	}
+
+
+	private static final class Activity implements Positionable {
+
+		private LocalDateTime position
+		LocalDate localDate
+		boolean idle
+
+		Activity(LocalDateTime position, boolean idle) {
+			this.position = position
+			this.localDate = position.toLocalDate()
+			this.idle = idle
+		}
+
+		@Override
+		LocalDateTime getPosition() {
+			return position
+		}
+
+		String toString() {
+			"position=${localDate}, idle=${idle}"
+		}
+
 	}
 
 }

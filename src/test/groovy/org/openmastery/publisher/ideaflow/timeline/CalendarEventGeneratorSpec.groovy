@@ -29,7 +29,7 @@ public class CalendarEventGeneratorSpec extends Specification {
 		Event event = new Event()
 		event.setType(EventType.CALENDAR)
 		event.setPosition(startTime)
-		event.setFullPath("/calendar/"+startTime.toLocalDate().toString().trim())
+		event.setFullPath("/calendar/" + startTime.toLocalDate().toString().trim())
 		return event
 	}
 
@@ -116,6 +116,20 @@ public class CalendarEventGeneratorSpec extends Specification {
 		assert events[0] == createCalendarEventFromStart(1)
 		assert events[1] == createCalendarEventFromStart(2)
 		assert events.size() == 2
+	}
+
+	def "should create calendar event at midnight of last day if interval spans multiple days with idle"() {
+		given:
+		builder.interval(12, 60)
+				.idle(14, 58)
+				.interval(58, 60)
+
+		when:
+		List<Event> events = generateCalendarEvents()
+
+		then:
+		assert events[0] == createCalendarEventFromStart(2)
+		assert events.size() == 1
 	}
 
 }
