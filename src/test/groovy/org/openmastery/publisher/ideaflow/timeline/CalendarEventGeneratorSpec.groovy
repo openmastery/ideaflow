@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class CalendarEventGeneratorSpec extends Specification {
 
 	MockTimeService mockTimeService = new MockTimeService()
-	LocalDateTime startTime = mockTimeService.now()
+	LocalDateTime startTime = mockTimeService.now().plusHours(1)
 	PositionableAndIntervalListBuilder builder = new PositionableAndIntervalListBuilder(mockTimeService)
 
 	private List<Event> generateCalendarEvents() {
@@ -24,15 +24,16 @@ public class CalendarEventGeneratorSpec extends Specification {
 		events
 	}
 
-	private Event createCalendarEventFromStart(int days, int hours) {
-		LocalDateTime startTime = startTime.plusDays(days).plusHours(hours)
+	private Event createCalendarEventFromStart(int days) {
+		LocalDateTime startTime = startTime.plusDays(days).toLocalDate().atStartOfDay()
 		Event event = new Event()
 		event.setType(EventType.CALENDAR)
 		event.setPosition(startTime)
+		event.setFullPath("/calendar/"+startTime.toLocalDate().toString().trim())
 		return event
 	}
 
-	def "should create calendar event at first positionable of new day after idle"() {
+	def "should create calendar event at midnight of new day after idle"() {
 		given:
 		builder.interval(8, 16)
 				.idle(16, 32)
@@ -42,11 +43,11 @@ public class CalendarEventGeneratorSpec extends Specification {
 		List<Event> events = generateCalendarEvents()
 
 		then:
-		assert events[0] == createCalendarEventFromStart(1, 8)
+		assert events[0] == createCalendarEventFromStart(1)
 		assert events.size() == 1
 	}
 
-	def "should create calendar event at first positionable of first day after idle if idle spans multiple days"() {
+	def "should create calendar event at midnight of first day after idle if idle spans multiple days"() {
 		given:
 		builder.interval(8, 16)
 				.idle(16, 56)
@@ -56,11 +57,11 @@ public class CalendarEventGeneratorSpec extends Specification {
 		List<Event> events = generateCalendarEvents()
 
 		then:
-		assert events[0] == createCalendarEventFromStart(2, 8)
+		assert events[0] == createCalendarEventFromStart(2)
 		assert events.size() == 1
 	}
 
-	def "should create calendar event at start of first non-idle position if idle spans day"() {
+	def "should create calendar event at midnight of first non-idle position if idle spans day"() {
 		given:
 		builder.interval(8, 16)
 				.idle(16, 32)
@@ -72,7 +73,7 @@ public class CalendarEventGeneratorSpec extends Specification {
 		List<Event> events = generateCalendarEvents()
 
 		then:
-		assert events[0] == createCalendarEventFromStart(1, 12)
+		assert events[0] == createCalendarEventFromStart(1)
 		assert events.size() == 1
 	}
 
@@ -98,7 +99,7 @@ public class CalendarEventGeneratorSpec extends Specification {
 		List<Event> events = generateCalendarEvents()
 
 		then:
-		assert events[0] == createCalendarEventFromStart(1, 0)
+		assert events[0] == createCalendarEventFromStart(1)
 		assert events.size() == 1
 	}
 
@@ -112,8 +113,8 @@ public class CalendarEventGeneratorSpec extends Specification {
 		List<Event> events = generateCalendarEvents()
 
 		then:
-		assert events[0] == createCalendarEventFromStart(1, 0)
-		assert events[1] == createCalendarEventFromStart(2, 0)
+		assert events[0] == createCalendarEventFromStart(1)
+		assert events[1] == createCalendarEventFromStart(2)
 		assert events.size() == 2
 	}
 

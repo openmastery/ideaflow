@@ -73,7 +73,6 @@ class CalendarEventGenerator {
 			startTimes << startDateTime
 		}
 
-		println ("Starttimes: "+startTimes)
 		startTimes
 	}
 
