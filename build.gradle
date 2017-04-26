@@ -96,6 +96,7 @@ sourceSets.main.groovy.srcDirs += ["src/main/java"]
 
 publishing_ext {
 	publication('client')
+	publication('mainTest')
 }
 
 license {
