@@ -44,7 +44,7 @@ sourceSets {
 	client {
 		java {
 			srcDir "src/main/java"
-			include "org/openmastery/rest/**"
+			include "org/openmastery/time/**"
 			include "org/openmastery/publisher/api/**"
 			include "org/openmastery/publisher/client/**"
 			include "org/openmastery/storyweb/api/**"

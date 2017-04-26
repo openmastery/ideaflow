@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openmastery.time
+package org.openmastery.time;
 
-import java.sql.Timestamp
-import java.time.LocalDateTime
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-class TimeConverter {
+public class TimeConverter {
 
 	public static LocalDateTime toLocalDateTime(Timestamp timestamp) {
 		if (timestamp == null) {
-			return null
+			return null;
 		}
-		timestamp.toLocalDateTime()
+		return timestamp.toLocalDateTime();
 	}
 
 	public static Timestamp toSqlTimestamp(LocalDateTime localDateTime) {
-		new Timestamp(localDateTime.year - 1900,
-				localDateTime.monthValue - 1,
-				localDateTime.dayOfMonth,
-				localDateTime.hour,
-				localDateTime.minute,
-				localDateTime.second, 0)
+		return new Timestamp(localDateTime.getYear() - 1900,
+				localDateTime.getMonthValue() - 1,
+				localDateTime.getDayOfMonth(),
+				localDateTime.getHour(),
+				localDateTime.getMinute(),
+				localDateTime.getSecond(), 0);
 	}
 
 }

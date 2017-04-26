@@ -18,6 +18,7 @@ package org.openmastery;
 import org.openmastery.publisher.core.stub.FixtureTimelineInitializer;
 import org.openmastery.publisher.security.AuthorizationFilter;
 import org.openmastery.publisher.security.InvocationContext;
+import org.openmastery.time.LocalDateTimeService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +40,11 @@ public class IfmPublisher {
 	@Bean
 	public AuthorizationFilter authorizationFilter() {
 		return new AuthorizationFilter();
+	}
+
+	@Bean
+	public LocalDateTimeService localDateTimeService() {
+		return new LocalDateTimeService();
 	}
 
 }

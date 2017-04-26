@@ -24,7 +24,6 @@ import org.openmastery.publisher.api.Positionable;
 import org.openmastery.publisher.api.ideaflow.IdeaFlowStateType;
 import org.openmastery.publisher.core.timeline.IdleTimeBandModel;
 import org.openmastery.publisher.core.timeline.TimeBandModel;
-import org.openmastery.time.TimeConverter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

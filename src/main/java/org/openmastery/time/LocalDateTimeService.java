@@ -15,12 +15,9 @@
  */
 package org.openmastery.time;
 
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-@Component
 public class LocalDateTimeService implements TimeService {
 
 	@Override
