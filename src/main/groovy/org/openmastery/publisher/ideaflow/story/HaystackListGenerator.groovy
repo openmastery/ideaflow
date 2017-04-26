@@ -236,7 +236,7 @@ class HaystackListGenerator {
 			Collections.sort(summaryList, new Comparator<ActivitySummary>() {
 				@Override
 				public int compare(ActivitySummary summary1, ActivitySummary summary2) {
-					summary1.totalDurationInSeconds.compareTo(summary2.totalDurationInSeconds)
+					summary1.totalDurationInSeconds.compareTo(summary2.totalDurationInSeconds) * -1
 				}
 			})
 			summaryList
