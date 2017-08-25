@@ -52,6 +52,9 @@ public class UserResource {
 		return user.getApiKey() + "\n";
 	}
 
+
+
+
 	/**
 	 * Retrieve the API-Key of an existing user
 	 * @exclude

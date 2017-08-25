@@ -49,6 +49,7 @@ public class IfmPublisherTestConfig {
 				.id(42L)
 				.apiKey(UUID.randomUUID().toString())
 				.email("test-user@openmastery.org")
+				.name("Joe Black")
 				.build();
 	}
 

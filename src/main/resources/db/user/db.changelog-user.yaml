@@ -2,3 +2,6 @@ databaseChangeLog:
 
   - include:
       file: db/user/create_user.sql
+
+  - include:
+      file: db/user/add_user_columns_name.sql

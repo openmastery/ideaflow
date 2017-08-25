@@ -54,6 +54,7 @@ public class FixtureTimelineInitializer {
 			user = UserEntity.builder()
 					.email(userEmail)
 					.apiKey(UUID.randomUUID().toString())
+					.name("@torchie")
 					.build();
 			userRepository.save(user);
 		}

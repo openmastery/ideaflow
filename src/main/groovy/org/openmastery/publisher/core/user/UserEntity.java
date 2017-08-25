@@ -40,6 +40,7 @@ public class UserEntity {
 	@SequenceGenerator(name = "user_seq_gen", sequenceName = "user_seq")
 	private Long id;
 	private String email;
+	private String name;
 	private String apiKey;
 
 }
