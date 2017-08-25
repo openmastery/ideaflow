@@ -16,7 +16,15 @@
 package org.openmastery.publisher.resources;
 
 
+import org.openmastery.mapper.ValueObjectMapper;
+import org.openmastery.publisher.api.PagedResult;
 import org.openmastery.publisher.api.ResourcePaths;
+import org.openmastery.publisher.api.event.Event;
+import org.openmastery.publisher.api.task.NewTask;
+import org.openmastery.publisher.api.task.Task;
+import org.openmastery.publisher.api.user.NewUser;
+import org.openmastery.publisher.api.user.User;
+import org.openmastery.publisher.core.event.EventEntity;
 import org.openmastery.publisher.core.user.UserEntity;
 import org.openmastery.publisher.core.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +32,8 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -34,26 +44,48 @@ public class UserResource {
 	@Autowired
 	private UserRepository userRepository;
 
+	private ValueObjectMapper mapper = new ValueObjectMapper();
+
 	/**
 	 * Create a new user API-Key based on the specified email.
 	 * @exclude
-	 * @param userEmail a unique email account
+	 * @param userAccount a user's unique email account and name
 	 * @return API-Key
 	 */
-	@POST
-	public String createUser(@QueryParam("email") String userEmail) {
 
+	@POST
+	public String createUser(NewUser userAccount) {
 		UserEntity user = UserEntity.builder()
-			.email(userEmail)
-			.apiKey(UUID.randomUUID().toString())
-			.build();
+				.email(userAccount.getEmail())
+				.name(userAccount.getName())
+				.apiKey(UUID.randomUUID().toString())
+				.build();
 		userRepository.save(user);
 
 		return user.getApiKey() + "\n";
 	}
 
+	/**
+	 * Retrieves all available users and API-keys
+	 * @exclude
+	 * @return List<User>
+	 */
+	@GET
+	public List<User> findAllUsers() {
+
+		List<User> userList = new ArrayList<>();
+		Iterable<UserEntity> userEntities = userRepository.findAll();
+		for (UserEntity entity : userEntities) {
+			userList.add( toApi(entity) );
+		}
+
+		return userList;
+	}
 
 
+	private User toApi(UserEntity entity) {
+		return mapper.mapIfNotNull(entity, User.class);
+	}
 
 	/**
 	 * Retrieve the API-Key of an existing user
