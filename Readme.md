@@ -31,6 +31,12 @@ git clone git@github.com:openmastery/ideaflow.git
 
 # User Access
 
+WARNING: This version of the server is insecure and should only be installed on an internal network.
+
+To create new users, you can now simply open the github.com/openmastery/ideaflow-profiler application, and create users from there.
+
+# Manually Creating a User Account
+
 All APIs require access using an API-KEY header.  When you access the API
 via the plugin, you need to configure preferences to use the API Key.
 
