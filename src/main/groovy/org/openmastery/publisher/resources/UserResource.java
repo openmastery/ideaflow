@@ -76,7 +76,7 @@ public class UserResource {
 		List<User> userList = new ArrayList<>();
 		Iterable<UserEntity> userEntities = userRepository.findAll();
 		for (UserEntity entity : userEntities) {
-			if (!entity.getName().equals("@torchie")) {
+			if (entity.getName() == null || !entity.getName().equals("@torchie")) {
 				userList.add( toApi(entity) );
 			}
 		}
