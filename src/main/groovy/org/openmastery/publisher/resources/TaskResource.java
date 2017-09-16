@@ -131,18 +131,35 @@ public class TaskResource {
 	 */
 
 	@GET
-	public PagedResult<Task> findRecentTasks(@QueryParam("tag") List<String> tags,
+	@Path(ResourcePaths.USER_PATH  + "/{id}")
+	public PagedResult<Task> findRecentTasks(@PathParam("id") Long userId, @QueryParam("tag") List<String> tags,
 											 @QueryParam("project") String project,
 											 @DefaultValue("0") @QueryParam("page_number") Integer pageNumber,
 									  		@DefaultValue("10") @QueryParam("per_page") Integer elementsPerPage ) {
 		if (tags != null && tags.size() > 0) {
-			return taskService.findRecentTasksMatchingTags(project, tags, pageNumber, elementsPerPage);
+			return taskService.findRecentTasksMatchingTags(userId, project, tags, pageNumber, elementsPerPage);
 		} else {
-			return taskService.findRecentTasks(project, pageNumber, elementsPerPage);
+			return taskService.findRecentTasks(userId, project, pageNumber, elementsPerPage);
 		}
 	}
 
+	/**
+	 * Find recent tasks across all users, regardless of what user you are
+	 * @param tags
+	 * @param project
+	 * @param pageNumber
+	 * @param elementsPerPage
+	 * @return
+	 */
 
+	@GET
+	public PagedResult<Task> findAllTasks(@QueryParam("tag") List<String> tags,
+										  @QueryParam("project") String project,
+										  @DefaultValue("0") @QueryParam("page_number") Integer pageNumber,
+										  @DefaultValue("10") @QueryParam("per_page") Integer elementsPerPage ) {
+			return taskService.findRecentTasksForAllUsers(project, pageNumber, elementsPerPage);
+
+	}
 
 
 }

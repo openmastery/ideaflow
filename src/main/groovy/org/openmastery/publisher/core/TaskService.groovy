@@ -92,10 +92,10 @@ class TaskService {
 	}
 
 
-	public PagedResult<Task> findRecentTasksMatchingTags(String optionalProject, List<String> tags, int pageNumber, int elementsPerPage) {
+	public PagedResult<Task> findRecentTasksMatchingTags(Long userId, String optionalProject, List<String> tags, int pageNumber, int elementsPerPage) {
 		String tagPattern = SearchUtils.createSearchPattern(tags)
 		String projectLikeClause = generateProjectLikeClause(optionalProject)
-		Long userId = invocationContext.getUserId()
+		//Long userId = invocationContext.getUserId()
 
 		int recordCount = taskRepository.countTasksMatchingTags(userId, projectLikeClause, tagPattern)
 
@@ -109,13 +109,22 @@ class TaskService {
 		}
 	}
 
-    public PagedResult<Task> findRecentTasks(String optionalProject, int pageNumber, int elementsPerPage) {
+
+    public PagedResult<Task> findRecentTasks(Long userId, String optionalProject, int pageNumber, int elementsPerPage) {
 		String projectLikeClause = generateProjectLikeClause(optionalProject)
 
 		PageRequest pageRequest = new PageRequest(pageNumber, elementsPerPage, Sort.Direction.DESC, "modifyDate")
-		Page<TaskEntity> taskEntityPage = taskRepository.findByOwnerIdAndProjectLike(invocationContext.getUserId(), projectLikeClause, pageRequest);
+		Page<TaskEntity> taskEntityPage = taskRepository.findByOwnerIdAndProjectLike(userId, projectLikeClause, pageRequest);
         return toPagedResult(taskEntityPage)
     }
+
+	public PagedResult<Task> findRecentTasksForAllUsers(String optionalProject, int pageNumber, int elementsPerPage) {
+		String projectLikeClause = generateProjectLikeClause(optionalProject)
+
+		PageRequest pageRequest = new PageRequest(pageNumber, elementsPerPage, Sort.Direction.DESC, "modifyDate")
+		Page<TaskEntity> taskEntityPage = taskRepository.findByProjectLike(projectLikeClause, pageRequest);
+		return toPagedResult(taskEntityPage)
+	}
 
 	private String generateProjectLikeClause(String optionalProject) {
 		String projectLikeClause = "%"

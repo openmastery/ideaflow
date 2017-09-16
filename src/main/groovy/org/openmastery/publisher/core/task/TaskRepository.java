@@ -32,6 +32,7 @@ public interface TaskRepository extends PagingAndSortingRepository<TaskEntity, L
 	List<TaskEntity> findRecent(@Param("ownerId") Long userId, @Param("limit") int limit);
 
 	Page<TaskEntity> findByOwnerIdAndProjectLike(@Param("ownerId") Long userId, @Param("project") String project, Pageable pageable);
+	Page<TaskEntity> findByProjectLike(@Param("project") String project, Pageable pageable);
 
 
 	@Query(nativeQuery = true, value = "select count(*) from task t where t.owner_id=:ownerId and t.project like :project and " +

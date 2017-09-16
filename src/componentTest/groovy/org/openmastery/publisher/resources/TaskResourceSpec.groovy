@@ -180,6 +180,7 @@ class TaskResourceSpec extends Specification {
 		assert taskPage.hasPrevious == false
 	}
 
+	@spock.lang.Ignore //TODO tag search is being pulled out for now, so not going to worry about implementing this
 	def "findRecentTasksMatchingTags SHOULD filter tasks according to #tags in FAQ or event comments"() {
 		given:
 		for (int i = 0; i < 10; i++) {
