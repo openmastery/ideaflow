@@ -65,12 +65,12 @@ public class UserResource {
 	}
 
 	/**
-	 * Deletes a user based on their email.
-	 * @param email identifies the user
+	 * Deletes a user based on their apiKey.
+	 * @param apiKey identifies the user
 	 */
 	@DELETE
-	public String deleteUser(String email) {
-		UserEntity userToBeDeleted = userRepository.findByEmail(email);
+	public String deleteUser(String apiKey) {
+		UserEntity userToBeDeleted = userRepository.findByApiKey(apiKey);
 		userRepository.delete(userToBeDeleted);
 		return userToBeDeleted.getApiKey() + "\n";
 	}
