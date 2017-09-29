@@ -46,6 +46,20 @@ class TaskEventResourceSpec extends Specification {
 	}
 
 
+	def "Should update event even if event belongs to a different user"() {
+		given:
+		EventEntity eventEntity = createRandomEvent()
+		eventEntity.ownerId = aRandom.id()
+		eventEntity.type = EventType.SUBTASK
+		eventEntity = persistenceService.saveEvent(eventEntity)
+
+		when:
+		Event savedEvent = eventClient.updateEventDescription("/task/id/$taskId/subtask/${eventEntity.id}", "hello" );
+
+		then:
+		assert savedEvent != null
+		assert savedEvent.description == "hello"
+	}
 
 	def "Should update event description with PUT"() {
 		given:

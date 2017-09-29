@@ -66,10 +66,10 @@ class EventService {
 
 
 	Event updateEvent(Long userId, Long eventId, String comment) {
-		//TODO this query should take userId too
-		EventEntity entity = eventRepository.findByOwnerIdAndId(userId, eventId)
+		//TODO this query should take userId too, but ignoring because of UI hacks
+
+		EventEntity entity = eventRepository.findById(eventId)
 		entity.comment = comment
-		entity.ownerId = userId
 
 		EventEntity savedEntity = eventRepository.save(entity);
 		return toApi(savedEntity)

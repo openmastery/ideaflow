@@ -43,5 +43,7 @@ public interface EventRepository extends PagingAndSortingRepository<EventEntity,
 
 	EventEntity findByOwnerIdAndId(Long ownerId, Long eventId);
 
+	EventEntity findById(Long eventId);
+
 
 }
