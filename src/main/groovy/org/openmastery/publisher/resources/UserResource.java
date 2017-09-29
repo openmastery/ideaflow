@@ -52,7 +52,6 @@ public class UserResource {
 	 * @param userAccount a user's unique email account and name
 	 * @return API-Key
 	 */
-
 	@POST
 	public String createUser(NewUser userAccount) {
 		UserEntity user = UserEntity.builder()
@@ -63,6 +62,17 @@ public class UserResource {
 		userRepository.save(user);
 
 		return user.getApiKey() + "\n";
+	}
+
+	/**
+	 * Deletes a user based on their email.
+	 * @param email identifies the user
+	 */
+	@DELETE
+	public String deleteUser(String email) {
+		UserEntity userToBeDeleted = userRepository.findByEmail(email);
+		userRepository.delete(userToBeDeleted);
+		return userToBeDeleted.getApiKey() + "\n";
 	}
 
 	/**
